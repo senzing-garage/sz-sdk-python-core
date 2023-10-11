@@ -11,12 +11,13 @@ env:
 
 jobs:
   unittest-linux:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        senzingapi-version: ["staging"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-    name: Python ${{ matrix.python-version }} using Senzing API ${{ matrix.senzingapi-version }} on linux
+        senzingapi-version: [staging]
+    name: Python ${{ matrix.python-version }} using Senzing API ${{ matrix.senzingapi-version }} on ${{ matrix.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
