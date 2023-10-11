@@ -16,7 +16,7 @@ jobs:
       matrix:
         senzingapi-version: ["staging"]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-    name: Python ${{ matrix.go }} using Senzing API ${{ matrix.senzingapi-version }} on linux
+    name: Python ${{ matrix.python-version }} using Senzing API ${{ matrix.senzingapi-version }} on linux
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,7 +32,5 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /etc/opt/senzing
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
-      - name: Display Python version
-        run: python -c "import sys; print(sys.version)"
-      # - name: Run python unittest
-      #   run: go test -v -p 1 ./...
+      - name: Run python unittest
+        run: python3 -m unittest tests/*.py

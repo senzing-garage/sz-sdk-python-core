@@ -1,0 +1,47 @@
+# Makefile extensions for linux.
+
+# -----------------------------------------------------------------------------
+# Variables
+# -----------------------------------------------------------------------------
+
+SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
+
+# -----------------------------------------------------------------------------
+# OS-ARCH specific targets
+# -----------------------------------------------------------------------------
+
+.PHONY: clean-osarch-specific
+clean-osarch-specific:
+	@rm -rf $(TARGET_DIRECTORY) || true
+	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
+
+
+.PHONY: dependencies-osarch-specific
+dependencies-osarch-specific:
+	python3 -m pip install --upgrade pip
+	python3 -m pip install -r requirements.txt
+
+
+.PHONY: hello-world-osarch-specific
+hello-world-osarch-specific:
+	@echo "Hello World, from linux."
+
+
+.PHONY: setup-osarch-specific
+setup-osarch-specific:
+	@rm -rf /tmp/sqlite
+	@mkdir  /tmp/sqlite
+	@cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+
+
+.PHONY: test-osarch-specific
+test-osarch-specific:
+	@python3 -m unittest tests/*.py
+
+# -----------------------------------------------------------------------------
+# Makefile targets supported only by this platform.
+# -----------------------------------------------------------------------------
+
+.PHONY: only-linux
+only-linux:
+	@echo "Only linux has this Makefile target."
