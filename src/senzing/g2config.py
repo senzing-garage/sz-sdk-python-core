@@ -17,7 +17,7 @@ import warnings
 
 # Import from Senzing.
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
+from .g2exception import translate_exception
 
 # Metadata
 

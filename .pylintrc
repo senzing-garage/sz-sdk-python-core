@@ -2,9 +2,21 @@
 disable=
     broad-except,
     consider-using-f-string,
+    duplicate-code,
     line-too-long,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-module-docstring,
+    not-an-iterable,
+    relative-beyond-top-level,
+    superfluous-parens,
     too-many-branches,
     too-many-locals,
+    undefined-all-variable,
+    unused-import,
+    unused-wildcard-import,
+    wildcard-import,
+
 good-names=
     g2-sdk-python-next
 ignore=

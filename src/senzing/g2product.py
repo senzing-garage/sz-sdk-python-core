@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # -----------------------------------------------------------------------------
-# G2Engine.py
+# g2product.py
 # -----------------------------------------------------------------------------
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -17,15 +17,14 @@ import warnings
 
 # Import from Senzing.
 
-from .G2Exception import TranslateG2ModuleException, G2ModuleNotInitialized, G2ModuleGenericException
-from .G2EngineFlags import G2EngineFlags
+from .g2exception import translate_exception
 
 # Metadata
 
-__all__ = ['G2Engine']
+__all__ = ['G2Config']
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = '2023-10-30'
 __updated__ = '2023-10-30'
 
 
-SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5046"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md

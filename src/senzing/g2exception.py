@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 # -----------------------------------------------------------------------------
-# G2Exception.py
+# g2exception.py
 # -----------------------------------------------------------------------------
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -11,13 +11,11 @@ import warnings
 
 # Import from https://pypi.org/
 
-
 # Metadata
 
-
 __all__ = [
-    'ExceptionCode',
-    'ExceptionMessage',
+    'exception_code',
+    'exception_message',
     'G2BadInputException',
     'G2ConfigurationException',
     'G2DatabaseConnectionLostException',
@@ -31,53 +29,13 @@ __all__ = [
     'G2UnhandledException',
     'G2UnknownDatasourceException',
     'G2UnrecoverableException',
-    'TranslateG2ModuleException',
-
-    # -- Deprecated- -------------------------------------------------------------------------------
-
-    'G2DatabaseConnectionLost',
-    'G2IncompleteRecordException',
-    'G2MalformedJsonException',
-    'G2MessageBufferException',
-    'G2MissingConfigurationException',
-    'G2MissingDataSourceException',
-    'G2ModuleEmptyMessage',
-    'G2ModuleException',
-    'G2ModuleGenericException',
-    'G2ModuleInvalidXML',
-    'G2ModuleLicenseException',
-    'G2ModuleNotInitialized',
-    'G2ModuleResolveMissingResEnt',
-    'G2RepositoryPurgedException',
-    'G2RetryTimeoutExceeded',
-    'G2UnacceptableJsonKeyValueException',
+    'translate_exception',
 ]
-
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = '2023-10-30'
 __updated__ = '2023-10-30'
 
-
 SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-
-
-def deprecated(instance):
-
-    def the_decorator(func):
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.simplefilter('always', DeprecationWarning)  # turn off filter
-            warnings.warn(
-                "senzing-{0}{1:04d}W Exception class '{2}' has been deprecated.".format(SENZING_PRODUCT_ID, instance, func.__name__),
-                category=DeprecationWarning,
-                stacklevel=2)
-            warnings.simplefilter('default', DeprecationWarning)  # reset filter
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return the_decorator
 
 # -----------------------------------------------------------------------------
 # Base G2Exception
@@ -139,30 +97,6 @@ class G2UnknownDatasourceException(G2BadInputException):
     pass
 
 
-@deprecated(1010)
-class G2IncompleteRecordException(G2BadInputException):
-    pass
-
-
-@deprecated(1011)
-class G2MalformedJsonException(G2BadInputException):
-    pass
-
-
-@deprecated(1012)
-class G2MissingConfigurationException(G2BadInputException):
-    pass
-
-
-@deprecated(1013)
-class G2MissingDataSourceException(G2BadInputException):
-    pass
-
-
-@deprecated(1014)
-class G2UnacceptableJsonKeyValueException(G2BadInputException):
-    pass
-
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2RetryableException
 # - Processing did not complete.
@@ -179,25 +113,6 @@ class G2DatabaseConnectionLostException(G2RetryableException):
 class G2RetryTimeoutExceededException(G2RetryableException):
     pass
 
-
-@deprecated(1020)
-class G2MessageBufferException(G2RetryableException):
-    pass
-
-
-@deprecated(1021)
-class G2DatabaseConnectionLost(G2RetryableException):
-    pass
-
-
-@deprecated(1022)
-class G2RepositoryPurgedException(G2RetryableException):
-    pass
-
-
-@deprecated(1023)
-class G2RetryTimeoutExceeded(G2RetryableException):
-    pass
 
 # -----------------------------------------------------------------------------
 # Detail exceptions for G2UnrecoverableException
@@ -223,47 +138,12 @@ class G2UnhandledException(G2UnrecoverableException):
     pass
 
 
-@deprecated(1030)
-class G2ModuleException(G2Exception):
-    """Base exception for G2 Module related python code."""
-
-
-@deprecated(1031)
-class G2ModuleEmptyMessage(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1032)
-class G2ModuleGenericException(G2UnrecoverableException):
-    """Generic exception for non-subclassed G2 Module exception """
-
-
-@deprecated(1033)
-class G2ModuleInvalidXML(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1034)
-class G2ModuleLicenseException(G2UnrecoverableException):
-    pass
-
-
-@deprecated(1035)
-class G2ModuleNotInitialized(G2UnrecoverableException):
-    """G2 Module called but has not been initialized """
-
-
-@deprecated(1036)
-class G2ModuleResolveMissingResEnt(G2UnrecoverableException):
-    pass
-
 # -----------------------------------------------------------------------------
 # Determine Exception based on Senzing reason code.
 # Reference: https://senzing.zendesk.com/hc/en-us/articles/360026678133-Engine-Error-codes
 # -----------------------------------------------------------------------------
 
-
-exceptions_map = {
+EXCEPTION_MAP = {
 
     2:     G2BadInputException,               # EAS_ERR_INVALID_XML                                                                    "Invalid XML"
     5:     G2Exception,                       # EAS_ERR_EXCEEDED_MAX_RETRIES                                                           "Exceeded the Maximum Number of Retries Allowed"
@@ -783,7 +663,7 @@ exceptions_map = {
 }
 
 
-def ExceptionMessage(exception):
+def exception_message(exception):
     if exception is None:
         result = ''
     elif isinstance(exception, bytearray):
@@ -798,15 +678,15 @@ def ExceptionMessage(exception):
     return result
 
 
-def ExceptionCode(exception):
-    exception_message = ExceptionMessage(exception)
-    exception_message_splits = exception_message.split('|', 1)
+def exception_code(exception):
+    local_exception_message = exception_message(exception)
+    exception_message_splits = local_exception_message.split('|', 1)
     result = int(exception_message_splits[0].strip().rstrip('EIW'))
     assert (isinstance(result, int))
     return result
 
 
-def TranslateG2ModuleException(exception):
-    senzing_error_code = ExceptionCode(exception)
-    senzing_error_class = exceptions_map.get(senzing_error_code, G2Exception)
-    return senzing_error_class(ExceptionMessage(exception))
+def translate_exception(exception):
+    senzing_error_code = exception_code(exception)
+    senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)
+    return senzing_error_class(exception_message(exception))
