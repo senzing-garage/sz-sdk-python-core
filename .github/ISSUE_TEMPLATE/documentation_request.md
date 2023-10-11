@@ -3,13 +3,14 @@ name: Documentation request
 about: Identify an area for improvement in documentation
 
 ---
+# Documentation request
 
-**What is the URL of the documentation?**
+## What is the URL of the documentation?
 
-- **Example:** https://github.com/Senzing/template-docker#external-database
-    - *Note:*  This URL includes the web page and the section of the documentation.
+- **Example:** <https://github.com/Senzing/g2-sdk-python-next#external-database>
+  - *Note:*  This URL includes the web page and the section of the documentation.
 
-**What can be improved?**
+## What can be improved?
 
 A clear and concise description of what can be improved.
 Examples:
@@ -19,7 +20,7 @@ Examples:
 - "When I run `command sub-command ...`  I get the following error:"
 - "I don't know what is meant by 'gerble barb gazoink` in the instructions".
 
-**Additional context**
+## Additional context
 
 Add any other context or screenshots to help describe the documentation improvement.
 If you think the documentation improvement is operating system specific,
