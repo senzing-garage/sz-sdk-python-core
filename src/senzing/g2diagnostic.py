@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2diagnostic.py
+TODO: g2diagnostic.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -29,7 +29,7 @@ __updated__ = '2023-10-30'
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
-# G2Config class
+# G2Diagnostic class
 # -----------------------------------------------------------------------------
 
 

@@ -30,7 +30,7 @@ __updated__ = '2023-10-30'
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
-# G2Config class
+# G2Engine class
 # -----------------------------------------------------------------------------
 
 

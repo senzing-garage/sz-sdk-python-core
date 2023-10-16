@@ -1,9 +1,7 @@
 #! /usr/bin/env python3
 
 """
-# -----------------------------------------------------------------------------
-# g2exception.py
-# -----------------------------------------------------------------------------
+TODO: g2exception.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
