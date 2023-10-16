@@ -1,14 +1,6 @@
 [pylint]
 disable=
-    broad-except,
-    consider-using-f-string,
-    duplicate-code,
     line-too-long,
-    missing-class-docstring,
-    missing-function-docstring,
-    missing-module-docstring,
-good-names=
-    g2-sdk-python-next
 ignore=
     __init__.py,
 notes=

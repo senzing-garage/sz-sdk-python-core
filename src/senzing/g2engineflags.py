@@ -1,8 +1,11 @@
 #! /usr/bin/env python3
 
+"""
 # -----------------------------------------------------------------------------
 # g2engineflags.py
 # -----------------------------------------------------------------------------
+"""
+
 
 # Import from standard library. https://docs.python.org/3/library/
 
@@ -19,6 +22,7 @@ __updated__ = '2023-10-30'
 
 
 class G2EngineFlags(IntFlag):
+    """Engine Flags ..."""
 
     @classmethod
     def combine_flags(cls, list_of_strings, *args, **kwargs):

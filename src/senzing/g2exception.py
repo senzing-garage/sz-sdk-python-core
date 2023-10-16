@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
+"""
 # -----------------------------------------------------------------------------
 # g2exception.py
 # -----------------------------------------------------------------------------
+"""
 
 # Import from standard library. https://docs.python.org/3/library/
 
@@ -50,12 +52,13 @@ class G2Exception(Exception):
 
     def __str__(self):
         result = []
-        for arg in self.args:
-            message = arg
-            if isinstance(arg, Exception):
-                message = "{0}.{1}:".format(arg.__module__, arg.__class__.__name__)
-            if message not in result:
-                result.append(message)
+        # TODO: Make a JSON return string
+        # for arg in self.args:
+        #     message = arg
+        #     if isinstance(arg, Exception):
+        #         message = "{0}.{1}:".format(arg.__module__, arg.__class__.__name__)
+        #     if message not in result:
+        #         result.append(message)
         return " ".join(result)
 
 # -----------------------------------------------------------------------------
@@ -90,11 +93,11 @@ class G2UnrecoverableException(G2Exception):
 
 
 class G2NotFoundException(G2BadInputException):
-    pass
+    """Not found"""
 
 
 class G2UnknownDatasourceException(G2BadInputException):
-    pass
+    """Unknown Datasource"""
 
 
 # -----------------------------------------------------------------------------
@@ -107,11 +110,11 @@ class G2UnknownDatasourceException(G2BadInputException):
 
 
 class G2DatabaseConnectionLostException(G2RetryableException):
-    pass
+    """Database connection lost"""
 
 
 class G2RetryTimeoutExceededException(G2RetryableException):
-    pass
+    """Retry timeout exceeded time limit"""
 
 
 # -----------------------------------------------------------------------------
@@ -123,19 +126,19 @@ class G2RetryTimeoutExceededException(G2RetryableException):
 
 
 class G2DatabaseException(G2UnrecoverableException):
-    pass
+    """Database exception"""
 
 
 class G2LicenseException(G2UnrecoverableException):
-    pass
+    """"Licence exception"""
 
 
 class G2NotInitializedException(G2UnrecoverableException):
-    pass
+    """Not initialized"""
 
 
 class G2UnhandledException(G2UnrecoverableException):
-    pass
+    """Could not handle exception"""
 
 
 # -----------------------------------------------------------------------------
@@ -664,6 +667,7 @@ EXCEPTION_MAP = {
 
 
 def exception_message(exception):
+    """Given an exception of varying types, return an exception string."""
     if exception is None:
         result = ''
     elif isinstance(exception, bytearray):
@@ -679,6 +683,7 @@ def exception_message(exception):
 
 
 def exception_code(exception):
+    """Given an exception string, find the exception code."""
     local_exception_message = exception_message(exception)
     exception_message_splits = local_exception_message.split('|', 1)
     result = int(exception_message_splits[0].strip().rstrip('EIW'))
@@ -687,6 +692,7 @@ def exception_code(exception):
 
 
 def translate_exception(exception):
+    """Given an exception string, find the exception code and map to the exception class."""
     senzing_error_code = exception_code(exception)
     senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)
     return senzing_error_class(exception_message(exception))
