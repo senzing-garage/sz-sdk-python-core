@@ -44,13 +44,13 @@ class G2Diagnostic:
     # -------------------------------------------------------------------------
 
     def __init__(self, module_name, ini_params, verbose_logging):
-        """Constructor - G2Config"""
+        """Constructor"""
 
-        self.noop = ""
         self.ini_params = ini_params
         self.module_name = module_name
-
+        self.noop = ""
         self.verbose_logging = verbose_logging
+
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self):

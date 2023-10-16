@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2configmgr.py
+TODO: g2configmgr.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -44,7 +44,8 @@ class G2ConfigMgr:
     # -------------------------------------------------------------------------
 
     def __init__(self, module_name, ini_params, verbose_logging):
-        """Constructor - G2ConfigMgr"""
+        """Constructor"""
+
         self.ini_params = ini_params
         self.module_name = module_name
         self.noop = ""

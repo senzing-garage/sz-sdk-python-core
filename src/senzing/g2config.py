@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2config.py
+TODO: g2config.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -43,12 +43,13 @@ class G2Config:
     # -------------------------------------------------------------------------
 
     def __init__(self, module_name, ini_params, verbose_logging):
-        """Constructor - G2Config"""
+        """Constructor"""
 
         self.ini_params = ini_params
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
+
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self):
@@ -59,7 +60,7 @@ class G2Config:
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2cconfig(self, *args, **kwargs):
+    def fake_g2config(self, *args, **kwargs):
         """TODO: Remove once SDK methods have been implemented."""
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
@@ -70,41 +71,41 @@ class G2Config:
 
     def add_data_source(self, config_handle, input_json):
         """TODO: document"""
-        self.fake_g2cconfig(config_handle, input_json)
+        self.fake_g2config(config_handle, input_json)
         return "string"
 
     def close(self, config_handle):
         """TODO: document"""
-        self.fake_g2cconfig(config_handle)
+        self.fake_g2config(config_handle)
 
     def create(self):
         """TODO: document"""
-        self.fake_g2cconfig()
+        self.fake_g2config()
         return "uintptr"
 
     def delete_data_source(self, config_handle, input_json):
         """TODO: document"""
-        self.fake_g2cconfig(config_handle, input_json)
+        self.fake_g2config(config_handle, input_json)
 
     def destroy(self):
         """TODO: document"""
-        self.fake_g2cconfig()
+        self.fake_g2config()
 
     def init(self, module_name, ini_params, verbose_logging):
         """TODO: document"""
-        self.fake_g2cconfig(module_name, ini_params, verbose_logging)
+        self.fake_g2config(module_name, ini_params, verbose_logging)
 
     def list_data_sources(self, config_handle):
         """TODO: document"""
-        self.fake_g2cconfig(config_handle)
+        self.fake_g2config(config_handle)
         return "string"
 
     def load(self, json_config):
         """TODO: document"""
-        self.fake_g2cconfig(json_config)
+        self.fake_g2config(json_config)
         return "uintptr"
 
     def save(self, config_handle):
         """TODO: document"""
-        self.fake_g2cconfig(config_handle)
+        self.fake_g2config(config_handle)
         return "string"

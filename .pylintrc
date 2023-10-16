@@ -1,6 +1,9 @@
 [pylint]
 disable=
+    duplicate-code,
     line-too-long,
+    too-many-arguments,
+    too-many-public-methods,
 ignore=
     __init__.py,
 notes=
