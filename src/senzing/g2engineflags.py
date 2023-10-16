@@ -6,7 +6,6 @@
 # -----------------------------------------------------------------------------
 """
 
-
 # Import from standard library. https://docs.python.org/3/library/
 
 from enum import IntFlag
