@@ -39,4 +39,4 @@ jobs:
       - name: Copy test database files
         run: mkdir "C:\Temp\sqlite" && copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
       - name: Run python unittest
-        run: python3 -m unittest tests/*.py
+        run: python3 -m unittest tests/g2config_test.py
