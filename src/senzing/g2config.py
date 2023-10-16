@@ -42,7 +42,7 @@ class G2Config:
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(self, module_name, ini_params, verbose_logging):
+    def __init__(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
         """Constructor"""
 
         self.ini_params = ini_params
@@ -52,7 +52,7 @@ class G2Config:
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Destructor"""
         self.destroy()
 
@@ -69,43 +69,43 @@ class G2Config:
     # G2Config methods
     # -------------------------------------------------------------------------
 
-    def add_data_source(self, config_handle, input_json):
+    def add_data_source(self, config_handle: int, input_json: str) -> str:
         """TODO: document"""
         self.fake_g2config(config_handle, input_json)
         return "string"
 
-    def close(self, config_handle):
+    def close(self, config_handle: int) -> None:
         """TODO: document"""
         self.fake_g2config(config_handle)
 
-    def create(self):
+    def create(self) -> int:
         """TODO: document"""
         self.fake_g2config()
         return "uintptr"
 
-    def delete_data_source(self, config_handle, input_json):
+    def delete_data_source(self, config_handle: int, input_json: str) -> None:
         """TODO: document"""
         self.fake_g2config(config_handle, input_json)
 
-    def destroy(self):
+    def destroy(self) -> None:
         """TODO: document"""
         self.fake_g2config()
 
-    def init(self, module_name, ini_params, verbose_logging):
+    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
         """TODO: document"""
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
-    def list_data_sources(self, config_handle):
+    def list_data_sources(self, config_handle: int) -> str:
         """TODO: document"""
         self.fake_g2config(config_handle)
         return "string"
 
-    def load(self, json_config):
+    def load(self, json_config: str) -> int:
         """TODO: document"""
         self.fake_g2config(json_config)
         return "uintptr"
 
-    def save(self, config_handle):
+    def save(self, config_handle: int) -> str:
         """TODO: document"""
         self.fake_g2config(config_handle)
         return "string"

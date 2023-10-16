@@ -69,48 +69,48 @@ class G2Diagnostic:
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_db_perf(self, seconds_to_run):
+    def check_db_perf(self, seconds_to_run: int) -> str:
         """TODO: document"""
         self.fake_g2diagnostic(seconds_to_run)
         return "string"
 
-    def destroy(self):
+    def destroy(self) -> None:
         """TODO: document"""
         self.fake_g2diagnostic()
 
-    def get_available_memory(self):
+    def get_available_memory(self) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
-    def get_db_info(self):
+    def get_db_info(self) -> str:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "string"
 
-    def get_logical_cores(self):
+    def get_logical_cores(self) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int"
 
-    def get_phhysical_cores(self):
+    def get_physical_cores(self) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int"
 
-    def get_total_system_memory(self):
+    def get_total_system_memory(self) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
-    def init(self, module_name, ini_params, verbose_logging):
+    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
-    def init_with_config_id(self, module_name, ini_params, init_config_id, verbose_logging):
+    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
-    def reinit(self, init_config_id):
+    def reinit(self, init_config_id: int) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(init_config_id)

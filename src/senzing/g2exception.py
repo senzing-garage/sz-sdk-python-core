@@ -664,7 +664,7 @@ EXCEPTION_MAP = {
 }
 
 
-def exception_message(exception):
+def exception_message(exception: str) -> str:
     """Given an exception of varying types, return an exception string."""
     if exception is None:
         result = ''
@@ -680,7 +680,7 @@ def exception_message(exception):
     return result
 
 
-def exception_code(exception):
+def exception_code(exception: str) -> int:
     """Given an exception string, find the exception code."""
     local_exception_message = exception_message(exception)
     exception_message_splits = local_exception_message.split('|', 1)
@@ -689,7 +689,7 @@ def exception_code(exception):
     return result
 
 
-def translate_exception(exception):
+def translate_exception(exception: str) -> str:
     """Given an exception string, find the exception code and map to the exception class."""
     senzing_error_code = exception_code(exception)
     senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)

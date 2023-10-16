@@ -69,38 +69,38 @@ class G2ConfigMgr:
     # G2ConfigMgr methods
     # -------------------------------------------------------------------------
 
-    def add_config(self, config_str, config_comments):
+    def add_config(self, config_str: str, config_comments: str) -> int:
         """TODO: document"""
         self.fake_g2configmgr(config_str, config_comments)
         return "int64"
 
-    def destroy(self):
+    def destroy(self) -> None:
         """TODO: document"""
         self.fake_g2configmgr()
 
-    def get_config(self, config_id):
+    def get_config(self, config_id: int) -> str:
         """TODO: document"""
         self.fake_g2configmgr(config_id)
         return "string"
 
-    def get_config_list(self):
+    def get_config_list(self) -> str:
         """TODO: document"""
         self.fake_g2configmgr()
         return "string"
 
-    def get_default_config_id(self):
+    def get_default_config_id(self) -> int:
         """TODO: document"""
         self.fake_g2configmgr()
         return "int64"
 
-    def init(self, module_name, ini_params, verbose_logging):
+    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
         """TODO: document"""
         self.fake_g2configmgr(module_name, ini_params, verbose_logging)
 
-    def replace_default_config_id(self, old_config_id, new_config_id):
+    def replace_default_config_id(self, old_config_id: int, new_config_id: int) -> None:
         """TODO: document"""
         self.fake_g2configmgr(old_config_id, new_config_id)
 
-    def set_default_config_id(self, config_id):
+    def set_default_config_id(self, config_id: int) -> None:
         """TODO: document"""
         self.fake_g2configmgr(config_id)

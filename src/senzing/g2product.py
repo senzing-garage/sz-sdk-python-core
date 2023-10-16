@@ -69,20 +69,20 @@ class G2Product:
     # G2Product methods
     # -------------------------------------------------------------------------
 
-    def destroy(self):
+    def destroy(self) -> None:
         """TODO: document"""
         self.fake_g2config()
 
-    def init(self, module_name, ini_params, verbose_logging):
+    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
         """TODO: document"""
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
-    def license(self):
+    def license(self) -> str:
         """TODO: document"""
         self.fake_g2config()
         return "string"
 
-    def version(self):
+    def version(self) -> str:
         """TODO: document"""
         self.fake_g2config()
         return "string"
