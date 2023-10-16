@@ -674,7 +674,7 @@ def exception_message(exception):
         result = str(exception).split(':', 1)[1].strip()
     else:
         result = exception
-    assert (isinstance(result, str))
+    assert isinstance(result, str)
     return result
 
 
@@ -682,7 +682,7 @@ def exception_code(exception):
     local_exception_message = exception_message(exception)
     exception_message_splits = local_exception_message.split('|', 1)
     result = int(exception_message_splits[0].strip().rstrip('EIW'))
-    assert (isinstance(result, int))
+    assert isinstance(result, int)
     return result
 
 

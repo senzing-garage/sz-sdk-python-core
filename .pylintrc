@@ -7,13 +7,6 @@ disable=
     missing-class-docstring,
     missing-function-docstring,
     missing-module-docstring,
-    not-an-iterable,
-    relative-beyond-top-level,
-    superfluous-parens,
-    too-many-branches,
-    too-many-locals,
-    undefined-all-variable,
-
 good-names=
     g2-sdk-python-next
 ignore=
