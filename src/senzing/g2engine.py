@@ -6,19 +6,19 @@
 
 # Import from standard library. https://docs.python.org/3/library/
 
-from ctypes import *
-import functools
-import json
-import os
-import threading
-import warnings
+# from ctypes import *
+# import functools
+# import json
+# import os
+# import threading
+# import warnings
 
 # Import from https://pypi.org/
 
 # Import from Senzing.
 
-from .g2exception import translate_exception
-from .g2engineflags import G2EngineFlags
+# from .g2exception import translate_exception
+# from .g2engineflags import G2EngineFlags
 
 # Metadata
 

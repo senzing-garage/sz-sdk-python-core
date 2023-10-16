@@ -64,6 +64,11 @@ dependencies: dependencies-osarch-specific
 .PHONY: test
 test: test-osarch-specific
 
+.PHONY pylint
+pylint:
+	pylint $(git ls-files '*.py')
+
+
 # -----------------------------------------------------------------------------
 # Utility targets
 # -----------------------------------------------------------------------------

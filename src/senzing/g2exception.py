@@ -6,8 +6,8 @@
 
 # Import from standard library. https://docs.python.org/3/library/
 
-import functools
-import warnings
+# import functools
+# import warnings
 
 # Import from https://pypi.org/
 
