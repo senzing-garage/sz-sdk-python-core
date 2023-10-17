@@ -17,7 +17,8 @@ import os
 
 # Import from Senzing.
 
-from .g2exception import G2Exception, translate_exception
+from .g2exception import G2Exception
+# from .g2exception import G2Exception, translate_exception
 
 # Metadata
 
@@ -55,8 +56,8 @@ class G2Diagnostic:
                 self.library_handle = cdll.LoadLibrary("G2.dll")
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as ex:
-            raise G2Exception("Failed to load the G2 library")
+        except OSError as err:
+            raise G2Exception("Failed to load the G2 library") from err
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
@@ -100,7 +101,6 @@ class G2Diagnostic:
         """TODO: document"""
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         return self.library_handle.G2Diagnostic_getLogicalCores()
-        return "int"
 
     def get_physical_cores(self) -> int:
         """TODO: document"""
