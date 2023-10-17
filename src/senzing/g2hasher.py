@@ -21,9 +21,19 @@ TODO: g2hasher.py
 
 # Metadata
 
-# __all__ = ['G2Hasher']
+__all__ = ['G2Hasher']
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = '2023-10-30'
 __updated__ = '2023-10-30'
 
 SENZING_PRODUCT_ID = "5045"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+
+# -----------------------------------------------------------------------------
+# G2Product class
+# -----------------------------------------------------------------------------
+
+
+class G2Hasher:
+    """
+    G2 product module access library
+    """

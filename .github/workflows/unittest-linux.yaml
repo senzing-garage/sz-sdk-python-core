@@ -37,5 +37,9 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /etc/opt/senzing/g2.lic
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+      - name: debug - pwd
+        run: pwd
+      - name: debug - ls
+        run: ls
       - name: Run python unittest
         run: python3 -m unittest tests/*.py

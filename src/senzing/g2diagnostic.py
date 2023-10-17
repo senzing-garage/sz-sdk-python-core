@@ -6,10 +6,10 @@ TODO: g2diagnostic.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-# from ctypes import *
+from ctypes import cdll
 # import functools
 # import json
-# import os
+import os
 # import threading
 # import warnings
 
@@ -17,11 +17,11 @@ TODO: g2diagnostic.py
 
 # Import from Senzing.
 
-# from .g2exception import translate_exception
+from .g2exception import G2Exception, translate_exception
 
 # Metadata
 
-# __all__ = ['g2diagnostic']
+__all__ = ['G2Diagnostic']
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = '2023-10-30'
 __updated__ = '2023-10-30'
@@ -49,6 +49,14 @@ class G2Diagnostic:
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
+
+        try:
+            if os.name == 'nt':
+                self.library_handle = cdll.LoadLibrary("G2.dll")
+            else:
+                self.library_handle = cdll.LoadLibrary("libG2.so")
+        except OSError as ex:
+            raise G2Exception("Failed to load the G2 library")
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
@@ -90,13 +98,14 @@ class G2Diagnostic:
 
     def get_logical_cores(self) -> int:
         """TODO: document"""
-        self.fake_g2diagnostic()
+        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
+        return self.library_handle.G2Diagnostic_getLogicalCores()
         return "int"
 
     def get_physical_cores(self) -> int:
         """TODO: document"""
-        self.fake_g2diagnostic()
-        return "int"
+        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
+        return self.library_handle.G2Diagnostic_getPhysicalCores()
 
     def get_total_system_memory(self) -> int:
         """TODO: document"""
