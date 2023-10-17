@@ -6,6 +6,7 @@ name: unittest-windows.yaml
 on: [push]
 
 env:
+  LD_LIBRARY_PATH: 'C:\Program Files\Senzing\g2\lib'
   PYTHONPATH: 'D:\a\g2-sdk-python-next\g2-sdk-python-next\src'
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db'
 
@@ -43,5 +44,7 @@ jobs:
         run: pwd
       - name: debug - ls
         run: dir
+      - name: debug - opt/senzing/g2/lib
+        run: 'dir C:\Program Files\Senzing\g2\lib'
       - name: Run python unittest
         run: python3 -m unittest tests/g2config_test.py tests/g2configmgr_test.py tests/g2diagnostic_test.py tests/g2engine_test.py tests/g2engineflags_test.py tests/g2exception_test.py tests/g2hasher_test.py tests/g2product_test.py
