@@ -54,8 +54,7 @@ class G2Diagnostic:
         try:
             if os.name == 'nt':
                 # self.library_handle = cdll.LoadLibrary("G2.dll")
-                self.library_handle = cdll.LoadLibrary("G2.dll")
-
+                self.library_handle = cdll.LoadLibrary("C:\Program Files\Senzing\g2\lib\G2.dll")
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
