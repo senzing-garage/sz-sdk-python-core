@@ -48,4 +48,4 @@ jobs:
       - name: Run python unittest
         env:
           DYLD_LIBRARY_PATH: /opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
-        run: python3 -m unittest tests/*.py
+        run: python3 -m unittest -c -exec /Users/runner/work/g2-sdk-python-next/g2-sdk-python-next/bin/macos_exec_dyld.sh tests/*.py

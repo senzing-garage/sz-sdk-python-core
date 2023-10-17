@@ -46,7 +46,7 @@ jobs:
       - name: debug - ls
         run: dir
       - name: debug - opt/senzing/g2/lib
-        run: 'dir C:\Program Files\Senzing\g2\lib'
+        run: dir "C:\Program Files\Senzing\g2\lib"
       - name: debug - env
         run: set
       - name: Run python unittest
