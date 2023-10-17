@@ -38,5 +38,9 @@ jobs:
         run: copy testdata/senzing-license/g2.lic "C:\Program Files\Senzing\g2\etc\g2.lic"
       - name: Copy test database files
         run: mkdir "C:\Temp\sqlite" && copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
+      - name: debug - pwd
+        run: pwd
+      - name: debug - ls
+        run: dir
       - name: Run python unittest
         run: python3 -m unittest tests/g2config_test.py tests/g2configmgr_test.py tests/g2diagnostic_test.py tests/g2engine_test.py tests/g2engineflags_test.py tests/g2exception_test.py tests/g2hasher_test.py tests/g2product_test.py

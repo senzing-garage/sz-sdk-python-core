@@ -7,6 +7,7 @@ on: [push]
 
 env:
   LD_LIBRARY_PATH: /opt/senzing/g2/lib
+  PYTHONPATH: /home/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
   SENZING_TOOLS_DATABASE_URL: "sqlite3://na:na@/tmp/sqlite/G2C.db"
 
 jobs:
@@ -37,5 +38,9 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/g2/etc/g2.lic
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+      - name: debug - pwd
+        run: pwd
+      - name: debug - ls
+        run: ls
       - name: Run python unittest
         run: python3 -m unittest tests/*.py
