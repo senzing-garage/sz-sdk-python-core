@@ -38,15 +38,7 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/g2/etc/g2.lic
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
-      - name: debug - pwd
-        run: pwd
-      - name: debug - ls
-        run: ls
-      - name: debug - env
-        run: env
       - name: Run python unittest
-        # env:
-        #   DYLD_LIBRARY_PATH: /opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
           python3 -m unittest tests/*.py
