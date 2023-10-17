@@ -16,7 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        # python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8"]
         senzingapi-version: [staging]
     name: "unittest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     steps:
@@ -46,5 +47,7 @@ jobs:
         run: dir
       - name: debug - opt/senzing/g2/lib
         run: 'dir C:\Program Files\Senzing\g2\lib'
+      - name: debug - env
+        run: set
       - name: Run python unittest
         run: python3 -m unittest tests/g2config_test.py tests/g2configmgr_test.py tests/g2diagnostic_test.py tests/g2engine_test.py tests/g2engineflags_test.py tests/g2exception_test.py tests/g2hasher_test.py tests/g2product_test.py

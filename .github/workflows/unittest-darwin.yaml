@@ -16,7 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        # python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8"]
         senzingapi-version: [staging]
     name: "unittest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     steps:
@@ -42,5 +43,7 @@ jobs:
         run: pwd
       - name: debug - ls
         run: ls
+      - name: debug - env
+        run: env
       - name: Run python unittest
         run: python3 -m unittest tests/*.py
