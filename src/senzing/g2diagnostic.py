@@ -35,6 +35,7 @@ SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 def find_file_in_path(filename):
+    """Find a file in the PATH environment variable"""
     path_dirs = os.environ['PATH'].split(os.pathsep)
     for path_dir in path_dirs:
         file_path = os.path.join(path_dir, filename)
