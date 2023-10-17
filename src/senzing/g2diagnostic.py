@@ -48,7 +48,6 @@ def find_file_in_path(filename):
 # G2Diagnostic class
 # -----------------------------------------------------------------------------
 
-
 class G2Diagnostic:
     """
     G2 config module access library
@@ -68,9 +67,7 @@ class G2Diagnostic:
 
         try:
             if os.name == 'nt':
-                full_path = find_file_in_path("G2.dll")
-                self.library_handle = cdll.LoadLibrary(full_path)
-                # self.library_handle = cdll.LoadLibrary("C:\\PROGRA~1\\Senzing\\g2\\lib\\G2.dll") # Worked!
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
