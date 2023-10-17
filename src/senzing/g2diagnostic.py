@@ -53,7 +53,9 @@ class G2Diagnostic:
 
         try:
             if os.name == 'nt':
+                # self.library_handle = cdll.LoadLibrary("G2.dll")
                 self.library_handle = cdll.LoadLibrary("G2.dll")
+
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
