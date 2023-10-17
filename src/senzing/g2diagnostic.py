@@ -29,6 +29,20 @@ __updated__ = '2023-10-30'
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
+
+# -----------------------------------------------------------------------------
+# Utility functions
+# -----------------------------------------------------------------------------
+
+def find_file_in_path(filename):
+    path_dirs = os.environ['PATH'].split(os.pathsep)
+    for path_dir in path_dirs:
+        file_path = os.path.join(path_dir, filename)
+        if os.path.exists(file_path):
+            return file_path
+    return None
+
+
 # -----------------------------------------------------------------------------
 # G2Diagnostic class
 # -----------------------------------------------------------------------------
@@ -53,7 +67,8 @@ class G2Diagnostic:
 
         try:
             if os.name == 'nt':
-                self.library_handle = cdll.LoadLibrary("G2.dll")
+                full_path = find_file_in_path("G2.dll")
+                self.library_handle = cdll.LoadLibrary(full_path)
                 # self.library_handle = cdll.LoadLibrary("C:\\PROGRA~1\\Senzing\\g2\\lib\\G2.dll") # Worked!
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
