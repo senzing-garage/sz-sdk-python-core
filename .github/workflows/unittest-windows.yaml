@@ -47,7 +47,5 @@ jobs:
         run: dir
       - name: debug - opt/senzing/g2/lib
         run: dir "C:\Program Files\Senzing\g2\lib"
-      - name: debug - env
-        run: set
       - name: Run python unittest
         run: python3 -m unittest tests/g2config_test.py tests/g2configmgr_test.py tests/g2diagnostic_test.py tests/g2engine_test.py tests/g2engineflags_test.py tests/g2exception_test.py tests/g2hasher_test.py tests/g2product_test.py
