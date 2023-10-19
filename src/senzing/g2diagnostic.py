@@ -19,6 +19,8 @@ import os
 
 from .g2exception import G2Exception
 # from .g2exception import G2Exception, translate_exception
+from .g2diagnostic_abstract import G2DiagnosticAbstract
+
 
 # Metadata
 
@@ -48,7 +50,7 @@ def find_file_in_path(filename):
 # G2Diagnostic class
 # -----------------------------------------------------------------------------
 
-class G2Diagnostic:
+class G2Diagnostic(G2DiagnosticAbstract):
     """
     G2 config module access library
     """
@@ -92,48 +94,48 @@ class G2Diagnostic:
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_db_perf(self, seconds_to_run: int) -> str:
+    def check_db_perf(self, seconds_to_run: int, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2diagnostic(seconds_to_run)
         return "string"
 
-    def destroy(self) -> None:
+    def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2diagnostic()
 
-    def get_available_memory(self) -> int:
+    def get_available_memory(self, *args, **kwargs) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
-    def get_db_info(self) -> str:
+    def get_db_info(self, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "string"
 
-    def get_logical_cores(self) -> int:
+    def get_logical_cores(self, *args, **kwargs) -> int:
         """TODO: document"""
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         return self.library_handle.G2Diagnostic_getLogicalCores()
 
-    def get_physical_cores(self) -> int:
+    def get_physical_cores(self, *args, **kwargs) -> int:
         """TODO: document"""
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         return self.library_handle.G2Diagnostic_getPhysicalCores()
 
-    def get_total_system_memory(self) -> int:
+    def get_total_system_memory(self, *args, **kwargs) -> int:
         """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
+    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
-    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int) -> None:
+    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
-    def reinit(self, init_config_id: int) -> None:
+    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2diagnostic(init_config_id)

@@ -18,6 +18,8 @@ TODO: g2hasher.py
 # Import from Senzing.
 
 # from .g2exception import translate_exception
+from .g2hasher_abstract import G2HasherAbstract
+
 
 # Metadata
 
@@ -33,7 +35,7 @@ SENZING_PRODUCT_ID = "5045"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 
-class G2Hasher:
+class G2Hasher(G2HasherAbstract):
     """
     G2 product module access library
     """
@@ -66,13 +68,31 @@ class G2Hasher:
             print(self.noop)
 
     # -------------------------------------------------------------------------
-    # G2Diagnostic methods
+    # G2Hasher methods
     # -------------------------------------------------------------------------
 
-    def destroy(self) -> None:
+    def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2hasher()
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
+    def export_token_library(self, *args, **kwargs) -> str:
+        """TODO: document"""
+        self.fake_g2hasher()
+        return "response"
+
+    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2hasher(module_name, ini_params, verbose_logging)
+
+    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
+        """TODO: document"""
+        self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)
+
+    def process(self, record: str, *args, **kwargs) -> str:
+        """TODO: document"""
+        self.fake_g2hasher(record)
+        return "response"
+
+    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
+        """TODO: document"""
+        self.fake_g2hasher(init_config_id)

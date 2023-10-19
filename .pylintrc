@@ -4,6 +4,7 @@ disable=
     line-too-long,
     too-many-arguments,
     too-many-public-methods,
+    unused-argument,
 ignore=
     __init__.py,
 notes=

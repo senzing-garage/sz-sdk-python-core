@@ -18,6 +18,8 @@ TODO: g2product.py
 # Import from Senzing.
 
 # from .g2exception import translate_exception
+from .g2product_abstract import G2ProductAbstract
+
 
 # Metadata
 
@@ -33,7 +35,7 @@ SENZING_PRODUCT_ID = "5046"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 
-class G2Product:
+class G2Product(G2ProductAbstract):
     """
     G2 product module access library
     """
@@ -69,20 +71,20 @@ class G2Product:
     # G2Product methods
     # -------------------------------------------------------------------------
 
-    def destroy(self) -> None:
+    def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2config()
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
+    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
-    def license(self) -> str:
+    def license(self, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2config()
         return "string"
 
-    def version(self) -> str:
+    def version(self, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2config()
         return "string"

@@ -18,6 +18,7 @@ TODO: g2configmgr.py
 # Import from Senzing.
 
 # from .g2exception import translate_exception
+from .g2configmgr_abstract import G2ConfigMgrAbstract
 
 # Metadata
 
@@ -33,7 +34,7 @@ SENZING_PRODUCT_ID = "5041"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgr:
+class G2ConfigMgr(G2ConfigMgrAbstract):
     """
     G2 config-manager module access library
     """
@@ -69,38 +70,38 @@ class G2ConfigMgr:
     # G2ConfigMgr methods
     # -------------------------------------------------------------------------
 
-    def add_config(self, config_str: str, config_comments: str) -> int:
+    def add_config(self, config_str: str, config_comments: str, *args, **kwargs) -> int:
         """TODO: document"""
         self.fake_g2configmgr(config_str, config_comments)
         return "int64"
 
-    def destroy(self) -> None:
+    def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2configmgr()
 
-    def get_config(self, config_id: int) -> str:
+    def get_config(self, config_id: int, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2configmgr(config_id)
         return "string"
 
-    def get_config_list(self) -> str:
+    def get_config_list(self, *args, **kwargs) -> str:
         """TODO: document"""
         self.fake_g2configmgr()
         return "string"
 
-    def get_default_config_id(self) -> int:
+    def get_default_config_id(self, *args, **kwargs) -> int:
         """TODO: document"""
         self.fake_g2configmgr()
         return "int64"
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int) -> None:
+    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2configmgr(module_name, ini_params, verbose_logging)
 
-    def replace_default_config_id(self, old_config_id: int, new_config_id: int) -> None:
+    def replace_default_config_id(self, old_config_id: int, new_config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2configmgr(old_config_id, new_config_id)
 
-    def set_default_config_id(self, config_id: int) -> None:
+    def set_default_config_id(self, config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
         self.fake_g2configmgr(config_id)
