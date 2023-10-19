@@ -9,6 +9,14 @@ TODO: g2diagnostic_abstract.py
 from abc import ABC, abstractmethod
 
 
+# Metadata
+
+__all__ = ['G2DiagnosticAbstract']
+__version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
+__date__ = '2023-10-30'
+__updated__ = '2023-10-30'
+
+
 class G2DiagnosticAbstract(ABC):
     """
     G2 diagnostic module access library

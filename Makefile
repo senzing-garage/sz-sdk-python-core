@@ -64,9 +64,19 @@ dependencies: dependencies-osarch-specific
 .PHONY: test
 test: test-osarch-specific
 
-.PHONY pylint
+.PHONY: pylint
 pylint:
-	pylint $(git ls-files '*.py')
+	@pylint $(shell git ls-files '*.py')
+
+
+.PHONY: pydoc
+pydoc:
+	python3 -m pydoc
+
+.PHONY: pydoc-web
+pydoc-web:
+	python3 -m pydoc -p 8885
+
 
 
 # -----------------------------------------------------------------------------

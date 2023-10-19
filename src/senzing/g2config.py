@@ -19,6 +19,8 @@ TODO: g2config.py
 
 # from .g2exception import translate_exception
 from .g2config_abstract import G2ConfigAbstract
+# from senzing import G2ConfigAbstract
+# import g2config_abstract
 
 
 # Metadata
