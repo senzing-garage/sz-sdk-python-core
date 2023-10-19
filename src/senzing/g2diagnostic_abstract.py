@@ -14,6 +14,10 @@ class G2DiagnosticAbstract(ABC):
     G2 diagnostic module access library
     """
 
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
+
     @abstractmethod
     def check_db_perf(self, seconds_to_run: int, *args, **kwargs) -> str:
         """TODO: document"""
@@ -53,3 +57,7 @@ class G2DiagnosticAbstract(ABC):
     @abstractmethod
     def reinit(self, init_config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------

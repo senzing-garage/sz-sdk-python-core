@@ -6,15 +6,19 @@ TODO: g2engine_abstract.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-from typing import Tuple
-
+import json
 from abc import ABC, abstractmethod
+from typing import Tuple
 
 
 class G2EngineAbstract(ABC):
     """
     G2 diagnostic module access library
     """
+
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
 
     @abstractmethod
     def add_record(self, data_source_code: str, record_id: str, json_data: str, load_id: str, *args, **kwargs) -> None:
@@ -283,3 +287,11 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def why_records(self, data_source_code_1: str, record_id_1: str, data_source_code_2: str, record_id_2: str, *args, **kwargsr) -> str:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
+
+    def get_record_as_dict(self, data_source_code: str, record_id: str, *args, **kwargs) -> dict:
+        """TODO: document"""
+        return json.loads(self.get_record(data_source_code, record_id, args, kwargs))

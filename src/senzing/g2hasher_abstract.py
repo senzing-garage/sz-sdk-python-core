@@ -14,6 +14,10 @@ class G2HasherAbstract(ABC):
     G2 hasher module access library
     """
 
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
+
     @abstractmethod
     def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
@@ -37,3 +41,7 @@ class G2HasherAbstract(ABC):
     @abstractmethod
     def reinit(self, init_config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------

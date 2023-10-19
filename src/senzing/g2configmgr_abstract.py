@@ -14,6 +14,10 @@ class G2ConfigMgrAbstract(ABC):
     G2 config-manager module access library
     """
 
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
+
     @abstractmethod
     def add_config(self, config_str: str, config_comments: str, *args, **kwargs) -> int:
         """TODO: document"""
@@ -45,3 +49,7 @@ class G2ConfigMgrAbstract(ABC):
     @abstractmethod
     def set_default_config_id(self, config_id: int, *args, **kwargs) -> None:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------

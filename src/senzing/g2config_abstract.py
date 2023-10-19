@@ -14,6 +14,10 @@ class G2ConfigAbstract(ABC):
     G2 config module access library
     """
 
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
+
     @abstractmethod
     def add_data_source(self, config_handle: int, input_json: str, *args, **kwargs) -> str:
         """TODO: document"""
@@ -49,3 +53,7 @@ class G2ConfigAbstract(ABC):
     @abstractmethod
     def save(self, config_handle: int, *args, **kwargs) -> str:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------

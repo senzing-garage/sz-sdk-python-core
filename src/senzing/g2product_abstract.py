@@ -14,6 +14,10 @@ class G2ProductAbstract(ABC):
     G2 product module access library
     """
 
+    # -------------------------------------------------------------------------
+    # Interface definition
+    # -------------------------------------------------------------------------
+
     @abstractmethod
     def destroy(self, *args, **kwargs) -> None:
         """TODO: document"""
@@ -29,3 +33,7 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def version(self, *args, **kwargs) -> str:
         """TODO: document"""
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
