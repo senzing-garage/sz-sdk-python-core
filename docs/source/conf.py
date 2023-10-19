@@ -35,6 +35,7 @@ extensions = [
     "sphinx.ext.viewcode",  # to allow vieing the source code in the web page
     "autodocsumm",  # to generate tables of functions, attributes, methods, etc.
     "sphinx.ext.intersphinx",
+    "sphinx.ext.doctest",
 ]
 
 html_theme = 'sphinx_rtd_theme'
