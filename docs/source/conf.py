@@ -27,6 +27,9 @@ exclude_patterns = []
 html_theme = 'alabaster'
 html_static_path = ['_static']
 
+
+# -- Customization -----------------------------------------------------------
+
 sys.path.insert(0, os.path.abspath('../../src'))
 
 extensions = [

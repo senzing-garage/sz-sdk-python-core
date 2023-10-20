@@ -69,14 +69,29 @@ pylint:
 	@pylint $(shell git ls-files '*.py')
 
 
+
+# -----------------------------------------------------------------------------
+# Test
+# -----------------------------------------------------------------------------
+
+
 .PHONY: pydoc
 pydoc:
 	python3 -m pydoc
+
 
 .PHONY: pydoc-web
 pydoc-web:
 	python3 -m pydoc -p 8885
 
+
+.PHONY: documentation
+documentation:
+	@cd docs; make html
+
+
+.PHONY: view-docs
+view-docs: view-docs-osarch-specific
 
 
 # -----------------------------------------------------------------------------
