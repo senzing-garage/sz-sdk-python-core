@@ -27,6 +27,7 @@ PATH := $(MAKEFILE_DIRECTORY)/bin:$(PATH)
 # Example: "export LD_LIBRARY_PATH=/path/to/my/senzing/g2/lib"
 
 LD_LIBRARY_PATH ?= /opt/senzing/g2/lib
+PYTHONPATH ?= $(MAKEFILE_DIRECTORY)/src
 
 # Export environment variables.
 
@@ -66,9 +67,7 @@ test: test-osarch-specific
 
 .PHONY: pylint
 pylint:
-	@pylint $(shell git ls-files '*.py')
-
-
+	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*')
 
 # -----------------------------------------------------------------------------
 # Test

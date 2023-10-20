@@ -13,6 +13,10 @@ import unittest
 
 from senzing import g2diagnostic
 
+ENGINE_MODULE_NAME = "Example"
+ENGINE_CONFIGURATION_JSON = '{"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing","RESOURCEPATH":"/opt/senzing/g2/resources","SUPPORTPATH":"/opt/senzing/data"},"SQL":{"CONNECTION":"sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
+ENGINE_VERBOSE_LOGGING = 0
+
 
 class TestG2Diagnostics(unittest.TestCase):
     """Test example"""
@@ -20,14 +24,14 @@ class TestG2Diagnostics(unittest.TestCase):
     def test_get_logical_cores(self):
         """Test logical core count."""
         expected = multiprocessing.cpu_count()
-        g2_diagnostic = g2diagnostic.G2Diagnostic("A", "{}", 0)
+        g2_diagnostic = g2diagnostic.G2Diagnostic(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
         actual = g2_diagnostic.get_logical_cores()
         self.assertEqual(expected, actual)
 
     def test_get_physical_cores(self):
         """Test physical core count."""
         expected = multiprocessing.cpu_count()
-        g2_diagnostic = g2diagnostic.G2Diagnostic("A", "{}", 0)
+        g2_diagnostic = g2diagnostic.G2Diagnostic(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
         actual = g2_diagnostic.get_physical_cores()
         self.assertEqual(expected, actual)
 

@@ -86,7 +86,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def fake_g2diagnostic(self, *args, **kwargs):
-        """TODO: Remove once SDK methods have been implemented."""
+        """
+        TODO: Remove once SDK methods have been implemented.
+
+        :meta private:
+        """
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
 
@@ -95,47 +99,37 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_db_perf(self, seconds_to_run: int, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2diagnostic(seconds_to_run)
         return "string"
 
     def destroy(self, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2diagnostic()
 
     def get_available_memory(self, *args, **kwargs) -> int:
-        """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
     def get_db_info(self, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2diagnostic()
         return "string"
 
     def get_logical_cores(self, *args, **kwargs) -> int:
-        """TODO: document"""
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         return self.library_handle.G2Diagnostic_getLogicalCores()
 
     def get_physical_cores(self, *args, **kwargs) -> int:
-        """TODO: document"""
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         return self.library_handle.G2Diagnostic_getPhysicalCores()
 
     def get_total_system_memory(self, *args, **kwargs) -> int:
-        """TODO: document"""
         self.fake_g2diagnostic()
         return "int64"
 
     def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
     def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
     def reinit(self, init_config_id: int, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2diagnostic(init_config_id)
