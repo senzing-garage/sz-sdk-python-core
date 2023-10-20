@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to g2-sdk-python-next's documentation!
-==============================================
+g2-sdk-python-next
+==================
 
 .. toctree::
    :maxdepth: 2

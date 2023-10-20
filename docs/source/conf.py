@@ -9,7 +9,7 @@
 import sys
 import os
 project = 'g2-sdk-python-next'
-copyright = '2023, senzing'
+copyright = '2023, Senzing'
 author = 'senzing'
 
 # -- General configuration ---------------------------------------------------
