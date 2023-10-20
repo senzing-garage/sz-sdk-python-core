@@ -12,6 +12,7 @@ SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
 
 .PHONY: clean-osarch-specific
 clean-osarch-specific:
+	@rm -rf /tmp/sqlite
 	@rm -rf $(TARGET_DIRECTORY) || true
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
 
@@ -29,7 +30,6 @@ hello-world-osarch-specific:
 
 .PHONY: setup-osarch-specific
 setup-osarch-specific:
-	@rm -rf /tmp/sqlite
 	@mkdir  /tmp/sqlite
 	@cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 

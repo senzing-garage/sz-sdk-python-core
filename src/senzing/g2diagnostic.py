@@ -6,7 +6,7 @@ TODO: g2diagnostic.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-from ctypes import cdll
+import ctypes
 # import functools
 # import json
 import os
@@ -46,6 +46,13 @@ def find_file_in_path(filename):
     return None
 
 
+class G2diagnosticGetdbinfoResult(ctypes.Structure):
+    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+    # pylint: disable=R0903
+    _fields_ = [('response', ctypes.c_char),
+                ('returnCode', ctypes.c_longlong)]
+
+
 # -----------------------------------------------------------------------------
 # G2Diagnostic class
 # -----------------------------------------------------------------------------
@@ -73,9 +80,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         try:
             if os.name == 'nt':
-                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
+                self.library_handle = ctypes.cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = cdll.LoadLibrary("libG2.so")
+                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -114,6 +121,20 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return "int64"
 
     def get_db_info(self, *args, **kwargs) -> str:
+        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
+        # self.library_handle.G2Diagnostic_getDBInfo_helper.restype = c_void_p
+        # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
+
+        # print("address:", type(address))
+        # p = G2diagnosticGetdbinfoResult.from_address(address)
+        # print("p", type(p))
+        # print(p.returnCode)
+
+        # p = G2diagnosticGetdbinfoResult.from_address()
+        # _result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+        # result = _result.response
+        # print(">>>>>>", result)
+        # return "mjd was here"
         self.fake_g2diagnostic()
         return "string"
 
