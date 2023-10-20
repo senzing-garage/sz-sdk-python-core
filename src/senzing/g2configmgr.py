@@ -43,8 +43,12 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(self, module_name, ini_params, verbose_logging):
-        """Constructor"""
+    def __init__(self, module_name, ini_params, verbose_logging, *args, **kwargs) -> None:
+        """
+        Constructor
+
+        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
+        """
 
         self.ini_params = ini_params
         self.module_name = module_name
