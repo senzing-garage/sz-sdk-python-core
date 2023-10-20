@@ -7,5 +7,6 @@ disable=
     unused-argument,
 ignore=
     __init__.py,
+    docs/source/conf.py
 notes=
     FIXME,

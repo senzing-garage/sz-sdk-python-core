@@ -38,6 +38,11 @@ setup-osarch-specific:
 test-osarch-specific:
 	@python3 -m unittest tests/*.py
 
+
+.PHONY: view-docs-osarch-specific
+view-docs-osarch-specific:
+	@xdg-open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
+
 # -----------------------------------------------------------------------------
 # Makefile targets supported only by this platform.
 # -----------------------------------------------------------------------------
