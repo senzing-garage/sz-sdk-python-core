@@ -7,20 +7,16 @@ TODO: g2diagnostic.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
-# import functools
-# import json
 import os
-# import threading
-# import warnings
+import threading
 
 # Import from https://pypi.org/
 
 # Import from Senzing.
 
-from .g2exception import G2Exception
-# from .g2exception import G2Exception, translate_exception
+from .g2exception import G2Exception, translate_exception
 from .g2diagnostic_abstract import G2DiagnosticAbstract
-
+from .g2helpers import as_normalized_int, as_normalized_string
 
 # Metadata
 
@@ -49,8 +45,22 @@ def find_file_in_path(filename):
 class G2diagnosticGetdbinfoResult(ctypes.Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
     # pylint: disable=R0903
-    _fields_ = [('response', ctypes.c_char),
+    _fields_ = [('response', ctypes.c_char_p),
                 ('returnCode', ctypes.c_longlong)]
+
+# -----------------------------------------------------------------------------
+# Utility classes
+# -----------------------------------------------------------------------------
+
+
+class ErrorBuffer(threading.local):
+
+    def __init__(self):
+        self.buf = ctypes.create_string_buffer(65535)
+        self.bufSize = ctypes.sizeof(self.buf)
+
+
+ERROR_BUFFER = ErrorBuffer()
 
 
 # -----------------------------------------------------------------------------
@@ -106,6 +116,15 @@ class G2Diagnostic(G2DiagnosticAbstract):
             print(self.noop)
 
     # -------------------------------------------------------------------------
+    # Helper methods
+    # -------------------------------------------------------------------------
+
+    def determine_error(self, *args, **kwargs) -> Exception:
+        self.library_handle.G2Diagnostic_getLastException(ERROR_BUFFER.buf, ctypes.sizeof(ERROR_BUFFER.buf))
+        print(">>>>>>", ERROR_BUFFER.buf.value)
+        return translate_exception(ERROR_BUFFER.buf.value)
+
+    # -------------------------------------------------------------------------
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
@@ -122,7 +141,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def get_db_info(self, *args, **kwargs) -> str:
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
-        # self.library_handle.G2Diagnostic_getDBInfo_helper.restype = c_void_p
+        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = ctypes.POINTER(G2diagnosticGetdbinfoResult)
+        g2diagnostic_get_db_info_result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+        print(g2diagnostic_get_db_info_result.contents.response)
+
         # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
 
         # print("address:", type(address))
@@ -151,7 +173,14 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return "int64"
 
     def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
-        self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
+        self.library_handle.G2Diagnostic_init.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
+        result = self.library_handle.G2Diagnostic_init(
+            as_normalized_string(module_name),
+            as_normalized_string(ini_params),
+            as_normalized_int(verbose_logging)
+        )
+        if result < 0:
+            raise self.determine_error()
 
     def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
