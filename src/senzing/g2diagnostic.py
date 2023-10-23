@@ -8,7 +8,6 @@ TODO: g2diagnostic.py
 
 import ctypes
 import os
-import re
 import threading
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
@@ -135,10 +134,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def determine_exception(self, *args, **kwargs) -> Exception:
         """Construct the Exception."""
         self.library_handle.G2Diagnostic_getLastException(
-            ERROR_BUFFER.buf, ctypes.sizeof(ERROR_BUFFER.buf)
+            ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
         )
-        print(">>>>>>", ERROR_BUFFER.buf.value)
-        return Exception(translate_exception(ERROR_BUFFER.buf.value))
+        print(">>>>>>", ERROR_BUFFER.string_buffer.value)
+        return Exception(translate_exception(ERROR_BUFFER.string_buffer.value))
 
     # -------------------------------------------------------------------------
     # G2Diagnostic methods
