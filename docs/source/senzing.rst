@@ -12,10 +12,26 @@ senzing.g2config module
    :undoc-members:
    :show-inheritance:
 
+senzing.g2config_grpc module
+----------------------------
+
+.. automodule:: senzing.g2config_grpc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 senzing.g2configmgr module
 --------------------------
 
 .. automodule:: senzing.g2configmgr
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+senzing.g2configmgr_grpc module
+-------------------------------
+
+.. automodule:: senzing.g2configmgr_grpc
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,10 +44,26 @@ senzing.g2diagnostic module
    :undoc-members:
    :show-inheritance:
 
+senzing.g2diagnostic_grpc module
+--------------------------------
+
+.. automodule:: senzing.g2diagnostic_grpc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 senzing.g2engine module
 -----------------------
 
 .. automodule:: senzing.g2engine
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+senzing.g2engine_grpc module
+----------------------------
+
+.. automodule:: senzing.g2engine_grpc
    :members:
    :undoc-members:
    :show-inheritance:
@@ -60,10 +92,26 @@ senzing.g2hasher module
    :undoc-members:
    :show-inheritance:
 
+senzing.g2hasher_grpc module
+----------------------------
+
+.. automodule:: senzing.g2hasher_grpc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 senzing.g2product module
 ------------------------
 
 .. automodule:: senzing.g2product
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+senzing.g2product_grpc module
+-----------------------------
+
+.. automodule:: senzing.g2product_grpc
    :members:
    :undoc-members:
    :show-inheritance:

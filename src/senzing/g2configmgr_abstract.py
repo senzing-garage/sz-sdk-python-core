@@ -10,10 +10,10 @@ from abc import ABC, abstractmethod
 
 # Metadata
 
-__all__ = ['G2ConfigMgrAbstract']
+__all__ = ["G2ConfigMgrAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 
 class G2ConfigMgrAbstract(ABC):
@@ -46,11 +46,15 @@ class G2ConfigMgrAbstract(ABC):
         """TODO: document"""
 
     @abstractmethod
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def replace_default_config_id(self, old_config_id: int, new_config_id: int, *args, **kwargs) -> None:
+    def replace_default_config_id(
+        self, old_config_id: int, new_config_id: int, *args, **kwargs
+    ) -> None:
         """TODO: document"""
 
     @abstractmethod

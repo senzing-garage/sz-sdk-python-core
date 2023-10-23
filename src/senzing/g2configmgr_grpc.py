@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2configmgr.py
+TODO: g2configmgr_grpc.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -22,19 +22,19 @@ from .g2configmgr_abstract import G2ConfigMgrAbstract
 
 # Metadata
 
-__all__ = ["G2ConfigMgr"]
+__all__ = ["G2ConfigMgrGrpc"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-SENZING_PRODUCT_ID = "5041"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5051"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
-# G2ConfigMgr class
+# G2ConfigMgrGrpc class
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgr(G2ConfigMgrAbstract):
+class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
     """
     G2 config-manager module access library
     """

@@ -10,10 +10,10 @@ from abc import ABC, abstractmethod
 
 # Metadata
 
-__all__ = ['G2ProductAbstract']
+__all__ = ["G2ProductAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 
 class G2ProductAbstract(ABC):
@@ -30,7 +30,9 @@ class G2ProductAbstract(ABC):
         """TODO: document"""
 
     @abstractmethod
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         """TODO: document"""
 
     @abstractmethod

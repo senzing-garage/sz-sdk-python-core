@@ -20,13 +20,12 @@ TODO: g2product.py
 # from .g2exception import translate_exception
 from .g2product_abstract import G2ProductAbstract
 
-
 # Metadata
 
-__all__ = ['G2Product']
+__all__ = ["G2Product"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5046"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
@@ -44,7 +43,9 @@ class G2Product(G2ProductAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(self, module_name, ini_params, verbose_logging, *args, **kwargs) -> None:
+    def __init__(
+        self, module_name, ini_params, verbose_logging, *args, **kwargs
+    ) -> None:
         """
         Constructor
 
@@ -76,19 +77,17 @@ class G2Product(G2ProductAbstract):
     # -------------------------------------------------------------------------
 
     def destroy(self, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2config()
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
     def license(self, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2config()
         return "string"
 
     def version(self, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2config()
         return "string"

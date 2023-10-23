@@ -19,16 +19,17 @@ TODO: g2config.py
 
 # from .g2exception import translate_exception
 from .g2config_abstract import G2ConfigAbstract
+
 # from senzing import G2ConfigAbstract
 # import g2config_abstract
 
 
 # Metadata
 
-__all__ = ['G2Config']
+__all__ = ["G2Config"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5040"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
@@ -46,7 +47,9 @@ class G2Config(G2ConfigAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
+    def __init__(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         """
         Constructor
 
@@ -77,43 +80,40 @@ class G2Config(G2ConfigAbstract):
     # G2Config methods
     # -------------------------------------------------------------------------
 
-    def add_data_source(self, config_handle: int, input_json: str, *args, **kwargs) -> str:
-        """TODO: document"""
+    def add_data_source(
+        self, config_handle: int, input_json: str, *args, **kwargs
+    ) -> str:
         self.fake_g2config(config_handle, input_json)
         return "string"
 
     def close(self, config_handle: int, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2config(config_handle)
 
     def create(self, *args, **kwargs) -> int:
-        """TODO: document"""
         self.fake_g2config()
-        return "uintptr"
+        return 0
 
-    def delete_data_source(self, config_handle: int, input_json: str, *args, **kwargs) -> None:
-        """TODO: document"""
+    def delete_data_source(
+        self, config_handle: int, input_json: str, *args, **kwargs
+    ) -> None:
         self.fake_g2config(config_handle, input_json)
 
     def destroy(self, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2config()
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
     def list_data_sources(self, config_handle: int, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2config(config_handle)
         return "string"
 
     def load(self, json_config: str, *args, **kwargs) -> int:
-        """TODO: document"""
         self.fake_g2config(json_config)
-        return "uintptr"
+        return 0
 
     def save(self, config_handle: int, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2config(config_handle)
         return "string"

@@ -1,18 +1,16 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2diagnostic.py
+TODO: g2diagnostic_grpc.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
 import os
-import threading
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
-from .g2exception import G2Exception, translate_exception
-from .g2helpers import as_normalized_int, as_normalized_string
+from .g2exception import G2Exception
 
 # Import from https://pypi.org/
 
@@ -21,12 +19,12 @@ from .g2helpers import as_normalized_int, as_normalized_string
 
 # Metadata
 
-__all__ = ["G2Diagnostic"]
+__all__ = ["G2DiagnosticGrpc"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5052"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 
 # -----------------------------------------------------------------------------
@@ -44,38 +42,12 @@ def find_file_in_path(filename):
     return None
 
 
-class G2diagnosticGetdbinfoResult(ctypes.Structure):
-    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
-
-    # pylint: disable=R0903
-    _fields_ = [("response", ctypes.c_char_p), ("returnCode", ctypes.c_longlong)]
-
-
 # -----------------------------------------------------------------------------
-# Utility classes
+# G2DiagnosticGrpc class
 # -----------------------------------------------------------------------------
 
 
-class ErrorBuffer(threading.local):
-    """Buffer to call C"""
-
-    # pylint: disable=R0903
-
-    def __init__(self):
-        super().__init__()
-        self.string_buffer = ctypes.create_string_buffer(65535)
-        self.string_buffer_size = ctypes.sizeof(self.string_buffer)
-
-
-ERROR_BUFFER = ErrorBuffer()
-
-
-# -----------------------------------------------------------------------------
-# G2Diagnostic class
-# -----------------------------------------------------------------------------
-
-
-class G2Diagnostic(G2DiagnosticAbstract):
+class G2DiagnosticGrpc(G2DiagnosticAbstract):
     """
     G2 config module access library
     """
@@ -128,18 +100,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
             print(self.noop)
 
     # -------------------------------------------------------------------------
-    # Helper methods
-    # -------------------------------------------------------------------------
-
-    def determine_exception(self, *args, **kwargs) -> Exception:
-        """Construct the Exception."""
-        self.library_handle.G2Diagnostic_getLastException(
-            ERROR_BUFFER.buf, ctypes.sizeof(ERROR_BUFFER.buf)
-        )
-        print(">>>>>>", ERROR_BUFFER.buf.value)
-        return Exception(translate_exception(ERROR_BUFFER.buf.value))
-
-    # -------------------------------------------------------------------------
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
@@ -155,37 +115,16 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return 0
 
     def get_db_info(self, *args, **kwargs) -> str:
-        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
-        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = ctypes.POINTER(
-            G2diagnosticGetdbinfoResult
-        )
-        g2diagnostic_get_db_info_result = (
-            self.library_handle.G2Diagnostic_getDBInfo_helper()
-        )
-        print(g2diagnostic_get_db_info_result.contents.response)
-
-        # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
-
-        # print("address:", type(address))
-        # p = G2diagnosticGetdbinfoResult.from_address(address)
-        # print("p", type(p))
-        # print(p.returnCode)
-
-        # p = G2diagnosticGetdbinfoResult.from_address()
-        # _result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        # result = _result.response
-        # print(">>>>>>", result)
-        # return "mjd was here"
         self.fake_g2diagnostic()
         return "string"
 
     def get_logical_cores(self, *args, **kwargs) -> int:
-        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
-        return self.library_handle.G2Diagnostic_getLogicalCores()
+        self.fake_g2diagnostic()
+        return 0
 
     def get_physical_cores(self, *args, **kwargs) -> int:
-        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
-        return self.library_handle.G2Diagnostic_getPhysicalCores()
+        self.fake_g2diagnostic()
+        return 0
 
     def get_total_system_memory(self, *args, **kwargs) -> int:
         self.fake_g2diagnostic()
@@ -194,18 +133,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def init(
         self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
     ) -> None:
-        self.library_handle.G2Diagnostic_init.argtypes = [
-            ctypes.c_char_p,
-            ctypes.c_char_p,
-            ctypes.c_int,
-        ]
-        result = self.library_handle.G2Diagnostic_init(
-            as_normalized_string(module_name),
-            as_normalized_string(ini_params),
-            as_normalized_int(verbose_logging),
-        )
-        if result < 0:
-            raise self.determine_exception()
+        self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
     def init_with_config_id(
         self,

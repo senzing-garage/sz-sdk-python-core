@@ -8,13 +8,12 @@ TODO: g2diagnostic_abstract.py
 
 from abc import ABC, abstractmethod
 
-
 # Metadata
 
-__all__ = ['G2DiagnosticAbstract']
+__all__ = ["G2DiagnosticAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 
 class G2DiagnosticAbstract(ABC):
@@ -97,11 +96,19 @@ class G2DiagnosticAbstract(ABC):
         Raises:
             None: No exceptions raised
 
-        .. collapse:: Example:
+        .. only:: g2diagnostic
+            .. collapse:: Example:
 
-            .. literalinclude:: ../../tests/g2diagnostic_get_db_info_test.py
-                :linenos:
-                :language: python
+                .. literalinclude:: ../../tests/g2diagnostic_get_db_info_test.py
+                    :linenos:
+                    :language: python
+
+        .. only:: g2diagnostic_grpc
+            .. collapse:: Example:
+
+                .. literalinclude:: ../../tests/g2diagnostic_grpc_get_db_info_test.py
+                    :linenos:
+                    :language: python
         """
 
     @abstractmethod
@@ -159,7 +166,9 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         """
         The `init` method initializes the Senzing G2Diagnosis object.
         It must be called prior to any other calls.
@@ -180,7 +189,15 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
+    def init_with_config_id(
+        self,
+        module_name: str,
+        ini_params: str,
+        init_config_id: int,
+        verbose_logging: int,
+        *args,
+        **kwargs
+    ) -> None:
         """
         The `init_with_config_id` method initializes the Senzing G2Diagnosis object with a non-default configuration ID.
         It must be called prior to any other calls.

@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2engine.py
+TODO: g2engine_grpc.py
 """
 
 # Import from standard library. https://docs.python.org/3/library/
@@ -27,19 +27,19 @@ from .g2engine_abstract import G2EngineAbstract
 
 # Metadata
 
-__all__ = ["G2Engine"]
+__all__ = ["G2EngineGrpc"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5053"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
-# G2Engine class
+# G2EngineGrpc class
 # -----------------------------------------------------------------------------
 
 
-class G2Engine(G2EngineAbstract):
+class G2EngineGrpc(G2EngineAbstract):
     """
     G2 engine module access library
     """

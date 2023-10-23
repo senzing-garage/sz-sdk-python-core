@@ -10,10 +10,10 @@ from abc import ABC, abstractmethod
 
 # Metadata
 
-__all__ = ['G2ConfigAbstract']
+__all__ = ["G2ConfigAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 
 class G2ConfigAbstract(ABC):
@@ -26,7 +26,9 @@ class G2ConfigAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def add_data_source(self, config_handle: int, input_json: str, *args, **kwargs) -> str:
+    def add_data_source(
+        self, config_handle: int, input_json: str, *args, **kwargs
+    ) -> str:
         """TODO: document"""
 
     @abstractmethod
@@ -38,7 +40,9 @@ class G2ConfigAbstract(ABC):
         """TODO: document"""
 
     @abstractmethod
-    def delete_data_source(self, config_handle: int, input_json: str, *args, **kwargs) -> None:
+    def delete_data_source(
+        self, config_handle: int, input_json: str, *args, **kwargs
+    ) -> None:
         """TODO: document"""
 
     @abstractmethod
@@ -46,7 +50,9 @@ class G2ConfigAbstract(ABC):
         """TODO: document"""
 
     @abstractmethod
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         """TODO: document"""
 
     @abstractmethod

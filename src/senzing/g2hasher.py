@@ -20,13 +20,12 @@ TODO: g2hasher.py
 # from .g2exception import translate_exception
 from .g2hasher_abstract import G2HasherAbstract
 
-
 # Metadata
 
-__all__ = ['G2Hasher']
+__all__ = ["G2Hasher"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
-__date__ = '2023-10-30'
-__updated__ = '2023-10-30'
+__date__ = "2023-10-30"
+__updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5045"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
@@ -44,7 +43,9 @@ class G2Hasher(G2HasherAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(self, module_name, ini_params, verbose_logging, *args, **kwargs) -> None:
+    def __init__(
+        self, module_name, ini_params, verbose_logging, *args, **kwargs
+    ) -> None:
         """
         Constructor
 
@@ -80,23 +81,28 @@ class G2Hasher(G2HasherAbstract):
         self.fake_g2hasher()
 
     def export_token_library(self, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2hasher()
         return "response"
 
-    def init(self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
+    def init(
+        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+    ) -> None:
         self.fake_g2hasher(module_name, ini_params, verbose_logging)
 
-    def init_with_config_id(self, module_name: str, ini_params: str, init_config_id: int, verbose_logging: int, *args, **kwargs) -> None:
-        """TODO: document"""
+    def init_with_config_id(
+        self,
+        module_name: str,
+        ini_params: str,
+        init_config_id: int,
+        verbose_logging: int,
+        *args,
+        **kwargs
+    ) -> None:
         self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)
 
     def process(self, record: str, *args, **kwargs) -> str:
-        """TODO: document"""
         self.fake_g2hasher(record)
         return "response"
 
     def reinit(self, init_config_id: int, *args, **kwargs) -> None:
-        """TODO: document"""
         self.fake_g2hasher(init_config_id)
