@@ -96,15 +96,15 @@ class G2DiagnosticAbstract(ABC):
         Raises:
             None: No exceptions raised
 
-        .. only:: g2diagnostic
-            .. collapse:: Example:
+        .. only:: bob_g2diagnostic
+            .. collapse:: Examplea:
 
                 .. literalinclude:: ../../tests/g2diagnostic_get_db_info_test.py
                     :linenos:
                     :language: python
 
-        .. only:: g2diagnostic_grpc
-            .. collapse:: Example:
+        .. only:: bob_g2diagnostic_grpc
+            .. collapse:: Exampleb:
 
                 .. literalinclude:: ../../tests/g2diagnostic_grpc_get_db_info_test.py
                     :linenos:

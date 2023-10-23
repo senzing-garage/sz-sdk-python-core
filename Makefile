@@ -84,13 +84,13 @@ pydoc-web:
 	python3 -m pydoc -p 8885
 
 
-.PHONY: documentation
-documentation:
+.PHONY: sphinx
+sphinx:
 	@cd docs; make html
 
 
-.PHONY: view-docs
-view-docs: view-docs-osarch-specific
+.PHONY: view-sphinx
+view-sphinx: view-sphinx-osarch-specific
 
 
 # -----------------------------------------------------------------------------

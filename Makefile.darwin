@@ -45,8 +45,8 @@ test-osarch-specific:
 	@go test -exec macos_exec_dyld.sh -v -p 1 ./...
 
 
-.PHONY: view-docs-osarch-specific
-view-docs-osarch-specific:
+.PHONY: view-sphinx-osarch-specific
+view-sphinx-osarch-specific:
 	@open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
 
 

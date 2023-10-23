@@ -8,6 +8,7 @@ TODO: g2diagnostic.py
 
 import ctypes
 import os
+import re
 import threading
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
@@ -214,7 +215,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         init_config_id: int,
         verbose_logging: int,
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
