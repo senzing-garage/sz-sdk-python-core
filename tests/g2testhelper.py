@@ -9,6 +9,7 @@ from sys import platform
 
 
 def get_test_engine_configuration_json() -> str:
+    """Get a platform-specific version of the Senzing engine configuration JSON"""
     if platform in ("linux" "linux2"):
         test_engine_configuration = {
             "PIPELINE": {
