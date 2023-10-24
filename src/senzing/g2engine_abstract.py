@@ -610,4 +610,3 @@ class G2EngineAbstract(ABC):
             Dict[str, Any],
             json.loads(self.get_record(data_source_code, record_id, args, kwargs)),
         )
-        return json.loads(self.get_record(data_source_code, record_id, args, kwargs))

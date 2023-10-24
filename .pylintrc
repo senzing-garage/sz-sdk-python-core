@@ -1,6 +1,5 @@
 [pylint]
 disable=
-    bad-continuation,
     duplicate-code,
     line-too-long,
     missing-module-docstring,
