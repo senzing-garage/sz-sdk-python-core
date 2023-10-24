@@ -13,7 +13,7 @@ import unittest
 
 from senzing import g2diagnostic
 
-from .g2testhelper import get_test_engine_configuration_json
+from g2testhelper import get_test_engine_configuration_json
 
 # import pytest
 

@@ -1,9 +1,15 @@
+"""
+# -----------------------------------------------------------------------------
+# g2testhelper.py
+# -----------------------------------------------------------------------------
+"""
+
 import json
 from sys import platform
 
 
 def get_test_engine_configuration_json() -> str:
-    if platform == "linux" or platform == "linux2":
+    if platform in ("linux" "linux2"):
         test_engine_configuration = {
             "PIPELINE": {
                 "CONFIGPATH": "/etc/opt/senzing",
