@@ -7,12 +7,8 @@ TODO: g2diagnostic.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
-
-# import inspect module
-import inspect
 import os
 import threading
-from pprint import pprint
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, translate_exception
