@@ -12,7 +12,7 @@ def as_normalized_int(candidate_value: Any) -> int:
     """
 
     if candidate_value is None:  # handle null string
-        return 0
+        return int(0)
     if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
         return int(candidate_value.encode("utf-8"))
     if isinstance(
@@ -25,18 +25,18 @@ def as_normalized_int(candidate_value: Any) -> int:
     return int(candidate_value)
 
 
-def as_normalized_string(candidate_value: Any) -> str:
+def as_normalized_string(candidate_value: Any) -> Any:
     """Internal processing function"""
 
     if candidate_value is None:  # handle null string
-        return str(b"")
+        return b""
     if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
-        return str(candidate_value.encode("utf-8"))
+        return candidate_value.encode("utf-8")
     if isinstance(
         candidate_value, bytearray
     ):  # if input is bytearray, assumt utf-8 and convert to str
-        return str(candidate_value.decode().encode("utf-8"))
+        return candidate_value.decode().encode("utf-8")
     if isinstance(candidate_value, bytes):
-        return str(str(candidate_value).encode("utf-8"))
+        return str(candidate_value).encode("utf-8")
     # input is already a str
-    return str(candidate_value)
+    return candidate_value
