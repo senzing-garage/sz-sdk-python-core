@@ -36,9 +36,9 @@ setup-osarch-specific:
 
 .PHONY: test-osarch-specific
 test-osarch-specific:
-	@echo "--- Unit tests ------------------------------"
+	@echo "--- Unit tests -------------------------------------------------------"
 	@python3 -m unittest tests/*.py
-	@echo "--- Test examples ---------------------------"
+	@echo "--- Test examples ----------------------------------------------------"
 	@python3 -m unittest examples/*.py
 
 
