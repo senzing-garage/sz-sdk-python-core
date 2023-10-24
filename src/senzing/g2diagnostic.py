@@ -7,8 +7,12 @@ TODO: g2diagnostic.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
+
+# import inspect module
+import inspect
 import os
 import threading
+from pprint import pprint
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, translate_exception
@@ -155,14 +159,25 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return 0
 
     def get_db_info(self, *args, **kwargs) -> str:
+        print(">>>> enter get_db_info")
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = ctypes.POINTER(
             G2diagnosticGetdbinfoResult
         )
+        print(">>>> 1 get_db_info")
+
         g2diagnostic_get_db_info_result = (
             self.library_handle.G2Diagnostic_getDBInfo_helper()
         )
-        print(g2diagnostic_get_db_info_result.contents.response)
+        print(">>>> 2 get_db_info")
+
+        pprint(inspect.getmembers(g2diagnostic_get_db_info_result))
+        print(">>>> 2.1 get_db_info")
+
+        pprint(inspect.getmembers(g2diagnostic_get_db_info_result.contents))
+
+        print(vars(g2diagnostic_get_db_info_result))
+        print(">>>> 3 get_db_info")
 
         # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
 
