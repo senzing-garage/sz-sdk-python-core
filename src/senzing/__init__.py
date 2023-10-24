@@ -30,8 +30,8 @@ import_lists = [
 ]
 
 __all__ = []
-for import_list in import_lists:
-    __all__.extend(import_list)
+# for import_list in import_lists:
+#     __all__.extend(import_list)
 
 # Step 2: Overwrite the "name" that did point to the file in step #1 to now point to the class.
 # Each of the submodules must have the having an __all__ variable defined for the "*" to work.
