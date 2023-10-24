@@ -21,7 +21,7 @@ ENGINE_VERBOSE_LOGGING = 0
 class TestG2Diagnostics(unittest.TestCase):
     """Test example"""
 
-    def test_get_db_info(self):
+    def test_get_db_info(self) -> None:
         """Test physical core count."""
         g2_diagnostic = g2diagnostic.G2Diagnostic(
             ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
@@ -30,7 +30,7 @@ class TestG2Diagnostics(unittest.TestCase):
         self.assertEqual(1, 1)
         print(">>>>>", actual)
 
-    def test_get_logical_cores(self):
+    def test_get_logical_cores(self) -> None:
         """Test logical core count."""
         expected = multiprocessing.cpu_count()
         g2_diagnostic = g2diagnostic.G2Diagnostic(
@@ -39,7 +39,7 @@ class TestG2Diagnostics(unittest.TestCase):
         actual = g2_diagnostic.get_logical_cores()
         self.assertEqual(expected, actual)
 
-    def test_get_physical_cores(self):
+    def test_get_physical_cores(self) -> None:
         """Test physical core count."""
         expected = multiprocessing.cpu_count()
         g2_diagnostic = g2diagnostic.G2Diagnostic(

@@ -4,10 +4,12 @@
 TODO: g2exception.py
 """
 
+
 # Import from standard library. https://docs.python.org/3/library/
 
 # import functools
 # import warnings
+from typing import Any, List
 
 # Import from https://pypi.org/
 
@@ -45,11 +47,11 @@ SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blo
 class G2Exception(Exception):
     """Base exception for G2 related python code."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(self, *args, **kwargs)
 
-    def __str__(self):
-        result = []
+    def __str__(self) -> str:
+        result: List[str] = []
         # TODO: Make a JSON return string
         # for arg in self.args:
         #     message = arg
@@ -690,7 +692,7 @@ def exception_code(exception: str) -> int:
     return result
 
 
-def translate_exception(exception: str) -> str:
+def translate_exception(exception: str) -> Exception:
     """Given an exception string, find the exception code and map to the exception class."""
     senzing_error_code = exception_code(exception)
     senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)

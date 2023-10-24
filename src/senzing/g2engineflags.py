@@ -9,6 +9,7 @@ TODO: g2engineflags.py
 from enum import IntFlag
 
 # Import from https://pypi.org/
+from typing import Any, List
 
 # Metadata
 
@@ -22,7 +23,9 @@ class G2EngineFlags(IntFlag):
     """Engine Flags ..."""
 
     @classmethod
-    def combine_flags(cls, list_of_strings, *args, **kwargs):
+    def combine_flags(
+        cls, list_of_strings: List[str], *args: Any, **kwargs: Any
+    ) -> int:
         """OR together all strings in list_of_strings"""
         # pylint: disable=unused-argument
 

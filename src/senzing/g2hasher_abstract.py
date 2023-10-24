@@ -7,6 +7,7 @@ TODO: g2hasher_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 # Metadata
 
@@ -26,16 +27,21 @@ class G2HasherAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def export_token_library(self, *args, **kwargs) -> str:
+    def export_token_library(self, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """TODO: document"""
 
@@ -46,17 +52,17 @@ class G2HasherAbstract(ABC):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def process(self, record: str, *args, **kwargs) -> str:
+    def process(self, record: str, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
+    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     # -------------------------------------------------------------------------

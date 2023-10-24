@@ -74,6 +74,10 @@ pylint:
 # -----------------------------------------------------------------------------
 
 
+.PHONY: mypy
+mypy:
+	mypy --strict $(shell git ls-files '*.py')
+
 .PHONY: pydoc
 pydoc:
 	python3 -m pydoc

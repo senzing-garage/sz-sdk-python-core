@@ -7,6 +7,8 @@
 
 # Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. g2config, g2configmgr)
 
+from typing import List
+
 from . import (
     g2config,
     g2configmgr,
@@ -29,7 +31,7 @@ import_lists = [
     g2product.__all__,
 ]
 
-__all__ = []
+__all__: List[str] = []
 # for import_list in import_lists:
 #     __all__.extend(import_list)
 

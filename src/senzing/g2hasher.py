@@ -6,6 +6,11 @@ TODO: g2hasher.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
+from typing import Any
+
+# from .g2exception import translate_exception
+from .g2hasher_abstract import G2HasherAbstract
+
 # from ctypes import *
 # import functools
 # import json
@@ -17,8 +22,6 @@ TODO: g2hasher.py
 
 # Import from Senzing.
 
-# from .g2exception import translate_exception
-from .g2hasher_abstract import G2HasherAbstract
 
 # Metadata
 
@@ -44,7 +47,12 @@ class G2Hasher(G2HasherAbstract):
     # -------------------------------------------------------------------------
 
     def __init__(
-        self, module_name, ini_params, verbose_logging, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         Constructor
@@ -59,7 +67,7 @@ class G2Hasher(G2HasherAbstract):
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Destructor"""
         self.destroy()
 
@@ -67,7 +75,7 @@ class G2Hasher(G2HasherAbstract):
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2hasher(self, *args, **kwargs):
+    def fake_g2hasher(self, *args: Any, **kwargs: Any) -> None:
         """TODO: Remove once SDK methods have been implemented."""
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
@@ -76,16 +84,21 @@ class G2Hasher(G2HasherAbstract):
     # G2Hasher methods
     # -------------------------------------------------------------------------
 
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
         self.fake_g2hasher()
 
-    def export_token_library(self, *args, **kwargs) -> str:
+    def export_token_library(self, *args: Any, **kwargs: Any) -> str:
         self.fake_g2hasher()
         return "response"
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, verbose_logging)
 
@@ -95,14 +108,14 @@ class G2Hasher(G2HasherAbstract):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)
 
-    def process(self, record: str, *args, **kwargs) -> str:
+    def process(self, record: str, *args: Any, **kwargs: Any) -> str:
         self.fake_g2hasher(record)
         return "response"
 
-    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
+    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         self.fake_g2hasher(init_config_id)

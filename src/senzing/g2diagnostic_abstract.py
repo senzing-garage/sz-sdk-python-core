@@ -7,6 +7,7 @@ TODO: g2diagnostic_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 # Metadata
 
@@ -26,7 +27,7 @@ class G2DiagnosticAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def check_db_perf(self, seconds_to_run: int, *args, **kwargs) -> str:
+    def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
         """
         The `check_db_perf` method performs inserts to determine rate of insertion.
 
@@ -47,7 +48,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
         The `check_db_perf` method performs inserts to determine rate of insertion.
 
@@ -68,7 +69,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def get_available_memory(self, *args, **kwargs) -> int:
+    def get_available_memory(self, *args: Any, **kwargs: Any) -> int:
         """
         The `get_available_memory` method returns the available memory, in bytes, on the host system.
 
@@ -86,7 +87,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def get_db_info(self, *args, **kwargs) -> str:
+    def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         """
         The `get_db_info` method returns information about the database connection.
 
@@ -112,7 +113,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def get_logical_cores(self, *args, **kwargs) -> int:
+    def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         """
         The `get_logical_cores` method returns the number of logical cores on the host system.
 
@@ -130,7 +131,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def get_physical_cores(self, *args, **kwargs) -> int:
+    def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
         """
         The `get_physical_cores` method returns the number of physical cores on the host system.
 
@@ -148,7 +149,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def get_total_system_memory(self, *args, **kwargs) -> int:
+    def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
         """
         The `get_total_system_memory` method returns the total memory, in bytes, on the host system.
 
@@ -167,7 +168,12 @@ class G2DiagnosticAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Diagnosis object.
@@ -195,8 +201,8 @@ class G2DiagnosticAbstract(ABC):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         The `init_with_config_id` method initializes the Senzing G2Diagnosis object with a non-default configuration ID.
@@ -223,7 +229,7 @@ class G2DiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
+    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         """
         The `reinit` method re-initializes the Senzing G2Diagnosis object.
 

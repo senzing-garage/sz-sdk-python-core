@@ -14,7 +14,7 @@ import unittest
 class TestSum(unittest.TestCase):
     """Test example"""
 
-    def test_list_int(self):
+    def test_list_int(self) -> None:
         """A Simple example of 6=6"""
         result = 6
         self.assertEqual(result, 6)

@@ -8,6 +8,7 @@ TODO: g2diagnostic_grpc.py
 
 import ctypes
 import os
+from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception
@@ -32,14 +33,14 @@ SENZING_PRODUCT_ID = "5052"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 
-def find_file_in_path(filename):
+def find_file_in_path(filename: str) -> str:
     """Find a file in the PATH environment variable"""
     path_dirs = os.environ["PATH"].split(os.pathsep)
     for path_dir in path_dirs:
         file_path = os.path.join(path_dir, filename)
         if os.path.exists(file_path):
             return file_path
-    return None
+    return ""
 
 
 # -----------------------------------------------------------------------------
@@ -57,7 +58,12 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def __init__(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         Constructor
@@ -82,7 +88,7 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Destructor"""
         self.destroy()
 
@@ -90,7 +96,7 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2diagnostic(self, *args, **kwargs):
+    def fake_g2diagnostic(self, *args: Any, **kwargs: Any) -> None:
         """
         TODO: Remove once SDK methods have been implemented.
 
@@ -103,35 +109,40 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_db_perf(self, seconds_to_run: int, *args, **kwargs) -> str:
+    def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
         self.fake_g2diagnostic(seconds_to_run)
         return "string"
 
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2diagnostic()
 
-    def get_available_memory(self, *args, **kwargs) -> int:
+    def get_available_memory(self, *args: Any, **kwargs: Any) -> int:
         self.fake_g2diagnostic()
         return 0
 
-    def get_db_info(self, *args, **kwargs) -> str:
+    def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         self.fake_g2diagnostic()
         return "string"
 
-    def get_logical_cores(self, *args, **kwargs) -> int:
+    def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         self.fake_g2diagnostic()
         return 0
 
-    def get_physical_cores(self, *args, **kwargs) -> int:
+    def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
         self.fake_g2diagnostic()
         return 0
 
-    def get_total_system_memory(self, *args, **kwargs) -> int:
+    def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
         self.fake_g2diagnostic()
         return 0
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
@@ -141,10 +152,10 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int,
-        *args,
-        **kwargs
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
-    def reinit(self, init_config_id: int, *args, **kwargs) -> None:
+    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         self.fake_g2diagnostic(init_config_id)

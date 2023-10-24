@@ -17,6 +17,8 @@ TODO: g2config.py
 
 # Import from Senzing.
 
+from typing import Any
+
 # from .g2exception import translate_exception
 from .g2config_abstract import G2ConfigAbstract
 
@@ -48,7 +50,12 @@ class G2Config(G2ConfigAbstract):
     # -------------------------------------------------------------------------
 
     def __init__(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         Constructor
@@ -71,7 +78,7 @@ class G2Config(G2ConfigAbstract):
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2config(self, *args, **kwargs):
+    def fake_g2config(self, *args: Any, **kwargs: Any) -> None:
         """TODO: Remove once SDK methods have been implemented."""
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
@@ -81,39 +88,44 @@ class G2Config(G2ConfigAbstract):
     # -------------------------------------------------------------------------
 
     def add_data_source(
-        self, config_handle: int, input_json: str, *args, **kwargs
+        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
         self.fake_g2config(config_handle, input_json)
         return "string"
 
-    def close(self, config_handle: int, *args, **kwargs) -> None:
+    def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
         self.fake_g2config(config_handle)
 
-    def create(self, *args, **kwargs) -> int:
+    def create(self, *args: Any, **kwargs: Any) -> int:
         self.fake_g2config()
         return 0
 
     def delete_data_source(
-        self, config_handle: int, input_json: str, *args, **kwargs
+        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> None:
         self.fake_g2config(config_handle, input_json)
 
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2config()
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
-    def list_data_sources(self, config_handle: int, *args, **kwargs) -> str:
+    def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         self.fake_g2config(config_handle)
         return "string"
 
-    def load(self, json_config: str, *args, **kwargs) -> int:
+    def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
         self.fake_g2config(json_config)
         return 0
 
-    def save(self, config_handle: int, *args, **kwargs) -> str:
+    def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         self.fake_g2config(config_handle)
         return "string"

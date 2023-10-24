@@ -7,6 +7,7 @@ TODO: g2config_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 # Metadata
 
@@ -27,44 +28,49 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def add_data_source(
-        self, config_handle: int, input_json: str, *args, **kwargs
+        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def close(self, config_handle: int, *args, **kwargs) -> None:
+    def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def create(self, *args, **kwargs) -> int:
+    def create(self, *args: Any, **kwargs: Any) -> int:
         """TODO: document"""
 
     @abstractmethod
     def delete_data_source(
-        self, config_handle: int, input_json: str, *args, **kwargs
+        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def list_data_sources(self, config_handle: int, *args, **kwargs) -> str:
+    def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def load(self, json_config: str, *args, **kwargs) -> int:
+    def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
         """TODO: document"""
 
     @abstractmethod
-    def save(self, config_handle: int, *args, **kwargs) -> str:
+    def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     # -------------------------------------------------------------------------

@@ -7,6 +7,7 @@ TODO: g2product_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 # Metadata
 
@@ -26,21 +27,26 @@ class G2ProductAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def license(self, *args, **kwargs) -> str:
+    def license(self, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def version(self, *args, **kwargs) -> str:
+    def version(self, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     # -------------------------------------------------------------------------

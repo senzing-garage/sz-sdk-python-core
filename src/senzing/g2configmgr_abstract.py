@@ -7,6 +7,7 @@ TODO: g2configmgr_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 # Metadata
 
@@ -26,39 +27,46 @@ class G2ConfigMgrAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def add_config(self, config_str: str, config_comments: str, *args, **kwargs) -> int:
+    def add_config(
+        self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
+    ) -> int:
         """TODO: document"""
 
     @abstractmethod
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def get_config(self, config_id: int, *args, **kwargs) -> str:
+    def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def get_config_list(self, *args, **kwargs) -> str:
+    def get_config_list(self, *args: Any, **kwargs: Any) -> str:
         """TODO: document"""
 
     @abstractmethod
-    def get_default_config_id(self, *args, **kwargs) -> int:
+    def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
         """TODO: document"""
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
     def replace_default_config_id(
-        self, old_config_id: int, new_config_id: int, *args, **kwargs
+        self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
-    def set_default_config_id(self, config_id: int, *args, **kwargs) -> None:
+    def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
         """TODO: document"""
 
     # -------------------------------------------------------------------------

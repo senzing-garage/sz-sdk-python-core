@@ -17,6 +17,8 @@ TODO: g2product_grpc.py
 
 # Import from Senzing.
 
+from typing import Any
+
 # from .g2exception import translate_exception
 from .g2product_abstract import G2ProductAbstract
 
@@ -44,7 +46,12 @@ class G2ProductGrpc(G2ProductAbstract):
     # -------------------------------------------------------------------------
 
     def __init__(
-        self, module_name, ini_params, verbose_logging, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         Constructor
@@ -59,7 +66,7 @@ class G2ProductGrpc(G2ProductAbstract):
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Destructor"""
         self.destroy()
 
@@ -67,7 +74,7 @@ class G2ProductGrpc(G2ProductAbstract):
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2config(self, *args, **kwargs):
+    def fake_g2config(self, *args: Any, **kwargs: Any) -> None:
         """TODO: Remove once SDK methods have been implemented."""
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
@@ -76,18 +83,23 @@ class G2ProductGrpc(G2ProductAbstract):
     # G2Product methods
     # -------------------------------------------------------------------------
 
-    def destroy(self, *args, **kwargs) -> None:
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2config()
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int, *args, **kwargs
+        self,
+        module_name: str,
+        ini_params: str,
+        verbose_logging: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
-    def license(self, *args, **kwargs) -> str:
+    def license(self, *args: Any, **kwargs: Any) -> str:
         self.fake_g2config()
         return "string"
 
-    def version(self, *args, **kwargs) -> str:
+    def version(self, *args: Any, **kwargs: Any) -> str:
         self.fake_g2config()
         return "string"
