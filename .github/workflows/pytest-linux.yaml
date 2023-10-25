@@ -37,4 +37,5 @@ jobs:
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
       - name: Run python pytest
-        run: pytest tests/
+        # run: pytest tests/
+        run: python -m pytest tests/ -v
