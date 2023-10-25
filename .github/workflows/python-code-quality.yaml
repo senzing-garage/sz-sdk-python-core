@@ -19,10 +19,13 @@ jobs:
       - name: Update pip
         run: python3 -m pip install --upgrade pip
       - name: Pip install python packages for testing
-        run: pip install black pylint mypy
+        # run: pip install black pylint mypy
+        run: pip install black flake8 pylint mypy
       - name: Black testing
         run: black --diff --check $(git ls-files '*.py' ':!:docs/source/*')
-      - name: Pylint testing
-        run: pylint $(git ls-files '*.py' ':!:docs/source/*')
+      #- name: Pylint testing
+      #  run: pylint $(git ls-files '*.py' ':!:docs/source/*')
+      - name: flake8 testing
+        run: flake8 $(git ls-files '*.py' ':!:docs/source/*')
       - name: Mypy testing
         run: mypy --strict $(git ls-files '*.py' ':!:docs/source/*')

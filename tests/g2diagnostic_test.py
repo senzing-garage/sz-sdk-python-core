@@ -25,34 +25,33 @@ ENGINE_VERBOSE_LOGGING = 0
 
 @pytest.fixture(scope="class")
 def g2diag_instance():
+    """Reuse engine object for all tests"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
         ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
     )
     return g2_diagnostic
 
 
-# class TestG2Diagnostics(unittest.TestCase):
-class TestG2Diagnostics:
-    """Test example"""
+def test_get_db_info(self, g2diag_instance) -> None:
+    """Test physical core count."""
+    actual = g2diag_instance.get_db_info()
+    assert 1 == 1
+    print(f"{actual:}")
 
-    def test_get_db_info(self, g2diag_instance) -> None:
-        """Test physical core count."""
-        actual = g2diag_instance.get_db_info()
-        assert 1 == 1
-        print(f"{actual:}")
 
-    def test_get_logical_cores(self, g2diag_instance) -> None:
-        """Test logical core count."""
-        # expected = multiprocessing.cpu_count()
-        actual = g2diag_instance.get_logical_cores()
-        expected = psutil.cpu_count()
-        assert actual == expected
-        # print(f"{actual:}")
+def test_get_logical_cores(self, g2diag_instance) -> None:
+    """Test logical core count."""
+    # expected = multiprocessing.cpu_count()
+    actual = g2diag_instance.get_logical_cores()
+    expected = psutil.cpu_count()
+    assert actual == expected
+    # print(f"{actual:}")
 
-    def test_get_physical_cores(self, g2diag_instance) -> None:
-        """Test physical core count."""
-        # expected = multiprocessing.cpu_count()
-        actual = g2diag_instance.get_physical_cores()
-        expected = psutil.cpu_count(logical=False)
-        assert actual == expected
-        # print(f"{actual:}")
+
+def test_get_physical_cores(self, g2diag_instance) -> None:
+    """Test physical core count."""
+    # expected = multiprocessing.cpu_count()
+    actual = g2diag_instance.get_physical_cores()
+    expected = psutil.cpu_count(logical=False)
+    assert actual == expected
+    # print(f"{actual:}")
