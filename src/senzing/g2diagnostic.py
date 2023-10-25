@@ -51,16 +51,10 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
     # pylint: disable=R0903
-    # _fields_ = [("response", ctypes.c_char_p), ("returnCode", ctypes.c_longlong)]
-    # _fields_ = [("response", ctypes.c_char), ("returnCode", ctypes.c_longlong)]
     _fields_ = [
         ("response", ctypes.c_char_p),
         ("returnCode", ctypes.c_longlong),
     ]
-    # fields_ = [
-    #     ("response", ctypes.POINTER(ctypes.c_char)),
-    #     ("returnCode", ctypes.c_longlong),
-    # ]
 
 
 # -----------------------------------------------------------------------------
@@ -127,6 +121,15 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
+        # ----------------------------------------------------------------------
+        # Initialize C function input parameters and results
+        # ----------------------------------------------------------------------
+
+        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
+        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
+            G2diagnosticGetdbinfoResult
+        )
+
     def __del__(self) -> None:
         """Destructor"""
         self.destroy()
@@ -172,60 +175,12 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return 0
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
-        print(">>>> enter get_db_info")
-        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
-        # self.library_handle.G2Diagnostic_getDBInfo_helper.restype = ctypes.POINTER(
-        #     G2diagnosticGetdbinfoResult
-        # )
-        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = G2diagnosticGetdbinfoResult
-        print(">>>> 1 get_db_info")
+        result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+        if result.returnCode != 0:
+            # Throw exception
+            pass
 
-        # print(self.library_handle.G2Diagnostic_getDBInfo_helper().contents.response)
-
-        xyz_address = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        print(">>> returnCode:", xyz_address.returnCode)
-        print(">>> response:", xyz_address.response)
-
-        # print(str(xyz_address.contents.response))
-
-        # print(type(xyz_address))
-
-        # p2 = G2diagnosticGetdbinfoResult.from_address(xyz_address)
-
-        # print(p2.returnCode)
-        # print(p2.response)
-
-        # g2diagnostic_get_db_info_result = (
-        #     self.library_handle.G2Diagnostic_getDBInfo_helper()
-        # )
-
-        print(">>>> 2 get_db_info")
-
-        # print(xyz_address.contents.returnCode)
-        # print(xyz_address.contents.response)
-
-        # print(inspect.getmembers(xyz_address.contents))
-        # print(">>>> 2.1 get_db_info")
-
-        # pprint(inspect.getmembers(g2diagnostic_get_db_info_result.contents))
-
-        # print(vars(g2diagnostic_get_db_info_result))
-        # print(">>>> 3 get_db_info")
-
-        # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
-
-        # print("address:", type(address))
-        # p = G2diagnosticGetdbinfoResult.from_address(address)
-        # print("p", type(p))
-        # print(p.returnCode)
-
-        # p = G2diagnosticGetdbinfoResult.from_address()
-        # _result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        # result = _result.response
-        # print(">>>>>>", result)
-        # return "mjd was here"
-        self.fake_g2diagnostic()
-        return "string"
+        return str(result.response)
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []

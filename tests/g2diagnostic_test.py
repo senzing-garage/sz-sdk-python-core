@@ -50,7 +50,8 @@ class TestG2Diagnostics(unittest.TestCase):
         )
         actual = g2_diagnostic.get_db_info()
         self.assertEqual(1, 1)
-        print(">>>>>", actual)
+        self.assertIsInstance(actual, str)
+        print(">>>>>", actual, type(actual))
 
     def test_get_logical_cores(self) -> None:
         """Test logical core count."""
