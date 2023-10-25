@@ -36,6 +36,9 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /etc/opt/senzing/g2.lic
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+      # ###
+      - name: Check dirs
+        run: ls /opt/senzing/data
       - name: Run python pytest
         # run: pytest tests/
         run: python -m pytest tests/ -v
