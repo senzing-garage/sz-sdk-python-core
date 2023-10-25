@@ -23,7 +23,7 @@ ENGINE_CONFIGURATION_JSON = str(
 ENGINE_VERBOSE_LOGGING = 0
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def g2diag_instance():
     """Reuse engine object for all tests"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
@@ -52,11 +52,11 @@ def test_get_logical_cores():
     assert actual == actual  # print(f"{actual:}")
 
 
-# def test_get_physical_cores(g2diag_instance):
-def test_get_physical_cores():
+def test_get_physical_cores(g2diag_instance):
+    # def test_get_physical_cores():
     """Test physical core count."""
     # expected = multiprocessing.cpu_count()
-    # actual = g2diag_instance.get_physical_cores()
+    actual = g2diag_instance.get_physical_cores()
     # expected = psutil.cpu_count(logical=False)
     # assert actual == expected
     actual = "test"
