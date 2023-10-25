@@ -34,9 +34,9 @@ def g2diag_instance():
 
 def test_get_db_info(g2diag_instance):
     """Test physical core count."""
-    actual: str = g2diag_instance.get_db_info()
-    assert 1 == 1
-    print(f"{actual:}")
+    actual = g2diag_instance.get_db_info()
+    assert actual == actual
+    # print(f"{actual:}")
 
 
 def test_get_logical_cores(g2diag_instance):
