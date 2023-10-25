@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 # -----------------------------------------------------------------------------
 # g2diagnostic_test.py
@@ -8,68 +6,53 @@
 
 # Import from standard library. https://docs.python.org/3/library/
 
-import multiprocessing
-import unittest
+import psutil
+
+# import multiprocessing
+import pytest
 
 from senzing import g2diagnostic
 
-from .g2testhelper import get_test_engine_configuration_json
-
-# import pytest
-
-
 ENGINE_MODULE_NAME = "Example"
-ENGINE_CONFIGURATION_JSON = get_test_engine_configuration_json()
+# ENGINE_CONFIGURATION_JSON = str(
+#    '{"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing","RESOURCEPATH":"/opt/senzing/g2/resources","SUPPORTPATH":"/opt/senzing/data"},"SQL":{"CONNECTION":"sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
+# )
+ENGINE_CONFIGURATION_JSON = str(
+    '{"PIPELINE": {"SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data", "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc", "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources"}, "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"}}'
+)
 ENGINE_VERBOSE_LOGGING = 0
 
-# -----------------------------------------------------------------------------
-# Test fixtures
-# -----------------------------------------------------------------------------
+
+@pytest.fixture(scope="class")
+def g2diag_instance():
+    g2_diagnostic = g2diagnostic.G2Diagnostic(
+        ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
+    )
+    return g2_diagnostic
 
 
-# @pytest.fixture(scope="class")
-# def g2_diagnostic():
-#     g2_diagnostic_instance = g2diagnostic.G2Diagnostic(
-#         ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
-#     )
-#     return g2_diagnostic_instance
-
-
-# -----------------------------------------------------------------------------
-# g2diagnostic_test.py
-# -----------------------------------------------------------------------------
-
-
-class TestG2Diagnostics(unittest.TestCase):
+# class TestG2Diagnostics(unittest.TestCase):
+class TestG2Diagnostics:
     """Test example"""
 
-    def test_get_db_info(self) -> None:
+    def test_get_db_info(self, g2diag_instance) -> None:
         """Test physical core count."""
-        g2_diagnostic = g2diagnostic.G2Diagnostic(
-            ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
-        )
-        actual = g2_diagnostic.get_db_info()
-        self.assertEqual(1, 1)
-        print(">>>>>", actual)
+        actual = g2diag_instance.get_db_info()
+        assert 1 == 1
+        print(f"{actual:}")
 
-    def test_get_logical_cores(self) -> None:
+    def test_get_logical_cores(self, g2diag_instance) -> None:
         """Test logical core count."""
-        g2_diagnostic = g2diagnostic.G2Diagnostic(
-            ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
-        )
-        expected = multiprocessing.cpu_count()
-        actual = g2_diagnostic.get_logical_cores()
-        self.assertEqual(expected, actual)
+        # expected = multiprocessing.cpu_count()
+        actual = g2diag_instance.get_logical_cores()
+        expected = psutil.cpu_count()
+        assert actual == expected
+        # print(f"{actual:}")
 
-    def test_get_physical_cores(self) -> None:
+    def test_get_physical_cores(self, g2diag_instance) -> None:
         """Test physical core count."""
-        g2_diagnostic = g2diagnostic.G2Diagnostic(
-            ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
-        )
-        expected = multiprocessing.cpu_count()
-        actual = g2_diagnostic.get_physical_cores()
-        self.assertEqual(expected, actual)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        # expected = multiprocessing.cpu_count()
+        actual = g2diag_instance.get_physical_cores()
+        expected = psutil.cpu_count(logical=False)
+        assert actual == expected
+        # print(f"{actual:}")
