@@ -40,9 +40,7 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
       # ###
       - name: Check dirs
-        run: | 
-          ls /opt
-          ls /opt/senzing
+        run:  ls /opt/senzing
       - name: Run python pytest
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
