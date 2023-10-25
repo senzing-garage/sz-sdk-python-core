@@ -1,0 +1,28 @@
+name: python-code-quality.yaml
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.11"]
+    name: "code-quality Python ${{ matrix.python-version }}"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Update pip
+        run: python3 -m pip install --upgrade pip
+      - name: Pip install python packages for testing
+        run: pip install black pylint mypy
+      - name: Black testing
+        run: black --diff --check $(git ls-files '*.py' ':!:docs/source/*')
+      - name: Pylint testing
+        run: pylint $(git ls-files '*.py' ':!:docs/source/*')
+      - name: Mypy testing
+        run: mypy --strict $(git ls-files '*.py' ':!:docs/source/*')

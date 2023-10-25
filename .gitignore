@@ -146,6 +146,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+.history
+
 # pytype static type analyzer
 .pytype/
 
@@ -160,3 +162,5 @@ cython_debug/
 #.idea/
 
 .pydevproject
+
+

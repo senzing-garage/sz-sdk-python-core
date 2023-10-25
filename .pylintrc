@@ -1,13 +1,13 @@
 [pylint]
 disable=
-    broad-except,
-    consider-using-f-string,
+    duplicate-code,
     line-too-long,
-    too-many-branches,
-    too-many-locals,
-good-names=
-    g2-sdk-python-next
+    missing-module-docstring,
+    too-many-arguments,
+    too-many-public-methods,
+    unused-argument,
 ignore=
     __init__.py,
+    docs/source/conf.py
 notes=
     FIXME,

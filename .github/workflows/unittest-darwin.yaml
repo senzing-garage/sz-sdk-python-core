@@ -1,0 +1,44 @@
+# Based on
+# - https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: unittest-darwin.yaml
+
+on: [push]
+
+env:
+  PYTHONPATH: /Users/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
+  SENZING_TOOLS_DATABASE_URL: "sqlite3://na:na@/tmp/sqlite/G2C.db"
+
+jobs:
+  unittest-darwin:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        # python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8"]
+        senzingapi-version: [staging]
+    name: "unittest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Install Senzing API
+        uses: Senzing/github-action-install-senzing-api@latest
+        with:
+          senzingapi-version: ${{ matrix.senzingapi-version }}
+      - name: Copy /etc files
+        run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/g2/etc/g2.lic
+      - name: Copy test database files
+        run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+      - name: Run python unittest
+        run: |
+          export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+          python3 -m unittest tests/*.py
