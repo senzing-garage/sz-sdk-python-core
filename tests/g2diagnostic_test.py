@@ -32,14 +32,14 @@ def g2diag_instance():
     return g2_diagnostic
 
 
-def test_get_db_info(self, g2diag_instance) -> None:
+def test_get_db_info(g2diag_instance):
     """Test physical core count."""
-    actual = g2diag_instance.get_db_info()
+    actual: str = g2diag_instance.get_db_info()
     assert 1 == 1
     print(f"{actual:}")
 
 
-def test_get_logical_cores(self, g2diag_instance) -> None:
+def test_get_logical_cores(g2diag_instance):
     """Test logical core count."""
     # expected = multiprocessing.cpu_count()
     actual = g2diag_instance.get_logical_cores()
@@ -48,7 +48,7 @@ def test_get_logical_cores(self, g2diag_instance) -> None:
     # print(f"{actual:}")
 
 
-def test_get_physical_cores(self, g2diag_instance) -> None:
+def test_get_physical_cores(g2diag_instance):
     """Test physical core count."""
     # expected = multiprocessing.cpu_count()
     actual = g2diag_instance.get_physical_cores()
