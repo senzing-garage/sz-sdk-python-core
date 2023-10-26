@@ -171,17 +171,12 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        if result.return_code != 0:
-            # TODO: Throw exception
-            print(">>>>>> Need to throw exception")
-
-        result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
-        free_result = self.library_handle.G2GoHelper_free(result.response)
-        if free_result != 0:
-            # TODO: Throw exception
-            print(">>>>>> Need to throw exception for free_result")
-
-        # TODO: free C memory
+        try:
+            if result.return_code != 0:
+                print(">>>>>> Need to throw exception")
+            result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
         return result_response
 
     # def get_db_info_x1(self, *args: Any, **kwargs: Any) -> str:
