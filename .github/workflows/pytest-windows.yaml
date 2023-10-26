@@ -41,8 +41,5 @@ jobs:
         run: copy testdata/senzing-license/g2.lic "C:\Program Files\Senzing\g2\etc\g2.lic"
       - name: Copy test database files
         run: mkdir "C:\Temp\sqlite" && copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
-      # Debig
-      - name: Check dir
-        run: dir "C:\Program Files\Senzing\g2\data"
       - name: Run python pytest
-        run: python -m pytest tests/ -v -s
+        run: pytest tests/ --verbose --capture=no

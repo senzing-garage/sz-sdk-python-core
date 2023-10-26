@@ -38,15 +38,7 @@ jobs:
         run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/g2/etc/g2.lic
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
-      # ###
-      - name: Check dirs
-        run: | 
-          echo ">>> /opt/senzing/"
-          ls /opt/senzing
-          echo "can find data?"
-          sudo find /opt -name data -type d
-          sudo touch /opt/senzing/g2/data/cfgVariant.json
       - name: Run python pytest
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
-          python -m pytest tests/ -v -s
+        run: pytest tests/ --verbose --capture=no

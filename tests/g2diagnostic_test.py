@@ -25,7 +25,8 @@ from senzing import g2diagnostic
 
 @pytest.fixture
 def g2diag_instance(engine_vars):
-    """Reuse engine object for all tests"""
+    """Single engine object to use for all tests.
+    engine_vars is returned from conftest.pys"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
         engine_vars["ENGINE_MODULE_NAME"],
         engine_vars["ENGINE_CONFIGURATION_JSON"],
@@ -35,7 +36,6 @@ def g2diag_instance(engine_vars):
 
 
 def test_get_db_info(g2diag_instance):
-    # def test_get_db_info():
     """Test physical core count."""
     actual = g2diag_instance.get_db_info()
     actual = "test"
