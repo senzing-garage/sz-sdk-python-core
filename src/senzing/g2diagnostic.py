@@ -7,8 +7,6 @@ TODO: g2diagnostic.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
-
-# import inspect
 import os
 import threading
 from typing import Any
@@ -16,11 +14,6 @@ from typing import Any
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, translate_exception
 from .g2helpers import as_normalized_int, as_normalized_string
-
-# Import from https://pypi.org/
-
-# Import from Senzing.
-
 
 # Metadata
 
@@ -30,7 +23,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-
 
 # -----------------------------------------------------------------------------
 # Utility functions
@@ -177,9 +169,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
         if result.returnCode != 0:
-            # Throw exception
+            # TODO: Throw exception
             pass
 
+        # TODO: free C memory
         return str(result.response)
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
