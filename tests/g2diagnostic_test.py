@@ -13,21 +13,24 @@ import pytest
 
 from senzing import g2diagnostic
 
-ENGINE_MODULE_NAME = "Example"
-ENGINE_CONFIGURATION_JSON = str(
-    '{"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing","RESOURCEPATH":"/opt/senzing/g2/resources","SUPPORTPATH":"/opt/senzing/data"},"SQL":{"CONNECTION":"sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
-)
+# ENGINE_MODULE_NAME = "Example"
 # ENGINE_CONFIGURATION_JSON = str(
-#     '{"PIPELINE": {"SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data", "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc", "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources"}, "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"}}'
+#     '{"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing","RESOURCEPATH":"/opt/senzing/g2/resources","SUPPORTPATH":"/opt/senzing/data"},"SQL":{"CONNECTION":"sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
 # )
-ENGINE_VERBOSE_LOGGING = 0
+# # ENGINE_CONFIGURATION_JSON = str(
+# #     '{"PIPELINE": {"SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data", "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc", "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources"}, "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"}}'
+# # )
+# ENGINE_VERBOSE_LOGGING = 0
 
 
 @pytest.fixture
-def g2diag_instance():
+def g2diag_instance(engine_vars):
     """Reuse engine object for all tests"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
-        ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
+        # ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
+        engine_vars["ENGINE_MODULE_NAME"],
+        engine_vars["ENGINE_CONFIGURATION_JSON"],
+        engine_vars["ENGINE_VERBOSE_LOGGING"],
     )
     return g2_diagnostic
 
