@@ -27,7 +27,6 @@ from senzing import g2diagnostic
 def g2diag_instance(engine_vars):
     """Reuse engine object for all tests"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
-        # ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING
         engine_vars["ENGINE_MODULE_NAME"],
         engine_vars["ENGINE_CONFIGURATION_JSON"],
         engine_vars["ENGINE_VERBOSE_LOGGING"],
@@ -55,8 +54,8 @@ def test_get_logical_cores():
     assert actual == actual  # print(f"{actual:}")
 
 
-def test_get_physical_cores(g2diag_instance):
-    # def test_get_physical_cores():
+# def test_get_physical_cores(g2diag_instance):
+def test_get_physical_cores():
     """Test physical core count."""
     # expected = multiprocessing.cpu_count()
     # actual = g2diag_instance.get_physical_cores()

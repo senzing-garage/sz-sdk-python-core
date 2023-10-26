@@ -27,6 +27,9 @@ def engine_vars():
         eng_vars["ENGINE_CONFIGURATION_JSON"] = windows_json
 
     # Debug
+    print(os)
+    print()
     print(eng_vars["ENGINE_CONFIGURATION_JSON"])
+    print()
 
     return eng_vars
