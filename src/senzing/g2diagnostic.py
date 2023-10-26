@@ -45,7 +45,7 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
     # pylint: disable=R0903
     _fields_ = [
         ("response", ctypes.POINTER(ctypes.c_char)),
-        ("returnCode", ctypes.c_longlong),
+        ("return_code", ctypes.c_longlong),
     ]
 
 
@@ -171,13 +171,15 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        if result.returnCode != 0:
+        if result.return_code != 0:
             # TODO: Throw exception
-            pass
+            print(">>>>>> Need to throw exception")
 
         result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
         free_result = self.library_handle.G2GoHelper_free(result.response)
-        print(">>>> Free result:", free_result)
+        if free_result != 0:
+            # TODO: Throw exception
+            print(">>>>>> Need to throw exception for free_result")
 
         # TODO: free C memory
         return result_response
