@@ -743,7 +743,7 @@ def get_senzing_error_code(error_text: str) -> int:
 
 
 def get_senzing_error_text(
-    get_last_exception,  # TODO:  Callable[[ctypes.c_char, int], str]
+    get_last_exception: Callable[[ctypes.c_char, int], str],  # TODO:
     clear_last_exception: Callable[[], None],
 ) -> str:
     """Get the last exception from the Senzing engine."""
@@ -765,7 +765,7 @@ def new_g2exception(
     caller_skip: int,
     *args: Any,
 ) -> Exception:
-    """Generate a new exception based on the error_id."""
+    """Generate a new Senzing Exception based on the error_id."""
     senzing_error_text = get_senzing_error_text(
         get_last_exception, clear_last_exception
     )

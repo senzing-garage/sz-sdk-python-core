@@ -174,7 +174,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
             if result.return_code != 0:
                 raise self.new_exception(4007, result.return_code)
             result_response = ctypes.cast(result.response, ctypes.c_char_p).value
-            result_response = str(result_response.decode()) if result_response else ""
+            result_response = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)
         return result_response
