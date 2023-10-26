@@ -113,16 +113,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
-        print(">>>> __init__  1")
         try:
             self.init(self.module_name, self.ini_params, self.verbose_logging)
         except Exception as error:
-            print(">>>> __init__  1.1")
-            print(error)
-            print(">>>> __init__  1.2")
-
+            # print(error)
             raise error
-        print(">>>> __init__  2")
 
         # ----------------------------------------------------------------------
         # Initialize C function input parameters and results
@@ -135,8 +130,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
-
-        print(">>>> __init__ 3")
 
     def __del__(self) -> None:
         """Destructor"""
@@ -195,7 +188,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
             ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
         )
         self.library_handle.G2Diagnostic_clearLastException()
-
         exception = ERROR_BUFFER.string_buffer.value
 
         if exception is None:
@@ -220,8 +212,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def new_exception(self, error_id: int, *args: Any) -> Exception:
         """Generate a new exception based on the error_id."""
-
-        # print(">>>> new_exception 1", int, args)
 
         senzing_error_text = self.get_senzing_error_text()
         senzing_error_code = self.get_senzing_error_code(senzing_error_text)
@@ -305,7 +295,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
         ]
 
         result = 0
-        print(">>>> init 1")
 
         try:
             result = self.library_handle.G2Diagnostic_init(
@@ -316,13 +305,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
         except Exception as e:
             print(">>>> init 999", e)
 
-        print(">>>> init 2")
-
         if result < 0:
             raise self.new_exception(
                 4018, module_name, ini_params, verbose_logging, result
             )
-        print(">>>> init 3")
 
     def init_with_config_id(
         self,
