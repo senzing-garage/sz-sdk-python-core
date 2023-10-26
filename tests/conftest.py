@@ -1,9 +1,10 @@
 import json
-
-# import platform
-from sys import platform
+import platform
 
 import pytest
+
+# from sys import platform
+
 
 # Ant test
 # '{"PIPELINE": {"SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data", "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc", "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources"}, "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"}}'
@@ -44,44 +45,52 @@ import pytest
 @pytest.fixture(scope="session")
 def engine_vars():
     """Get a platform-specific version of the Senzing engine configuration JSON"""
-    if platform in ("linux" "linux2"):
-        test_engine_configuration = {
-            "PIPELINE": {
-                "CONFIGPATH": "/etc/opt/senzing",
-                "RESOURCEPATH": "/opt/senzing/g2/resources",
-                "SUPPORTPATH": "/opt/senzing/data",
-            },
-            "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-        }
-    elif platform == "darwin":
-        test_engine_configuration = {
-            "PIPELINE": {
-                "CONFIGPATH": "/opt/senzing/g2/etc",
-                "RESOURCEPATH": "/opt/senzing/g2/resources",
-                "SUPPORTPATH": "/opt/senzing/g2/data",
-            },
-            "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-        }
-    elif platform == "win32":
-        test_engine_configuration = {
-            "PIPELINE": {
-                "CONFIGPATH": "C:\\Program Files\\Senzing\\g2\\etc",
-                "RESOURCEPATH": "C:\\Program Files\\Senzing\\g2\\resources",
-                "SUPPORTPATH": "C:\\Program Files\\Senzing\\g2\\data",
-            },
-            "SQL": {"CONNECTION": "sqlite3://na:na@nowhere/C:\\Temp\\sqlite\\G2C.db"},
-        }
-    else:
-        test_engine_configuration = {}
 
-    eng_vars = {"ENGINE_MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
-    eng_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(test_engine_configuration)
+    engine_vars = {"ENGINE_MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
+
+    linux_config = {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/g2/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    }
+
+    darwin_config = {
+        "PIPELINE": {
+            "CONFIGPATH": "/opt/senzing/g2/etc",
+            "RESOURCEPATH": "/opt/senzing/g2/resources",
+            "SUPPORTPATH": "/opt/senzing/g2/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    }
+
+    windows_config = {
+        "PIPELINE": {
+            "CONFIGPATH": "C:\\Program Files\\Senzing\\g2\\etc",
+            "RESOURCEPATH": "C:\\Program Files\\Senzing\\g2\\resources",
+            "SUPPORTPATH": "C:\\Program Files\\Senzing\\g2\\data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@nowhere/C:\\Temp\\sqlite\\G2C.db"},
+    }
+
+    run_platform = platform.system()
+
+    if run_platform == "Linux":
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(linux_config)
+    elif platform == "Darwin":
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(darwin_config)
+    elif platform == "Windows":
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(windows_config)
+    else:
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps({})
 
     # # Debug
     print(platform)
     print()
-    print(eng_vars["ENGINE_CONFIGURATION_JSON"])
+    print(engine_vars["ENGINE_CONFIGURATION_JSON"])
     print()
 
     # return json.dumps(test_engine_configuration)
-    return eng_vars
+    return engine_vars
