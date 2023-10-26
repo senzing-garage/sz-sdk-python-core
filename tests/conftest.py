@@ -79,15 +79,15 @@ def engine_vars():
 
     if run_platform == "Linux":
         engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(linux_config)
-    elif platform == "Darwin":
+    elif run_platform == "Darwin":
         engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(darwin_config)
-    elif platform == "Windows":
+    elif run_platform == "Windows":
         engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(windows_config)
     else:
         engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps({})
 
     # # Debug
-    print(platform)
+    print(run_platform)
     print()
     print(engine_vars["ENGINE_CONFIGURATION_JSON"])
     print()
