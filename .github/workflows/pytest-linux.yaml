@@ -37,10 +37,10 @@ jobs:
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
       # ###
-      - name: Check dirs
-        run: |
-          ls /opt/senzing
-          ls /opt/senzing/data
+      # ###- name: Check dirs
+      # ###  run: |
+      # ###    ls /opt/senzing
+      # ###    ls /opt/senzing/data
       - name: Run python pytest
         # run: pytest tests/
         run: python -m pytest tests/ -v
