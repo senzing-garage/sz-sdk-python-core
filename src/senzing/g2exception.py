@@ -47,19 +47,19 @@ SENZING_PRODUCT_ID = "5044"  # See https://github.com/Senzing/knowledge-base/blo
 class G2Exception(Exception):
     """Base exception for G2 related python code."""
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(self, *args, **kwargs)
+    # def __init__(self, *args: Any, **kwargs: Any) -> None:
+    #     super().__init__(self, *args, **kwargs)
 
-    def __str__(self) -> str:
-        result: List[str] = []
-        # TODO: Make a JSON return string
-        # for arg in self.args:
-        #     message = arg
-        #     if isinstance(arg, Exception):
-        #         message = "{0}.{1}:".format(arg.__module__, arg.__class__.__name__)
-        #     if message not in result:
-        #         result.append(message)
-        return " ".join(result)
+    # def __str__(self) -> str:
+    #     result: List[str] = []
+    #     # TODO: Make a JSON return string
+    #     for arg in self.args:
+    #         message = arg
+    #         if isinstance(arg, Exception):
+    #             message = "{0}.{1}:".format(arg.__module__, arg.__class__.__name__)
+    #         if message not in result:
+    #             result.append(message)
+    #     return " ".join(result)
 
 
 # -----------------------------------------------------------------------------

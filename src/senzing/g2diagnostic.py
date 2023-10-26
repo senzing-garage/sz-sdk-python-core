@@ -7,12 +7,14 @@ TODO: g2diagnostic.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import ctypes
+import datetime
+import json
 import os
 import threading
 from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
-from .g2exception import G2Exception, translate_exception
+from .g2exception import EXCEPTION_MAP, G2Exception
 from .g2helpers import as_normalized_int, as_normalized_string
 
 # Metadata
@@ -39,6 +41,11 @@ def find_file_in_path(filename: str) -> str:
     return ""
 
 
+# -----------------------------------------------------------------------------
+# Utility classes
+# -----------------------------------------------------------------------------
+
+
 class G2diagnosticGetdbinfoResult(ctypes.Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
@@ -47,11 +54,6 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
         ("response", ctypes.POINTER(ctypes.c_char)),
         ("return_code", ctypes.c_longlong),
     ]
-
-
-# -----------------------------------------------------------------------------
-# Utility classes
-# -----------------------------------------------------------------------------
 
 
 class ErrorBuffer(threading.local):
@@ -111,7 +113,16 @@ class G2Diagnostic(G2DiagnosticAbstract):
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        print(">>>> __init__  1")
+        try:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
+        except Exception as error:
+            print(">>>> __init__  1.1")
+            print(error)
+            print(">>>> __init__  1.2")
+
+            raise error
+        print(">>>> __init__  2")
 
         # ----------------------------------------------------------------------
         # Initialize C function input parameters and results
@@ -124,6 +135,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+
+        print(">>>> __init__ 3")
 
     def __del__(self) -> None:
         """Destructor"""
@@ -143,16 +156,101 @@ class G2Diagnostic(G2DiagnosticAbstract):
             print(self.noop)
 
     # -------------------------------------------------------------------------
-    # Helper methods
+    # Exception helpers
     # -------------------------------------------------------------------------
 
-    def determine_exception(self, *args: Any, **kwargs: Any) -> Exception:
-        """Construct the Exception."""
+    # def determine_exception(self, *args: Any, **kwargs: Any) -> Exception:
+    #     """Construct the Exception."""
+    #     self.library_handle.G2Diagnostic_getLastException(
+    #         ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
+    #     )
+    #     print(">>>>>>", ERROR_BUFFER.string_buffer.value)
+    #     return Exception(translate_exception(str(ERROR_BUFFER.string_buffer.value)))
+
+    def get_message_level(self, error_id: int) -> str:
+        """Determine the severity of the error"""
+        # TODO: Implement
+        return "WARN"
+
+    def get_message_text(self, error_id: int, *args: Any) -> str:
+        """Format the message text from a template and variables"""
+        return self.ID_MESSAGES.get(
+            error_id, f"No message for index {error_id}."
+        ).format(*args)
+
+    # def get_senzing_error(self) -> str:
+    #     """Get the error from the Senzing engine."""
+    #     self.library_handle.G2Diagnostic_getLastException(
+    #         ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
+    #     )
+    #     self.library_handle.G2Diagnostic_clearLastException()
+
+    #     print(">>>> type", type(ERROR_BUFFER.string_buffer.value))
+    #     return str(ERROR_BUFFER.string_buffer.value)
+
+    def get_senzing_error_text(self) -> str:
+        """Given an exception of varying types, return an exception string."""
+
         self.library_handle.G2Diagnostic_getLastException(
             ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
         )
-        print(">>>>>>", ERROR_BUFFER.string_buffer.value)
-        return Exception(translate_exception(str(ERROR_BUFFER.string_buffer.value)))
+        self.library_handle.G2Diagnostic_clearLastException()
+
+        exception = ERROR_BUFFER.string_buffer.value
+
+        if exception is None:
+            result = ""
+        elif isinstance(exception, bytearray):
+            result = exception.decode()
+        elif isinstance(exception, bytes):
+            result = exception.decode()
+        elif isinstance(exception, Exception):
+            result = str(exception).split(":", 1)[1].strip()
+        else:
+            result = exception
+        assert isinstance(result, str)
+        return result
+
+    def get_senzing_error_code(self, error_text: str) -> int:
+        """Given an exception string, find the exception code."""
+        exception_message_splits = error_text.split("|", 1)
+        result = int(exception_message_splits[0].strip().rstrip("EIW"))
+        assert isinstance(result, int)
+        return result
+
+    def new_exception(self, error_id: int, *args: Any) -> Exception:
+        """Generate a new exception based on the error_id."""
+
+        # print(">>>> new_exception 1", int, args)
+
+        senzing_error_text = self.get_senzing_error_text()
+        senzing_error_code = self.get_senzing_error_code(senzing_error_text)
+        message = {
+            "time": datetime.datetime.utcnow().isoformat("T"),
+            "text": self.get_message_text(error_id, *args),
+            "level": self.get_message_level(error_id),
+            "id": f"senzing-{SENZING_PRODUCT_ID}{error_id:4d}",
+            "location": "",
+            "status": "",
+            "errorCode": senzing_error_code,
+            "errors": senzing_error_text,
+            "details": args,
+        }
+
+        # print(">>>> new_exception 2", message)
+
+        senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)
+        # print(">>>> new_exception 3", type(senzing_error_class(json.dumps(message))))
+        # print(">>>> new_exception 4", type(senzing_error_class))
+        # print(">>>> new_exception 5", type(senzing_error_class()))
+        # print(">>>> new_exception 6", senzing_error_class())
+
+        # new_error = senzing_error_class(json.dumps(message))
+        # new_error = senzing_error_class("BOB WAS HERE")
+
+        # print(">>>> new_exception 7", new_error)
+        # return Exception(json.dumps(message))
+        return senzing_error_class(json.dumps(message))
 
     # -------------------------------------------------------------------------
     # G2Diagnostic methods
@@ -171,28 +269,16 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+        result_response = ""
         try:
+            # raise self.new_exception(4007, result.return_code)
+
             if result.return_code != 0:
-                print(">>>>>> Need to throw exception")
+                raise self.new_exception(4007, result.return_code)
             result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
         finally:
             self.library_handle.G2GoHelper_free(result.response)
         return result_response
-
-    # def get_db_info_x1(self, *args: Any, **kwargs: Any) -> str:
-    #     result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-    #     if result.returnCode != 0:
-    #         # TODO: Throw exception
-    #         pass
-
-    #     result_response = str(result.response)
-    #     free_result = self.library_handle.G2GoHelper_free(
-    #         ctypes.c_char_p(result.response)
-    #     )
-    #     print(">>>> Free result:", free_result)
-
-    #     # TODO: free C memory
-    #     return result_response
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         return int(self.library_handle.G2Diagnostic_getLogicalCores())
@@ -217,13 +303,26 @@ class G2Diagnostic(G2DiagnosticAbstract):
             ctypes.c_char_p,
             ctypes.c_int,
         ]
-        result = self.library_handle.G2Diagnostic_init(
-            as_normalized_string(module_name),
-            as_normalized_string(ini_params),
-            as_normalized_int(verbose_logging),
-        )
+
+        result = 0
+        print(">>>> init 1")
+
+        try:
+            result = self.library_handle.G2Diagnostic_init(
+                as_normalized_string(module_name),
+                as_normalized_string(ini_params),
+                as_normalized_int(verbose_logging),
+            )
+        except Exception as e:
+            print(">>>> init 999", e)
+
+        print(">>>> init 2")
+
         if result < 0:
-            raise self.determine_exception()
+            raise self.new_exception(
+                4018, module_name, ini_params, verbose_logging, result
+            )
+        print(">>>> init 3")
 
     def init_with_config_id(
         self,

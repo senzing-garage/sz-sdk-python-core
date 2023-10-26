@@ -8,6 +8,7 @@
 
 # Import from standard library. https://docs.python.org/3/library/
 
+import logging
 import multiprocessing
 import unittest
 
@@ -51,7 +52,6 @@ class TestG2Diagnostics(unittest.TestCase):
         actual = g2_diagnostic.get_db_info()
         self.assertEqual(1, 1)
         self.assertIsInstance(actual, str)
-        print(">>>>>", actual, type(actual))
 
     def test_get_logical_cores(self) -> None:
         """Test logical core count."""
