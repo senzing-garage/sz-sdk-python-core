@@ -44,7 +44,7 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
 
     # pylint: disable=R0903
     _fields_ = [
-        ("response", ctypes.c_char_p),
+        ("response", ctypes.POINTER(ctypes.c_char)),
         ("returnCode", ctypes.c_longlong),
     ]
 
@@ -121,6 +121,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
             G2diagnosticGetdbinfoResult
         )
+        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
+        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
+        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
     def __del__(self) -> None:
         """Destructor"""
@@ -172,15 +175,32 @@ class G2Diagnostic(G2DiagnosticAbstract):
             # TODO: Throw exception
             pass
 
+        result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
+        free_result = self.library_handle.G2GoHelper_free(result.response)
+        print(">>>> Free result:", free_result)
+
         # TODO: free C memory
-        return str(result.response)
+        return result_response
+
+    # def get_db_info_x1(self, *args: Any, **kwargs: Any) -> str:
+    #     result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+    #     if result.returnCode != 0:
+    #         # TODO: Throw exception
+    #         pass
+
+    #     result_response = str(result.response)
+    #     free_result = self.library_handle.G2GoHelper_free(
+    #         ctypes.c_char_p(result.response)
+    #     )
+    #     print(">>>> Free result:", free_result)
+
+    #     # TODO: free C memory
+    #     return result_response
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
-        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         return int(self.library_handle.G2Diagnostic_getLogicalCores())
 
     def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
-        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         return int(self.library_handle.G2Diagnostic_getPhysicalCores())
 
     def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
