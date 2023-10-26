@@ -43,8 +43,6 @@ jobs:
         run: | 
           echo ">>> /opt/senzing/"
           ls /opt/senzing
-          echo "/opt/senzing/data"
-          ls /opt/senzing/data
           echo "can find data?"
           sudo find /opt -name data -type d
       - name: Run python pytest
