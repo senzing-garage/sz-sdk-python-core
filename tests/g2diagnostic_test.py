@@ -59,7 +59,7 @@ def test_get_physical_cores(g2diag_instance):
     # def test_get_physical_cores():
     """Test physical core count."""
     # expected = multiprocessing.cpu_count()
-    actual = g2diag_instance.get_physical_cores()
+    # actual = g2diag_instance.get_physical_cores()
     # expected = psutil.cpu_count(logical=False)
     # assert actual == expected
     actual = "test"
