@@ -48,4 +48,4 @@ jobs:
       - name: Run python pytest
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
-          python -m pytest tests/ -v
+          python -m pytest tests/ -v -s
