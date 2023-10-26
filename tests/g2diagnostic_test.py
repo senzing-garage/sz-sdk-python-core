@@ -8,7 +8,6 @@
 
 # Import from standard library. https://docs.python.org/3/library/
 
-import logging
 import multiprocessing
 import unittest
 
