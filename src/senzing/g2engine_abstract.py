@@ -24,6 +24,116 @@ class G2EngineAbstract(ABC):
     """
 
     # -------------------------------------------------------------------------
+    # Messages
+    # -------------------------------------------------------------------------
+
+    PREFIX = "g2engine."
+    ID_MESSAGES = {
+        4001: PREFIX + "G2_addRecord({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4002: PREFIX
+        + "G2_addRecordWithInfo({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4003: PREFIX
+        + "G2_addRecordWithInfoWithReturnedRecordID({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4004: PREFIX
+        + "G2_addRecordWithReturnedRecordID({0}, {1}, {2}) failed. Return code: {3}",
+        4005: PREFIX + "G2_checkRecord({0}, {1}) failed. Return code: {2}",
+        4006: PREFIX + "G2_closeExport({0}) failed. Return code: {1}",
+        4007: PREFIX + "G2_deleteRecord({0}, {1}, {2}) failed. Return code: {3}",
+        4008: PREFIX
+        + "G2_deleteRecordWithInfo({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4009: PREFIX + "G2_destroy() failed. Return code: {0}",
+        4010: PREFIX + "G2_exportConfigAndConfigID() failed. Return code: {0}",
+        4011: PREFIX + "G2_exportConfig() failed. Return code: {0}",
+        4012: PREFIX + "G2_exportCSVEntityReport({0}, {1}) failed. Return code: {2}",
+        4013: PREFIX + "G2_exportJSONEntityReport({0}) failed. Return code: {1}",
+        4014: PREFIX + "G2_fetchNext({0}) failed. Return code: {1}",
+        4015: PREFIX
+        + "G2_findInterestingEntitiesByEntityID({0}, {1}) failed. Return code: {2}",
+        4016: PREFIX
+        + "G2_findInterestingEntitiesByRecordID({0}, {1}, {2}) failed. Return code: {3}",
+        4017: PREFIX
+        + "G2_findNetworkByEntityID({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4018: PREFIX
+        + "G2_findNetworkByEntityID_V2({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4019: PREFIX
+        + "G2_findNetworkByRecordID({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4020: PREFIX
+        + "G2_findNetworkByRecordID_V2({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4021: PREFIX + "G2_findPathByEntityID({0}, {1}, {2}) failed. Return code: {3}",
+        4022: PREFIX
+        + "G2_findPathByEntityID_V2({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4023: PREFIX
+        + "G2_findPathByRecordID({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4024: PREFIX
+        + "G2_findPathByRecordID_V2({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {0}",
+        4025: PREFIX
+        + "G2_findPathExcludingByEntityID({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4026: PREFIX
+        + "G2_findPathExcludingByEntityID_V2({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4027: PREFIX
+        + "G2_findPathExcludingByRecordID({0}, {1}, {2}, {3} {4}, {5}) failed. Return code: {6}",
+        4028: PREFIX
+        + "G2_findPathExcludingByRecordID_V2({0}, {1}, {2}, {3} {4}, {5}, {6}) failed. Return code: {7}",
+        4029: PREFIX
+        + "G2_findPathIncludingSourceByEntityID({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4030: PREFIX
+        + "G2_findPathIncludingSourceByEntityID_V2({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
+        4031: PREFIX
+        + "G2_findPathIncludingSourceByRecordID({0}, {1}, {2}, {3} {4}, {5}, {6}) failed. Return code: {7}",
+        4032: PREFIX
+        + "G2_findPathIncludingSourceByRecordID_V2({0}, {1}, {2}, {3} {4}, {5}, {6}, {7}) failed. Return code: {8}",
+        4033: PREFIX + "G2_getActiveConfigID() failed. Return code: {0}",
+        4034: PREFIX + "G2_getEntityByEntityID({0}) failed. Return code: {1}",
+        4035: PREFIX + "G2_getEntityByEntityID_V2({0}, {1}) failed. Return code: {2}",
+        4036: PREFIX + "G2_getEntityByRecordID({0}, {1}) failed. Return code: {2}",
+        4037: PREFIX
+        + "G2_getEntityByRecordID_V2({0}, {1}, {2}) failed. Return code: {3}",
+        4038: PREFIX + "G2_getLastException() failed. Return code: {0}",
+        4039: PREFIX + "G2_getRecord({0}, {1}) failed. Return code: {2}",
+        4040: PREFIX + "G2_getRecord_V2({0}, {1}, {2}) failed. Return code: {3}",
+        4041: PREFIX + "G2_getRedoRecord() failed. Return code: {0}",
+        4042: PREFIX + "G2_getRepositoryLastModifiedTime() failed. Return code: {0}",
+        4043: PREFIX + "G2_getVirtualEntityByRecordID({0}) failed. Return code: {1}",
+        4044: PREFIX
+        + "G2_getVirtualEntityByRecordID_V2({0}, {1}) failed. Return code: {2}",
+        4045: PREFIX + "G2_howEntityByEntityID({0}) failed. Return code: {1}",
+        4046: PREFIX + "G2_howEntityByEntityID_V2({0}, {1}) failed. Return code: {2}",
+        4047: PREFIX + "G2_init({0}, {1}, {2}) failed. Return code: {3}",
+        4048: PREFIX
+        + "G2_initWithConfigID({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4049: PREFIX + "G2_primeEngine() failed. Return code: {0}",
+        4050: PREFIX + "G2_process({0}) failed. Return code: {1}",
+        4051: PREFIX + "G2_processRedoRecord() failed. Return code: {0}",
+        4052: PREFIX + "G2_processRedoRecordWithInfo({0}) failed. Return code: {0}",
+        4053: PREFIX + "G2_processWithInfo({0}, {1}) failed. Return code: {2}",
+        4054: PREFIX + "G2_processWithResponse({0}) failed. Return code: {1}",
+        4055: PREFIX + "G2_processWithResponseResize({0}) failed. Return code: {1}",
+        4056: PREFIX + "G2_purgeRepository() failed. Return code: {0}",
+        4057: PREFIX + "G2_reevaluateEntity({0}, {1}) failed. Return code: {2}",
+        4058: PREFIX + "G2_reevaluateEntityWithInfo({0}, {1}) failed. Return code: {2}",
+        4059: PREFIX + "G2_reevaluateRecord({0}, {1}, {2}) failed. Return code: {3}",
+        4060: PREFIX
+        + "G2_reevaluateRecordWithInfo({0}, {1}, {2}) failed. Return code: {3}",
+        4061: PREFIX + "G2_reinit({0}) failed. Return code: {1}",
+        4062: PREFIX + "G2_replaceRecord({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4063: PREFIX
+        + "G2_replaceRecordWithInfo({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4064: PREFIX + "G2_searchByAttributes({0}) failed. Return code: {5}",
+        4065: PREFIX + "G2_searchByAttributes_V2({0}, {1}) failed. Return code: {2}",
+        4066: PREFIX + "G2_stats() failed. Return code: {0}",
+        4067: PREFIX + "G2_whyEntities({0}, {1}) failed. Return code: {2}",
+        4068: PREFIX + "G2_whyEntities_V2({0}, {1}, {2}) failed. Return code: {3}",
+        4069: PREFIX + "G2_whyEntityByEntityID({0}) failed. Return code: {1}",
+        4070: PREFIX + "G2_whyEntityByEntityID_V2({0}, {1}) failed. Return code: {2}",
+        4071: PREFIX + "G2_whyEntityByRecordID({0}, {1}) failed. Return code: {2}",
+        4072: PREFIX
+        + "G2_whyEntityByRecordID_V2({0}, {1}, {2}) failed. Return code: {3}",
+        4073: PREFIX + "G2_whyRecords({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4074: PREFIX
+        + "G2_whyRecords_V2({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+    }
+
+    # -------------------------------------------------------------------------
     # Interface definition
     # -------------------------------------------------------------------------
 

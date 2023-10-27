@@ -4,15 +4,13 @@
 TODO: g2diagnostic.py
 """
 
-# Import from standard library. https://docs.python.org/3/library/
-
 import ctypes
 import os
 from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_normalized_int, as_normalized_string
+from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
 
 # Metadata
 
@@ -25,22 +23,7 @@ SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blo
 CALLER_SKIP = 6
 
 # -----------------------------------------------------------------------------
-# Utility functions
-# -----------------------------------------------------------------------------
-
-
-def find_file_in_path(filename: str) -> str:
-    """Find a file in the PATH environment variable"""
-    path_dirs = os.environ["PATH"].split(os.pathsep)
-    for path_dir in path_dirs:
-        file_path = os.path.join(path_dir, filename)
-        if os.path.exists(file_path):
-            return file_path
-    return ""
-
-
-# -----------------------------------------------------------------------------
-# Utility classes
+# Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
 
 
@@ -97,16 +80,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
-        try:
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
-        except Exception as error:
-            # print(error)
-            raise error
-
-        # ----------------------------------------------------------------------
-        # Initialize C function input parameters and results
+        # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
-        # ----------------------------------------------------------------------
 
         self.library_handle.G2Diagnostic_clearLastException.argtypes = []
         self.library_handle.G2Diagnostic_clearLastException.restype = None
@@ -127,6 +102,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
             ctypes.c_int,
         ]
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+
+        # Initialize Senzing engine.
+
+        self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -150,7 +129,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def new_exception(self, error_id: int, *args: Any) -> Exception:
-        """Generate a new exception based on the error_id."""
+        """
+        Generate a new exception based on the error_id.
+
+        :meta private:
+        """
         return new_g2exception(
             self.library_handle.G2Diagnostic_getLastException,
             self.library_handle.G2Diagnostic_clearLastException,

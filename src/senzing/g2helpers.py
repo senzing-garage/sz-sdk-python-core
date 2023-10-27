@@ -2,6 +2,7 @@
 TODO: g2helpers.py
 """
 
+import os
 from typing import Any
 
 
@@ -40,3 +41,13 @@ def as_normalized_string(candidate_value: Any) -> Any:
         return str(candidate_value).encode("utf-8")
     # input is already a str
     return candidate_value
+
+
+def find_file_in_path(filename: str) -> str:
+    """Find a file in the PATH environment variable"""
+    path_dirs = os.environ["PATH"].split(os.pathsep)
+    for path_dir in path_dirs:
+        file_path = os.path.join(path_dir, filename)
+        if os.path.exists(file_path):
+            return file_path
+    return ""
