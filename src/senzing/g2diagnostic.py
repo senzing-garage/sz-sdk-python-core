@@ -105,12 +105,20 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # ----------------------------------------------------------------------
         # Initialize C function input parameters and results
+        # Must be synchronized with g2/sdk/c/libg2diagnostic.h
         # ----------------------------------------------------------------------
 
+        self.library_handle.G2Diagnostic_clearLastException.argtypes = []
+        self.library_handle.G2Diagnostic_clearLastException.restype = None
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
             G2diagnosticGetdbinfoResult
         )
+        self.library_handle.G2Diagnostic_getLastException.argtypes = [
+            ctypes.POINTER(ctypes.c_char),
+            ctypes.c_size_t,
+        ]
+        self.library_handle.G2Diagnostic_getLastException.restype = ctypes.c_longlong
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         self.library_handle.G2Diagnostic_init.argtypes = [

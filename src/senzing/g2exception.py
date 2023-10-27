@@ -667,6 +667,13 @@ class ErrorBuffer(threading.local):
 
 
 ERROR_BUFFER = ErrorBuffer()
+ERROR_BUFFER_TYPE = ctypes.c_char * 65535
+
+# print(type(ERROR_BUFFER_TYPE))
+
+# tp: Type[object]
+# ERROR_BUFFER_TYPE = Type[ctypes.c_char * 65535]
+# tp = ERROR_BUFFER.string_buffer
 
 
 # -----------------------------------------------------------------------------
@@ -743,12 +750,13 @@ def get_senzing_error_code(error_text: str) -> int:
 
 
 def get_senzing_error_text(
-    get_last_exception: Callable[[ctypes.c_char, int], str],  # TODO:
+    get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
     clear_last_exception: Callable[[], None],
 ) -> str:
     """Get the last exception from the Senzing engine."""
     get_last_exception(
-        ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
+        ERROR_BUFFER.string_buffer,
+        ctypes.sizeof(ERROR_BUFFER.string_buffer),
     )
     clear_last_exception()
     result = ERROR_BUFFER.string_buffer.value.decode()
@@ -757,7 +765,7 @@ def get_senzing_error_text(
 
 
 def new_g2exception(
-    get_last_exception: Callable[[ctypes.c_char, int], str],
+    get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
     clear_last_exception: Callable[[], None],
     product_id: str,
     error_id: int,
@@ -766,6 +774,7 @@ def new_g2exception(
     *args: Any,
 ) -> Exception:
     """Generate a new Senzing Exception based on the error_id."""
+
     senzing_error_text = get_senzing_error_text(
         get_last_exception, clear_last_exception
     )
