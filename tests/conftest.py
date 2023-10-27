@@ -9,7 +9,7 @@ import pytest
 
 @pytest.fixture(scope="session")
 def engine_vars():
-    """Return a platform tailored dictionary of Senzing engine variables.
+    """Return a dictionary of Senzing engine variables based on runtime env
     Can be used by all pytest tests.
     """
 

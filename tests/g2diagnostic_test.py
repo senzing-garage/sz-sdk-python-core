@@ -1,9 +1,10 @@
 # import psutil
 
 # import multiprocessing
-# import json
+import json
 
 import pytest
+from pytest_schema import schema
 
 from senzing import g2diagnostic
 
@@ -20,11 +21,22 @@ def g2diag_instance(engine_vars):
     return g2_diagnostic
 
 
+get_db_info_schema = {
+    "Hybrid Mode": bool,
+    "Database Details": [
+        {
+            "Name": str,
+            "Type": str,
+        }
+    ],
+}
+
+
 def test_get_db_info(g2diag_instance):
     """Test physical core count."""
     actual = g2diag_instance.get_db_info()
-    print(f"{actual = }")
-    assert actual == actual
+    actual_json = json.loads(actual)
+    assert schema(get_db_info_schema) == actual_json
 
 
 # def test_get_logical_cores(g2diag_instance):
