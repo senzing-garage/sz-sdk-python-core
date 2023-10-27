@@ -259,7 +259,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        result_response = ""
         try:
             # raise self.new_exception(4007, result.return_code)
 
@@ -267,10 +266,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
                 raise self.new_exception(4007, result.return_code)
             # result_response = str(ctypes.cast(result.response, ctypes.c_char_p).value)
             result_response = ctypes.cast(result.response, ctypes.c_char_p).value
-            result_response = result_response.decode() if result_response else ""
+            result_response_str = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response
+        return result_response_str
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         return int(self.library_handle.G2Diagnostic_getLogicalCores())

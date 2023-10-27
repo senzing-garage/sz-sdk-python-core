@@ -8,7 +8,6 @@ on: [push]
 env:
   PYTHONPATH: /Users/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
   SENZING_TOOLS_DATABASE_URL: "sqlite3://na:na@/tmp/sqlite/G2C.db"
-  DYLD_LIBRARY_PATH: "/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos"
 
 jobs:
   pytest-darwin:
@@ -40,4 +39,6 @@ jobs:
       - name: Copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
       - name: Run python pytest
-        run: pytest tests/ --verbose --capture=no
+        run: | 
+          export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+          pytest tests/ --verbose --capture=no
