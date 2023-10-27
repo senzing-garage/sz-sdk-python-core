@@ -5,8 +5,6 @@ TODO: g2diagnostic.py
 """
 
 import ctypes
-import datetime
-import json
 import os
 from typing import Any
 
