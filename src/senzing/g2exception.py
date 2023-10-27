@@ -9,7 +9,7 @@ TODO: g2exception.py
 
 # import functools
 # from typing import Any, List
-from typing import Any, List
+# from typing import Any, List
 
 # Import from https://pypi.org/
 
