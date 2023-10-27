@@ -37,6 +37,16 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
     ]
 
 
+class G2diagnosticCheckDBPerfResult(ctypes.Structure):
+    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+
+    # pylint: disable=R0903
+    _fields_ = [
+        ("response", ctypes.POINTER(ctypes.c_char)),
+        ("return_code", ctypes.c_longlong),
+    ]
+
+
 # -----------------------------------------------------------------------------
 # G2Diagnostic class
 # -----------------------------------------------------------------------------
@@ -83,6 +93,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
 
+        self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
+            G2diagnosticCheckDBPerfResult
+        )
         self.library_handle.G2Diagnostic_clearLastException.argtypes = []
         self.library_handle.G2Diagnostic_clearLastException.restype = None
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
@@ -149,8 +162,17 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2diagnostic(seconds_to_run)
-        return "string"
+        # self.fake_g2diagnostic(seconds_to_run)
+        # return "string"
+        result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4007, result.return_code)
+            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2diagnostic()
