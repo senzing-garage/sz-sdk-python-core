@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 TODO: g2product.py
 """
@@ -9,7 +7,7 @@ import os
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import find_file_in_path
+from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
 from .g2product_abstract import G2ProductAbstract
 
 # Metadata
@@ -20,11 +18,7 @@ __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5046"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-CALLER_SKIP = 6
-
-# -----------------------------------------------------------------------------
-# Classes that are result structures from calls to Senzing
-# -----------------------------------------------------------------------------
+CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
 
 # -----------------------------------------------------------------------------
 # G2Product class
@@ -72,14 +66,27 @@ class G2Product(G2ProductAbstract):
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
+        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+
         self.library_handle.G2Product_clearLastException.argtypes = []
         self.library_handle.G2Product_clearLastException.restype = None
+        self.library_handle.G2Product_destroy.argtypes = []
+        self.library_handle.G2Product_destroy.restype = ctypes.c_longlong
         self.library_handle.G2Product_getLastException.argtypes = [
             ctypes.POINTER(ctypes.c_char),
             ctypes.c_size_t,
         ]
         self.library_handle.G2Product_getLastException.restype = ctypes.c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2Product_init.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_int,
+        ]
+        self.library_handle.G2Product_init.restype = ctypes.c_longlong
+        self.library_handle.G2Product_license.argtypes = []
+        self.library_handle.G2Product_license.restype = ctypes.c_char_p
+        self.library_handle.G2Product_version.argtypes = []
+        self.library_handle.G2Product_version.restype = ctypes.c_char_p
 
         # Initialize Senzing engine.
 
@@ -88,19 +95,6 @@ class G2Product(G2ProductAbstract):
     def __del__(self) -> None:
         """Destructor"""
         self.destroy()
-
-    # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2config(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -127,7 +121,9 @@ class G2Product(G2ProductAbstract):
     # -------------------------------------------------------------------------
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2config()
+        result = self.library_handle.G2Product_destroy()
+        if result != 0:
+            raise self.new_exception(4001, result)
 
     def init(
         self,
@@ -137,12 +133,18 @@ class G2Product(G2ProductAbstract):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2config(module_name, ini_params, verbose_logging)
+        result = self.library_handle.G2Product_init(
+            as_normalized_string(module_name),
+            as_normalized_string(ini_params),
+            as_normalized_int(verbose_logging),
+        )
+        if result < 0:
+            raise self.new_exception(
+                4003, module_name, ini_params, verbose_logging, result
+            )
 
     def license(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2config()
-        return "string"
+        return self.library_handle.G2Product_license().decode()
 
     def version(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2config()
-        return "string"
+        return self.library_handle.G2Product_version().decode()

@@ -41,7 +41,19 @@ class G2ProductAbstract(ABC):
 
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The Destroy method will destroy and perform cleanup for the Senzing G2Product object.
+        It should be called after all other calls are complete.
+
+        Raises:
+            None: No exceptions raised
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2product_destroy.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def init(
@@ -52,15 +64,60 @@ class G2ProductAbstract(ABC):
         *args: Any,
         **kwargs: Any
     ) -> None:
-        """TODO: document"""
+        """
+        The `init` method initializes the Senzing G2Product object.
+        It must be called prior to any other calls.
+
+        Parameters:
+            module_name:
+                A name for the auditing node, to help identify it within system logs.
+            ini_params:
+                A JSON string containing configuration parameters.
+            verbose_logging:
+                A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2product_init.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def license(self, *args: Any, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The License method retrieves information about the currently used license by the Senzing API.
+
+        Returns:
+            str: A JSON document containing Senzing license metadata.
+
+        Raises:
+            None: No exceptions raised
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2product_license.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def version(self, *args: Any, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The Version method returns the version of the Senzing API.
+
+        Returns:
+            str: A JSON document containing metadata about the Senzing Engine version being used.
+
+        Raises:
+            None: No exceptions raised
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2product_version.py
+                :linenos:
+                :language: python
+        """
 
     # -------------------------------------------------------------------------
     # Convenience methods
