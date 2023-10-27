@@ -14,8 +14,6 @@ from typing import Any, Callable, Dict
 # Metadata
 
 __all__ = [
-    "exception_code",
-    "exception_message",
     "G2BadInputException",
     "G2ConfigurationException",
     "G2DatabaseConnectionLostException",
@@ -24,12 +22,12 @@ __all__ = [
     "G2LicenseException",
     "G2NotFoundException",
     "G2NotInitializedException",
-    "G2RetryTimeoutExceededException",
     "G2RetryableException",
+    "G2RetryTimeoutExceededException",
     "G2UnhandledException",
     "G2UnknownDatasourceException",
     "G2UnrecoverableException",
-    "translate_exception",
+    "new_g2exception",
 ]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
@@ -669,58 +667,28 @@ class ErrorBuffer(threading.local):
 ERROR_BUFFER = ErrorBuffer()
 ERROR_BUFFER_TYPE = ctypes.c_char * 65535
 
-# print(type(ERROR_BUFFER_TYPE))
-
-# tp: Type[object]
-# ERROR_BUFFER_TYPE = Type[ctypes.c_char * 65535]
-# tp = ERROR_BUFFER.string_buffer
-
 
 # -----------------------------------------------------------------------------
 # Helper functions to create a senzing-specific Exception
 # -----------------------------------------------------------------------------
 
 
-def exception_message(exception: str) -> str:
-    """Given an exception of varying types, return an exception string."""
-    if exception is None:
-        result = ""
-    elif isinstance(exception, bytearray):
-        result = exception.decode()
-    elif isinstance(exception, bytes):
-        result = exception.decode()
-    elif isinstance(exception, Exception):
-        result = str(exception).split(":", 1)[1].strip()
-    else:
-        result = exception
-    assert isinstance(result, str)
-    return result
-
-
-def exception_code(exception: str) -> int:
-    """Given an exception string, find the exception code."""
-    local_exception_message = exception_message(exception)
-    exception_message_splits = local_exception_message.split("|", 1)
-    result = int(exception_message_splits[0].strip().rstrip("EIW"))
-    assert isinstance(result, int)
-    return result
-
-
-def translate_exception(exception: str) -> Exception:
-    """Given an exception string, find the exception code and map to the exception class."""
-    senzing_error_code = exception_code(exception)
-    senzing_error_class = EXCEPTION_MAP.get(senzing_error_code, G2Exception)
-    return senzing_error_class(exception_message(exception))
-
-
 def get_location(caller_skip: int) -> str:
-    """Determine caller."""
+    """
+    Determine caller.
+
+    :meta private:
+    """
     stack = traceback.format_stack()
     return stack[len(stack) - caller_skip].strip()
 
 
 def get_message_level(error_id: int) -> str:
-    """Determine the severity of the error"""
+    """
+    Determine the severity of the error.
+
+    :meta private:
+    """
     error_levels = {
         6000: "PANIC",
         5000: "FATAL",
@@ -737,12 +705,20 @@ def get_message_level(error_id: int) -> str:
 
 
 def get_message_text(error_id: int, id_messages: Dict[int, str], *args: Any) -> str:
-    """Format the message text from a template and variables."""
+    """
+    Format the message text from a template and variables.
+
+    :meta private:
+    """
     return id_messages.get(error_id, f"No message for index {error_id}.").format(*args)
 
 
 def get_senzing_error_code(error_text: str) -> int:
-    """Given an exception string, find the exception code."""
+    """
+    Given an exception string, find the exception code.
+
+    :meta private:
+    """
     exception_message_splits = error_text.split("|", 1)
     result = int(exception_message_splits[0].strip().rstrip("EIW"))
     assert isinstance(result, int)
@@ -753,7 +729,11 @@ def get_senzing_error_text(
     get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
     clear_last_exception: Callable[[], None],
 ) -> str:
-    """Get the last exception from the Senzing engine."""
+    """
+    Get the last exception from the Senzing engine.
+
+    :meta private:
+    """
     get_last_exception(
         ERROR_BUFFER.string_buffer,
         ctypes.sizeof(ERROR_BUFFER.string_buffer),
@@ -773,7 +753,11 @@ def new_g2exception(
     caller_skip: int,
     *args: Any,
 ) -> Exception:
-    """Generate a new Senzing Exception based on the error_id."""
+    """
+    Generate a new Senzing Exception based on the error_id.
+
+    :meta private:
+    """
 
     senzing_error_text = get_senzing_error_text(
         get_last_exception, clear_last_exception

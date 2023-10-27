@@ -4,11 +4,7 @@
 TODO: g2engineflags.py
 """
 
-# Import from standard library. https://docs.python.org/3/library/
-
 from enum import IntFlag
-
-# Import from https://pypi.org/
 from typing import Any, List
 
 # Metadata
@@ -17,6 +13,10 @@ __all__ = ["G2EngineFlags"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
+
+# -----------------------------------------------------------------------------
+# G2EngineFlags class
+# -----------------------------------------------------------------------------
 
 
 class G2EngineFlags(IntFlag):

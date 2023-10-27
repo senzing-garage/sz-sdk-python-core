@@ -164,15 +164,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
         try:
             if result.return_code != 0:
                 raise self.new_exception(4007, result.return_code)
-            result_response_encoded = ctypes.cast(
-                result.response, ctypes.c_char_p
-            ).value
-            result_response = (
-                result_response_encoded.decode() if result_response_encoded else ""
-            )
+            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response
+        return result_response_str
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         return int(self.library_handle.G2Diagnostic_getLogicalCores())

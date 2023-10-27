@@ -8,8 +8,10 @@ from typing import Any
 
 def as_normalized_int(candidate_value: Any) -> int:
     """
-    Internal processing function
-    This converts many types of values to an integer
+    Internal processing function.
+    This converts many types of values to an integer.
+
+    :meta private:
     """
 
     if candidate_value is None:  # handle null string
@@ -27,7 +29,11 @@ def as_normalized_int(candidate_value: Any) -> int:
 
 
 def as_normalized_string(candidate_value: Any) -> Any:
-    """Internal processing function"""
+    """
+    Internal processing function.
+
+    :meta private:
+    """
 
     if candidate_value is None:  # handle null string
         return b""
@@ -44,7 +50,11 @@ def as_normalized_string(candidate_value: Any) -> Any:
 
 
 def find_file_in_path(filename: str) -> str:
-    """Find a file in the PATH environment variable"""
+    """
+    Find a file in the PATH environment variable.
+
+    :meta private:
+    """
     path_dirs = os.environ["PATH"].split(os.pathsep)
     for path_dir in path_dirs:
         file_path = os.path.join(path_dir, filename)
