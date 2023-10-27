@@ -23,8 +23,6 @@ def g2diag_instance(engine_vars):
 def test_get_db_info(g2diag_instance):
     """Test physical core count."""
     actual = g2diag_instance.get_db_info()
-    print()
-    print(type(actual))
     print(f"{actual = }")
     assert actual == actual
 
