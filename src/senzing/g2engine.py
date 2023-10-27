@@ -4,26 +4,13 @@
 TODO: g2engine.py
 """
 
-# Import from standard library. https://docs.python.org/3/library/
-
+import ctypes
+import os
 from typing import Any, Tuple
 
 from .g2engine_abstract import G2EngineAbstract
-
-# from ctypes import *
-# import functools
-# import json
-# import os
-# import threading
-# import warnings
-
-# Import from https://pypi.org/
-
-# Import from Senzing.
-
-# from .g2exception import translate_exception
-# from .g2engineflags import G2EngineFlags
-
+from .g2exception import G2Exception, new_g2exception
+from .g2helpers import find_file_in_path
 
 # Metadata
 
@@ -33,6 +20,11 @@ __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+CALLER_SKIP = 6
+
+# -----------------------------------------------------------------------------
+# Classes that are result structures from calls to Senzing
+# -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
 # G2Engine class
@@ -54,7 +46,7 @@ class G2Engine(G2EngineAbstract):
         ini_params: str,
         verbose_logging: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -67,6 +59,30 @@ class G2Engine(G2EngineAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
+        try:
+            if os.name == "nt":
+                self.library_handle = ctypes.cdll.LoadLibrary(
+                    find_file_in_path("G2.dll")
+                )
+            else:
+                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+        except OSError as err:
+            raise G2Exception("Failed to load the G2 library") from err
+
+        # Initialize C function input parameters and results.
+        # Must be synchronized with g2/sdk/c/libg2engine.h
+
+        self.library_handle.G2Engine_clearLastException.argtypes = []
+        self.library_handle.G2Engine_clearLastException.restype = None
+        self.library_handle.G2Engine_getLastException.argtypes = [
+            ctypes.POINTER(ctypes.c_char),
+            ctypes.c_size_t,
+        ]
+        self.library_handle.G2Engine_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+
+        # Initialize Senzing engine.
+
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
@@ -78,9 +94,33 @@ class G2Engine(G2EngineAbstract):
     # -------------------------------------------------------------------------
 
     def fake_g2engine(self, *args: Any, **kwargs: Any) -> None:
-        """TODO: Remove once SDK methods have been implemented."""
+        """
+        TODO: Remove once SDK methods have been implemented.
+
+        :meta private:
+        """
         if len(args) + len(kwargs) > 2000:
             print(self.noop)
+
+    # -------------------------------------------------------------------------
+    # Exception helpers
+    # -------------------------------------------------------------------------
+
+    def new_exception(self, error_id: int, *args: Any) -> Exception:
+        """
+        Generate a new exception based on the error_id.
+
+        :meta private:
+        """
+        return new_g2exception(
+            self.library_handle.G2Engine_getLastException,
+            self.library_handle.G2Engine_clearLastException,
+            SENZING_PRODUCT_ID,
+            error_id,
+            self.ID_MESSAGES,
+            CALLER_SKIP,
+            *args,
+        )
 
     # -------------------------------------------------------------------------
     # G2Engine methods
@@ -93,7 +133,7 @@ class G2Engine(G2EngineAbstract):
         json_data: str,
         load_id: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id)
 
@@ -105,7 +145,7 @@ class G2Engine(G2EngineAbstract):
         load_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
         return "string"
@@ -123,7 +163,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         load_id: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, load_id)
 
@@ -134,7 +174,7 @@ class G2Engine(G2EngineAbstract):
         load_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, load_id, flags)
         return "string"
@@ -176,7 +216,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
@@ -189,7 +229,7 @@ class G2Engine(G2EngineAbstract):
         max_entities: int,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             entity_list, max_degree, build_out_degree, max_entities, flags
@@ -203,7 +243,7 @@ class G2Engine(G2EngineAbstract):
         build_out_degree: int,
         max_entities: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_list, max_degree, build_out_degree, max_entities)
         return "string"
@@ -216,7 +256,7 @@ class G2Engine(G2EngineAbstract):
         max_entities: int,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             record_list, max_degree, build_out_degree, max_entities, flags
@@ -230,7 +270,7 @@ class G2Engine(G2EngineAbstract):
         build_out_degree: int,
         max_entities: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(record_list, max_degree, build_out_degree, max_entities)
         return "string"
@@ -242,7 +282,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree, flags)
         return "string"
@@ -253,7 +293,7 @@ class G2Engine(G2EngineAbstract):
         entity_id_2: int,
         max_degree: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree)
         return "string"
@@ -267,7 +307,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1,
@@ -287,7 +327,7 @@ class G2Engine(G2EngineAbstract):
         record_id_2: str,
         max_degree: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
@@ -302,7 +342,7 @@ class G2Engine(G2EngineAbstract):
         excluded_entities: str,
         flags: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             entity_id_1, entity_id_2, max_degree, excluded_entities, flags
@@ -316,7 +356,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_entities: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree, excluded_entities)
         return "string"
@@ -331,7 +371,7 @@ class G2Engine(G2EngineAbstract):
         excluded_records: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1,
@@ -353,7 +393,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_records: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1,
@@ -374,7 +414,7 @@ class G2Engine(G2EngineAbstract):
         required_dsrcs: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             entity_id_1,
@@ -394,7 +434,7 @@ class G2Engine(G2EngineAbstract):
         excluded_entities: str,
         required_dsrcs: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
@@ -412,7 +452,7 @@ class G2Engine(G2EngineAbstract):
         required_dsrcs: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1,
@@ -436,7 +476,7 @@ class G2Engine(G2EngineAbstract):
         excluded_records: str,
         required_dsrcs: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1,
@@ -469,7 +509,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
@@ -486,7 +526,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
@@ -533,7 +573,7 @@ class G2Engine(G2EngineAbstract):
         ini_params: str,
         verbose_logging: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(module_name, ini_params, verbose_logging)
 
@@ -544,7 +584,7 @@ class G2Engine(G2EngineAbstract):
         init_config_id: int,
         verbose_logging: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(module_name, ini_params, init_config_id, verbose_logging)
 
@@ -580,7 +620,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, flags)
 
@@ -590,7 +630,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
@@ -605,7 +645,7 @@ class G2Engine(G2EngineAbstract):
         json_data: str,
         load_id: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id)
 
@@ -617,7 +657,7 @@ class G2Engine(G2EngineAbstract):
         load_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
         return "string"
@@ -664,7 +704,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
@@ -683,7 +723,7 @@ class G2Engine(G2EngineAbstract):
         record_id_2: str,
         flags: int,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, flags
@@ -697,7 +737,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code_2: str,
         record_id_2: str,
         *args: Any,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2

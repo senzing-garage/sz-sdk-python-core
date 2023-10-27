@@ -4,21 +4,13 @@
 TODO: g2diagnostic.py
 """
 
-# Import from standard library. https://docs.python.org/3/library/
-
 import ctypes
 import os
-import threading
 from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
-from .g2exception import G2Exception, translate_exception
-from .g2helpers import as_normalized_int, as_normalized_string
-
-# Import from https://pypi.org/
-
-# Import from Senzing.
-
+from .g2exception import G2Exception, new_g2exception
+from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
 
 # Metadata
 
@@ -28,47 +20,21 @@ __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-
+CALLER_SKIP = 6
 
 # -----------------------------------------------------------------------------
-# Utility functions
+# Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
-
-
-def find_file_in_path(filename: str) -> str:
-    """Find a file in the PATH environment variable"""
-    path_dirs = os.environ["PATH"].split(os.pathsep)
-    for path_dir in path_dirs:
-        file_path = os.path.join(path_dir, filename)
-        if os.path.exists(file_path):
-            return file_path
-    return ""
 
 
 class G2diagnosticGetdbinfoResult(ctypes.Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
     # pylint: disable=R0903
-    _fields_ = [("response", ctypes.c_char_p), ("returnCode", ctypes.c_longlong)]
-
-
-# -----------------------------------------------------------------------------
-# Utility classes
-# -----------------------------------------------------------------------------
-
-
-class ErrorBuffer(threading.local):
-    """Buffer to call C"""
-
-    # pylint: disable=R0903
-
-    def __init__(self) -> None:
-        super().__init__()
-        self.string_buffer = ctypes.create_string_buffer(65535)
-        self.string_buffer_size = ctypes.sizeof(self.string_buffer)
-
-
-ERROR_BUFFER = ErrorBuffer()
+    _fields_ = [
+        ("response", ctypes.POINTER(ctypes.c_char)),
+        ("return_code", ctypes.c_longlong),
+    ]
 
 
 # -----------------------------------------------------------------------------
@@ -114,6 +80,31 @@ class G2Diagnostic(G2DiagnosticAbstract):
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
+        # Initialize C function input parameters and results.
+        # Must be synchronized with g2/sdk/c/libg2diagnostic.h
+
+        self.library_handle.G2Diagnostic_clearLastException.argtypes = []
+        self.library_handle.G2Diagnostic_clearLastException.restype = None
+        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
+        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
+            G2diagnosticGetdbinfoResult
+        )
+        self.library_handle.G2Diagnostic_getLastException.argtypes = [
+            ctypes.POINTER(ctypes.c_char),
+            ctypes.c_size_t,
+        ]
+        self.library_handle.G2Diagnostic_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
+        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
+        self.library_handle.G2Diagnostic_init.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_int,
+        ]
+        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+
+        # Initialize Senzing engine.
+
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
@@ -134,16 +125,24 @@ class G2Diagnostic(G2DiagnosticAbstract):
             print(self.noop)
 
     # -------------------------------------------------------------------------
-    # Helper methods
+    # Exception helpers
     # -------------------------------------------------------------------------
 
-    def determine_exception(self, *args: Any, **kwargs: Any) -> Exception:
-        """Construct the Exception."""
-        self.library_handle.G2Diagnostic_getLastException(
-            ERROR_BUFFER.string_buffer, ctypes.sizeof(ERROR_BUFFER.string_buffer)
+    def new_exception(self, error_id: int, *args: Any) -> Exception:
+        """
+        Generate a new exception based on the error_id.
+
+        :meta private:
+        """
+        return new_g2exception(
+            self.library_handle.G2Diagnostic_getLastException,
+            self.library_handle.G2Diagnostic_clearLastException,
+            SENZING_PRODUCT_ID,
+            error_id,
+            self.ID_MESSAGES,
+            CALLER_SKIP,
+            *args,
         )
-        print(">>>>>>", ERROR_BUFFER.string_buffer.value)
-        return Exception(translate_exception(str(ERROR_BUFFER.string_buffer.value)))
 
     # -------------------------------------------------------------------------
     # G2Diagnostic methods
@@ -161,47 +160,20 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return 0
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
-        # print(">>>> enter get_db_info")
-        # self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
-        # self.library_handle.G2Diagnostic_getDBInfo_helper.restype = ctypes.POINTER(
-        #     G2diagnosticGetdbinfoResult
-        # )
-        # print(">>>> 1 get_db_info")
-
-        # g2diagnostic_get_db_info_result = (
-        #     self.library_handle.G2Diagnostic_getDBInfo_helper()
-        # )
-        # print(">>>> 2 get_db_info")
-
-        # pprint(inspect.getmembers(g2diagnostic_get_db_info_result))
-        # print(">>>> 2.1 get_db_info")
-
-        # pprint(inspect.getmembers(g2diagnostic_get_db_info_result.contents))
-
-        # print(vars(g2diagnostic_get_db_info_result))
-        # print(">>>> 3 get_db_info")
-
-        # address = self.library_handle.G2Diagnostic_getDBInfo_helper()
-
-        # print("address:", type(address))
-        # p = G2diagnosticGetdbinfoResult.from_address(address)
-        # print("p", type(p))
-        # print(p.returnCode)
-
-        # p = G2diagnosticGetdbinfoResult.from_address()
-        # _result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        # result = _result.response
-        # print(">>>>>>", result)
-        # return "mjd was here"
-        self.fake_g2diagnostic()
-        return "string"
+        result = self.library_handle.G2Diagnostic_getDBInfo_helper()
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4007, result.return_code)
+            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
-        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
         return int(self.library_handle.G2Diagnostic_getLogicalCores())
 
     def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
-        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
         return int(self.library_handle.G2Diagnostic_getPhysicalCores())
 
     def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
@@ -216,18 +188,15 @@ class G2Diagnostic(G2DiagnosticAbstract):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        self.library_handle.G2Diagnostic_init.argtypes = [
-            ctypes.c_char_p,
-            ctypes.c_char_p,
-            ctypes.c_int,
-        ]
         result = self.library_handle.G2Diagnostic_init(
             as_normalized_string(module_name),
             as_normalized_string(ini_params),
             as_normalized_int(verbose_logging),
         )
         if result < 0:
-            raise self.determine_exception()
+            raise self.new_exception(
+                4018, module_name, ini_params, verbose_logging, result
+            )
 
     def init_with_config_id(
         self,

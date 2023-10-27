@@ -2,13 +2,16 @@
 TODO: g2helpers.py
 """
 
+import os
 from typing import Any
 
 
 def as_normalized_int(candidate_value: Any) -> int:
     """
-    Internal processing function
-    This converts many types of values to an integer
+    Internal processing function.
+    This converts many types of values to an integer.
+
+    :meta private:
     """
 
     if candidate_value is None:  # handle null string
@@ -26,7 +29,11 @@ def as_normalized_int(candidate_value: Any) -> int:
 
 
 def as_normalized_string(candidate_value: Any) -> Any:
-    """Internal processing function"""
+    """
+    Internal processing function.
+
+    :meta private:
+    """
 
     if candidate_value is None:  # handle null string
         return b""
@@ -40,3 +47,17 @@ def as_normalized_string(candidate_value: Any) -> Any:
         return str(candidate_value).encode("utf-8")
     # input is already a str
     return candidate_value
+
+
+def find_file_in_path(filename: str) -> str:
+    """
+    Find a file in the PATH environment variable.
+
+    :meta private:
+    """
+    path_dirs = os.environ["PATH"].split(os.pathsep)
+    for path_dir in path_dirs:
+        file_path = os.path.join(path_dir, filename)
+        if os.path.exists(file_path):
+            return file_path
+    return ""
