@@ -634,6 +634,7 @@ EXCEPTION_MAP = {
     9802: G2ConfigurationException,
     # EAS_ERR_CALC_CONFIGCHKSUM_AND_PARAMSTORE_CONFIGCHKSUM_DONT_MATCH                       "The calculated configuration checksum [{0}] does not match the CONFIGURATION_CHECKSUM value in the parameter store [{1}]."
     9803: G2ConfigurationException,
+    9999: Exception,
     30011: G2Exception,  # EAS_ERR_DELETE_WITH_RESOLVE_ONLY                                                       "Cannot delete an entity with type RESOLVE_ONLY"
     30101: G2Exception,  # EAS_ERR_INVALID_SESSION_HANDLE                                                         "Invalid Session Handle [{0}]"
     30102: G2Exception,  # EAS_ERR_INVALID_REPORT_HANDLE                                                          "Invalid Report Handle [{0}]"
@@ -719,8 +720,14 @@ def get_senzing_error_code(error_text: str) -> int:
 
     :meta private:
     """
+    if len(error_text) == 0:
+        return 0
     exception_message_splits = error_text.split("|", 1)
-    result = int(exception_message_splits[0].strip().rstrip("EIW"))
+    try:
+        result = int(exception_message_splits[0].strip().rstrip("EIW"))
+    except ValueError:
+        print("ERROR: Could not parse error text '{error_text}'")
+        result = 9999
     assert isinstance(result, int)
     return result
 

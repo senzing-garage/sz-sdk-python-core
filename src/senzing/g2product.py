@@ -50,7 +50,6 @@ class G2Product(G2ProductAbstract):
 
         self.ini_params = ini_params
         self.module_name = module_name
-        self.noop = ""
         self.verbose_logging = verbose_logging
 
         try:
@@ -144,7 +143,7 @@ class G2Product(G2ProductAbstract):
             )
 
     def license(self, *args: Any, **kwargs: Any) -> str:
-        return self.library_handle.G2Product_license().decode()
+        return str(self.library_handle.G2Product_license().decode())
 
     def version(self, *args: Any, **kwargs: Any) -> str:
-        return self.library_handle.G2Product_version().decode()
+        return str(self.library_handle.G2Product_version().decode())

@@ -71,7 +71,8 @@ pylint:
 
 .PHONY: mypy
 mypy:
-	mypy --strict $(shell git ls-files '*.py')
+	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
+
 
 # -----------------------------------------------------------------------------
 # Documentation
