@@ -65,9 +65,11 @@ dependencies: dependencies-osarch-specific
 .PHONY: test
 test: test-osarch-specific
 
+
 .PHONY: pylint
 pylint:
 	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*')
+
 
 .PHONY: mypy
 mypy:
