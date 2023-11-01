@@ -13,7 +13,7 @@ def engine_vars():
     Can be used by all pytest tests.
     """
 
-    result = {"ENGINE_MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
+    engine_vars = {"ENGINE_MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
 
     linux_config = {
         "PIPELINE": {
@@ -54,12 +54,12 @@ def engine_vars():
     run_platform = platform.system()
 
     if run_platform == "Linux":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(linux_config)
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(linux_config)
     elif run_platform == "Darwin":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(darwin_config)
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(darwin_config)
     elif run_platform == "Windows":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(windows_config)
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps(windows_config)
     else:
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps({})
+        engine_vars["ENGINE_CONFIGURATION_JSON"] = json.dumps({})
 
-    return result
+    return engine_vars
