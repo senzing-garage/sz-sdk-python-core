@@ -107,9 +107,6 @@ class G2ProductAbstract(ABC):
                 :linenos:
                 :language: python
 
-
-            >>>  Some output
-            >>>  Some more
         """
 
     @abstractmethod
