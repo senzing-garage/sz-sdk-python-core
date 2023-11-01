@@ -114,7 +114,7 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def license(self, *args: Any, **kwargs: Any) -> str:
         """
-        The `license` method retrieves information about the currently used license by the Senzing API. 2
+        The `license` method retrieves information about the currently used license by the Senzing API.
 
         Returns:
             str: A JSON document containing Senzing license metadata.
