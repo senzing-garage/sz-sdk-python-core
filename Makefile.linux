@@ -39,7 +39,7 @@ test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
 	@pytest tests/ --verbose --capture=no --cov=src/senzing
 	@echo "--- Test examples ----------------------------------------------------"
-	@pytest examples/ --verbose --capture=no --cov=src/senzing
+	python3 -m unittest examples/*.py
 
 
 .PHONY: view-sphinx-osarch-specific
