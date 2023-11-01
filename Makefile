@@ -76,6 +76,10 @@ mypy:
 	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
 
 
+.PHONY: pytest
+pytest:
+	@pytest --cov=src/senzing --cov-report=xml  tests
+
 # -----------------------------------------------------------------------------
 # Documentation
 # -----------------------------------------------------------------------------
@@ -92,7 +96,7 @@ pydoc-web:
 
 .PHONY: sphinx
 sphinx:
-	@cd docs; make html
+	@cd docs; rm -rf build; make html
 
 
 .PHONY: view-sphinx

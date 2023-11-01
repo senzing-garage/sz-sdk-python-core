@@ -5,7 +5,6 @@ import json
 import pytest
 from pytest_schema import Regex, schema
 
-# sys.path.append("/home/senzing/senzing.git/g2-sdk-python-next/src")
 from senzing import g2product
 
 # -----------------------------------------------------------------------------
@@ -15,12 +14,13 @@ from senzing import g2product
 
 @pytest.fixture
 def g2product_instance(engine_vars):
-    """Single engine object to use for all tests.
-    engine_vars is returned from conftest.pys"""
+    """
+    Single engine object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
     result = g2product.G2Product(
         engine_vars["ENGINE_MODULE_NAME"],
         engine_vars["ENGINE_CONFIGURATION_JSON"],
-        engine_vars["ENGINE_VERBOSE_LOGGING"],
     )
     return result
 
@@ -66,13 +66,12 @@ version_schema = {
 
 
 def test_exception(g2product_instance):
-    """Test Senzing license."""
-    print("MJD was here!")
+    """Test exceptions."""
     actual = g2product_instance.new_exception(0)
     assert isinstance(actual, Exception)
 
 
-def test_init_and_destroy(g2product_instance):
+def test_init_and_destroy_1(g2product_instance):
     """Test Senzing license."""
     g2product_instance.init("Example", "{}", 0)
     g2product_instance.destroy()
