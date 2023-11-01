@@ -37,6 +37,7 @@ extensions = [
     "autodocsumm",  # to generate tables of functions, attributes, methods, etc.
     "sphinx_toolbox.collapse",  # support collapsable sections
     "sphinx.ext.autodoc",  # automatically generate documentation for modules
+    "sphinx.ext.autosectionlabel",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",  # to read Google-style or Numpy-style docstrings

@@ -4,8 +4,9 @@
 TODO: g2product_abstract.py
 """
 
+import json
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, cast
 
 # Metadata
 
@@ -162,3 +163,16 @@ class G2ProductAbstract(ABC):
     # -------------------------------------------------------------------------
     # Convenience methods
     # -------------------------------------------------------------------------
+
+    def version_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        """
+        A convenience method for
+        :ref`version<version>`.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
+        """
+        return cast(
+            Dict[str, Any],
+            json.loads(self.version(args, kwargs)),
+        )

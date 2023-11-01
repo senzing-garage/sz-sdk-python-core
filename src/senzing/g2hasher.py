@@ -11,6 +11,7 @@ from typing import Any
 from .g2exception import G2Exception, new_g2exception
 from .g2hasher_abstract import G2HasherAbstract
 from .g2helpers import find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -59,13 +60,19 @@ class G2Hasher(G2HasherAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
+
         try:
             if os.name == "nt":
                 self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
+                    find_file_in_path("G2Hasher.dll")
                 )
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = ctypes.cdll.LoadLibrary("libG2Hasher.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -79,7 +86,6 @@ class G2Hasher(G2HasherAbstract):
             ctypes.c_size_t,
         ]
         self.library_handle.G2Hasher_getLastException.restype = ctypes.c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
         # Initialize Senzing engine.
 

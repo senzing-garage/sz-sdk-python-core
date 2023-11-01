@@ -5,6 +5,9 @@ TODO: g2helpers.py
 import os
 from typing import Any
 
+SENZING_VERSION_MINIMUM = "4.0.0"
+SENZING_VERSION_MAXIMUM = "5.0.0"
+
 
 def as_normalized_int(candidate_value: Any) -> int:
     """

@@ -71,7 +71,7 @@ def test_exception(g2product_instance):
     assert isinstance(actual, Exception)
 
 
-def test_init_and_destroy_1(g2product_instance):
+def test_init_and_destroy(g2product_instance):
     """Test Senzing license."""
     g2product_instance.init("Example", "{}", 0)
     g2product_instance.destroy()

@@ -1,14 +1,36 @@
-#! /usr/bin/env python3
+# pylint: disable=redefined-outer-name
 
-"""
+
+import pytest
+
+from senzing import g2hasher
+
 # -----------------------------------------------------------------------------
-# g2hasher_test.py
+# G2Product fixtures
 # -----------------------------------------------------------------------------
-"""
 
-# Import from standard library. https://docs.python.org/3/library/
 
-import unittest
+@pytest.fixture
+def g2hasher_instance(engine_vars):
+    """
+    Single engine object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+    result = g2hasher.G2Hasher(
+        engine_vars["ENGINE_MODULE_NAME"],
+        engine_vars["ENGINE_CONFIGURATION_JSON"],
+        0,
+    )
+    return result
 
-if __name__ == "__main__":
-    unittest.main()
+
+# -----------------------------------------------------------------------------
+# G2Hasher testcases
+# -----------------------------------------------------------------------------
+
+
+def test_process(g2hasher_instance):
+    """Test Senzing license."""
+    actual = g2hasher_instance.process("")
+    assert isinstance(actual, str)
+    assert actual == "response"
