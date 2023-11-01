@@ -23,12 +23,6 @@ clean-osarch-specific:
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
 
 
-	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
-
-	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
-	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
-
-
 .PHONY: dependencies-osarch-specific
 dependencies-osarch-specific:
 	python3 -m pip install --upgrade pip
