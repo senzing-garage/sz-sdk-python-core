@@ -14,8 +14,8 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
 import os
+from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
@@ -119,38 +119,35 @@ class G2Product(G2ProductAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
-
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
         self.library_handle.G2Product_clearLastException.argtypes = []
         self.library_handle.G2Product_clearLastException.restype = None
         self.library_handle.G2Product_destroy.argtypes = []
-        self.library_handle.G2Product_destroy.restype = ctypes.c_longlong
+        self.library_handle.G2Product_destroy.restype = c_longlong
         self.library_handle.G2Product_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Product_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2Product_getLastException.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [
-            ctypes.c_char_p,
-            ctypes.c_char_p,
-            ctypes.c_int,
+            c_char_p,
+            c_char_p,
+            c_int,
         ]
-        self.library_handle.G2Product_init.restype = ctypes.c_longlong
+        self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
-        self.library_handle.G2Product_license.restype = ctypes.c_char_p
+        self.library_handle.G2Product_license.restype = c_char_p
         self.library_handle.G2Product_version.argtypes = []
-        self.library_handle.G2Product_version.restype = ctypes.c_char_p
+        self.library_handle.G2Product_version.restype = c_char_p
 
         # Optionally, initialize Senzing engine.
 
