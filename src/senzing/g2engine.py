@@ -330,219 +330,206 @@ class G2Engine(G2EngineAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2engine.h
 
-# -------------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------------
-
-
         self.library_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
         self.library_handle.G2_addRecord.restype = c_int
-        self.library_handle.G2_addRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_addRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self.library_handle.G2_addRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_addRecordWithInfo_helper.restype = (G2AddRecordWithInfoResult)
         self.library_handle.G2_addRecordWithInfoWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def3]
         self.library_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
         self.library_handle.G2_addRecordWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_size_t]
         self.library_handle.G2_checkRecord.argtypes = [c_char_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_clearLastException.argtypes = []
         self.library_handle.G2_clearLastException.restype = None
-        self.library_handle.G2_closeExport.argtypes = [c_void_p]
-        self.library_handle.G2_closeExport.restype = c_int
-        self.library_handle.G2_deleteRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_exportConfig.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_exportCSVEntityReport.argtypes = [c_char_p, c_longlong, POINTER(c_void_p)]
-        self.library_handle.G2_exportCSVEntityReport.restype = c_int
-        self.library_handle.G2_exportJSONEntityReport.argtypes = [c_longlong, POINTER(c_void_p)]
-        self.library_handle.G2_exportJSONEntityReport.restype = c_int
-        self.library_handle.G2_fetchNext.argtypes = [c_void_p, c_char_p, c_size_t]
-        self.library_handle.G2_fetchNext.restype = c_int
-        self.library_handle.G2_findInterestingEntitiesByEntityID.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findInterestingEntitiesByEntityID.restype = c_int
-        self.library_handle.G2_findInterestingEntitiesByRecordID.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findInterestingEntitiesByRecordID.restype = c_int
-        self.library_handle.G2_findNetworkByEntityID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findNetworkByEntityID_V2.restype = c_int
-        self.library_handle.G2_findNetworkByRecordID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findNetworkByRecordID_V2.restype = c_int
-        self.library_handle.G2_findPathByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathByEntityID_V2.restype = c_int
-        self.library_handle.G2_findPathByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathByRecordID_V2.restype = c_int
-        self.library_handle.G2_findPathExcludingByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathExcludingByEntityID_V2.restype = c_int
-        self.library_handle.G2_findPathExcludingByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathExcludingByRecordID_V2.restype = c_int
-        self.library_handle.G2_findPathIncludingSourceByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathIncludingSourceByEntityID_V2.restype = c_int
-        self.library_handle.G2_findPathIncludingSourceByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_findPathIncludingSourceByRecordID_V2.restype = c_int
-        self.library_handle.G2_getActiveConfigID.argtypes = [POINTER(c_longlong)]
-        self.library_handle.G2_getEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_getEntityByEntityID_V2.restype = c_int
-        self.library_handle.G2_getEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_getEntityByRecordID_V2.restype = c_int
+#       self.library_handle.G2_closeExport.argtypes = [c_void_p]
+#       self.library_handle.G2_closeExport.restype = c_int
+        self.library_handle.G2_closeExport_helper.argtypes = [c_uintptr_t]  # TODO: This may not be correct.
+        self.library_handle.G2_closeExport_helper.restype = c_longlong
+#       self.library_handle.G2_deleteRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_deleteRecordWithInfo_helper.restype = (G2DeleteRecordWithInfoResult)
+#       self.library_handle.G2_exportConfig.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self.library_handle.G2_exportConfig_helper.argtypes = []
+        self.library_handle.G2_exportConfig_helper.restype = (G2ExportConfigResult)
+        self.library_handle.G2_exportConfigAndConfigID_helper.argtypes = []
+        self.library_handle.G2_exportConfigAndConfigID_helper.restype = (G2ExportConfigAndConfigIDResult)
+#       self.library_handle.G2_exportCSVEntityReport.argtypes = [c_char_p, c_longlong, POINTER(c_void_p)]
+#       self.library_handle.G2_exportCSVEntityReport.restype = c_int
+        self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_exportCSVEntityReport_helper.restype = (G2ExportCSVEntityReportResult)
+#       self.library_handle.G2_exportJSONEntityReport.argtypes = [c_longlong, POINTER(c_void_p)]
+#       self.library_handle.G2_exportJSONEntityReport.restype = c_int
+        self.library_handle.G2_exportJSONEntityReport_helper.argtypes = [c_longlong]
+        self.library_handle.G2_exportJSONEntityReport_helper.restype = (G2ExportJSONEntityReportResult)
+#       self.library_handle.G2_fetchNext.argtypes = [c_void_p, c_char_p, c_size_t]
+#       self.library_handle.G2_fetchNext.restype = c_int
+        self.library_handle.G2_fetchNext_helper.argtypes = [c_uintptr_t] # TODO: This may not be correct.
+        self.library_handle.G2_fetchNext_helper.restype = (G2FetchNextResult)
+#       self.library_handle.G2_findInterestingEntitiesByEntityID.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findInterestingEntitiesByEntityID.restype = c_int
+        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.restype = (G2FindInterestingEntitiesByEntityIDResult)
+#       self.library_handle.G2_findInterestingEntitiesByRecordID.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findInterestingEntitiesByRecordID.restype = c_int
+        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.restype = (G2FindInterestingEntitiesByRecordIDResult)
+        self.library_handle.G2_findNetworkByEntityID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByEntityID_helper.restype = (G2FindNetworkByEntityIDResult)
+#       self.library_handle.G2_findNetworkByEntityID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findNetworkByEntityID_V2.restype = c_int
+        self.library_handle.G2_findNetworkByEntityID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByEntityID_V2_helper.restype = (G2_findNetworkByEntityID_V2_result)
+        self.library_handle.G2_findNetworkByRecordID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByRecordID_helper.restype = (G2_findNetworkByRecordID_result)
+#       self.library_handle.G2_findNetworkByRecordID_V2.argtypes = [c_char_p, c_int, c_int, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findNetworkByRecordID_V2.restype = c_int
+        self.library_handle.G2_findNetworkByRecordID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByRecordID_V2_helper.restype = (G2FindNetworkByRecordID_V2Result)
+        self.library_handle.G2_findPathByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByEntityID_helper.restype = (G2FindPathByEntityIDResult)
+#       self.library_handle.G2_findPathByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathByEntityID_V2.restype = c_int
+        self.library_handle.G2_findPathByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByEntityID_V2_helper.restype = (G2FindPathByEntityID_V2Result)
+        self.library_handle.G2_findPathByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findPathByRecordID_helper.restype = (G2FindPathByRecordIDResult)
+#       self.library_handle.G2_findPathByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathByRecordID_V2.restype = c_int
+        self.library_handle.G2_findPathByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByRecordID_V2_helper.restype = (G2_findPathByRecordID_V2_result)
+        self.library_handle.G2_findPathExcludingByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p]
+        self.library_handle.G2_findPathExcludingByEntityID_helper.restype = (G2FindPathExcludingByEntityIDResult)
+#       self.library_handle.G2_findPathExcludingByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathExcludingByEntityID_V2.restype = c_int
+        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_longlong]
+        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.restype = (G2FindPathExcludingByEntityID_V2Result)
+        self.library_handle.G2_findPathExcludingByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p]
+        self.library_handle.G2_findPathExcludingByRecordID_helper.restype = (G2FindPathExcludingByRecordIDResult)
+#       self.library_handle.G2_findPathExcludingByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathExcludingByRecordID_V2.restype = c_int
+        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_longlong]
+        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.restype = (G2FindPathExcludingByRecordID_V2Result)
+        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p]
+        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.restype = (G2FindPathIncludingSourceByEntityIDResult)
+#       self.library_handle.G2_findPathIncludingSourceByEntityID_V2.argtypes = [c_longlong, c_longlong, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathIncludingSourceByEntityID_V2.restype = c_int
+        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.restype = (G2FindPathIncludingSourceByEntityID_V2Result)
+        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p]
+        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.restype = (G2FindPathIncludingSourceByRecordIDResult)
+#       self.library_handle.G2_findPathIncludingSourceByRecordID_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_int, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_findPathIncludingSourceByRecordID_V2.restype = c_int
+        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p, c_longlong]
+        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.restype = (G2FindPathIncludingSourceByRecordID_V2Result)
+#       self.library_handle.G2_getActiveConfigID.argtypes = [POINTER(c_longlong)]
+        self.library_handle.G2_getActiveConfigID_helper.argtypes = []
+        self.library_handle.G2_getActiveConfigID_helper.restype = (G2GetActiveConfigIDResult)
+        self.library_handle.G2_getEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_getEntityByEntityID_helper.restype = (G2GetEntityByEntityIDResult)
+#       self.library_handle.G2_getEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_getEntityByEntityID_V2.restype = c_int
+        self.library_handle.G2_getEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_getEntityByEntityID_V2_helper.restype = (G2GetEntityByEntityID_V2Result)
+        self.library_handle.G2_getEntityByRecordID_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2_getEntityByRecordID_helper.restype = (G2GetEntityByRecordIDResult)
+#       self.library_handle.G2_getEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_getEntityByRecordID_V2.restype = c_int
+        self.library_handle.G2_getEntityByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_getEntityByRecordID_V2_helper.restype = (G2GetEntityByRecordID_V2Result)
         self.library_handle.G2_getLastException.argtypes = [ctypes.POINTER(ctypes.c_char),ctypes.c_size_t,]
         self.library_handle.G2_getLastException.restype = ctypes.c_longlong
         self.library_handle.G2_getLastExceptionCode.argtypes = []
         self.library_handle.G2_getLastExceptionCode.restype = c_int
-        self.library_handle.G2_getRecord_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_getRecord_V2.restype = c_int
-        self.library_handle.G2_getRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_getRedoRecord.restype = c_int
-        self.library_handle.G2_getRepositoryLastModifiedTime.argtypes = [POINTER(c_longlong)]
-        self.library_handle.G2_getVirtualEntityByRecordID_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_getVirtualEntityByRecordID_V2.restype = c_int
-        self.library_handle.G2_howEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_howEntityByEntityID_V2.restype = c_int
+        self.library_handle.G2_getRecord_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2_getRecord_helper.restype = (G2GetRecordResult)
+#       self.library_handle.G2_getRecord_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_getRecord_V2.restype = c_int
+        self.library_handle.G2_getRecord_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_getRecord_V2_helper.restype = (G2GetRecord_V2Result)
+#       self.library_handle.G2_getRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_getRedoRecord.restype = c_int
+        self.library_handle.G2_getRedoRecord_helper.argtypes = []
+        self.library_handle.G2_getRedoRecord_helper.restype = (G2GetRedoRecordResult)
+#       self.library_handle.G2_getRepositoryLastModifiedTime.argtypes = [POINTER(c_longlong)]
+        self.library_handle.G2_getRepositoryLastModifiedTime_helper.argtypes = []
+        self.library_handle.G2_getRepositoryLastModifiedTime_helper.restype = (G2GetRepositoryLastModifiedTimeResult)
+        self.library_handle.G2_getVirtualEntityByRecordID_helper.argtypes = [c_char_p]
+        self.library_handle.G2_getVirtualEntityByRecordID_helper.restype = (G2GetVirtualEntityByRecordIDResult)
+#       self.library_handle.G2_getVirtualEntityByRecordID_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_getVirtualEntityByRecordID_V2.restype = c_int
+        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.restype = (G2GetVirtualEntityByRecordID_V2Result)
+        self.library_handle.G2_howEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_howEntityByEntityID_helper.restype = (G2HowEntityByEntityIDResult)
+#       self.library_handle.G2_howEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_howEntityByEntityID_V2.restype = c_int
+        self.library_handle.G2_howEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_howEntityByEntityID_V2_helper.restype = (G2HowEntityByEntityID_V2Result)
         self.library_handle.G2_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2_initWithConfigID.argtypes = [c_char_p, c_char_p, c_longlong, c_int]
         self.library_handle.G2_process.argtypes = [c_char_p]
         self.library_handle.G2_process.restype = c_int
         self.library_handle.G2_processRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_processRedoRecord.restype = c_int
-        self.library_handle.G2_processWithInfo.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_reevaluateEntity.argtypes = [c_longlong, c_longlong]
-        self.library_handle.G2_reevaluateEntityWithInfo.argtypes = [c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_reevaluateRecord.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_reevaluateRecord.restype = c_int
-        self.library_handle.G2_reevaluateRecordWithInfo.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_reinit.argtypes = [c_longlong]
-        self.library_handle.G2_replaceRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_searchByAttributes_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_searchByAttributes_V3.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_stats.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyEntities_V2.argtypes = [c_longlong, c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyEntities_V2.restype = c_int
-        self.library_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyEntityByEntityID_V2.restype = c_int
-        self.library_handle.G2_whyEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyEntityByRecordID_V2.restype = c_int
-        self.library_handle.G2_whyRecordInEntity_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyRecordInEntity_V2.restype = c_int
-        self.library_handle.G2_whyRecords_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_whyRecords_V2.restype = c_int
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
-
-# -------------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------------
-# -------------------------------------------------------------------------------------------------------------------
-
-        self.library_handle.G2_addRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_addRecordWithInfo_helper.restype = (G2AddRecordWithInfoResult)
-        self.library_handle.G2_closeExport_helper.argtypes = [c_uintptr_t]  # TODO: This may not be correct.
-        self.library_handle.G2_closeExport_helper.restype = c_longlong
-        self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_deleteRecordWithInfo_helper.restype = (G2DeleteRecordWithInfoResult)
-        self.library_handle.G2_exportConfig_helper.argtypes = []
-        self.library_handle.G2_exportConfig_helper.restype = (G2ExportConfigResult)
-        self.library_handle.G2_exportConfigAndConfigID_helper.argtypes = []
-        self.library_handle.G2_exportConfigAndConfigID_helper.restype = (G2ExportConfigAndConfigIDResult)
-        self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [c_char_p, c_longlong]
-        self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [c_char_p, c_longlong]
-        self.library_handle.G2_exportCSVEntityReport_helper.restype = (G2ExportCSVEntityReportResult)
-        self.library_handle.G2_exportCSVEntityReport_helper.restype = (G2ExportCSVEntityReportResult)
-        self.library_handle.G2_exportJSONEntityReport_helper.argtypes = [c_longlong]
-        self.library_handle.G2_exportJSONEntityReport_helper.restype = (G2ExportJSONEntityReportResult)
-        self.library_handle.G2_fetchNext_helper.argtypes = [c_uintptr_t] # TODO: This may not be correct.
-        self.library_handle.G2_fetchNext_helper.restype = (G2FetchNextResult)
-        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.argtypes = [c_longlong, c_longlong]
-        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.restype = (G2FindInterestingEntitiesByEntityIDResult)
-        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.restype = (G2FindInterestingEntitiesByRecordIDResult)
-        self.library_handle.G2_findNetworkByEntityID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findNetworkByEntityID_helper.restype = (G2FindNetworkByEntityIDResult)
-        self.library_handle.G2_findNetworkByEntityID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findNetworkByEntityID_V2_helper.restype = (G2_findNetworkByEntityID_V2_result)
-        self.library_handle.G2_findNetworkByRecordID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findNetworkByRecordID_helper.restype = (G2_findNetworkByRecordID_result)
-        self.library_handle.G2_findNetworkByRecordID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findNetworkByRecordID_V2_helper.restype = (G2FindNetworkByRecordID_V2Result)
-        self.library_handle.G2_findPathByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findPathByEntityID_helper.restype = (G2FindPathByEntityIDResult)
-        self.library_handle.G2_findPathByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_longlong]
-        self.library_handle.G2_findPathByEntityID_V2_helper.restype = (G2FindPathByEntityID_V2Result)
-        self.library_handle.G2_findPathByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_findPathByRecordID_helper.restype = (G2FindPathByRecordIDResult)
-        self.library_handle.G2_findPathByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_longlong]
-        self.library_handle.G2_findPathByRecordID_V2_helper.restype = (G2_findPathByRecordID_V2_result)
-        self.library_handle.G2_findPathExcludingByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p]
-        self.library_handle.G2_findPathExcludingByEntityID_helper.restype = (G2FindPathExcludingByEntityIDResult)
-        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_longlong]
-        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.restype = (G2FindPathExcludingByEntityID_V2Result)
-        self.library_handle.G2_findPathExcludingByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p]
-        self.library_handle.G2_findPathExcludingByRecordID_helper.restype = (G2FindPathExcludingByRecordIDResult)
-        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_longlong]
-        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.restype = (G2FindPathExcludingByRecordID_V2Result)
-        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p]
-        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.restype = (G2FindPathIncludingSourceByEntityIDResult)
-        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.restype = (G2FindPathIncludingSourceByEntityID_V2Result)
-        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p]
-        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.restype = (G2FindPathIncludingSourceByRecordIDResult)
-        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p, c_longlong]
-        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.restype = (G2FindPathIncludingSourceByRecordID_V2Result)
-        self.library_handle.G2_getActiveConfigID_helper.argtypes = []
-        self.library_handle.G2_getActiveConfigID_helper.restype = (G2GetActiveConfigIDResult)
-        self.library_handle.G2_getEntityByEntityID_helper.argtypes = [c_longlong]
-        self.library_handle.G2_getEntityByEntityID_helper.restype = (G2GetEntityByEntityIDResult)
-        self.library_handle.G2_getEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
-        self.library_handle.G2_getEntityByEntityID_V2_helper.restype = (G2GetEntityByEntityID_V2Result)
-        self.library_handle.G2_getEntityByRecordID_helper.argtypes = [c_char_p, c_char_p]
-        self.library_handle.G2_getEntityByRecordID_helper.restype = (G2GetEntityByRecordIDResult)
-        self.library_handle.G2_getEntityByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_getEntityByRecordID_V2_helper.restype = (G2GetEntityByRecordID_V2Result)
-        self.library_handle.G2_getRecord_helper.argtypes = [c_char_p, c_char_p]
-        self.library_handle.G2_getRecord_helper.restype = (G2GetRecordResult)
-        self.library_handle.G2_getRecord_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2_getRecord_V2_helper.restype = (G2GetRecord_V2Result)
-        self.library_handle.G2_getRedoRecord_helper.argtypes = []
-        self.library_handle.G2_getRedoRecord_helper.restype = (G2GetRedoRecordResult)
-        self.library_handle.G2_getRepositoryLastModifiedTime_helper.argtypes = []
-        self.library_handle.G2_getRepositoryLastModifiedTime_helper.restype = (G2GetRepositoryLastModifiedTimeResult)
-        self.library_handle.G2_getVirtualEntityByRecordID_helper.argtypes = [c_char_p]
-        self.library_handle.G2_getVirtualEntityByRecordID_helper.restype = (G2GetVirtualEntityByRecordIDResult)
-        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.argtypes = [c_char_p, c_longlong]
-        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.restype = (G2GetVirtualEntityByRecordID_V2Result)
-        self.library_handle.G2_howEntityByEntityID_helper.argtypes = [c_longlong]
-        self.library_handle.G2_howEntityByEntityID_helper.restype = (G2HowEntityByEntityIDResult)
-        self.library_handle.G2_howEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
-        self.library_handle.G2_howEntityByEntityID_V2_helper.restype = (G2HowEntityByEntityID_V2Result)
+#       self.library_handle.G2_processWithInfo.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_processWithInfo_helper.argtypes = [c_char_p, c_longlong]
         self.library_handle.G2_processWithInfo_helper.restype = (G2ProcessWithInfoResult)
+        self.library_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self.library_handle.G2_reevaluateEntity.argtypes = [c_longlong, c_longlong]
+#       self.library_handle.G2_reevaluateEntityWithInfo.argtypes = [c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_reevaluateEntityWithInfo_helper.argtypes = [c_longlong, c_longlong]
         self.library_handle.G2_reevaluateEntityWithInfo_helper.restype = (G2ReevaluateEntityWithInfoResult)
+        self.library_handle.G2_reevaluateRecord.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_reevaluateRecord.restype = c_int
+#       self.library_handle.G2_reevaluateRecordWithInfo.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_reevaluateRecordWithInfo_helper.argtypes = [c_char_p, c_char_p,  c_longlong]
         self.library_handle.G2_reevaluateRecordWithInfo_helper.restype = (G2_ReevaluateRecordWithInfoResult)
+        self.library_handle.G2_reinit.argtypes = [c_longlong]
+#       self.library_handle.G2_replaceRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_replaceRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
         self.library_handle.G2_replaceRecordWithInfo_helper.restype = (G2ReplaceRecordWithInfoResult)
         self.library_handle.G2_searchByAttributes_helper.argtypes = [c_char_p]
         self.library_handle.G2_searchByAttributes_helper.restype = (G2SearchByAttributesResult)
+#       self.library_handle.G2_searchByAttributes_V2.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_searchByAttributes_V2_helper.argtypes = [c_char_p, c_longlong]
         self.library_handle.G2_searchByAttributes_V2_helper.restype = (G2SearchByAttributes_V2Result)
+        self.library_handle.G2_searchByAttributes_V3.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_stats.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_stats_helper.argtypes = []
         self.library_handle.G2_stats_helper.restype = (G2StatsResult)
         self.library_handle.G2_whyEntities_helper.argtypes = [c_longlong, c_longlong]
         self.library_handle.G2_whyEntities_helper.restype = (G2WhyEntitiesResult)
+#       self.library_handle.G2_whyEntities_V2.argtypes = [c_longlong, c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_whyEntities_V2.restype = c_int
         self.library_handle.G2_whyEntities_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong]
         self.library_handle.G2_whyEntities_V2_helper.restype = (G2WhyEntities_V2Result)
         self.library_handle.G2_whyEntityByEntityID_helper.argtypes = [c_longlong]
         self.library_handle.G2_whyEntityByEntityID_helper.restype = (G2WhyEntityByEntityIDResult)
+#       self.library_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_whyEntityByEntityID_V2.restype = c_int
         self.library_handle.G2_whyEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
         self.library_handle.G2_whyEntityByEntityID_V2_helper.restype = (G2WhyEntityByEntityID_V2Result)
         self.library_handle.G2_whyEntityByRecordID_helper.argtypes = [c_char_p, c_char_p]
         self.library_handle.G2_whyEntityByRecordID_helper.restype = (G2WhyEntityByRecordIDResult)
+#       self.library_handle.G2_whyEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_whyEntityByRecordID_V2.restype = c_int
         self.library_handle.G2_whyEntityByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.G2_whyEntityByRecordID_V2_helper.restype = (G2WhyEntityByRecordID_V2Result)
+        self.library_handle.G2_whyRecordInEntity_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        self.library_handle.G2_whyRecordInEntity_V2.restype = c_int
         self.library_handle.G2_whyRecords_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
         self.library_handle.G2_whyRecords_helper.restype = (G2WhyRecordsResult)
+#       self.library_handle.G2_whyRecords_V2.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+#       self.library_handle.G2_whyRecords_V2.restype = c_int
         self.library_handle.G2_whyRecords_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
         self.library_handle.G2_whyRecords_V2_helper.restype = (G2WhyRecords_V2Result)
+        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- Original list -----------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#--- Original list --------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-#
 # _DLEXPORT struct G2_addRecordWithInfo_result G2_addRecordWithInfo_helper(const char *dataSourceCode, const char *recordID, const char *jsonData, const char *loadID, const long long flags);
 # _DLEXPORT long long G2_closeExport_helper(uintptr_t responseHandle);
 # _DLEXPORT struct G2_deleteRecordWithInfo_result G2_deleteRecordWithInfo_helper(const char *dataSourceCode, const char *recordID, const char *loadID, const long long flags);
@@ -597,12 +584,10 @@ class G2Engine(G2EngineAbstract):
 # _DLEXPORT struct G2_whyEntityByRecordID_V2_result G2_whyEntityByRecordID_V2_helper(const char *dataSourceCode, const char *recordID, const long long flags);
 # _DLEXPORT struct G2_whyRecords_result G2_whyRecords_helper(const char *dataSourceCode1, const char *recordID1, const char *dataSourceCode2, const char *recordID2);
 # _DLEXPORT struct G2_whyRecords_V2_result G2_whyRecords_V2_helper(const char *dataSourceCode1, const char *recordID1, const char *dataSourceCode2, const char *recordID2, const long long flags);
-#
 
-
-        #-----------------------------------------------------------------------------------------------------------------------------------------------------------
-        #-----------------------------------------------------------------------------------------------------------------------------------------------------------
-        #-----------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
         # Initialize Senzing engine.
 
