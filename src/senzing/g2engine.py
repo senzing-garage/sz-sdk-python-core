@@ -21,13 +21,14 @@ from typing import Any, Tuple
 from .g2engine_abstract import G2EngineAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import find_file_in_path
+from ctypes import c_char_p, c_longlong, c_uint
 
 # Metadata
 
 __all__ = ["G2Engine"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-01"
+__updated__ = "2023-11-02"
 
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
@@ -37,22 +38,19 @@ CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exc
 # -----------------------------------------------------------------------------
 
 
-class G2AddRecordWithInfoRresult(ctypes.Structure):
+class G2ResponseReturnCodeResult(ctypes.Structure):
+    """Simple response, return_code structure"""
+    # pylint: disable=R0903
+    _fields_ = [
+        ("response", ctypes.POINTER(ctypes.c_char)),
+        ("return_code", ctypes.c_longlong),
+    ]
+
+class G2AddRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_addRecordWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-
-class G2DeleteRecordWithInfoResult(ctypes.Structure):
+class G2DeleteRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_deleteRecordWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
 class G2ExportConfigAndConfigIDResult(ctypes.Structure):
     """In golang_helpers.h G2_exportConfigAndConfigID_result"""
@@ -63,13 +61,8 @@ class G2ExportConfigAndConfigIDResult(ctypes.Structure):
         ("return_code", ctypes.c_longlong),
     ]
 
-class G2ExportConfigResult(ctypes.Structure):
+class G2ExportConfigResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_exportConfig_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
 class G2ExportCSVEntityReportResult(ctypes.Structure):
     """In golang_helpers.h G2_exportCSVEntityReport_result"""
@@ -87,157 +80,62 @@ class G2ExportJSONEntityReportResult(ctypes.Structure):
         ("return_code", ctypes.c_longlong),
     ]
 
-class G2FetchNextResult(ctypes.Structure):
+class G2FetchNextResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_fetchNext_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindInterestingEntitiesByEntityIDResult(ctypes.Structure):
+class G2FindInterestingEntitiesByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findInterestingEntitiesByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindInterestingEntitiesByRecordIDResult(ctypes.Structure):
+class G2FindInterestingEntitiesByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findInterestingEntitiesByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindNetworkByEntityIDResult(ctypes.Structure):
+class G2FindNetworkByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findNetworkByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindNetworkByEntityID_V2Result(ctypes.Structure):
+class G2FindNetworkByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findNetworkByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindNetworkByRecordIDResult(ctypes.Structure):
+class G2FindNetworkByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findNetworkByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindNetworkByRecordID_V2Result(ctypes.Structure):
+class G2FindNetworkByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findNetworkByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathByEntityIDResult(ctypes.Structure):
+class G2FindPathByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathByEntityID_V2Result(ctypes.Structure):
+class G2FindPathByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathByRecordIDResult(ctypes.Structure):
+class G2FindPathByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathByRecordID_V2Result(ctypes.Structure):
+class G2FindPathByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathExcludingByEntityIDResult(ctypes.Structure):
+class G2FindPathExcludingByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathExcludingByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathExcludingByEntityID_V2Result(ctypes.Structure):
+class G2FindPathExcludingByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathExcludingByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathExcludingByRecordIDResult(ctypes.Structure):
+class G2FindPathExcludingByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathExcludingByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathExcludingByRecordID_V2Result(ctypes.Structure):
+class G2FindPathExcludingByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathExcludingByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathIncludingSourceByEntityIDResult(ctypes.Structure):
+class G2FindPathIncludingSourceByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathIncludingSourceByEntityID_V2Result(ctypes.Structure):
+class G2FindPathIncludingSourceByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathIncludingSourceByRecordIDResult(ctypes.Structure):
+class G2FindPathIncludingSourceByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2FindPathIncludingSourceByRecordID_V2Result(ctypes.Structure):
+class G2FindPathIncludingSourceByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
 class G2GetActiveConfigIDResult(ctypes.Structure):
     """In golang_helpers.h G2_getActiveConfigID_result"""
@@ -247,61 +145,26 @@ class G2GetActiveConfigIDResult(ctypes.Structure):
         ("return_code", ctypes.c_longlong),
     ]
 
-class G2GetEntityByEntityIDResult(ctypes.Structure):
+class G2GetEntityByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getEntityByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetEntityByEntityID_V2Result(ctypes.Structure):
+class G2GetEntityByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getEntityByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetEntityByRecordIDResult(ctypes.Structure):
+class G2GetEntityByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getEntityByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetEntityByRecordID_V2Result(ctypes.Structure):
+class G2GetEntityByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getEntityByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetRecordResult(ctypes.Structure):
+class G2GetRecordResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getRecord_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetRecord_V2Result(ctypes.Structure):
+class G2GetRecord_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getRecord_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetRedoRecordResult(ctypes.Structure):
+class G2GetRedoRecordResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getRedoRecord_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
 class G2GetRepositoryLastModifiedTimeResult(ctypes.Structure):
     """In golang_helpers.h G2_getRepositoryLastModifiedTime_result"""
@@ -311,157 +174,62 @@ class G2GetRepositoryLastModifiedTimeResult(ctypes.Structure):
         ("return_code", ctypes.c_longlong),
     ]
 
-class G2GetVirtualEntityByRecordIDResult(ctypes.Structure):
+class G2GetVirtualEntityByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getVirtualEntityByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2GetVirtualEntityByRecordID_V2Result(ctypes.Structure):
+class G2GetVirtualEntityByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getVirtualEntityByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2HowEntityByEntityIDResult(ctypes.Structure):
+class G2HowEntityByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_howEntityByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2HowEntityByEntityID_V2Result(ctypes.Structure):
+class G2HowEntityByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_howEntityByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2ProcessWithInfoResult(ctypes.Structure):
+class G2ProcessWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_processWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2ReevaluateEntityWithInfoResult(ctypes.Structure):
+class G2ReevaluateEntityWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_reevaluateEntityWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2ReevaluateRecordWithInfoResult(ctypes.Structure):
+class G2ReevaluateRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_reevaluateRecordWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2ReplaceRecordWithInfoResult(ctypes.Structure):
+class G2ReplaceRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_replaceRecordWithInfo_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2SearchByAttributesResult(ctypes.Structure):
+class G2SearchByAttributesResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_searchByAttributes_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2SearchByAttributes_V2Result(ctypes.Structure):
+class G2SearchByAttributes_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_searchByAttributes_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2StatsResult(ctypes.Structure):
+class G2StatsResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_stats_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntitiesResult(ctypes.Structure):
+class G2WhyEntitiesResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntities_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntities_V2Result(ctypes.Structure):
+class G2WhyEntities_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntities_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntityByEntityIDResult(ctypes.Structure):
+class G2WhyEntityByEntityIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntityByEntityID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntityByEntityID_V2Result(ctypes.Structure):
+class G2WhyEntityByEntityID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntityByEntityID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntityByRecordIDResult(ctypes.Structure):
+class G2WhyEntityByRecordIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntityByRecordID_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyEntityByRecordID_V2Result(ctypes.Structure):
+class G2WhyEntityByRecordID_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntityByRecordID_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyRecordsResult(ctypes.Structure):
+class G2WhyRecordsResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyRecords_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
-class G2WhyRecords_V2Result(ctypes.Structure):
+class G2WhyRecords_V2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyRecords_V2_result"""
-    # pylint: disable=R0903
-    _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
-    ]
 
 
 # -----------------------------------------------------------------------------
@@ -562,6 +330,10 @@ class G2Engine(G2EngineAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2engine.h
 
+# -------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
+
 
         self.library_handle.G2_addRecord.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
         self.library_handle.G2_addRecord.restype = c_int
@@ -650,6 +422,125 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_whyRecords_V2.restype = c_int
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
+# -------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
+
+        self.library_handle.G2_addRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_addRecordWithInfo_helper.restype = (G2AddRecordWithInfoResult)
+        self.library_handle.G2_closeExport_helper.argtypes = [c_uintptr_t]  # TODO: This may not be correct.
+        self.library_handle.G2_closeExport_helper.restype = c_longlong
+        self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_deleteRecordWithInfo_helper.restype = (G2DeleteRecordWithInfoResult)
+        self.library_handle.G2_exportConfig_helper.argtypes = []
+        self.library_handle.G2_exportConfig_helper.restype = (G2ExportConfigResult)
+        self.library_handle.G2_exportConfigAndConfigID_helper.argtypes = []
+        self.library_handle.G2_exportConfigAndConfigID_helper.restype = (G2ExportConfigAndConfigIDResult)
+        self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_exportCSVEntityReport_helper.restype = (G2ExportCSVEntityReportResult)
+        self.library_handle.G2_exportCSVEntityReport_helper.restype = (G2ExportCSVEntityReportResult)
+        self.library_handle.G2_exportJSONEntityReport_helper.argtypes = [c_longlong]
+        self.library_handle.G2_exportJSONEntityReport_helper.restype = (G2ExportJSONEntityReportResult)
+        self.library_handle.G2_fetchNext_helper.argtypes = [c_uintptr_t] # TODO: This may not be correct.
+        self.library_handle.G2_fetchNext_helper.restype = (G2FetchNextResult)
+        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.restype = (G2FindInterestingEntitiesByEntityIDResult)
+        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.restype = (G2FindInterestingEntitiesByRecordIDResult)
+        self.library_handle.G2_findNetworkByEntityID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByEntityID_helper.restype = (G2FindNetworkByEntityIDResult)
+        self.library_handle.G2_findNetworkByEntityID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByEntityID_V2_helper.restype = (G2_findNetworkByEntityID_V2_result)
+        self.library_handle.G2_findNetworkByRecordID_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByRecordID_helper.restype = (G2_findNetworkByRecordID_result)
+        self.library_handle.G2_findNetworkByRecordID_V2_helper.argtypes = [c_char_p, c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findNetworkByRecordID_V2_helper.restype = (G2FindNetworkByRecordID_V2Result)
+        self.library_handle.G2_findPathByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByEntityID_helper.restype = (G2FindPathByEntityIDResult)
+        self.library_handle.G2_findPathByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByEntityID_V2_helper.restype = (G2FindPathByEntityID_V2Result)
+        self.library_handle.G2_findPathByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findPathByRecordID_helper.restype = (G2FindPathByRecordIDResult)
+        self.library_handle.G2_findPathByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_longlong]
+        self.library_handle.G2_findPathByRecordID_V2_helper.restype = (G2_findPathByRecordID_V2_result)
+        self.library_handle.G2_findPathExcludingByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p]
+        self.library_handle.G2_findPathExcludingByEntityID_helper.restype = (G2FindPathExcludingByEntityIDResult)
+        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_longlong]
+        self.library_handle.G2_findPathExcludingByEntityID_V2_helper.restype = (G2FindPathExcludingByEntityID_V2Result)
+        self.library_handle.G2_findPathExcludingByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p]
+        self.library_handle.G2_findPathExcludingByRecordID_helper.restype = (G2FindPathExcludingByRecordIDResult)
+        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_longlong]
+        self.library_handle.G2_findPathExcludingByRecordID_V2_helper.restype = (G2FindPathExcludingByRecordID_V2Result)
+        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p]
+        self.library_handle.G2_findPathIncludingSourceByEntityID_helper.restype = (G2FindPathIncludingSourceByEntityIDResult)
+        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.restype = (G2FindPathIncludingSourceByEntityID_V2Result)
+        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p]
+        self.library_handle.G2_findPathIncludingSourceByRecordID_helper.restype = (G2FindPathIncludingSourceByRecordIDResult)
+        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, c_char_p,  c_char_p, c_longlong]
+        self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper.restype = (G2FindPathIncludingSourceByRecordID_V2Result)
+        self.library_handle.G2_getActiveConfigID_helper.argtypes = []
+        self.library_handle.G2_getActiveConfigID_helper.restype = (G2GetActiveConfigIDResult)
+        self.library_handle.G2_getEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_getEntityByEntityID_helper.restype = (G2GetEntityByEntityIDResult)
+        self.library_handle.G2_getEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_getEntityByEntityID_V2_helper.restype = (G2GetEntityByEntityID_V2Result)
+        self.library_handle.G2_getEntityByRecordID_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2_getEntityByRecordID_helper.restype = (G2GetEntityByRecordIDResult)
+        self.library_handle.G2_getEntityByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_getEntityByRecordID_V2_helper.restype = (G2GetEntityByRecordID_V2Result)
+        self.library_handle.G2_getRecord_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2_getRecord_helper.restype = (G2GetRecordResult)
+        self.library_handle.G2_getRecord_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_getRecord_V2_helper.restype = (G2GetRecord_V2Result)
+        self.library_handle.G2_getRedoRecord_helper.argtypes = []
+        self.library_handle.G2_getRedoRecord_helper.restype = (G2GetRedoRecordResult)
+        self.library_handle.G2_getRepositoryLastModifiedTime_helper.argtypes = []
+        self.library_handle.G2_getRepositoryLastModifiedTime_helper.restype = (G2GetRepositoryLastModifiedTimeResult)
+        self.library_handle.G2_getVirtualEntityByRecordID_helper.argtypes = [c_char_p]
+        self.library_handle.G2_getVirtualEntityByRecordID_helper.restype = (G2GetVirtualEntityByRecordIDResult)
+        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.restype = (G2GetVirtualEntityByRecordID_V2Result)
+        self.library_handle.G2_howEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_howEntityByEntityID_helper.restype = (G2HowEntityByEntityIDResult)
+        self.library_handle.G2_howEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_howEntityByEntityID_V2_helper.restype = (G2HowEntityByEntityID_V2Result)
+        self.library_handle.G2_processWithInfo_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_processWithInfo_helper.restype = (G2ProcessWithInfoResult)
+        self.library_handle.G2_reevaluateEntityWithInfo_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_reevaluateEntityWithInfo_helper.restype = (G2ReevaluateEntityWithInfoResult)
+        self.library_handle.G2_reevaluateRecordWithInfo_helper.argtypes = [c_char_p, c_char_p,  c_longlong]
+        self.library_handle.G2_reevaluateRecordWithInfo_helper.restype = (G2_ReevaluateRecordWithInfoResult)
+        self.library_handle.G2_replaceRecordWithInfo_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_replaceRecordWithInfo_helper.restype = (G2ReplaceRecordWithInfoResult)
+        self.library_handle.G2_searchByAttributes_helper.argtypes = [c_char_p]
+        self.library_handle.G2_searchByAttributes_helper.restype = (G2SearchByAttributesResult)
+        self.library_handle.G2_searchByAttributes_V2_helper.argtypes = [c_char_p, c_longlong]
+        self.library_handle.G2_searchByAttributes_V2_helper.restype = (G2SearchByAttributes_V2Result)
+        self.library_handle.G2_stats_helper.argtypes = []
+        self.library_handle.G2_stats_helper.restype = (G2StatsResult)
+        self.library_handle.G2_whyEntities_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_whyEntities_helper.restype = (G2WhyEntitiesResult)
+        self.library_handle.G2_whyEntities_V2_helper.argtypes = [c_longlong, c_longlong, c_longlong]
+        self.library_handle.G2_whyEntities_V2_helper.restype = (G2WhyEntities_V2Result)
+        self.library_handle.G2_whyEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_whyEntityByEntityID_helper.restype = (G2WhyEntityByEntityIDResult)
+        self.library_handle.G2_whyEntityByEntityID_V2_helper.argtypes = [c_longlong, c_longlong]
+        self.library_handle.G2_whyEntityByEntityID_V2_helper.restype = (G2WhyEntityByEntityID_V2Result)
+        self.library_handle.G2_whyEntityByRecordID_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2_whyEntityByRecordID_helper.restype = (G2WhyEntityByRecordIDResult)
+        self.library_handle.G2_whyEntityByRecordID_V2_helper.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_whyEntityByRecordID_V2_helper.restype = (G2WhyEntityByRecordID_V2Result)
+        self.library_handle.G2_whyRecords_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p]
+        self.library_handle.G2_whyRecords_helper.restype = (G2WhyRecordsResult)
+        self.library_handle.G2_whyRecords_V2_helper.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2_whyRecords_V2_helper.restype = (G2WhyRecords_V2Result)
+
+
+
+#--- Original list --------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 #
 # _DLEXPORT struct G2_addRecordWithInfo_result G2_addRecordWithInfo_helper(const char *dataSourceCode, const char *recordID, const char *jsonData, const char *loadID, const long long flags);
@@ -707,12 +598,6 @@ class G2Engine(G2EngineAbstract):
 # _DLEXPORT struct G2_whyRecords_result G2_whyRecords_helper(const char *dataSourceCode1, const char *recordID1, const char *dataSourceCode2, const char *recordID2);
 # _DLEXPORT struct G2_whyRecords_V2_result G2_whyRecords_V2_helper(const char *dataSourceCode1, const char *recordID1, const char *dataSourceCode2, const char *recordID2, const long long flags);
 #
-
-
-
-
-        #-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
         #-----------------------------------------------------------------------------------------------------------------------------------------------------------
