@@ -50,15 +50,58 @@ class G2ConfigAbstract(ABC):
     def add_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """
+        The
+        :py:meth:`senzing.g2config.add_data_source`
+        method adds a data source to an existing in-memory configuration.
+        The `config_handle` is created by the
+        :py:meth:`senzing.g2config.create<create>`
+        method.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration.
+            input_json (str):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+
+        Returns:
+            str: A string containing a JSON document listing the newly created data source.
+        """
 
     @abstractmethod
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The
+        :py:meth:`senzing.g2config.close`
+        method cleans up the Senzing G2Config object pointed to by the `config_handle`.
+        The handle was created by the
+        :py:meth:`senzing.g2config.create<create>`
+        method.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration.
+        """
 
     @abstractmethod
     def create(self, *args: Any, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The
+        :py:meth:`senzing.g2config.create`
+        method creates an in-memory Senzing configuration from the `g2config.json`
+        template configuration file located in the PIPELINE.RESOURCEPATH path.
+        A handle is returned to identify the in-memory configuration.
+        The handle is used by the
+        :py:meth:`senzing.g2config.add_data_source<add_data_source>`,
+        :py:meth:`senzing.g2config.list_data_sources<list_data_sources>`,
+        :py:meth:`senzing.g2config.delete_data_source<delete_data_source>`,
+        and
+        :py:meth:`senzing.g2config.save<save>`
+        methods.
+        The handle is terminated by the
+        :py:meth:`senzing.g2config.close<close>`
+        method.
+
+        Returns:
+            int: _description_
+        """
 
     @abstractmethod
     def delete_data_source(
