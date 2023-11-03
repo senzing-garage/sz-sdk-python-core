@@ -14,7 +14,6 @@ ENGINE_CONFIGURATION = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 ENGINE_MODULE_NAME = "EXAMPLE"
-CONFIGURATION = {}  # Naturally, this would be a full Senzing configuration.
 
 try:
     G2_CONFIG = g2config.G2Config(
