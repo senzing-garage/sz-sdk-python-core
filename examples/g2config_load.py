@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2product
+from senzing import g2config
 from senzing.g2exception import G2Exception
 
 ENGINE_CONFIGURATION = {
@@ -14,13 +14,12 @@ ENGINE_CONFIGURATION = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 ENGINE_MODULE_NAME = "EXAMPLE"
+CONFIGURATION = {}  # Naturally, this would be a full Senzing configuration.
 
 try:
-    G2_PRODUCT = g2product.G2Product()
-    G2_PRODUCT.init(ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION))
-
-    # Do work.
-
-    G2_PRODUCT.destroy()
+    G2_CONFIG = g2config.G2Config(
+        ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION), 0
+    )
+    CONFIG_HANDLE = G2_CONFIG.load(json.dumps(CONFIGURATION))
 except G2Exception as err:
     print(err)
