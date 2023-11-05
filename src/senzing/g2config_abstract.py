@@ -50,48 +50,223 @@ class G2ConfigAbstract(ABC):
     def add_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """
+        The `add_data_source` method adds a data source to an existing in-memory configuration.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
+            input_json (str):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+
+        Returns:
+            str: A string containing a JSON document listing the newly created data source.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_add_data_source.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2config_add_data_source.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `close` method cleans up the Senzing G2Config object pointed to by the `config_handle`.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_create_and_close.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def create(self, *args: Any, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The `create` method creates an in-memory Senzing configuration
+        from the `g2config.json` template configuration file located
+        in the PIPELINE.RESOURCEPATH path.
+        A handle is returned to identify the in-memory configuration.
+        The handle is used by the `add_data_source`, `list_data_sources`,
+        `delete_data_source`, and `save` methods.
+        The handle is terminated by the `close` method.
+
+        Returns:
+            int: A pointer to an in-memory Senzing configuration.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_create_and_close.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def delete_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> None:
-        """TODO: document"""
+        """
+        The `delete_data_source` method removes a data source from an existing in-memory configuration.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
+            input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_delete_data_source.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2config_delete_data_source.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `destroy` method will destroy and perform cleanup for the Senzing G2Config object.
+        It should be called after all other calls are complete.
+
+        **Note:** If the `G2Config` constructor was called with parameters,
+        the destructor will automatically call the destroy() method.
+        In this case, a separate call to `destroy()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+
+        Raises:
+            None: No exceptions raised
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+                :linenos:
+                :language: python
+
+        """
 
     @abstractmethod
     def init(
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
-        """TODO: document"""
+        """
+        The `init` method initializes the Senzing G2Config object.
+        It must be called prior to any other calls.
+
+        **Note:** If the G2Config constructor is called with parameters,
+        the constructor will automatically call the `init()` method.
+        In this case, a separate call to `init()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+
+        Args:
+            module_name (str): A name for the auditing node, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `list_data_sources` method returns a JSON document of data sources.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
+
+        Returns:
+            str: A string containing a JSON document listing all of the data sources.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_list_data_sources.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2config_list_data_sources.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The `load` method initializes an in-memory Senzing G2Config object from a JSON string.
+        A configuration handle is returned.
+
+        Args:
+            json_config (str): A JSON document containing the Senzing configuration.
+
+        Returns:
+            int: An identifier (config_handle) of an in-memory configuration.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_load.py
+                :linenos:
+                :language: python
+
+            **Create, save, load, and close**
+
+            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `save` method creates a JSON string representation of the Senzing G2Config object.
+
+        Args:
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
+
+        Returns:
+            str: A string containing a JSON Document representation of the Senzing G2Config object.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2config_save.py
+                :linenos:
+                :language: python
+
+            **Create, save, load, and close**
+
+            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+                :linenos:
+                :language: python
+        """
 
     # -------------------------------------------------------------------------
     # Convenience methods

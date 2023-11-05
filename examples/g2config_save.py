@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2product
+from senzing import g2config
 from senzing.g2exception import G2Exception
 
 ENGINE_CONFIGURATION = {
@@ -16,11 +16,12 @@ ENGINE_CONFIGURATION = {
 ENGINE_MODULE_NAME = "EXAMPLE"
 
 try:
-    G2_PRODUCT = g2product.G2Product()
-    G2_PRODUCT.init(ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION))
-
-    # Do work.
-
-    G2_PRODUCT.destroy()
+    G2_CONFIG = g2config.G2Config(
+        ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION), 0
+    )
+    CONFIG_HANDLE = G2_CONFIG.create()  # Create first in-memory.
+    CONFIGURATION = G2_CONFIG.save(CONFIG_HANDLE)  # Save in-memory to string.
+    G2_CONFIG.close(CONFIG_HANDLE)
+    print(CONFIGURATION)
 except G2Exception as err:
     print(err)

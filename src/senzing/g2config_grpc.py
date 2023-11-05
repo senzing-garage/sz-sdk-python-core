@@ -52,11 +52,12 @@ class G2ConfigGrpc(G2ConfigAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
         *args: Any,
-        **kwargs: Any
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -113,9 +114,9 @@ class G2ConfigGrpc(G2ConfigAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
-        **kwargs: Any
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 

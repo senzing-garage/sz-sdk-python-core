@@ -1,5 +1,5 @@
 """
-The g2product package is used to inspect the Senzing product.
+The `g2product` package is used to inspect the Senzing product.
 It is a wrapper over Senzing's G2Product C binding.
 It conforms to the interface specified in
 `g2product_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2product_abstract.py>`_

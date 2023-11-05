@@ -1,7 +1,17 @@
-#! /usr/bin/env python3
-
 """
-TODO: g2config.py
+The `g2config` package is used to modify the in-memory representation of a Senzing configuration.
+It is a wrapper over Senzing's G2Config C binding.
+It conforms to the interface specified in
+`g2config_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2config_abstract.py>`_
+
+To use g2config,
+the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
+
+Example:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
 import ctypes
@@ -33,7 +43,50 @@ CALLER_SKIP = 6
 
 class G2Config(G2ConfigAbstract):
     """
-    G2 config module access library
+    The `init` method initializes the Senzing G2Config object.
+    It must be called prior to any other calls.
+
+    **Note:** If the G2Config constructor is called with parameters,
+    the constructor will automatically call the `init()` method.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+
+
+    If the G2Config constructor is called without parameters,
+    the `init()` method must be called to initialize the use of G2Product.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_config = g2config.G2Config()
+        g2_config.init(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
+
+    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **G2Exception**.
+
+    Parameters:
+        module_name:
+            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
+        ini_params:
+            `Optional:` A JSON string containing configuration parameters. Default: ""
+        init_config_id:
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+        verbose_logging:
+            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+    Raises:
+        G2Exception: Raised when input parameters are incorrect.
+
+    .. collapse:: Example:
+
+        .. literalinclude:: ../../examples/g2config_constructor.py
+            :linenos:
+            :language: python
     """
 
     # -------------------------------------------------------------------------
@@ -42,10 +95,11 @@ class G2Config(G2ConfigAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -151,8 +205,8 @@ class G2Config(G2ConfigAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)

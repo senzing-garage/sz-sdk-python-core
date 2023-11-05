@@ -93,7 +93,7 @@ class G2ProductAbstract(ABC):
 
             g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
 
-        Parameters:
+        Args:
             module_name:
                 A name for the auditing node, to help identify it within system logs.
             ini_params:
