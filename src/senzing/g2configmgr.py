@@ -42,10 +42,11 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -151,8 +152,8 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2configmgr(module_name, ini_params, verbose_logging)
