@@ -65,13 +65,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_add_data_source.py
+            .. literalinclude:: ../../examples/g2config/add_data_source.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config_add_data_source.txt
+            .. literalinclude:: ../../examples/g2config/add_data_source.txt
                 :linenos:
                 :language: json
         """
@@ -89,7 +89,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_create_and_close.py
+            .. literalinclude:: ../../examples/g2config/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -113,7 +113,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_create_and_close.py
+            .. literalinclude:: ../../examples/g2config/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -134,13 +134,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_delete_data_source.py
+            .. literalinclude:: ../../examples/g2config/delete_data_source.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config_delete_data_source.txt
+            .. literalinclude:: ../../examples/g2config/delete_data_source.txt
                 :linenos:
                 :language: json
         """
@@ -166,7 +166,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/init_and_destroy.py
                 :linenos:
                 :language: python
 
@@ -200,7 +200,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -221,13 +221,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_list_data_sources.py
+            .. literalinclude:: ../../examples/g2config/list_data_sources.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config_list_data_sources.txt
+            .. literalinclude:: ../../examples/g2config/list_data_sources.txt
                 :linenos:
                 :language: json
         """
@@ -249,13 +249,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_load.py
+            .. literalinclude:: ../../examples/g2config/load.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
                 :linenos:
                 :language: python
         """
@@ -276,13 +276,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_save.py
+            .. literalinclude:: ../../examples/g2config/save.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
                 :linenos:
                 :language: python
         """

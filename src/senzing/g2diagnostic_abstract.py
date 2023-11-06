@@ -81,13 +81,13 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf.py
+            .. literalinclude:: ../../examples/g2diagnostic/check_db_perf.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf.txt
+            .. literalinclude:: ../../examples/g2diagnostic/check_db_perf.txt
                 :linenos:
                 :language: json
         """
@@ -113,7 +113,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -131,7 +131,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_available_memory.py
+            .. literalinclude:: ../../examples/g2diagnostic/get_available_memory.py
                 :linenos:
                 :language: python
         """
@@ -149,13 +149,13 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_db_info.py
+            .. literalinclude:: ../../examples/g2diagnostic/get_db_info.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_db_info.txt
+            .. literalinclude:: ../../examples/g2diagnostic/get_db_info.txt
                 :linenos:
                 :language: json
         """
@@ -173,7 +173,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_logical_cores.py
+            .. literalinclude:: ../../examples/g2diagnostic/get_logical_cores.py
                 :linenos:
                 :language: python
         """
@@ -191,7 +191,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_physical_cores.py
+            .. literalinclude:: ../../examples/g2diagnostic/get_physical_cores.py
                 :linenos:
                 :language: python
         """
@@ -209,7 +209,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_total_system_memory.py
+            .. literalinclude:: ../../examples/g2diagnostic/get_total_system_memory.py
                 :linenos:
                 :language: python
         """
@@ -242,7 +242,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -281,7 +281,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_init_with_config_id.py
+            .. literalinclude:: ../../examples/g2diagnostic/init_with_config_id.py
                 :linenos:
                 :language: python
         """
@@ -299,7 +299,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_reinit.py
+            .. literalinclude:: ../../examples/g2diagnostic/reinit.py
                 :linenos:
                 :language: python
         """

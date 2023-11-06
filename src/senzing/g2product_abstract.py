@@ -64,7 +64,7 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -100,7 +100,7 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/init_and_destroy.py
                 :linenos:
                 :language: python
 
@@ -119,13 +119,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_license.py
+            .. literalinclude:: ../../examples/g2product/license.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product_license.txt
+            .. literalinclude:: ../../examples/g2product/license.txt
                 :linenos:
                 :language: json
         """
@@ -143,13 +143,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_version.py
+            .. literalinclude:: ../../examples/g2product/version.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product_version.txt
+            .. literalinclude:: ../../examples/g2product/version.txt
                 :linenos:
                 :language: json
         """

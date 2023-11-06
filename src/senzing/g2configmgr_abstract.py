@@ -66,7 +66,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_add_config.py
+            .. literalinclude:: ../../examples/g2configmgr/add_config.py
                 :linenos:
                 :language: python
         """
@@ -92,7 +92,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2configmgr/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -113,13 +113,13 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config.py
+            .. literalinclude:: ../../examples/g2configmgr/get_config.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config.txt
+            .. literalinclude:: ../../examples/g2configmgr/get_config.txt
                 :linenos:
                 :language: json
         """
@@ -137,13 +137,13 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config_list.py
+            .. literalinclude:: ../../examples/g2configmgr/get_config_list.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config_list.txt
+            .. literalinclude:: ../../examples/g2configmgr/get_config_list.txt
                 :linenos:
                 :language: json
         """
@@ -161,7 +161,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/get_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -194,7 +194,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2configmgr/init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -218,7 +218,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_replace_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/replace_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -237,7 +237,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_set_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/set_default_config_id.py
                 :linenos:
                 :language: python
         """
