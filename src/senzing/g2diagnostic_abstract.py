@@ -30,6 +30,7 @@ class G2DiagnosticAbstract(ABC):
 
     PREFIX = "g2diagnostic."
     ID_MESSAGES = {
+        # TODO remove + concats for f-strings
         4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
         4002: PREFIX + "G2Diagnostic_closeEntityListBySize() failed. Return code: {0}",
         4003: PREFIX + "G2Diagnostic_destroy() failed.  Return code: {0}",

@@ -27,7 +27,7 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2diagnosticGetdbinfoResult(ctypes.Structure):
+class G2DiagnosticGetDBInfoResult(ctypes.Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
     # pylint: disable=R0903
@@ -37,8 +37,8 @@ class G2diagnosticGetdbinfoResult(ctypes.Structure):
     ]
 
 
-class G2diagnosticCheckDBPerfResult(ctypes.Structure):
-    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+class G2DiagnosticCheckDBPerfResult(ctypes.Structure):
+    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
     # pylint: disable=R0903
     _fields_ = [
@@ -93,31 +93,46 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
 
+        self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = []
         self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
-            G2diagnosticCheckDBPerfResult
+            G2DiagnosticCheckDBPerfResult
         )
+
         self.library_handle.G2Diagnostic_clearLastException.argtypes = []
         self.library_handle.G2Diagnostic_clearLastException.restype = None
+
+        self.library_handle.G2Diagnostic_getAvailableMemory.restype = ctypes.c_longlong
+
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
-            G2diagnosticGetdbinfoResult
+            G2DiagnosticGetDBInfoResult
         )
+
         self.library_handle.G2Diagnostic_getLastException.argtypes = [
             ctypes.POINTER(ctypes.c_char),
             ctypes.c_size_t,
         ]
         self.library_handle.G2Diagnostic_getLastException.restype = ctypes.c_longlong
+
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
+
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
+
+        self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = (
+            ctypes.c_longlong
+        )
+
         self.library_handle.G2Diagnostic_init.argtypes = [
             ctypes.c_char_p,
             ctypes.c_char_p,
             ctypes.c_int,
         ]
+
+        self.library_handle.G2Diagnostic_reinit.argtypes = [ctypes.c_longlong]
+
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
         # Initialize Senzing engine.
-
         self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
@@ -162,12 +177,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
-        # self.fake_g2diagnostic(seconds_to_run)
-        # return "string"
         result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
         try:
             if result.return_code != 0:
-                raise self.new_exception(4007, result.return_code)
+                raise self.new_exception(4001, result.return_code)
             result_response = ctypes.cast(result.response, ctypes.c_char_p).value
             result_response_str = result_response.decode() if result_response else ""
         finally:
@@ -177,9 +190,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2diagnostic()
 
+    # TODO: Likely going away in V4
     def get_available_memory(self, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2diagnostic()
-        return 0
+        result = self.library_handle.G2Diagnostic_getAvailableMemory()
+        return int(result)
 
     def get_db_info(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDBInfo_helper()
@@ -192,15 +206,19 @@ class G2Diagnostic(G2DiagnosticAbstract):
             self.library_handle.G2GoHelper_free(result.response)
         return result_response_str
 
+    # TODO: Likely going away in V4
     def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
         return int(self.library_handle.G2Diagnostic_getLogicalCores())
 
+    # TODO: Likely going away in V4
+    # BUG: Returns wrong value!
     def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
         return int(self.library_handle.G2Diagnostic_getPhysicalCores())
 
+    # TODO: Likely going away in V4
     def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2diagnostic()
-        return 0
+        result = self.library_handle.G2Diagnostic_getTotalSystemMemory()
+        return int(result)
 
     def init(
         self,
@@ -232,4 +250,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2diagnostic(init_config_id)
+        result = self.library_handle.G2Diagnostic_reinit(init_config_id)
+        if result < 0:
+            raise self.new_exception(4020, init_config_id, result)

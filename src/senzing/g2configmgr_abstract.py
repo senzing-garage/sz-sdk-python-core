@@ -29,6 +29,7 @@ class G2ConfigMgrAbstract(ABC):
     # -------------------------------------------------------------------------
 
     PREFIX = "g2configmgr."
+    # TODO remove + concats for f-strings
     ID_MESSAGES = {
         4001: PREFIX + "G2ConfigMgr_addConfig({0}, {1}) failed. Return code: {2}",
         4002: PREFIX + "G2ConfigMgr_destroy() failed. Return code: {0}",
