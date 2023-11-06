@@ -73,7 +73,7 @@ class G2DiagnosticAbstract(ABC):
             seconds_to_run (int): Duration of the test in seconds.
 
         Returns:
-            str: A string containing a JSON document. Example: `{"numRecordsInserted":0,"insertTime":0}`
+            str: A string containing a JSON document.
 
         Raises:
             None: No exceptions raised
@@ -112,7 +112,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -146,19 +146,17 @@ class G2DiagnosticAbstract(ABC):
         Raises:
             None: No exceptions raised
 
-        .. only:: bob_g2diagnostic
-            .. collapse:: Examplea:
+        .. collapse:: Example:
 
-                .. literalinclude:: ../../examples/g2diagnostic_get_db_info.py
-                    :linenos:
-                    :language: python
+            .. literalinclude:: ../../examples/g2diagnostic_get_db_info.py
+                :linenos:
+                :language: python
 
-        .. only:: bob_g2diagnostic_grpc
-            .. collapse:: Exampleb:
+            **Output:**
 
-                .. literalinclude:: ../../examples/g2diagnostic_grpc_get_db_info.py
-                    :linenos:
-                    :language: python
+            .. literalinclude:: ../../examples/g2diagnostic_get_db_info.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -217,12 +215,7 @@ class G2DiagnosticAbstract(ABC):
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Diagnosis object.
@@ -259,7 +252,6 @@ class G2DiagnosticAbstract(ABC):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int = 0,
-        *args: Any,
         **kwargs: Any
     ) -> None:
         """
@@ -297,8 +289,8 @@ class G2DiagnosticAbstract(ABC):
         """
         The `reinit` method re-initializes the Senzing G2Diagnosis object.
 
-        Parameters:
-            The configuration ID used for the initialization.
+        Args:
+            init_config_id (int): The configuration ID used for the initialization
 
         Raises:
             None: No exceptions raised

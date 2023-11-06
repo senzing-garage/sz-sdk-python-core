@@ -16,8 +16,11 @@ INI_PARAMS_DICT = {
 MODULE_NAME = "Example"
 
 try:
-    G2_DIAGNOSTIC = g2diagnostic.G2Diagnostic(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    RESULT = G2_DIAGNOSTIC.get_total_system_memory()
-    print(RESULT)
+    G2_DIAGNOSIS = g2diagnostic.G2Diagnostic()
+    G2_DIAGNOSIS.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+
+    # Do work.
+
+    G2_DIAGNOSIS.destroy()
 except G2Exception as err:
     print(err)

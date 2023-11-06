@@ -528,12 +528,7 @@ class G2EngineGrpc(G2EngineAbstract):
         return "string"
 
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
-        *args: Any,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         self.fake_g2engine(module_name, ini_params, verbose_logging)
 
@@ -542,8 +537,7 @@ class G2EngineGrpc(G2EngineAbstract):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         self.fake_g2engine(module_name, ini_params, init_config_id, verbose_logging)

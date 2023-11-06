@@ -1,0 +1,9 @@
+{
+    "Hybrid Mode": false,
+    "Database Details": [
+        {
+            "Name": "/tmp/sqlite/G2C.db",
+            "Type": "sqlite3"
+        }
+    ]
+}

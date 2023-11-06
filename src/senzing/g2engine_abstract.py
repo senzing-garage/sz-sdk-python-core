@@ -528,12 +528,7 @@ class G2EngineAbstract(ABC):
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
-        *args: Any,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """TODO: document"""
 
@@ -543,8 +538,7 @@ class G2EngineAbstract(ABC):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         """TODO: document"""

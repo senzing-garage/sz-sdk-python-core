@@ -75,7 +75,7 @@ class G2Config(G2ConfigAbstract):
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -205,7 +205,6 @@ class G2Config(G2ConfigAbstract):
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:

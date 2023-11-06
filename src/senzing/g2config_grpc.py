@@ -114,7 +114,6 @@ class G2ConfigGrpc(G2ConfigAbstract):
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:

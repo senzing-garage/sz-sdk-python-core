@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2diagnostic
+from senzing import g2config
 from senzing.g2exception import G2Exception
 
 INI_PARAMS_DICT = {
@@ -15,9 +15,17 @@ INI_PARAMS_DICT = {
 }
 MODULE_NAME = "Example"
 
+# Example 1
+
 try:
-    G2_DIAGNOSTIC = g2diagnostic.G2Diagnostic(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    RESULT = G2_DIAGNOSTIC.get_total_system_memory()
-    print(RESULT)
+    G2_CONFIG = g2config.G2Config(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+except G2Exception as err:
+    print(err)
+
+# Example 2
+
+try:
+    G2_CONFIG = g2config.G2Config()
+    G2_CONFIG.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
 except G2Exception as err:
     print(err)

@@ -96,7 +96,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -116,7 +116,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def __init__(
         self,
-        *args: Any,
+        # *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -129,8 +129,15 @@ class G2Diagnostic(G2DiagnosticAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(4004, module_name, ini_params)
+
         self.ini_params = ini_params
         self.module_name = module_name
+        self.init_config_id = init_config_id
         self.noop = ""
         self.verbose_logging = verbose_logging
 
@@ -170,9 +177,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
         ]
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
-        # Initialize Senzing engine.
+        # Optionally, initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -260,7 +268,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -279,8 +286,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)

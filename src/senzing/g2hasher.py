@@ -143,8 +143,7 @@ class G2Hasher(G2HasherAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, verbose_logging)
@@ -154,8 +153,7 @@ class G2Hasher(G2HasherAbstract):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)

@@ -155,12 +155,7 @@ class G2ConfigMgrAbstract(ABC):
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2ConfigMgr object.

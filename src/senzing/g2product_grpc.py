@@ -87,12 +87,7 @@ class G2ProductGrpc(G2ProductAbstract):
         self.fake_g2config()
 
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 
