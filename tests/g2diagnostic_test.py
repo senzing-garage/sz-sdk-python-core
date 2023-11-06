@@ -4,8 +4,7 @@ import psutil
 import pytest
 from pytest_schema import schema
 
-from g2exception import G2Exception
-from senzing import g2configmgr, g2diagnostic
+from senzing import g2configmgr, g2diagnostic, g2exception
 
 
 @pytest.fixture(scope="module")
@@ -49,7 +48,7 @@ def test_check_db_perf_2(g2diag_instance):
     """Check database performance fails with string input."""
 
     def check_db_perf_raises():
-        with pytest.raises(G2Exception):
+        with pytest.raises(g2exception.G2Exception):
             g2diag_instance.check_db_perf("string")
 
 
@@ -109,7 +108,7 @@ def test_reinit_1(g2diag_instance, g2configmgr_instance):
     default_config_id = g2configmgr_instance.get_default_config_id()
     try:
         g2diag_instance.reinit(default_config_id)
-    except G2Exception:
+    except g2exception.G2Exception:
         assert False
 
 
@@ -117,7 +116,7 @@ def test_reinit_2(g2diag_instance):
     """Test reinit with bogus config ID"""
 
     def reinit_raises():
-        with pytest.raises(G2Exception):
+        with pytest.raises(g2exception.G2Exception):
             g2diag_instance.reinit(999)
 
 
