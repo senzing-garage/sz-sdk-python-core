@@ -1,5 +1,3 @@
-# pylint: disable=redefined-outer-name
-
 import json
 
 import pytest
@@ -12,8 +10,8 @@ from senzing import g2product
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture
-def g2product_instance(engine_vars):
+@pytest.fixture(name="g2product_instance")
+def g2product_instance_fixture(engine_vars):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.

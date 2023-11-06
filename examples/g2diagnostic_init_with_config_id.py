@@ -18,7 +18,9 @@ MODULE_NAME = "Example"
 try:
     G2_DIAGNOSIS = g2diagnostic.G2Diagnostic()
 
-    G2_DIAGNOSIS.init_with_config_id(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+    G2_DIAGNOSIS.init_with_config_id(
+        MODULE_NAME, json.dumps(INI_PARAMS_DICT), 0
+    )  # FIXME:
 
     # Do work.
 
