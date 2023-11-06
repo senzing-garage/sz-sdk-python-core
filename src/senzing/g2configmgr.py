@@ -21,7 +21,7 @@ from typing import Any
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import find_file_in_path
+from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
 
 # Metadata
 
@@ -36,6 +36,27 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
+
+
+class G2ConfigMgrGetDefaultConfigID(ctypes.Structure):
+    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+
+    # pylint: disable=R0903
+    _fields_ = [
+        ("response", ctypes.c_longlong),
+        ("return_code", ctypes.c_longlong),
+    ]
+
+
+class G2ConfigMgrGetConfigList(ctypes.Structure):
+    """In golang_helpers.h G2Diagnostic_getConfigList_result"""
+
+    # pylint: disable=R0903
+    _fields_ = [
+        ("response", ctypes.POINTER(ctypes.c_char)),
+        ("return_code", ctypes.c_longlong),
+    ]
+
 
 # -----------------------------------------------------------------------------
 # G2ConfigMgr class
@@ -129,11 +150,23 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         self.library_handle.G2ConfigMgr_clearLastException.argtypes = []
         self.library_handle.G2ConfigMgr_clearLastException.restype = None
+
+        self.library_handle.G2ConfigMgr_getConfigList_helper.argtypes = []
+        self.library_handle.G2ConfigMgr_getConfigList_helper.restype = (
+            G2ConfigMgrGetConfigList
+        )
+
+        self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.argtypes = []
+        self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.restype = (
+            G2ConfigMgrGetDefaultConfigID
+        )
+
         self.library_handle.G2ConfigMgr_getLastException.argtypes = [
             ctypes.POINTER(ctypes.c_char),
             ctypes.c_size_t,
         ]
         self.library_handle.G2ConfigMgr_getLastException.restype = ctypes.c_longlong
+
         self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
 
         # Initialize Senzing engine.
@@ -195,12 +228,24 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         return "string"
 
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2configmgr()
-        return "string"
+        # self.fake_g2configmgr()
+        # return "string"
+        result = self.library_handle.G2ConfigMgr_getConfigList_helper()
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4004, result.return_code)
+            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2configmgr()
-        return 0
+        result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
+        if result.return_code != 0:
+            # TODO: 4007?
+            raise self.new_exception(4005, result.return_code)
+        return int(result.response)
 
     def init(
         self,
@@ -209,7 +254,16 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2configmgr(module_name, ini_params, verbose_logging)
+        # self.fake_g2configmgr(module_name, ini_params, verbose_logging)
+        result = self.library_handle.G2ConfigMgr_init(
+            as_normalized_string(module_name),
+            as_normalized_string(ini_params),
+            as_normalized_int(verbose_logging),
+        )
+        if result < 0:
+            raise self.new_exception(
+                4007, module_name, ini_params, verbose_logging, result
+            )
 
     def replace_default_config_id(
         self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any

@@ -39,6 +39,8 @@ test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
 	@pytest tests/ --verbose --capture=no --cov=src/senzing
 	@echo "--- Test examples ----------------------------------------------------"
+	@pytest examples/ --verbose --capture=no --cov=src/senzing
+	@echo "--- Test examples using unittest -------------------------------------"
 	python3 -m unittest examples/*.py
 
 
