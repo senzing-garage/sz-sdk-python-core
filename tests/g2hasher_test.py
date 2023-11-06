@@ -17,8 +17,8 @@ def g2hasher_instance(engine_vars):
     engine_vars is returned from conftest.py.
     """
     result = g2hasher.G2Hasher(
-        engine_vars["ENGINE_MODULE_NAME"],
-        engine_vars["ENGINE_CONFIGURATION_JSON"],
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS"],
         0,
     )
     return result

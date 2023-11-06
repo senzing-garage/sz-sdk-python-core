@@ -304,7 +304,7 @@ class G2Engine(G2EngineAbstract):
 
     .. code-block:: python
 
-        g2_engine = g2engine.G2Engine(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+        g2_engine = g2engine.G2Engine(MODULE_NAME, INI_PARAMS)
 
 
     If the G2Engine constructor is called without parameters,
@@ -315,7 +315,7 @@ class G2Engine(G2EngineAbstract):
     .. code-block:: python
 
         g2_engine = g2engine.G2Engine()
-        g2_engine.init(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
+        g2_engine.init(MODULE_NAME, INI_PARAMS, ENGINE_VERBOSE_LOGGING)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.

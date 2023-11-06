@@ -57,7 +57,7 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
 
 
         Raises:
@@ -91,7 +91,7 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
 
         Args:
             module_name:

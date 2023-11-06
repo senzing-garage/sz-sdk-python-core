@@ -69,8 +69,8 @@ class G2DiagnosticAbstract(ABC):
         """
         The `check_db_perf` method performs inserts to determine rate of insertion.
 
-        Parameters:
-            seconds_to_run: Duration of the test in seconds.
+        Args:
+            seconds_to_run (int): Duration of the test in seconds.
 
         Returns:
             str: A string containing a JSON document. Example: `{"numRecordsInserted":0,"insertTime":0}`
@@ -80,28 +80,39 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `check_db_perf` method performs inserts to determine rate of insertion.
+        The `destroy` method will destroy and perform cleanup for the Senzing G2Diagnostic object.
+        It should be called after all other calls are complete.
 
-        Parameters:
-            seconds_to_run: Duration of the test in seconds.
+        **Note:** If the `G2Diagnostic` constructor was called with parameters,
+        the destructor will automatically call the destroy() method.
+        In this case, a separate call to `destroy()` is not needed.
 
-        Returns:
-            str: A string containing a JSON document. Example: `{"numRecordsInserted":0,"insertTime":0}`
+        Example:
+
+        .. code-block:: python
+
+            g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, INI_PARAMS)
 
         Raises:
             None: No exceptions raised
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_check_db_perf_test.py
+            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -119,7 +130,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_available_memory_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_get_available_memory.py
                 :linenos:
                 :language: python
         """
@@ -138,14 +149,14 @@ class G2DiagnosticAbstract(ABC):
         .. only:: bob_g2diagnostic
             .. collapse:: Examplea:
 
-                .. literalinclude:: ../../examples/g2diagnostic_get_db_info_test.py
+                .. literalinclude:: ../../examples/g2diagnostic_get_db_info.py
                     :linenos:
                     :language: python
 
         .. only:: bob_g2diagnostic_grpc
             .. collapse:: Exampleb:
 
-                .. literalinclude:: ../../examples/g2diagnostic_grpc_get_db_info_test.py
+                .. literalinclude:: ../../examples/g2diagnostic_grpc_get_db_info.py
                     :linenos:
                     :language: python
         """
@@ -163,7 +174,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_logical_cores_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_get_logical_cores.py
                 :linenos:
                 :language: python
         """
@@ -174,14 +185,14 @@ class G2DiagnosticAbstract(ABC):
         The `get_physical_cores` method returns the number of physical cores on the host system.
 
         Returns:
-            int: Number of physical cores.
+            int:  Number of physical cores.
 
         Raises:
             None: No exceptions raised
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_physical_cores_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_get_physical_cores.py
                 :linenos:
                 :language: python
         """
@@ -199,7 +210,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_get_total_system_memory_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_get_total_system_memory.py
                 :linenos:
                 :language: python
         """
@@ -209,25 +220,34 @@ class G2DiagnosticAbstract(ABC):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Diagnosis object.
         It must be called prior to any other calls.
 
-        Parameters:
-            module_name:
-                A name for the auditing node, to help identify it within system logs.
-            ini_params:
-                A JSON string containing configuration parameters.
-            verbose_logging:
-                A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging.
+        **Note:** If the G2Diagnosis constructor is called with parameters,
+        the constructor will automatically call the `init()` method.
+        In this case, a separate call to `init()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_diagnosis = g2diagnosis.G2Diagnosis(MODULE_NAME, INI_PARAMS)
+
+        Args:
+            module_name (str): A name for the auditing node, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_init_test.py
+            .. literalinclude:: ../../examples/g2diagnosis_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -238,7 +258,7 @@ class G2DiagnosticAbstract(ABC):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
+        verbose_logging: int = 0,
         *args: Any,
         **kwargs: Any
     ) -> None:
@@ -246,22 +266,28 @@ class G2DiagnosticAbstract(ABC):
         The `init_with_config_id` method initializes the Senzing G2Diagnosis object with a non-default configuration ID.
         It must be called prior to any other calls.
 
-        Parameters:
-            module_name:
-                A name for the auditing node, to help identify it within system logs.
-            ini_params:
-                A JSON string containing configuration parameters.
-            init_config_id:
-                The configuration ID used for the initialization.
-            verbose_logging:
-                A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging.
+        **Note:** If the G2Diagnosis constructor is called with parameters,
+        the constructor will automatically call the `init()` method.
+        In this case, a separate call to `init()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_diagnosis = g2diagnosis.G2Diagnosis(MODULE_NAME, INI_PARAMS, INIT_CONFIG_ID)
+
+        Args:
+            module_name (str): A name for the auditing node, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            init_config_id (int): The configuration ID used for the initialization.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             None: No exceptions raised
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_init_with_config_id_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_init_with_config_id.py
                 :linenos:
                 :language: python
         """
@@ -279,7 +305,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic_reinit_test.py
+            .. literalinclude:: ../../examples/g2diagnostic_reinit.py
                 :linenos:
                 :language: python
         """

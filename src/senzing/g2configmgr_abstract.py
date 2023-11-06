@@ -81,7 +81,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
 
         Raises:
             None: No exceptions raised
@@ -174,7 +174,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.

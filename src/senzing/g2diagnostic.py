@@ -1,7 +1,17 @@
-#! /usr/bin/env python3
-
 """
-TODO: g2diagnostic.py
+The `g2diagnostic` package is used to inspect the Senzing environment.
+It is a wrapper over Senzing's G2Diagnostic C binding.
+It conforms to the interface specified in
+`g2diagnostic_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
+
+To use g2diagnostic,
+the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
+
+Example:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
 import ctypes
@@ -54,7 +64,50 @@ class G2diagnosticCheckDBPerfResult(ctypes.Structure):
 
 class G2Diagnostic(G2DiagnosticAbstract):
     """
-    G2 config module access library
+    The `init` method initializes the Senzing G2Diagnostic object.
+    It must be called prior to any other calls.
+
+    **Note:** If the G2Diagnostic constructor is called with parameters,
+    the constructor will automatically call the `init()` method.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, INI_PARAMS)
+
+
+    If the G2Diagnostic constructor is called without parameters,
+    the `init()` method must be called to initialize the use of G2Product.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_diagnostic = g2diagnostic.G2Diagnostic()
+        g2_diagnostic.init(MODULE_NAME, INI_PARAMS)
+
+    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **G2Exception**.
+
+    Parameters:
+        module_name:
+            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
+        ini_params:
+            `Optional:` A JSON string containing configuration parameters. Default: ""
+        init_config_id:
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+        verbose_logging:
+            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+    Raises:
+        G2Exception: Raised when input parameters are incorrect.
+
+    .. collapse:: Example:
+
+        .. literalinclude:: ../../examples/g2diagnostic_constructor.py
+            :linenos:
+            :language: python
     """
 
     # -------------------------------------------------------------------------
@@ -63,10 +116,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -206,8 +260,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Diagnostic_init(

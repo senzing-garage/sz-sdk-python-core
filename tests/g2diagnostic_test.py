@@ -18,8 +18,8 @@ def g2diagnostic_instance(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     g2_diagnostic = g2diagnostic.G2Diagnostic(
-        engine_vars["ENGINE_MODULE_NAME"],
-        engine_vars["ENGINE_CONFIGURATION_JSON"],
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS"],
         engine_vars["ENGINE_VERBOSE_LOGGING"],
     )
     return g2_diagnostic
