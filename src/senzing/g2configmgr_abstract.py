@@ -70,10 +70,10 @@ class G2ConfigMgrAbstract(ABC):
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2Configmgr object.
+        The `destroy` method will destroy and perform cleanup for the Senzing G2ConfigMgr object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2Configmgr` constructor was called with parameters,
+        **Note:** If the `G2ConfigMgr` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -81,7 +81,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2Configmgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
 
         Raises:
             None: No exceptions raised
@@ -119,7 +119,7 @@ class G2ConfigMgrAbstract(ABC):
 
     @abstractmethod
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
-        """_summary_
+        """
         The `get_config_list` method retrieves a list of Senzing configurations from the Senzing database.
 
         Returns:
@@ -151,12 +151,6 @@ class G2ConfigMgrAbstract(ABC):
             .. literalinclude:: ../../examples/g2configmgr_get_default_config_id.py
                 :linenos:
                 :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/g2configmgr_get_default_config_id.txt
-                :linenos:
-                :language: json
         """
 
     @abstractmethod
@@ -169,10 +163,10 @@ class G2ConfigMgrAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `init` method initializes the Senzing G2Configmgr object.
+        The `init` method initializes the Senzing G2ConfigMgr object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2Configmgr constructor is called with parameters,
+        **Note:** If the G2ConfigMgr constructor is called with parameters,
         the constructor will automatically call the `init()` method.
         In this case, a separate call to `init()` is not needed.
 
@@ -180,7 +174,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2Configmgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
@@ -189,7 +183,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -213,12 +207,6 @@ class G2ConfigMgrAbstract(ABC):
             .. literalinclude:: ../../examples/g2configmgr_replace_default_config_id.py
                 :linenos:
                 :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/g2configmgr_replace_default_config_id.txt
-                :linenos:
-                :language: json
         """
 
     @abstractmethod
@@ -235,12 +223,6 @@ class G2ConfigMgrAbstract(ABC):
             .. literalinclude:: ../../examples/g2configmgr_set_default_config_id.py
                 :linenos:
                 :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/g2configmgr_set_default_config_id.txt
-                :linenos:
-                :language: json
         """
 
     # -------------------------------------------------------------------------

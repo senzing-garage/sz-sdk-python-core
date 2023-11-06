@@ -49,7 +49,7 @@ class G2Product(G2ProductAbstract):
 
     .. code-block:: python
 
-        g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+        g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
 
 
     If the G2Product constructor is called without parameters,
@@ -60,7 +60,7 @@ class G2Product(G2ProductAbstract):
     .. code-block:: python
 
         g2_product = g2product.G2Product()
-        g2_product.init(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
+        g2_product.init(MODULE_NAME, INI_PARAMS)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.

@@ -6,7 +6,7 @@ from typing import Any, Dict
 from senzing import g2configmgr
 from senzing.g2exception import G2Exception
 
-ENGINE_CONFIGURATION = {
+INI_PARAMS_DICT = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -14,17 +14,15 @@ ENGINE_CONFIGURATION = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-ENGINE_MODULE_NAME = "EXAMPLE"
-CONFIGURATION: Dict[
+MODULE_NAME = "Example"
+CONFIG_STR_DICT: Dict[
     str, Any
 ] = {}  # Naturally, this would be a full Senzing configuration.
-COMMENT = "Just an empty example"
+CONFIG_COMMENTS = "Just an empty example"
 
 try:
-    G2_CONFIGMGR = g2configmgr.G2ConfigMgr(
-        ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION)
-    )
-    CONFIG_HANDLE = G2_CONFIGMGR.add_config(json.dumps(CONFIGURATION), COMMENT)
-    G2_CONFIGMGR.set_default_config_id(CONFIG_HANDLE)
+    G2_CONFIGMGR = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+    CONFIG_ID = G2_CONFIGMGR.add_config(json.dumps(CONFIG_STR_DICT), CONFIG_COMMENTS)
+    G2_CONFIGMGR.set_default_config_id(CONFIG_ID)
 except G2Exception as err:
     print(err)

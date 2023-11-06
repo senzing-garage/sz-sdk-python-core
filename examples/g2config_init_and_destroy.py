@@ -5,7 +5,7 @@ import json
 from senzing import g2config
 from senzing.g2exception import G2Exception
 
-ENGINE_CONFIGURATION = {
+INI_PARAMS_DICT = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -13,11 +13,11 @@ ENGINE_CONFIGURATION = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-ENGINE_MODULE_NAME = "EXAMPLE"
+MODULE_NAME = "Example"
 
 try:
     G2_CONFIG = g2config.G2Config()
-    G2_CONFIG.init(ENGINE_MODULE_NAME, json.dumps(ENGINE_CONFIGURATION))
+    G2_CONFIG.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
 
     # Do work.
 
