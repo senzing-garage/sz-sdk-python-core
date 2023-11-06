@@ -59,9 +59,8 @@ class G2ProductAbstract(ABC):
 
             g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
 
-
         Raises:
-            None: No exceptions raised
+            G2Exception:
 
         .. collapse:: Example:
 
@@ -95,6 +94,9 @@ class G2ProductAbstract(ABC):
                 A JSON string containing configuration parameters.
             verbose_logging:
                 `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+        Raises:
+            G2Exception:
 
         .. collapse:: Example:
 
@@ -163,6 +165,9 @@ class G2ProductAbstract(ABC):
 
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
+
+        Raises:
+            None: TODO:
         """
         return cast(
             Dict[str, Any],

@@ -76,7 +76,7 @@ class G2DiagnosticAbstract(ABC):
             str: A string containing a JSON document.
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -108,7 +108,7 @@ class G2DiagnosticAbstract(ABC):
             g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, INI_PARAMS)
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -126,7 +126,7 @@ class G2DiagnosticAbstract(ABC):
             int: Number of bytes of available memory.
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -144,7 +144,7 @@ class G2DiagnosticAbstract(ABC):
             str: A JSON document enumerating data sources. Example: `{"Hybrid Mode":false,"Database Details":[{"Name":"0.0.0.0","Type":"postgresql"}]}`
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -168,7 +168,7 @@ class G2DiagnosticAbstract(ABC):
             int: Number of logical cores.
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -186,7 +186,7 @@ class G2DiagnosticAbstract(ABC):
             int:  Number of physical cores.
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -204,7 +204,7 @@ class G2DiagnosticAbstract(ABC):
             int: Number of bytes of memory.
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -236,11 +236,12 @@ class G2DiagnosticAbstract(ABC):
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
-
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnosis_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -275,7 +276,7 @@ class G2DiagnosticAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -293,7 +294,7 @@ class G2DiagnosticAbstract(ABC):
             init_config_id (int): The configuration ID used for the initialization
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 

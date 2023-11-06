@@ -1,6 +1,3 @@
-# pylint: disable=redefined-outer-name
-
-
 import pytest
 
 from senzing import g2hasher
@@ -10,8 +7,8 @@ from senzing import g2hasher
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture
-def g2hasher_instance(engine_vars):
+@pytest.fixture(name="g2hasher_instance")
+def g2hasher_instance_fixture(engine_vars):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.

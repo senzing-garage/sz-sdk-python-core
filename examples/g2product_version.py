@@ -17,7 +17,7 @@ MODULE_NAME = "Example"
 
 try:
     G2_PRODUCT = g2product.G2Product(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    VERSION = G2_PRODUCT.version()
-    print(VERSION)
+    RESULT = G2_PRODUCT.version()
+    print(RESULT)
 except G2Exception as err:
     print(err)

@@ -1,5 +1,3 @@
-# pylint: disable=redefined-outer-name
-
 import json
 
 import psutil
@@ -13,16 +11,16 @@ from senzing import g2diagnostic
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture
-def g2diagnostic_instance(engine_vars):
+@pytest.fixture(name="g2diagnostic_instance")
+def g2diagnostic_instance_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    g2_diagnostic = g2diagnostic.G2Diagnostic(
+    result = g2diagnostic.G2Diagnostic(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["ENGINE_VERBOSE_LOGGING"],
     )
-    return g2_diagnostic
+    return result
 
 
 # -----------------------------------------------------------------------------

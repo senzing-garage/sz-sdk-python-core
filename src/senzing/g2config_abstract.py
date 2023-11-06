@@ -60,6 +60,9 @@ class G2ConfigAbstract(ABC):
         Returns:
             str: A string containing a JSON document listing the newly created data source.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2config_add_data_source.py
@@ -80,6 +83,9 @@ class G2ConfigAbstract(ABC):
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -102,6 +108,9 @@ class G2ConfigAbstract(ABC):
         Returns:
             int: A pointer to an in-memory Senzing configuration.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2config_create_and_close.py
@@ -119,6 +128,9 @@ class G2ConfigAbstract(ABC):
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
             input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -150,7 +162,7 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -183,6 +195,9 @@ class G2ConfigAbstract(ABC):
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2config_init_and_destroy.py
@@ -200,6 +215,9 @@ class G2ConfigAbstract(ABC):
 
         Returns:
             str: A string containing a JSON document listing all of the data sources.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -226,6 +244,9 @@ class G2ConfigAbstract(ABC):
         Returns:
             int: An identifier (config_handle) of an in-memory configuration.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2config_load.py
@@ -249,6 +270,9 @@ class G2ConfigAbstract(ABC):
 
         Returns:
             str: A string containing a JSON Document representation of the Senzing G2Config object.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 

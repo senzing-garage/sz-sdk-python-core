@@ -60,6 +60,9 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             int: A configuration identifier.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2configmgr_add_config.py
@@ -84,7 +87,7 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -103,6 +106,9 @@ class G2ConfigMgrAbstract(ABC):
 
         Returns:
             str: A JSON document containing the Senzing configuration.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -125,6 +131,9 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             str: A JSON document containing Senzing configurations.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2configmgr_get_config_list.py
@@ -145,6 +154,9 @@ class G2ConfigMgrAbstract(ABC):
 
         Returns:
             int:  A configuration identifier which identifies the current configuration in use.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 
@@ -176,6 +188,9 @@ class G2ConfigMgrAbstract(ABC):
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
@@ -197,6 +212,9 @@ class G2ConfigMgrAbstract(ABC):
             old_config_id (int): The configuration identifier to replace.
             new_config_id (int): The configuration identifier to use as the default.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2configmgr_replace_default_config_id.py
@@ -212,6 +230,9 @@ class G2ConfigMgrAbstract(ABC):
 
         Args:
             config_id (int): The configuration identifier of the Senzing Engine configuration to use as the default.
+
+        Raises:
+            None: TODO:
 
         .. collapse:: Example:
 

@@ -14,7 +14,6 @@ INI_PARAMS_DICT = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 MODULE_NAME = "Example"
-ENGINE_VERBOSE_LOGGING = 0
 
 # Example 1
 
@@ -27,6 +26,6 @@ except G2Exception as err:
 
 try:
     G2_PRODUCT = g2product.G2Product()
-    G2_PRODUCT.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT), ENGINE_VERBOSE_LOGGING)
+    G2_PRODUCT.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
 except G2Exception as err:
     print(err)
