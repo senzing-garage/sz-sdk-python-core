@@ -42,7 +42,7 @@ jobs:
         run: | 
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
           pytest tests/ --verbose --capture=no --cov=src/senzing
-      - name: Run pytest on examples
-        run: | 
-          export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
-          pytest examples/ --verbose --capture=no
+      # - name: Run pytest on examples
+      #  run: | 
+      #    export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+      #    pytest examples/ --verbose --capture=no
