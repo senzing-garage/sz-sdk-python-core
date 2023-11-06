@@ -53,7 +53,7 @@ class G2Config(G2ConfigAbstract):
 
     .. code-block:: python
 
-        g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+        g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
 
 
     If the G2Config constructor is called without parameters,
@@ -64,7 +64,7 @@ class G2Config(G2ConfigAbstract):
     .. code-block:: python
 
         g2_config = g2config.G2Config()
-        g2_config.init(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON, ENGINE_VERBOSE_LOGGING)
+        g2_config.init(MODULE_NAME, INI_PARAMS)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.

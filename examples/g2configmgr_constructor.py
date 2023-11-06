@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2product
+from senzing import g2configmgr
 from senzing.g2exception import G2Exception
 
 INI_PARAMS_DICT = {
@@ -15,12 +15,17 @@ INI_PARAMS_DICT = {
 }
 MODULE_NAME = "Example"
 
+# Example 1
+
 try:
-    G2_PRODUCT = g2product.G2Product()
-    G2_PRODUCT.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+    G2_CONFIG = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+except G2Exception as err:
+    print(err)
 
-    # Do work.
+# Example 2
 
-    G2_PRODUCT.destroy()
+try:
+    G2_CONFIG = g2configmgr.G2ConfigMgr()
+    G2_CONFIG.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
 except G2Exception as err:
     print(err)

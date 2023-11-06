@@ -1,7 +1,18 @@
-#! /usr/bin/env python3
-
 """
-TODO: g2configmgr.py
+The `g2configmgr` package is used to modify Senzing configurations in the Senzing database.
+It is a wrapper over Senzing's G2Configmgr C binding.
+It conforms to the interface specified in
+`g2configmgr_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
+
+
+To use g2configmgr,
+the LD_LIBRARY_PATH environment variable must include a path to Senzing's libraries.
+
+Example:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
 import ctypes
@@ -33,7 +44,50 @@ CALLER_SKIP = 6
 
 class G2ConfigMgr(G2ConfigMgrAbstract):
     """
-    G2 config-manager module access library
+    The `init` method initializes the Senzing G2ConfigMgr object.
+    It must be called prior to any other calls.
+
+    **Note:** If the G2ConfigMr constructor is called with parameters,
+    the constructor will automatically call the `init()` method.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
+
+
+    If the G2ConfigMgr constructor is called without parameters,
+    the `init()` method must be called to initialize the use of G2Product.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_configmgr = g2configmgr.G2ConfigMgr()
+        g2_configmgr.init(MODULE_NAME, INI_PARAMS)
+
+    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **G2Exception**.
+
+    Parameters:
+        module_name:
+            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
+        ini_params:
+            `Optional:` A JSON string containing configuration parameters. Default: ""
+        init_config_id:
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+        verbose_logging:
+            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+    Raises:
+        G2Exception: Raised when input parameters are incorrect.
+
+    .. collapse:: Example:
+
+        .. literalinclude:: ../../examples/g2configmgr_constructor.py
+            :linenos:
+            :language: python
     """
 
     # -------------------------------------------------------------------------
@@ -42,10 +96,11 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -151,8 +206,8 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
         *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2configmgr(module_name, ini_params, verbose_logging)
