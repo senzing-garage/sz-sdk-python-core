@@ -17,7 +17,7 @@ MODULE_NAME = "Example"
 
 try:
     G2_CONFIGMGR = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    CONFIGURATION_LIST = G2_CONFIGMGR.get_config_list()
-    print(CONFIGURATION_LIST)
+    CONFIG_LIST = G2_CONFIGMGR.get_config_list()
+    print(CONFIG_LIST)
 except G2Exception as err:
     print(err)

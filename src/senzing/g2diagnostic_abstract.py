@@ -184,7 +184,7 @@ class G2DiagnosticAbstract(ABC):
         The `get_physical_cores` method returns the number of physical cores on the host system.
 
         Returns:
-            int:  Number of physical cores.
+            int: Number of physical cores.
 
         Raises:
             None: TODO:

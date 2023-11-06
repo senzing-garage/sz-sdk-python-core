@@ -24,15 +24,6 @@ def engine_vars_fixture():
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     }
 
-    # linux_config = {
-    #     "PIPELINE": {
-    #         "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc",
-    #         "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources",
-    #         "SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data",
-    #     },
-    #     "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"},
-    # }
-
     darwin_config = {
         "PIPELINE": {
             "CONFIGPATH": "/opt/senzing/g2/etc",
