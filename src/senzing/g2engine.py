@@ -16,9 +16,19 @@ Example:
 
 # pylint: disable=R0903,C0302,R0915
 
-import ctypes
 import os
-from ctypes import POINTER, c_char_p, c_int, c_longlong, c_uint
+from ctypes import (
+    POINTER,
+    Structure,
+    c_char,
+    c_char_p,
+    c_int,
+    c_longlong,
+    c_size_t,
+    c_uint,
+    c_void_p,
+    cdll,
+)
 from typing import Any, Tuple
 
 from .g2engine_abstract import G2EngineAbstract
@@ -40,12 +50,12 @@ CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exc
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(ctypes.Structure):
+class G2ResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
     ]
 
 
@@ -57,13 +67,13 @@ class G2DeleteRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_deleteRecordWithInfo_result"""
 
 
-class G2ExportConfigAndConfigIDResult(ctypes.Structure):
+class G2ExportConfigAndConfigIDResult(Structure):
     """In golang_helpers.h G2_exportConfigAndConfigID_result"""
 
     _fields_ = [
-        ("config_id", ctypes.c_longlong),
-        ("config", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
+        ("config_id", c_longlong),
+        ("config", POINTER(c_char)),
+        ("return_code", c_longlong),
     ]
 
 
@@ -71,21 +81,21 @@ class G2ExportConfigResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_exportConfig_result"""
 
 
-class G2ExportCSVEntityReportResult(ctypes.Structure):
+class G2ExportCSVEntityReportResult(Structure):
     """In golang_helpers.h G2_exportCSVEntityReport_result"""
 
     _fields_ = [
-        ("export_handle", ctypes.c_void_p),
-        ("return_code", ctypes.c_longlong),
+        ("export_handle", c_void_p),
+        ("return_code", c_longlong),
     ]
 
 
-class G2ExportJSONEntityReportResult(ctypes.Structure):
+class G2ExportJSONEntityReportResult(Structure):
     """In golang_helpers.h G2_exportJSONEntityReport_result"""
 
     _fields_ = [
-        ("export_handle", ctypes.c_void_p),
-        ("return_code", ctypes.c_longlong),
+        ("export_handle", c_void_p),
+        ("return_code", c_longlong),
     ]
 
 
@@ -165,12 +175,12 @@ class G2FindPathIncludingSourceByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_V2_result"""
 
 
-class G2GetActiveConfigIDResult(ctypes.Structure):
+class G2GetActiveConfigIDResult(Structure):
     """In golang_helpers.h G2_getActiveConfigID_result"""
 
     _fields_ = [
-        ("config_id", ctypes.c_longlong),
-        ("return_code", ctypes.c_longlong),
+        ("config_id", c_longlong),
+        ("return_code", c_longlong),
     ]
 
 
@@ -202,12 +212,12 @@ class G2GetRedoRecordResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getRedoRecord_result"""
 
 
-class G2GetRepositoryLastModifiedTimeResult(ctypes.Structure):
+class G2GetRepositoryLastModifiedTimeResult(Structure):
     """In golang_helpers.h G2_getRepositoryLastModifiedTime_result"""
 
     _fields_ = [
-        ("time", ctypes.c_longlong),
-        ("return_code", ctypes.c_longlong),
+        ("time", c_longlong),
+        ("return_code", c_longlong),
     ]
 
 
@@ -346,7 +356,6 @@ class G2Engine(G2EngineAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -375,11 +384,9 @@ class G2Engine(G2EngineAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -688,10 +695,10 @@ class G2Engine(G2EngineAbstract):
             G2GetEntityByRecordIDV2Result
         )
         self.library_handle.G2_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2_getLastException.restype = c_longlong
         self.library_handle.G2_getLastExceptionCode.argtypes = []
         self.library_handle.G2_getLastExceptionCode.restype = c_int
         self.library_handle.G2_getRecord_helper.argtypes = [c_char_p, c_char_p]
@@ -865,7 +872,7 @@ class G2Engine(G2EngineAbstract):
             c_longlong,
         ]
         self.library_handle.G2_whyRecords_V2_helper.restype = G2WhyRecordsV2Result
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
 

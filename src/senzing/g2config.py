@@ -14,8 +14,9 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
+
 import os
+from ctypes import POINTER, c_char, c_char_p, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2config_abstract import G2ConfigAbstract
@@ -95,7 +96,6 @@ class G2Config(G2ConfigAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -115,11 +115,9 @@ class G2Config(G2ConfigAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -129,11 +127,11 @@ class G2Config(G2ConfigAbstract):
         self.library_handle.G2Config_clearLastException.argtypes = []
         self.library_handle.G2Config_clearLastException.restype = None
         self.library_handle.G2Config_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Config_getLastException.restype = ctypes.c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2Config_getLastException.restype = c_longlong
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
 

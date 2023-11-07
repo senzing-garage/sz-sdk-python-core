@@ -14,8 +14,18 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
 import os
+from ctypes import (
+    POINTER,
+    Structure,
+    c_char,
+    c_char_p,
+    c_int,
+    c_longlong,
+    c_size_t,
+    cast,
+    cdll,
+)
 from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
@@ -37,23 +47,23 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2DiagnosticGetDBInfoResult(ctypes.Structure):
+class G2DiagnosticGetDBInfoResult(Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
     # pylint: disable=R0903
     _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
     ]
 
 
-class G2DiagnosticCheckDBPerfResult(ctypes.Structure):
+class G2DiagnosticCheckDBPerfResult(Structure):
     """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
     # pylint: disable=R0903
     _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
     ]
 
 
@@ -116,7 +126,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def __init__(
         self,
-        # *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -143,11 +152,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -162,7 +169,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2Diagnostic_clearLastException.argtypes = []
         self.library_handle.G2Diagnostic_clearLastException.restype = None
 
-        self.library_handle.G2Diagnostic_getAvailableMemory.restype = ctypes.c_longlong
+        self.library_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
 
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
@@ -170,28 +177,26 @@ class G2Diagnostic(G2DiagnosticAbstract):
         )
 
         self.library_handle.G2Diagnostic_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Diagnostic_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2Diagnostic_getLastException.restype = c_longlong
 
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
 
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
 
-        self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = (
-            ctypes.c_longlong
-        )
+        self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = c_longlong
 
         self.library_handle.G2Diagnostic_init.argtypes = [
-            ctypes.c_char_p,
-            ctypes.c_char_p,
-            ctypes.c_int,
+            c_char_p,
+            c_char_p,
+            c_int,
         ]
 
-        self.library_handle.G2Diagnostic_reinit.argtypes = [ctypes.c_longlong]
+        self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
 
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
         self.init(self.module_name, self.ini_params, self.verbose_logging)
@@ -242,7 +247,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         try:
             if result.return_code != 0:
                 raise self.new_exception(4001, result.return_code)
-            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response = cast(result.response, c_char_p).value
             result_response_str = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)
@@ -261,7 +266,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         try:
             if result.return_code != 0:
                 raise self.new_exception(4007, result.return_code)
-            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response = cast(result.response, c_char_p).value
             result_response_str = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)

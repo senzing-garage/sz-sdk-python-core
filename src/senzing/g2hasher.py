@@ -4,8 +4,8 @@
 TODO: g2hasher.py
 """
 
-import ctypes
 import os
+from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
@@ -45,8 +45,8 @@ class G2Hasher(G2HasherAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
-        *args: Any,
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -68,11 +68,11 @@ class G2Hasher(G2HasherAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
+                self.library_handle = cdll.LoadLibrary(
                     find_file_in_path("G2Hasher.dll")
                 )
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2Hasher.so")
+                self.library_handle = cdll.LoadLibrary("libG2Hasher.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -82,10 +82,10 @@ class G2Hasher(G2HasherAbstract):
         self.library_handle.G2Hasher_clearLastException.argtypes = []
         self.library_handle.G2Hasher_clearLastException.restype = None
         self.library_handle.G2Hasher_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Hasher_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2Hasher_getLastException.restype = c_longlong
 
         # Initialize Senzing engine.
 

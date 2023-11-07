@@ -15,8 +15,17 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
 import os
+from ctypes import (
+    POINTER,
+    Structure,
+    c_char,
+    c_char_p,
+    c_longlong,
+    c_size_t,
+    cast,
+    cdll,
+)
 from typing import Any
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
@@ -38,23 +47,23 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgrGetDefaultConfigID(ctypes.Structure):
+class G2ConfigMgrGetDefaultConfigID(Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
     # pylint: disable=R0903
     _fields_ = [
-        ("response", ctypes.c_longlong),
-        ("return_code", ctypes.c_longlong),
+        ("response", c_longlong),
+        ("return_code", c_longlong),
     ]
 
 
-class G2ConfigMgrGetConfigList(ctypes.Structure):
+class G2ConfigMgrGetConfigList(Structure):
     """In golang_helpers.h G2Diagnostic_getConfigList_result"""
 
     # pylint: disable=R0903
     _fields_ = [
-        ("response", ctypes.POINTER(ctypes.c_char)),
-        ("return_code", ctypes.c_longlong),
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
     ]
 
 
@@ -117,7 +126,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -137,11 +145,9 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -162,12 +168,12 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         )
 
         self.library_handle.G2ConfigMgr_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2ConfigMgr_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2ConfigMgr_getLastException.restype = c_longlong
 
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
 
@@ -234,7 +240,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         try:
             if result.return_code != 0:
                 raise self.new_exception(4004, result.return_code)
-            result_response = ctypes.cast(result.response, ctypes.c_char_p).value
+            result_response = cast(result.response, c_char_p).value
             result_response_str = result_response.decode() if result_response else ""
         finally:
             self.library_handle.G2GoHelper_free(result.response)

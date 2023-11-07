@@ -6,8 +6,8 @@ TODO: g2diagnostic_grpc.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-import ctypes
 import os
+from ctypes import cdll
 from typing import Any
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
@@ -78,11 +78,9 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 

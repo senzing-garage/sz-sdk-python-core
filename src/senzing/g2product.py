@@ -91,7 +91,6 @@ class G2Product(G2ProductAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
