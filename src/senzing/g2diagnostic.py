@@ -24,7 +24,6 @@ from ctypes import (
     c_int,
     c_longlong,
     c_size_t,
-    c_void_p,
     cast,
     cdll,
 )

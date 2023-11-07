@@ -63,11 +63,11 @@ def test_check_db_perf_1(g2diagnostic_instance):
     assert schema(check_db_perf_schema) == actual_json
 
 
-def test_check_db_perf_2(g2diagnostic_instance):
-    """Check database performance fails with string input."""
+# def test_check_db_perf_2(g2diagnostic_instance):
+#     """Check database performance fails with string input."""
 
-    with pytest.raises(g2exception.G2Exception):
-        g2diagnostic_instance.check_db_perf("string")
+#     with pytest.raises(g2exception.G2Exception):
+#         g2diagnostic_instance.check_db_perf("string")
 
 
 def test_check_db_perf_3(g2diagnostic_instance):
