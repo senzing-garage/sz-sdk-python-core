@@ -40,7 +40,7 @@ from .g2version import is_supported_senzingapi_version
 __all__ = ["G2ConfigMgr"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5041"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6
@@ -50,8 +50,17 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgrGetDefaultConfigID(Structure):
-    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+class G2ResponseReturnCodeResult(Structure):
+    """Simple response, return_code structure"""
+
+    _fields_ = [
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
+    ]
+
+
+class G2ResponseLonglongReturnCodeResult(Structure):
+    """Simple response, return_code structure"""
 
     _fields_ = [
         ("response", c_longlong),
@@ -59,13 +68,20 @@ class G2ConfigMgrGetDefaultConfigID(Structure):
     ]
 
 
-class G2ConfigMgrGetConfigList(Structure):
-    """In golang_helpers.h G2Diagnostic_getConfigList_result"""
+class G2ConfigMgrAddConfigResult(G2ResponseLonglongReturnCodeResult):
+    """In golang_helpers.h G2ConfigMgr_addConfig_result"""
 
-    _fields_ = [
-        ("response", POINTER(c_char)),
-        ("return_code", c_longlong),
-    ]
+
+class G2ConfigMgrGetConfigListResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2ConfigMgr_getConfigList_result"""
+
+
+class G2ConfigMgrGetConfigResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2ConfigMgr_getConfig_result"""
+
+
+class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
+    """In golang_helpers.h G2ConfigMgr_getDefaultConfigID_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -169,25 +185,50 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2configmgr.h
 
+        # self.library_handle.G2ConfigMgr_addConfig.argtypes = [c_char_p, c_char_p, POINTER(c_longlong)]
+        # self.library_handle.G2ConfigMgr_addConfig.restype = c_longlong
+        self.library_handle.G2ConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.G2ConfigMgr_addConfig_helper.restype = (
+            G2ConfigMgrAddConfigResult
+        )
         self.library_handle.G2ConfigMgr_clearLastException.argtypes = []
         self.library_handle.G2ConfigMgr_clearLastException.restype = None
-
+        self.library_handle.G2ConfigMgr_destroy.argtypes = []
+        self.library_handle.G2ConfigMgr_destroy.restype = c_longlong
+        # self.library_handle.G2ConfigMgr_getConfig.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2ConfigMgr_getConfig.restype = c_longlong
+        self.library_handle.G2ConfigMgr_getConfig_helper.argtypes = [c_longlong]
+        self.library_handle.G2ConfigMgr_getConfig_helper.restype = (
+            G2ConfigMgrGetConfigResult
+        )
+        # self.library_handle.G2ConfigMgr_getConfigList.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2ConfigMgr_getConfigList.restype = c_longlong
         self.library_handle.G2ConfigMgr_getConfigList_helper.argtypes = []
         self.library_handle.G2ConfigMgr_getConfigList_helper.restype = (
-            G2ConfigMgrGetConfigList
+            G2ConfigMgrGetConfigListResult
         )
-
+        # self.library_handle.G2ConfigMgr_getDefaultConfigID.argtypes = [POINTER(c_longlong)]
+        # self.library_handle.G2ConfigMgr_getDefaultConfigID.restype = c_longlong
         self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.argtypes = []
         self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.restype = (
-            G2ConfigMgrGetDefaultConfigID
+            G2ConfigMgrGetDefaultConfigIDResult
         )
-
         self.library_handle.G2ConfigMgr_getLastException.argtypes = [
             POINTER(c_char),
             c_size_t,
         ]
         self.library_handle.G2ConfigMgr_getLastException.restype = c_longlong
-
+        self.library_handle.G2ConfigMgr_getLastExceptionCode.argtypes = []
+        self.library_handle.G2ConfigMgr_getLastExceptionCode.restype = c_longlong
+        self.library_handle.G2ConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.G2ConfigMgr_init.restype = c_longlong
+        self.library_handle.G2ConfigMgr_replaceDefaultConfigID.argtypes = [
+            c_longlong,
+            c_longlong,
+        ]
+        self.library_handle.G2ConfigMgr_replaceDefaultConfigID.restype = c_longlong
+        self.library_handle.G2ConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
+        self.library_handle.G2ConfigMgr_setDefaultConfigID.restype = c_longlong
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
