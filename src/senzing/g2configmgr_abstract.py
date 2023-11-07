@@ -29,6 +29,7 @@ class G2ConfigMgrAbstract(ABC):
     # -------------------------------------------------------------------------
 
     PREFIX = "g2configmgr."
+    # TODO: remove + concats for f-strings
     ID_MESSAGES = {
         4001: PREFIX + "G2ConfigMgr_addConfig({0}, {1}) failed. Return code: {2}",
         4002: PREFIX + "G2ConfigMgr_destroy() failed. Return code: {0}",
@@ -60,9 +61,12 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             int: A configuration identifier.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_add_config.py
+            .. literalinclude:: ../../examples/g2configmgr/add_config.py
                 :linenos:
                 :language: python
         """
@@ -81,14 +85,14 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2configmgr/g2configmgr_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -104,15 +108,18 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             str: A JSON document containing the Senzing configuration.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config.py
+            .. literalinclude:: ../../examples/g2configmgr/get_config.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config.txt
+            .. literalinclude:: ../../examples/g2configmgr/get_config.txt
                 :linenos:
                 :language: json
         """
@@ -125,15 +132,18 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             str: A JSON document containing Senzing configurations.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config_list.py
+            .. literalinclude:: ../../examples/g2configmgr/get_config_list.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr_get_config_list.txt
+            .. literalinclude:: ../../examples/g2configmgr/get_config_list.txt
                 :linenos:
                 :language: json
         """
@@ -146,21 +156,19 @@ class G2ConfigMgrAbstract(ABC):
         Returns:
             int:  A configuration identifier which identifies the current configuration in use.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_get_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/get_default_config_id.py
                 :linenos:
                 :language: python
         """
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2ConfigMgr object.
@@ -174,16 +182,19 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2configmgr/g2configmgr_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -202,9 +213,12 @@ class G2ConfigMgrAbstract(ABC):
             old_config_id (int): The configuration identifier to replace.
             new_config_id (int): The configuration identifier to use as the default.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_replace_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/replace_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -218,9 +232,12 @@ class G2ConfigMgrAbstract(ABC):
         Args:
             config_id (int): The configuration identifier of the Senzing Engine configuration to use as the default.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr_set_default_config_id.py
+            .. literalinclude:: ../../examples/g2configmgr/set_default_config_id.py
                 :linenos:
                 :language: python
         """

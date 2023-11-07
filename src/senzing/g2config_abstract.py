@@ -60,15 +60,18 @@ class G2ConfigAbstract(ABC):
         Returns:
             str: A string containing a JSON document listing the newly created data source.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_add_data_source.py
+            .. literalinclude:: ../../examples/g2config/add_data_source.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config_add_data_source.txt
+            .. literalinclude:: ../../examples/g2config/add_data_source.txt
                 :linenos:
                 :language: json
         """
@@ -81,9 +84,12 @@ class G2ConfigAbstract(ABC):
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_create_and_close.py
+            .. literalinclude:: ../../examples/g2config/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -102,9 +108,12 @@ class G2ConfigAbstract(ABC):
         Returns:
             int: A pointer to an in-memory Senzing configuration.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_create_and_close.py
+            .. literalinclude:: ../../examples/g2config/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -120,17 +129,14 @@ class G2ConfigAbstract(ABC):
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
             input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_delete_data_source.py
+            .. literalinclude:: ../../examples/g2config/delete_data_source.py
                 :linenos:
                 :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/g2config_delete_data_source.txt
-                :linenos:
-                :language: json
         """
 
     @abstractmethod
@@ -147,14 +153,14 @@ class G2ConfigAbstract(ABC):
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
-            None: No exceptions raised
+            None: TODO:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
 
@@ -162,12 +168,7 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Config object.
@@ -181,16 +182,19 @@ class G2ConfigAbstract(ABC):
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_config = g2config.G2Config(module_name, ini_params)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -206,15 +210,18 @@ class G2ConfigAbstract(ABC):
         Returns:
             str: A string containing a JSON document listing all of the data sources.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_list_data_sources.py
+            .. literalinclude:: ../../examples/g2config/list_data_sources.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config_list_data_sources.txt
+            .. literalinclude:: ../../examples/g2config/list_data_sources.txt
                 :linenos:
                 :language: json
         """
@@ -231,15 +238,18 @@ class G2ConfigAbstract(ABC):
         Returns:
             int: An identifier (config_handle) of an in-memory configuration.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_load.py
+            .. literalinclude:: ../../examples/g2config/load.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
                 :linenos:
                 :language: python
         """
@@ -255,15 +265,18 @@ class G2ConfigAbstract(ABC):
         Returns:
             str: A string containing a JSON Document representation of the Senzing G2Config object.
 
+        Raises:
+            None: TODO:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config_save.py
+            .. literalinclude:: ../../examples/g2config/save.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/g2config_create_save_load_close.py
+            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
                 :linenos:
                 :language: python
         """

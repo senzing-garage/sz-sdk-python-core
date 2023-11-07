@@ -38,8 +38,14 @@ setup-osarch-specific:
 test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
 	@pytest tests/ --verbose --capture=no --cov=src/senzing
-	@echo "--- Test examples ----------------------------------------------------"
-	python3 -m unittest examples/*.py
+#	@echo "--- Test examples ----------------------------------------------------"
+#	@pytest examples/ --verbose --capture=no --cov=src/senzing
+	@echo "--- Test examples using unittest -------------------------------------"
+	python3 -m unittest examples/g2config/*.py
+	python3 -m unittest examples/g2configmgr/*.py
+	python3 -m unittest examples/g2diagnostic/*.py
+	python3 -m unittest examples/g2engine/*.py
+	python3 -m unittest examples/g2product/*.py
 
 
 .PHONY: view-sphinx-osarch-specific

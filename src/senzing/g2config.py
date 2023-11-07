@@ -14,13 +14,15 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
+
 import os
+from ctypes import POINTER, c_char, c_char_p, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2config_abstract import G2ConfigAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -53,7 +55,7 @@ class G2Config(G2ConfigAbstract):
 
     .. code-block:: python
 
-        g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
+        g2_config = g2config.G2Config(module_name, ini_params)
 
 
     If the G2Config constructor is called without parameters,
@@ -64,7 +66,7 @@ class G2Config(G2ConfigAbstract):
     .. code-block:: python
 
         g2_config = g2config.G2Config()
-        g2_config.init(MODULE_NAME, INI_PARAMS)
+        g2_config.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -75,7 +77,7 @@ class G2Config(G2ConfigAbstract):
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -84,7 +86,7 @@ class G2Config(G2ConfigAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2config_constructor.py
+        .. literalinclude:: ../../examples/g2config/g2config_constructor.py
             :linenos:
             :language: python
     """
@@ -95,7 +97,6 @@ class G2Config(G2ConfigAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -107,19 +108,31 @@ class G2Config(G2ConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
+
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(9999, module_name, ini_params)
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
+
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -129,15 +142,16 @@ class G2Config(G2ConfigAbstract):
         self.library_handle.G2Config_clearLastException.argtypes = []
         self.library_handle.G2Config_clearLastException.restype = None
         self.library_handle.G2Config_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Config_getLastException.restype = ctypes.c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2Config_getLastException.restype = c_longlong
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -205,7 +219,6 @@ class G2Config(G2ConfigAbstract):
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:

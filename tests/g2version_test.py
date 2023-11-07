@@ -1,6 +1,3 @@
-# pylint: disable=redefined-outer-name
-
-
 import pytest
 
 from senzing import g2exception, g2version

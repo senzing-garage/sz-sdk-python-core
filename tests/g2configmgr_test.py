@@ -1,15 +1,21 @@
-#! /usr/bin/env python3
+import pytest
 
-"""
-# -----------------------------------------------------------------------------
-# g2configmgr_test.py
-# -----------------------------------------------------------------------------
-"""
+from senzing import g2configmgr
 
 
-# Import from standard library. https://docs.python.org/3/library/
+@pytest.fixture(name="g2configmgr_instance", scope="module")
+def g2configmgr_instance_fixture(engine_vars):
+    """Single engine object to use for all tests.
+    build_engine_vars is returned from conftest.pys"""
 
-import unittest
+    result = g2configmgr.G2ConfigMgr(
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS"],
+    )
+    return result
 
-if __name__ == "__main__":
-    unittest.main()
+
+def test_get_default_config_id(g2configmgr_instance):
+    """Test get_default_config_id"""
+    default_config_id = g2configmgr_instance.get_default_config_id()
+    assert isinstance(default_config_id, int)

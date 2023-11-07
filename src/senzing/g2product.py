@@ -49,7 +49,7 @@ class G2Product(G2ProductAbstract):
 
     .. code-block:: python
 
-        g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
+        g2_product = g2product.G2Product(module_name, ini_params)
 
 
     If the G2Product constructor is called without parameters,
@@ -60,7 +60,7 @@ class G2Product(G2ProductAbstract):
     .. code-block:: python
 
         g2_product = g2product.G2Product()
-        g2_product.init(MODULE_NAME, INI_PARAMS)
+        g2_product.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -71,7 +71,7 @@ class G2Product(G2ProductAbstract):
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -80,7 +80,7 @@ class G2Product(G2ProductAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2product_constructor.py
+        .. literalinclude:: ../../examples/g2product/g2product_constructor.py
             :linenos:
             :language: python
     """
@@ -91,7 +91,6 @@ class G2Product(G2ProductAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -103,6 +102,7 @@ class G2Product(G2ProductAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         # Verify parameters.
 
@@ -111,8 +111,8 @@ class G2Product(G2ProductAbstract):
                 raise self.new_exception(4004, module_name, ini_params)
 
         self.ini_params = ini_params
-        self.module_name = module_name
         self.init_config_id = init_config_id
+        self.module_name = module_name
         self.verbose_logging = verbose_logging
 
         # Load binary library.
@@ -191,7 +191,6 @@ class G2Product(G2ProductAbstract):
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:

@@ -57,27 +57,21 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
-
+            g2_product = g2product.G2Product(module_name, ini_params)
 
         Raises:
-            None: No exceptions raised
+            G2Exception:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
                 :linenos:
                 :language: python
         """
 
     @abstractmethod
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        *args: Any,
-        verbose_logging: int = 0,
-        **kwargs: Any
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Product object.
@@ -91,7 +85,7 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(ENGINE_MODULE_NAME, ENGINE_CONFIGURATION_JSON)
+            g2_product = g2product.G2Product(module_name, ini_params)
 
         Args:
             module_name:
@@ -101,9 +95,12 @@ class G2ProductAbstract(ABC):
             verbose_logging:
                 `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
+        Raises:
+            G2Exception:
+
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
                 :linenos:
                 :language: python
 
@@ -122,13 +119,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_license.py
+            .. literalinclude:: ../../examples/g2product/license.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product_license.txt
+            .. literalinclude:: ../../examples/g2product/license.txt
                 :linenos:
                 :language: json
         """
@@ -146,13 +143,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product_version.py
+            .. literalinclude:: ../../examples/g2product/version.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product_version.txt
+            .. literalinclude:: ../../examples/g2product/version.txt
                 :linenos:
                 :language: json
         """
@@ -168,6 +165,9 @@ class G2ProductAbstract(ABC):
 
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
+
+        Raises:
+            None: TODO:
         """
         return cast(
             Dict[str, Any],

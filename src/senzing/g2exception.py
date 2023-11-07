@@ -4,11 +4,11 @@
 TODO: g2exception.py
 """
 
-import ctypes
 import datetime
 import json
 import threading
 import traceback
+from ctypes import c_char, create_string_buffer, sizeof
 from typing import Any, Callable, Dict
 
 # Metadata
@@ -661,12 +661,12 @@ class ErrorBuffer(threading.local):
 
     def __init__(self) -> None:
         super().__init__()
-        self.string_buffer = ctypes.create_string_buffer(65535)
-        self.string_buffer_size = ctypes.sizeof(self.string_buffer)
+        self.string_buffer = create_string_buffer(65535)
+        self.string_buffer_size = sizeof(self.string_buffer)
 
 
 ERROR_BUFFER = ErrorBuffer()
-ERROR_BUFFER_TYPE = ctypes.c_char * 65535
+ERROR_BUFFER_TYPE = c_char * 65535
 
 
 # -----------------------------------------------------------------------------
@@ -743,7 +743,7 @@ def get_senzing_error_text(
     """
     get_last_exception(
         ERROR_BUFFER.string_buffer,
-        ctypes.sizeof(ERROR_BUFFER.string_buffer),
+        sizeof(ERROR_BUFFER.string_buffer),
     )
     clear_last_exception()
     result = ERROR_BUFFER.string_buffer.value.decode()

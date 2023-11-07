@@ -15,13 +15,25 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-import ctypes
+# pylint: disable=R0903
+
 import os
+from ctypes import (
+    POINTER,
+    Structure,
+    c_char,
+    c_char_p,
+    c_longlong,
+    c_size_t,
+    cast,
+    cdll,
+)
 from typing import Any
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import find_file_in_path
+from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -36,6 +48,25 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
+
+
+class G2ConfigMgrGetDefaultConfigID(Structure):
+    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+
+    _fields_ = [
+        ("response", c_longlong),
+        ("return_code", c_longlong),
+    ]
+
+
+class G2ConfigMgrGetConfigList(Structure):
+    """In golang_helpers.h G2Diagnostic_getConfigList_result"""
+
+    _fields_ = [
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
+    ]
+
 
 # -----------------------------------------------------------------------------
 # G2ConfigMgr class
@@ -54,7 +85,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     .. code-block:: python
 
-        g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
+        g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
 
     If the G2ConfigMgr constructor is called without parameters,
@@ -65,7 +96,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     .. code-block:: python
 
         g2_configmgr = g2configmgr.G2ConfigMgr()
-        g2_configmgr.init(MODULE_NAME, INI_PARAMS)
+        g2_configmgr.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -76,7 +107,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use current Senzing configuration
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -85,7 +116,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2configmgr_constructor.py
+        .. literalinclude:: ../../examples/g2configmgr/g2configmgr_constructor.py
             :linenos:
             :language: python
     """
@@ -96,7 +127,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     def __init__(
         self,
-        *args: Any,
         module_name: str = "",
         ini_params: str = "",
         init_config_id: int = 0,
@@ -108,19 +138,31 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
+
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(9999, module_name, ini_params)
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
+
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
-                    find_file_in_path("G2.dll")
-                )
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2.so")
+                self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -129,16 +171,29 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         self.library_handle.G2ConfigMgr_clearLastException.argtypes = []
         self.library_handle.G2ConfigMgr_clearLastException.restype = None
+
+        self.library_handle.G2ConfigMgr_getConfigList_helper.argtypes = []
+        self.library_handle.G2ConfigMgr_getConfigList_helper.restype = (
+            G2ConfigMgrGetConfigList
+        )
+
+        self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.argtypes = []
+        self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.restype = (
+            G2ConfigMgrGetDefaultConfigID
+        )
+
         self.library_handle.G2ConfigMgr_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2ConfigMgr_getLastException.restype = ctypes.c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [ctypes.c_char_p]
+        self.library_handle.G2ConfigMgr_getLastException.restype = c_longlong
+
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -195,22 +250,40 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         return "string"
 
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2configmgr()
-        return "string"
+        result = self.library_handle.G2ConfigMgr_getConfigList_helper()
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4004, result.return_code)
+            result_response = cast(result.response, c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2configmgr()
-        return 0
+        result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
+        if result.return_code != 0:
+            # TODO: 4007?
+            raise self.new_exception(4005, result.return_code)
+        return int(result.response)
 
     def init(
         self,
         module_name: str,
         ini_params: str,
-        *args: Any,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2configmgr(module_name, ini_params, verbose_logging)
+        # self.fake_g2configmgr(module_name, ini_params, verbose_logging)
+        result = self.library_handle.G2ConfigMgr_init(
+            as_normalized_string(module_name),
+            as_normalized_string(ini_params),
+            as_normalized_int(verbose_logging),
+        )
+        if result < 0:
+            raise self.new_exception(
+                4007, module_name, ini_params, verbose_logging, result
+            )
 
     def replace_default_config_id(
         self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any

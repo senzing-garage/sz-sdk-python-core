@@ -4,8 +4,8 @@
 TODO: g2hasher.py
 """
 
-import ctypes
 import os
+from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
@@ -43,10 +43,10 @@ class G2Hasher(G2HasherAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
-        *args: Any,
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -54,8 +54,16 @@ class G2Hasher(G2HasherAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
+
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(9999, module_name, ini_params)
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
@@ -68,11 +76,11 @@ class G2Hasher(G2HasherAbstract):
 
         try:
             if os.name == "nt":
-                self.library_handle = ctypes.cdll.LoadLibrary(
+                self.library_handle = cdll.LoadLibrary(
                     find_file_in_path("G2Hasher.dll")
                 )
             else:
-                self.library_handle = ctypes.cdll.LoadLibrary("libG2Hasher.so")
+                self.library_handle = cdll.LoadLibrary("libG2Hasher.so")
         except OSError as err:
             raise G2Exception("Failed to load the G2 library") from err
 
@@ -82,14 +90,15 @@ class G2Hasher(G2HasherAbstract):
         self.library_handle.G2Hasher_clearLastException.argtypes = []
         self.library_handle.G2Hasher_clearLastException.restype = None
         self.library_handle.G2Hasher_getLastException.argtypes = [
-            ctypes.POINTER(ctypes.c_char),
-            ctypes.c_size_t,
+            POINTER(c_char),
+            c_size_t,
         ]
-        self.library_handle.G2Hasher_getLastException.restype = ctypes.c_longlong
+        self.library_handle.G2Hasher_getLastException.restype = c_longlong
 
         # Initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -143,8 +152,7 @@ class G2Hasher(G2HasherAbstract):
         self,
         module_name: str,
         ini_params: str,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, verbose_logging)
@@ -154,8 +162,7 @@ class G2Hasher(G2HasherAbstract):
         module_name: str,
         ini_params: str,
         init_config_id: int,
-        verbose_logging: int,
-        *args: Any,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)

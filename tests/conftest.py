@@ -13,7 +13,7 @@ def engine_vars_fixture():
     Can be used by all pytest tests.
     """
 
-    result = {"ENGINE_MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
+    result = {"MODULE_NAME": "Testing", "VERBOSE_LOGGING": 0}
 
     linux_config = {
         "PIPELINE": {
@@ -23,15 +23,6 @@ def engine_vars_fixture():
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     }
-
-    # linux_config = {
-    #     "PIPELINE": {
-    #         "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc",
-    #         "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources",
-    #         "SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data",
-    #     },
-    #     "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"},
-    # }
 
     darwin_config = {
         "PIPELINE": {
@@ -54,12 +45,12 @@ def engine_vars_fixture():
     run_platform = platform.system()
 
     if run_platform == "Linux":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(linux_config)
+        result["INI_PARAMS"] = json.dumps(linux_config)
     elif run_platform == "Darwin":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(darwin_config)
+        result["INI_PARAMS"] = json.dumps(darwin_config)
     elif run_platform == "Windows":
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps(windows_config)
+        result["INI_PARAMS"] = json.dumps(windows_config)
     else:
-        result["ENGINE_CONFIGURATION_JSON"] = json.dumps({})
+        result["INI_PARAMS"] = json.dumps({})
 
     return result
