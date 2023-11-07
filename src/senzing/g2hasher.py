@@ -93,7 +93,10 @@ class G2Hasher(G2HasherAbstract):
         # self.library_handle.G2Hasher_destroy.restype = c_longlong
         # self.library_handle.G2Hasher_exportTokenLibrary.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Hasher_exportTokenLibrary.restype = c_longlong
-        self.library_handle.G2Hasher_getLastException.argtypes = [POINTER(c_char), c_size_t]
+        self.library_handle.G2Hasher_getLastException.argtypes = [
+            POINTER(c_char),
+            c_size_t,
+        ]
         self.library_handle.G2Hasher_getLastException.restype = c_longlong
         # self.library_handle.G2Hasher_getLastExceptionCode.argtypes = []
         # self.library_handle.G2Hasher_getLastExceptionCode.restype = c_longlong
