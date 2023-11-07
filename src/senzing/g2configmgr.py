@@ -15,6 +15,8 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
+# pylint: disable=R0903
+
 import os
 from ctypes import (
     POINTER,
@@ -50,7 +52,6 @@ CALLER_SKIP = 6
 class G2ConfigMgrGetDefaultConfigID(Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
-    # pylint: disable=R0903
     _fields_ = [
         ("response", c_longlong),
         ("return_code", c_longlong),
@@ -60,7 +61,6 @@ class G2ConfigMgrGetDefaultConfigID(Structure):
 class G2ConfigMgrGetConfigList(Structure):
     """In golang_helpers.h G2Diagnostic_getConfigList_result"""
 
-    # pylint: disable=R0903
     _fields_ = [
         ("response", POINTER(c_char)),
         ("return_code", c_longlong),
@@ -137,8 +137,10 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging

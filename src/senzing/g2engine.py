@@ -367,6 +367,7 @@ class G2Engine(G2EngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         # Verify parameters.
 

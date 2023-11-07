@@ -107,8 +107,10 @@ class G2Config(G2ConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging

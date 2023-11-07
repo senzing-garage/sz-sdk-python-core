@@ -5,7 +5,6 @@ disable=
     missing-module-docstring,
     too-many-arguments,
     too-many-public-methods,
-    unused-argument,
 ignore=
     __init__.py,
     docs/source/conf.py

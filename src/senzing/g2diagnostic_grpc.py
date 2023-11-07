@@ -59,19 +59,21 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
 
     def __init__(
         self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int,
-        *args: Any,
-        **kwargs: Any
+        module_name: str = "",
+        ini_params: str = "",
+        init_config_id: int = 0,
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         """
         Constructor
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         self.ini_params = ini_params
+        self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
@@ -145,7 +147,7 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int = 0,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
 

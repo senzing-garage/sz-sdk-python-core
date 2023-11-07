@@ -102,6 +102,7 @@ class G2Product(G2ProductAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         # Verify parameters.
 
@@ -110,8 +111,8 @@ class G2Product(G2ProductAbstract):
                 raise self.new_exception(4004, module_name, ini_params)
 
         self.ini_params = ini_params
-        self.module_name = module_name
         self.init_config_id = init_config_id
+        self.module_name = module_name
         self.verbose_logging = verbose_logging
 
         # Load binary library.

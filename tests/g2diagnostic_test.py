@@ -97,7 +97,7 @@ def test_get_logical_cores(g2diagnostic_instance):
 # BUG: Returns wrong value!
 def test_get_physical_cores(g2diagnostic_instance):
     """Test physical core count."""
-    # actual = g2diag_instance.get_physical_cores()
+    actual = g2diagnostic_instance.get_physical_cores()
     actual = psutil.cpu_count(logical=False)  # TODO: Remove. Just a test work-around.
     expected = psutil.cpu_count(logical=False)
     # This seems broken currently in C API

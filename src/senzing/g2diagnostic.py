@@ -13,6 +13,7 @@ Example:
 
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
+# pylint: disable=R0903
 
 import os
 from ctypes import (
@@ -50,7 +51,6 @@ CALLER_SKIP = 6
 class G2DiagnosticGetDBInfoResult(Structure):
     """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
-    # pylint: disable=R0903
     _fields_ = [
         ("response", POINTER(c_char)),
         ("return_code", c_longlong),
@@ -60,7 +60,6 @@ class G2DiagnosticGetDBInfoResult(Structure):
 class G2DiagnosticCheckDBPerfResult(Structure):
     """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
-    # pylint: disable=R0903
     _fields_ = [
         ("response", POINTER(c_char)),
         ("return_code", c_longlong),
@@ -137,6 +136,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+        # pylint: disable=W0613
 
         # Verify parameters.
 
@@ -145,8 +145,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
                 raise self.new_exception(4004, module_name, ini_params)
 
         self.ini_params = ini_params
-        self.module_name = module_name
         self.init_config_id = init_config_id
+        self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
