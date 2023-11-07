@@ -6,7 +6,7 @@ from typing import Any, Dict
 from senzing import g2config
 from senzing.g2exception import G2Exception
 
-INI_PARAMS_DICT = {
+ini_params_dict = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -15,12 +15,12 @@ INI_PARAMS_DICT = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 MODULE_NAME = "Example"
-JSON_CONFIG_DICT: Dict[
+json_config_dict: Dict[
     str, Any
 ] = {}  # Naturally, this would be a full Senzing configuration.
 
 try:
-    G2_CONFIG = g2config.G2Config(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    CONFIG_HANDLE = G2_CONFIG.load(json.dumps(JSON_CONFIG_DICT))
+    g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
+    CONFIG_HANDLE = g2_config.load(json.dumps(json_config_dict))
 except G2Exception as err:
     print(err)

@@ -5,7 +5,7 @@ import json
 from senzing import g2configmgr, g2diagnostic
 from senzing.g2exception import G2Exception
 
-INI_PARAMS_DICT = {
+ini_params_dict = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -17,12 +17,12 @@ MODULE_NAME = "Example"
 
 try:
     # Get a configuration ID.
-    G2_CONFIGMGR = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
-    CONFIG_ID = G2_CONFIGMGR.get_default_config_id()
+    g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
+    config_id = g2_configmgr.get_default_config_id()
 
-    G2_DIAGNOSIS = g2diagnostic.G2Diagnostic()
-    G2_DIAGNOSIS.init_with_config_id(
-        MODULE_NAME, json.dumps(INI_PARAMS_DICT), CONFIG_ID
+    g2_diagnostic = g2diagnostic.G2Diagnostic()
+    g2_diagnostic.init_with_config_id(
+        MODULE_NAME, json.dumps(ini_params_dict), config_id
     )
 except G2Exception as err:
     print(err)

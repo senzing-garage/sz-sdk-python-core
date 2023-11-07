@@ -22,6 +22,7 @@ from typing import Any
 from .g2config_abstract import G2ConfigAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -54,7 +55,7 @@ class G2Config(G2ConfigAbstract):
 
     .. code-block:: python
 
-        g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
+        g2_config = g2config.G2Config(module_name, ini_params)
 
 
     If the G2Config constructor is called without parameters,
@@ -65,7 +66,7 @@ class G2Config(G2ConfigAbstract):
     .. code-block:: python
 
         g2_config = g2config.G2Config()
-        g2_config.init(MODULE_NAME, INI_PARAMS)
+        g2_config.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -109,11 +110,23 @@ class G2Config(G2ConfigAbstract):
         """
         # pylint: disable=W0613
 
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(9999, module_name, ini_params)
+
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
+
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
 
         try:
             if os.name == "nt":
@@ -137,7 +150,8 @@ class G2Config(G2ConfigAbstract):
 
         # Initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""

@@ -57,14 +57,14 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
+            g2_product = g2product.G2Product(module_name, ini_params)
 
         Raises:
             G2Exception:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -85,7 +85,7 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(MODULE_NAME, INI_PARAMS)
+            g2_product = g2product.G2Product(module_name, ini_params)
 
         Args:
             module_name:
@@ -100,7 +100,7 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
                 :linenos:
                 :language: python
 

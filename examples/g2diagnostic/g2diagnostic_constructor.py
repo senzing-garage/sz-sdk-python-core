@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2config
+from senzing import g2diagnostic
 from senzing.g2exception import G2Exception
 
 ini_params_dict = {
@@ -18,14 +18,14 @@ MODULE_NAME = "Example"
 # Example 1
 
 try:
-    g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
+    g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, json.dumps(ini_params_dict))
 except G2Exception as err:
     print(err)
 
 # Example 2
 
 try:
-    g2_config = g2config.G2Config()
-    g2_config.init(MODULE_NAME, json.dumps(ini_params_dict))
+    g2_diagnostic = g2diagnostic.G2Diagnostic()
+    g2_diagnostic.init(MODULE_NAME, json.dumps(ini_params_dict))
 except G2Exception as err:
     print(err)

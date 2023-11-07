@@ -32,6 +32,7 @@ from typing import Any
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -83,7 +84,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     .. code-block:: python
 
-        g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, INI_PARAMS)
+        g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
 
 
     If the G2Diagnostic constructor is called without parameters,
@@ -94,7 +95,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
     .. code-block:: python
 
         g2_diagnostic = g2diagnostic.G2Diagnostic()
-        g2_diagnostic.init(MODULE_NAME, INI_PARAMS)
+        g2_diagnostic.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -150,6 +151,12 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
+
         try:
             if os.name == "nt":
                 self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
@@ -199,7 +206,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""

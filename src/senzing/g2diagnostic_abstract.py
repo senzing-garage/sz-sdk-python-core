@@ -30,7 +30,7 @@ class G2DiagnosticAbstract(ABC):
 
     PREFIX = "g2diagnostic."
     ID_MESSAGES = {
-        # TODO remove + concats for f-strings
+        # TODO: remove + concats for f-strings
         4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
         4002: PREFIX + "G2Diagnostic_closeEntityListBySize() failed. Return code: {0}",
         4003: PREFIX + "G2Diagnostic_destroy() failed.  Return code: {0}",
@@ -106,14 +106,14 @@ class G2DiagnosticAbstract(ABC):
 
         .. code-block:: python
 
-            g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, INI_PARAMS)
+            g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
 
         Raises:
             None: TODO:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -142,7 +142,7 @@ class G2DiagnosticAbstract(ABC):
         The `get_db_info` method returns information about the database connection.
 
         Returns:
-            str: A JSON document enumerating data sources. Example: `{"Hybrid Mode":false,"Database Details":[{"Name":"0.0.0.0","Type":"postgresql"}]}`
+            str: A JSON document enumerating data sources.
 
         Raises:
             None: TODO:
@@ -230,7 +230,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. code-block:: python
 
-            g2_diagnosis = g2diagnosis.G2Diagnosis(MODULE_NAME, INI_PARAMS)
+            g2_diagnosis = g2diagnosis.G2Diagnosis(module_name, ini_params)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
@@ -242,7 +242,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -268,7 +268,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. code-block:: python
 
-            g2_diagnosis = g2diagnosis.G2Diagnosis(MODULE_NAME, INI_PARAMS, INIT_CONFIG_ID)
+            g2_diagnosis = g2diagnosis.G2Diagnosis(module_name, ini_params, init_config_id)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.

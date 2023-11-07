@@ -5,7 +5,7 @@ import json
 from senzing import g2product
 from senzing.g2exception import G2Exception
 
-INI_PARAMS_DICT = {
+ini_params_dict = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -16,11 +16,11 @@ INI_PARAMS_DICT = {
 MODULE_NAME = "Example"
 
 try:
-    G2_PRODUCT = g2product.G2Product()
-    G2_PRODUCT.init(MODULE_NAME, json.dumps(INI_PARAMS_DICT))
+    g2_product = g2product.G2Product()
+    g2_product.init(MODULE_NAME, json.dumps(ini_params_dict))
 
     # Do work.
 
-    G2_PRODUCT.destroy()
+    g2_product.destroy()
 except G2Exception as err:
     print(err)

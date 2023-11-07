@@ -34,6 +34,7 @@ from typing import Any, Tuple
 from .g2engine_abstract import G2EngineAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -314,7 +315,7 @@ class G2Engine(G2EngineAbstract):
 
     .. code-block:: python
 
-        g2_engine = g2engine.G2Engine(MODULE_NAME, INI_PARAMS)
+        g2_engine = g2engine.G2Engine(module_name, ini_params)
 
 
     If the G2Engine constructor is called without parameters,
@@ -325,7 +326,7 @@ class G2Engine(G2EngineAbstract):
     .. code-block:: python
 
         g2_engine = g2engine.G2Engine()
-        g2_engine.init(MODULE_NAME, INI_PARAMS, ENGINE_VERBOSE_LOGGING)
+        g2_engine.init(module_name, ini_params, verbose_logging)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -380,6 +381,10 @@ class G2Engine(G2EngineAbstract):
         self.init_config_id = init_config_id
         self.noop = ""
         self.verbose_logging = verbose_logging
+
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
 
         # Load binary library.
 

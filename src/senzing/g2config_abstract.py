@@ -137,12 +137,6 @@ class G2ConfigAbstract(ABC):
             .. literalinclude:: ../../examples/g2config/delete_data_source.py
                 :linenos:
                 :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/g2config/delete_data_source.txt
-                :linenos:
-                :language: json
         """
 
     @abstractmethod
@@ -159,14 +153,14 @@ class G2ConfigAbstract(ABC):
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
+            g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
             None: TODO:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
 
@@ -188,7 +182,7 @@ class G2ConfigAbstract(ABC):
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(MODULE_NAME, INI_PARAMS)
+            g2_config = g2config.G2Config(module_name, ini_params)
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
@@ -200,7 +194,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/init_and_destroy.py
+            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
         """

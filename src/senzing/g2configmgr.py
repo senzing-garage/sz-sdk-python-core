@@ -33,6 +33,7 @@ from typing import Any
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
+from .g2version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -84,7 +85,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     .. code-block:: python
 
-        g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, INI_PARAMS)
+        g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
 
     If the G2ConfigMgr constructor is called without parameters,
@@ -95,7 +96,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     .. code-block:: python
 
         g2_configmgr = g2configmgr.G2ConfigMgr()
-        g2_configmgr.init(MODULE_NAME, INI_PARAMS)
+        g2_configmgr.init(module_name, ini_params)
 
     Either `module_name` and `ini_params` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
@@ -139,11 +140,23 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         """
         # pylint: disable=W0613
 
+        # Verify parameters.
+
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(9999, module_name, ini_params)
+
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
+
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
 
         try:
             if os.name == "nt":
@@ -179,7 +192,8 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Initialize Senzing engine.
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(module_name) > 0:
+            self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -236,8 +250,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         return "string"
 
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
-        # self.fake_g2configmgr()
-        # return "string"
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
         try:
             if result.return_code != 0:
