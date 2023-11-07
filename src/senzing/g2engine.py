@@ -335,7 +335,7 @@ class G2Engine(G2EngineAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2engine/constructor.py
+        .. literalinclude:: ../../examples/g2engine/g2engine_constructor.py
             :linenos:
             :language: python
     """

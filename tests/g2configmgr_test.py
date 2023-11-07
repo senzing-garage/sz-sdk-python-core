@@ -8,9 +8,8 @@ def g2configmgr_instance_fixture(engine_vars):
     """Single engine object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
     result = g2configmgr.G2ConfigMgr(
-        engine_vars["ENGINE_MODULE_NAME"],
-        engine_vars["ENGINE_CONFIGURATION_JSON"],
-        engine_vars["ENGINE_VERBOSE_LOGGING"],
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS"],
     )
     return result
 

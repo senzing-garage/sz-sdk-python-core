@@ -7,7 +7,7 @@ from senzing import g2hasher
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2hasher_instance")
+@pytest.fixture(name="g2hasher_instance", scope="module")
 def g2hasher_instance_fixture(engine_vars):
     """
     Single engine object to use for all tests.

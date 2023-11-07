@@ -84,7 +84,7 @@ class G2Config(G2ConfigAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2config/constructor.py
+        .. literalinclude:: ../../examples/g2config/g2config_constructor.py
             :linenos:
             :language: python
     """

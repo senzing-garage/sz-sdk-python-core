@@ -80,7 +80,7 @@ class G2Product(G2ProductAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2product/constructor.py
+        .. literalinclude:: ../../examples/g2product/g2product_constructor.py
             :linenos:
             :language: python
     """

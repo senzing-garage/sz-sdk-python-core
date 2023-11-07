@@ -13,7 +13,7 @@ def engine_vars_fixture():
     Can be used by all pytest tests.
     """
 
-    result = {"MODULE_NAME": "Testing", "ENGINE_VERBOSE_LOGGING": 0}
+    result = {"MODULE_NAME": "Testing", "VERBOSE_LOGGING": 0}
 
     linux_config = {
         "PIPELINE": {

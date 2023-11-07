@@ -10,7 +10,7 @@ from senzing import g2product
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2product_instance")
+@pytest.fixture(name="g2product_instance", scope="module")
 def g2product_instance_fixture(engine_vars):
     """
     Single engine object to use for all tests.

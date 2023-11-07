@@ -105,7 +105,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2diagnostic/constructor.py
+        .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_constructor.py
             :linenos:
             :language: python
     """

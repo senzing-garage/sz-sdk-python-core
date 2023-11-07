@@ -106,7 +106,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2configmgr/constructor.py
+        .. literalinclude:: ../../examples/g2configmgr/g2configmgr_constructor.py
             :linenos:
             :language: python
     """
