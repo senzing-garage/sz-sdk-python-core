@@ -24,6 +24,7 @@ from ctypes import (
     c_int,
     c_longlong,
     c_size_t,
+    c_void_p,
     cast,
     cdll,
 )
@@ -39,7 +40,7 @@ from .g2version import is_supported_senzingapi_version
 __all__ = ["G2Diagnostic"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6
@@ -49,8 +50,8 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2DiagnosticGetDBInfoResult(Structure):
-    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
+class G2ResponseReturnCodeResult(Structure):
+    """Simple response, return_code structure"""
 
     _fields_ = [
         ("response", POINTER(c_char)),
@@ -58,13 +59,12 @@ class G2DiagnosticGetDBInfoResult(Structure):
     ]
 
 
-class G2DiagnosticCheckDBPerfResult(Structure):
+class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
-    _fields_ = [
-        ("response", POINTER(c_char)),
-        ("return_code", c_longlong),
-    ]
+
+class G2DiagnosticGetDBInfoResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_getDBInfo_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -168,41 +168,74 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
 
+        # self.library_handle.G2Diagnostic_checkDBPerf.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_checkDBPerf.restype = c_longlong
         self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = []
         self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
             G2DiagnosticCheckDBPerfResult
         )
-
         self.library_handle.G2Diagnostic_clearLastException.argtypes = []
         self.library_handle.G2Diagnostic_clearLastException.restype = None
-
+        # self.library_handle.G2Diagnostic_closeEntityListBySize.argtypes = [c_void_p]
+        # self.library_handle.G2Diagnostic_closeEntityListBySize.restype = c_longlong
+        self.library_handle.G2Diagnostic_destroy.argtypes = []
+        self.library_handle.G2Diagnostic_destroy.restype = c_longlong
+        # self.library_handle.G2Diagnostic_fetchNextEntityBySize.argtypes = [c_void_p, c_char_p, c_size_t]
+        # self.library_handle.G2Diagnostic_fetchNextEntityBySize.restype = c_longlong
+        # self.library_handle.G2Diagnostic_findEntitiesByFeatureIDs.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_findEntitiesByFeatureIDs.restype = c_longlong
+        self.library_handle.G2Diagnostic_getAvailableMemory.argtypes = []
         self.library_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
-
+        # self.library_handle.G2Diagnostic_getDataSourceCounts.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getDataSourceCounts.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getDBInfo.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getDBInfo.restype = c_longlong
         self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
         self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
             G2DiagnosticGetDBInfoResult
         )
-
+        # self.library_handle.G2Diagnostic_getEntityDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getEntityDetails.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getEntityListBySize.argtypes = [c_ulonglong, POINTER(c_void_p)]
+        # self.library_handle.G2Diagnostic_getEntityListBySize.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getEntityResume.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getEntityResume.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getEntitySizeBreakdown.argtypes = [c_size_t, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getEntitySizeBreakdown.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getFeature.argtypes = [c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getFeature.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getGenericFeatures.argtypes = [c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getGenericFeatures.restype = c_longlong
         self.library_handle.G2Diagnostic_getLastException.argtypes = [
             POINTER(c_char),
             c_size_t,
         ]
         self.library_handle.G2Diagnostic_getLastException.restype = c_longlong
-
+        self.library_handle.G2Diagnostic_getLastExceptionCode.argtypes = []
+        self.library_handle.G2Diagnostic_getLastExceptionCode.restype = c_longlong
         self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
-
+        self.library_handle.G2Diagnostic_getLogicalCores.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getMappingStatistics.argtypes = [ c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getMappingStatistics.restype = c_longlong
         self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
-
+        self.library_handle.G2Diagnostic_getPhysicalCores.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getRelationshipDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getRelationshipDetails.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getResolutionStatistics.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Diagnostic_getResolutionStatistics.restype = c_longlong
+        self.library_handle.G2Diagnostic_getTotalSystemMemory.argtypes = []
         self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = c_longlong
-
-        self.library_handle.G2Diagnostic_init.argtypes = [
+        self.library_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.G2Diagnostic_init.restype = c_longlong
+        self.library_handle.G2Diagnostic_initWithConfigID.argtypes = [
             c_char_p,
             c_char_p,
+            c_longlong,
             c_int,
         ]
-
+        self.library_handle.G2Diagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
-
+        self.library_handle.G2Diagnostic_reinit.restype = c_longlong
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Initialize Senzing engine.
@@ -252,6 +285,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
+        assert isinstance(seconds_to_run, int)
         result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
         try:
             if result.return_code != 0:
