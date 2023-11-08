@@ -144,6 +144,9 @@ class G2Config(G2ConfigAbstract):
             :language: python
     """
 
+    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
+    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
+
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------

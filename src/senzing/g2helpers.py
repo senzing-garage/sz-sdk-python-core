@@ -6,8 +6,15 @@ import os
 from ctypes import POINTER, c_uint, cast
 from typing import Any
 
+uintptr_type = POINTER(c_uint)
 
-def as_uintptr_t(candidate_value: int) -> POINTER(c_uint):
+# -----------------------------------------------------------------------------
+# Helpers for working with C
+# -----------------------------------------------------------------------------
+
+
+# TODO: Figure out better return type hint (e.g. POINTER[c_uint], _Pointer[c_uint])
+def as_uintptr_t(candidate_value: int) -> Any:
     """
     Internal processing function.
     This converts many types of values to an integer.
@@ -60,6 +67,11 @@ def as_c_char_p(candidate_value: Any) -> Any:
         return str(candidate_value).encode("utf-8")
     # input is already a str
     return candidate_value
+
+
+# -----------------------------------------------------------------------------
+# Helpers for working with files and directories.
+# -----------------------------------------------------------------------------
 
 
 def find_file_in_path(filename: str) -> str:

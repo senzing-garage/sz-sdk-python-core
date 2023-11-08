@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2config_abstract.py
+g2config_abstract.py is the abstract class for all implementaions of g2config.
 """
+
+# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
 from typing import Any
@@ -12,7 +14,7 @@ from typing import Any
 __all__ = ["G2ConfigAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-08"
 
 # -----------------------------------------------------------------------------
 # G2ConfigAbstract
@@ -185,7 +187,7 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(module_name, ini_params)
 
         Args:
-            module_name (str): A name for the auditing node, to help identify it within system logs.
+            module_name (str): A short name given to this instance of the G2Config object, to help identify it within system logs.
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -202,7 +204,8 @@ class G2ConfigAbstract(ABC):
     @abstractmethod
     def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         """
-        The `list_data_sources` method returns a JSON document of data sources.
+        The `list_data_sources` method returns a JSON document of data sources
+        contained in an in-memory configuration.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
@@ -230,7 +233,10 @@ class G2ConfigAbstract(ABC):
     def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
         """
         The `load` method initializes an in-memory Senzing G2Config object from a JSON string.
-        A configuration handle is returned.
+        A handle is returned to identify the in-memory configuration.
+        The handle is used by the `add_data_source`, `list_data_sources`,
+        `delete_data_source`, and `save` methods.
+        The handle is terminated by the `close` method.
 
         Args:
             json_config (str): A JSON document containing the Senzing configuration.
@@ -274,7 +280,13 @@ class G2ConfigAbstract(ABC):
                 :linenos:
                 :language: python
 
-            **Create, save, load, and close**
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2config/save.txt
+                :linenos:
+                :language: json
+
+            **Create, save, load, and close example**
 
             .. literalinclude:: ../../examples/g2config/create_save_load_close.py
                 :linenos:

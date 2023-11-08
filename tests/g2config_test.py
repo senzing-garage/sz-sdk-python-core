@@ -199,7 +199,7 @@ save_schema = {
                 "RTYPE_ID": int,
                 "QUAL_ERFRAG_CODE": str,
                 "DISQ_ERFRAG_CODE": Or(str, None),
-                "ERRULE_TIER": int,
+                "ERRULE_TIER": Or(int, None),
             },
         ],
         "CFG_ETYPE": [
@@ -216,7 +216,7 @@ save_schema = {
                 "FELEM_ID": int,
                 "EXEC_ORDER": int,
                 "DISPLAY_LEVEL": int,
-                "DISPLAY_DELIM": str,
+                "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
             },
         ],
@@ -249,7 +249,7 @@ save_schema = {
         "CFG_FTYPE": [
             {
                 "FTYPE_ID": int,
-                "FTYPE_CODE": int,
+                "FTYPE_CODE": Or(str, None),
                 "FTYPE_DESC": str,
                 "FCLASS_ID": int,
                 "FTYPE_FREQ": str,
@@ -258,7 +258,7 @@ save_schema = {
                 "PERSIST_HISTORY": str,
                 "USED_FOR_CAND": str,
                 "DERIVED": str,
-                "DERIVATION": str,
+                "DERIVATION": Or(str, None),
                 "RTYPE_ID": int,
                 "ANONYMIZE": str,
                 "VERSION": int,
@@ -355,7 +355,6 @@ save_schema = {
     },
 }
 
-
 # -----------------------------------------------------------------------------
 # G2Product testcases
 # -----------------------------------------------------------------------------
@@ -368,7 +367,7 @@ def test_exception(g2_config):
 
 
 def test_add_data_source(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().add_data_source()."""
     input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
     config_handle = g2_config.create()
     actual = g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
@@ -379,7 +378,7 @@ def test_add_data_source(g2_config):
 
 
 def test_create(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().create()."""
     config_handle = g2_config.create()
     assert isinstance(config_handle, int)
     assert config_handle > 0
@@ -389,7 +388,7 @@ def test_create(g2_config):
 
 
 def test_delete_data_source(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().delete_data_source()."""
     input_json_dict = {"DSRC_CODE": "TEST"}
     config_handle = g2_config.create()
     g2_config.delete_data_source(config_handle, json.dumps(input_json_dict))
@@ -397,7 +396,7 @@ def test_delete_data_source(g2_config):
 
 
 def test_list_data_sources(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().list_data_sources()."""
     config_handle = g2_config.create()
     actual = g2_config.list_data_sources(config_handle)
     g2_config.close(config_handle)
@@ -407,7 +406,7 @@ def test_list_data_sources(g2_config):
 
 
 def test_load(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().load()."""
     config_handle = g2_config.create()
     json_config = g2_config.save(config_handle)
     config_handle = g2_config.load(json_config)
@@ -417,7 +416,7 @@ def test_load(g2_config):
 
 
 def test_save(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().save()."""
     config_handle = g2_config.create()
     actual = g2_config.save(config_handle)
     g2_config.close(config_handle)
@@ -427,6 +426,6 @@ def test_save(g2_config):
 
 
 def test_init_and_destroy(g2_config):
-    """Test Senzing license."""
+    """Test G2Config().init() and G2Config.init()."""
     g2_config.init("Example", "{}", 0)
     g2_config.destroy()
