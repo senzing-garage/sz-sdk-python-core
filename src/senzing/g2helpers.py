@@ -3,10 +3,23 @@ TODO: g2helpers.py
 """
 
 import os
+from ctypes import POINTER, c_uint, cast
 from typing import Any
 
 
-def as_normalized_int(candidate_value: Any) -> int:
+def as_uintptr_t(candidate_value: int) -> POINTER(c_uint):
+    """
+    Internal processing function.
+    This converts many types of values to an integer.
+
+    :meta private:
+    """
+
+    result = cast(candidate_value, POINTER(c_uint))
+    return result
+
+
+def as_c_int(candidate_value: Any) -> int:
     """
     Internal processing function.
     This converts many types of values to an integer.
@@ -28,7 +41,7 @@ def as_normalized_int(candidate_value: Any) -> int:
     return int(candidate_value)
 
 
-def as_normalized_string(candidate_value: Any) -> Any:
+def as_c_char_p(candidate_value: Any) -> Any:
     """
     Internal processing function.
 

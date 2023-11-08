@@ -61,7 +61,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing the newly created data source.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -85,7 +85,7 @@ class G2ConfigAbstract(ABC):
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -109,7 +109,7 @@ class G2ConfigAbstract(ABC):
             int: A pointer to an in-memory Senzing configuration.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -130,7 +130,7 @@ class G2ConfigAbstract(ABC):
             input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -156,7 +156,7 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -190,7 +190,7 @@ class G2ConfigAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -211,7 +211,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing all of the data sources.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -239,7 +239,7 @@ class G2ConfigAbstract(ABC):
             int: An identifier (config_handle) of an in-memory configuration.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -266,7 +266,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON Document representation of the Senzing G2Config object.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 

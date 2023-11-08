@@ -27,13 +27,15 @@ from ctypes import (
     c_longlong,
     c_size_t,
     c_uint,
+    c_void_p,
+    cast,
     cdll,
 )
 from typing import Any
 
 from .g2config_abstract import G2ConfigAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import find_file_in_path
+from .g2helpers import as_c_char_p, as_c_int, as_uintptr_t, find_file_in_path
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -44,14 +46,14 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5040"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-CALLER_SKIP = 6
+CALLER_SKIP = 5
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class G2ResponseAsCharPointerResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -60,23 +62,32 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2ConfigAddDataSourceResult(G2ResponseReturnCodeResult):
+class G2ResponseAsVoidPointerResult(Structure):
+    """Simple response, return_code structure"""
+
+    _fields_ = [
+        ("response", c_void_p),
+        ("return_code", c_longlong),
+    ]
+
+
+class G2ConfigAddDataSourceResult(G2ResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_addDataSource_result"""
 
 
-class G2ConfigCreateResult(G2ResponseReturnCodeResult):
+class G2ConfigCreateResult(G2ResponseAsVoidPointerResult):
     """In golang_helpers.h G2Config_create_result"""
 
 
-class G2ConfigListDataSourcesResult(G2ResponseReturnCodeResult):
+class G2ConfigListDataSourcesResult(G2ResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_listDataSources_result"""
 
 
-class G2ConfigLoadResult(G2ResponseReturnCodeResult):
+class G2ConfigLoadResult(G2ResponseAsVoidPointerResult):
     """In golang_helpers.h G2Config_load_result"""
 
 
-class G2ConfigSaveResult(G2ResponseReturnCodeResult):
+class G2ConfigSaveResult(G2ResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_save_result"""
 
 
@@ -154,6 +165,11 @@ class G2Config(G2ConfigAbstract):
 
         # Verify parameters.
 
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(init_config_id, int)
+        assert isinstance(verbose_logging, int)
+
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
                 raise self.new_exception(9999, module_name, ini_params)
@@ -209,6 +225,8 @@ class G2Config(G2ConfigAbstract):
             c_char_p,
         ]  # TODO: This may not be correct
         self.library_handle.G2Config_deleteDataSource_helper.restype = c_longlong
+        self.library_handle.G2Config_destroy.argtypes = []
+        self.library_handle.G2Config_destroy.restype = c_longlong
         self.library_handle.G2Config_getLastException.argtypes = [
             POINTER(c_char),
             c_size_t,
@@ -248,19 +266,6 @@ class G2Config(G2ConfigAbstract):
         self.destroy()
 
     # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2config(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
-
-    # -------------------------------------------------------------------------
     # Exception helpers
     # -------------------------------------------------------------------------
 
@@ -287,23 +292,54 @@ class G2Config(G2ConfigAbstract):
     def add_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
-        self.fake_g2config(config_handle, input_json)
-        return "string"
+        assert isinstance(config_handle, int)
+        assert isinstance(input_json, str)
+        result = self.library_handle.G2Config_addDataSource_helper(
+            as_uintptr_t(config_handle), as_c_char_p(input_json)
+        )
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4001, config_handle, input_json, result.return_code
+                )
+            result_response = cast(result.response, c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2config(config_handle)
+        assert isinstance(config_handle, int)
+        result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
+        if result != 0:
+            raise self.new_exception(4002, config_handle, result)
 
     def create(self, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2config()
-        return 0
+        result = self.library_handle.G2Config_create_helper()
+        if result.return_code != 0:
+            raise self.new_exception(4003, result.return_code)
+        result_response = cast(result.response, c_void_p).value
+        if result_response is None:
+            result_response = 0
+        return result_response
 
     def delete_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> None:
-        self.fake_g2config(config_handle, input_json)
+        assert isinstance(config_handle, int)
+        assert isinstance(input_json, str)
+        result = self.library_handle.G2Config_deleteDataSource_helper(
+            as_uintptr_t(config_handle), as_c_char_p(input_json)
+        )
+        if result != 0:
+            raise self.new_exception(
+                4004, config_handle, input_json, result.return_code
+            )
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2config()
+        result = self.library_handle.G2Config_destroy()
+        if result != 0:
+            raise self.new_exception(4006, result)
 
     def init(
         self,
@@ -312,16 +348,52 @@ class G2Config(G2ConfigAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2config(module_name, ini_params, verbose_logging)
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(verbose_logging, int)
+        result = self.library_handle.G2Config_init(
+            as_c_char_p(module_name),
+            as_c_char_p(ini_params),
+            as_c_int(verbose_logging),
+        )
+        if result < 0:
+            raise self.new_exception(
+                4007, module_name, ini_params, verbose_logging, result
+            )
 
     def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2config(config_handle)
-        return "string"
+        assert isinstance(config_handle, int)
+        result = self.library_handle.G2Config_listDataSources_helper(
+            as_uintptr_t(config_handle)
+        )
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4008, result.return_code)
+            result_response = cast(result.response, c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str
 
     def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
-        self.fake_g2config(json_config)
-        return 0
+        assert isinstance(json_config, str)
+        result = self.library_handle.G2Config_load_helper(as_c_char_p(json_config))
+        if result.return_code != 0:
+            raise self.new_exception(4009, json_config, result.return_code)
+        result_response = cast(result.response, c_void_p).value
+        if result_response is None:
+            result_response = 0
+        return result_response
 
     def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2config(config_handle)
-        return "string"
+        # TODO: nothing
+        assert isinstance(config_handle, int)
+        result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4010, config_handle, result.return_code)
+            result_response = cast(result.response, c_char_p).value
+            result_response_str = result_response.decode() if result_response else ""
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response_str

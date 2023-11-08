@@ -19,7 +19,7 @@ from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
+from .g2helpers import as_c_char_p, as_c_int, find_file_in_path
 from .g2product_abstract import G2ProductAbstract
 
 # Metadata
@@ -197,9 +197,9 @@ class G2Product(G2ProductAbstract):
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
-            as_normalized_string(module_name),
-            as_normalized_string(ini_params),
-            as_normalized_int(verbose_logging),
+            as_c_char_p(module_name),
+            as_c_char_p(ini_params),
+            as_c_int(verbose_logging),
         )
         if result < 0:
             raise self.new_exception(
