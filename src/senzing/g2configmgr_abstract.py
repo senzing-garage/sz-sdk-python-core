@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2configmgr_abstract.py
+g2configmgr_abstract.py is the abstract class for all implementaions of g2configmgr.
 """
 
 from abc import ABC, abstractmethod
@@ -62,7 +62,7 @@ class G2ConfigMgrAbstract(ABC):
             int: A configuration identifier.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -88,7 +88,7 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -109,7 +109,7 @@ class G2ConfigMgrAbstract(ABC):
             str: A JSON document containing the Senzing configuration.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -133,7 +133,7 @@ class G2ConfigMgrAbstract(ABC):
             str: A JSON document containing Senzing configurations.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -157,7 +157,7 @@ class G2ConfigMgrAbstract(ABC):
             int:  A configuration identifier which identifies the current configuration in use.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -190,7 +190,7 @@ class G2ConfigMgrAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -214,7 +214,7 @@ class G2ConfigMgrAbstract(ABC):
             new_config_id (int): The configuration identifier to use as the default.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
@@ -233,7 +233,7 @@ class G2ConfigMgrAbstract(ABC):
             config_id (int): The configuration identifier of the Senzing Engine configuration to use as the default.
 
         Raises:
-            None: TODO:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 

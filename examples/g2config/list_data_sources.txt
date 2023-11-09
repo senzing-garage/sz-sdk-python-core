@@ -1,3 +1,5 @@
+// Output has been formatted for easier reading.
+
 {
     "DATA_SOURCES": [
         {

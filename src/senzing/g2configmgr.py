@@ -18,21 +18,18 @@ Example:
 # pylint: disable=R0903
 
 import os
-from ctypes import (
-    POINTER,
-    Structure,
-    c_char,
-    c_char_p,
-    c_longlong,
-    c_size_t,
-    cast,
-    cdll,
-)
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, find_file_in_path
+from .g2helpers import (
+    as_c_char_p,
+    as_c_int,
+    as_python_int,
+    as_python_str,
+    find_file_in_path,
+)
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -158,15 +155,23 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Verify parameters.
 
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(init_config_id, int)
+        assert isinstance(verbose_logging, int)
+
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
                 raise self.new_exception(9999, module_name, ini_params)
 
+        self.auto_init = False
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
-        self.noop = ""
         self.verbose_logging = verbose_logging
+
+        if len(module_name) > 0:
+            self.auto_init = True
 
         # Determine if Senzing API version is acceptable.
 
@@ -233,25 +238,13 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Initialize Senzing engine.
 
-        if len(module_name) > 0:
+        if self.auto_init:
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
-
-    # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2configmgr(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
+        if self.auto_init:
+            self.destroy()
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -280,31 +273,46 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def add_config(
         self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
     ) -> int:
-        self.fake_g2configmgr(config_str, config_comments)
-        return 0
+        assert isinstance(config_str, str)
+        assert isinstance(config_comments, str)
+        result = self.library_handle.G2ConfigMgr_addConfig_helper(
+            as_c_char_p(config_str), as_c_char_p(config_comments)
+        )
+        if result.return_code != 0:
+            raise self.new_exception(
+                4001, config_str, config_comments, result.return_code
+            )
+        return as_python_int(result.response)
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2configmgr()
+        result = self.library_handle.G2ConfigMgr_destroy()
+        if result != 0:
+            raise self.new_exception(4002, result)
 
     def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2configmgr(config_id)
-        return "string"
+        assert isinstance(config_id, int)
+        result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
+        try:
+            if result.return_code != 0:
+                raise self.new_exception(4003, config_id, result.return_code)
+            result_response = as_python_str(result.response)
+        finally:
+            self.library_handle.G2GoHelper_free(result.response)
+        return result_response
 
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
         try:
             if result.return_code != 0:
                 raise self.new_exception(4004, result.return_code)
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
+            result_response = as_python_str(result.response)
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
+        return result_response
 
     def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
-            # TODO: 4007?
             raise self.new_exception(4005, result.return_code)
         return int(result.response)
 
@@ -315,7 +323,9 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        # self.fake_g2configmgr(module_name, ini_params, verbose_logging)
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(verbose_logging, int)
         result = self.library_handle.G2ConfigMgr_init(
             as_c_char_p(module_name),
             as_c_char_p(ini_params),
@@ -329,7 +339,16 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def replace_default_config_id(
         self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
     ) -> None:
-        self.fake_g2configmgr(old_config_id, new_config_id)
+        assert isinstance(old_config_id, int)
+        assert isinstance(new_config_id, int)
+        result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
+            old_config_id, new_config_id
+        )
+        if result < 0:
+            raise self.new_exception(4008, old_config_id, new_config_id, result)
 
     def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2configmgr(config_id)
+        assert isinstance(config_id, int)
+        result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
+        if result < 0:
+            raise self.new_exception(4009, config_id, result)

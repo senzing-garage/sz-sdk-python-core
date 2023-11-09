@@ -3,7 +3,7 @@ TODO: g2helpers.py
 """
 
 import os
-from ctypes import POINTER, c_uint, cast
+from ctypes import POINTER, c_char_p, c_uint, c_void_p, cast
 from typing import Any
 
 uintptr_type = POINTER(c_uint)
@@ -69,7 +69,43 @@ def as_c_char_p(candidate_value: Any) -> Any:
     return candidate_value
 
 
-# -----------------------------------------------------------------------------
+def as_python_int(candidate_value: Any) -> int:
+    """
+    From a c_void_p, return a true python int.
+
+    Args:
+        candidate_value (Any): A c_void_p to be transformed.
+
+    Returns:
+        int: The python int representation
+
+    :meta private:
+    """
+
+    result = cast(candidate_value, c_void_p).value
+    if result is None:
+        result = 0
+    return result
+
+
+def as_python_str(candidate_value: Any) -> str:
+    """
+    From a c_char_p, return a true python str,
+
+    Args:
+        candidate_value (Any): A c_char_p value to be transformed.
+
+    Returns:
+        str: The python string representation.
+
+    :meta private:
+    """
+    result_raw = cast(candidate_value, c_char_p).value
+    result = result_raw.decode() if result_raw else ""
+    return result
+
+
+# ---------------------w----------------------------------------------------
 # Helpers for working with files and directories.
 # -----------------------------------------------------------------------------
 

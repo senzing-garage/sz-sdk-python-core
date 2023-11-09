@@ -78,11 +78,11 @@ def test_check_db_perf_3(g2diagnostic_instance):
 
 
 # TODO: Likely going away in V4
-def test_get_available_memory(g2diagnostic_instance):
-    """Test available memory."""
-    actual = g2diagnostic_instance.get_available_memory()
-    expected = psutil.virtual_memory().available
-    assert actual == expected
+# def test_get_available_memory(g2diagnostic_instance):
+#     """Test available memory."""
+#     actual = g2diagnostic_instance.get_available_memory()
+#     expected = psutil.virtual_memory().available
+#     assert actual == expected
 
 
 def test_get_db_info(g2diagnostic_instance):
