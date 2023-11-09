@@ -4,6 +4,8 @@
 g2configmgr_abstract.py is the abstract class for all implementaions of g2configmgr.
 """
 
+# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
+
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -12,7 +14,7 @@ from typing import Any
 __all__ = ["G2ConfigMgrAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-08"
 
 # -----------------------------------------------------------------------------
 # G2ConfigMgrAbstract
@@ -21,7 +23,8 @@ __updated__ = "2023-10-30"
 
 class G2ConfigMgrAbstract(ABC):
     """
-    G2 config-manager module access library
+    G2ConfigMgrAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as g2configmgr.py.
     """
 
     # -------------------------------------------------------------------------
@@ -41,6 +44,8 @@ class G2ConfigMgrAbstract(ABC):
         4008: PREFIX
         + "G2ConfigMgr_replaceDefaultConfigID({0}, {1}) failed. Return code: {2}",
         4009: PREFIX + "G2ConfigMgr_setDefaultConfigID({0}) failed. Return code: {1}",
+        4020: PREFIX
+        + "G2ConfigMgr({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
     }
 
     # -------------------------------------------------------------------------
@@ -185,7 +190,7 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Args:
-            module_name (str): A name for the auditing node, to help identify it within system logs.
+            module_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
             ini_params (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 

@@ -65,8 +65,8 @@ def supports_senzingapi_version(
         message = {
             "time": datetime.datetime.utcnow().isoformat("T"),
             "text": f"Current Senzing API version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}.",
-            "level": "ERROR",
-            "id": "senzing-50474001",
+            "level": "FATAL",
+            "id": "senzing-50475001",
             "location": get_location(5),
         }
         raise G2Exception(json.dumps(message))

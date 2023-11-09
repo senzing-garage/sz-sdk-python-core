@@ -23,7 +23,8 @@ __updated__ = "2023-11-08"
 
 class G2ConfigAbstract(ABC):
     """
-    G2 config module access library
+    G2ConfigAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as g2config.py.
     """
 
     # -------------------------------------------------------------------------
@@ -36,12 +37,13 @@ class G2ConfigAbstract(ABC):
         4002: PREFIX + "G2Config_close({0}) failed. Return code: {1}",
         4003: PREFIX + "G2Config_create() failed. Return code: {0}",
         4004: PREFIX + "G2Config_deleteDataSource({0}, {1}) failed. Return code: {2}",
-        4005: PREFIX + "G2Config_getLastException() failed. Return code: {0}",
         4006: PREFIX + "G2Config_destroy() failed. Return code: {0}",
         4007: PREFIX + "G2Config_init({0}, {1}, {2}) failed. Return code: {3}",
         4008: PREFIX + "G2Config_listDataSources() failed. Return code: {0}",
         4009: PREFIX + "G2Config_load({0}) failed. Return code: {1}",
         4010: PREFIX + "G2Config_save({0}) failed. Return code: {1}",
+        4020: PREFIX
+        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
     }
 
     # -------------------------------------------------------------------------
@@ -158,14 +160,13 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            G2Exception:
 
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
                 :linenos:
                 :language: python
-
         """
 
     @abstractmethod

@@ -141,7 +141,7 @@ class G2Config(G2ConfigAbstract):
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        G2Exception: Raised when input parameters are incorrect.
+        AssertionError: Incorrect datatype detected on input parameter.
 
     .. collapse:: Example:
 
@@ -181,7 +181,7 @@ class G2Config(G2ConfigAbstract):
 
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(9999, module_name, ini_params)
+                raise self.new_exception(4020, module_name, ini_params)
 
         self.auto_init = False
         self.ini_params = ini_params
@@ -268,7 +268,7 @@ class G2Config(G2ConfigAbstract):
         self.library_handle.G2Config_save_helper.restype = G2ConfigSaveResult
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        # Initialize Senzing engine.
+        # Optionally, initialize Senzing engine.
 
         if self.auto_init:
             self.init(self.module_name, self.ini_params, self.verbose_logging)
