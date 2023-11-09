@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2product_abstract.py
+g2product_abstract.py is the abstract class for all implementaions of g2product.
 """
+
+# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 import json
 from abc import ABC, abstractmethod
@@ -13,7 +15,7 @@ from typing import Any, Dict, cast
 __all__ = ["G2ProductAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-08"
 
 # -----------------------------------------------------------------------------
 # G2ProductAbstract
@@ -33,9 +35,8 @@ class G2ProductAbstract(ABC):
     PREFIX = "g2product."
     ID_MESSAGES = {
         4001: PREFIX + "G2Product_destroy() failed. Return code: {0}",
-        4002: PREFIX + "G2Product_getLastException() failed. Return code: {0}",
-        4003: PREFIX + "G2Product_init({0}, {1}, {2}) failed. Return code: {3}",
-        4004: PREFIX
+        4002: PREFIX + "G2Product_init({0}, {1}, {2}) failed. Return code: {3}",
+        4003: PREFIX
         + "G2Product({0}, {1}) failed. module_name and ini_params must both be set or both be empty",
     }
 
@@ -88,22 +89,18 @@ class G2ProductAbstract(ABC):
             g2_product = g2product.G2Product(module_name, ini_params)
 
         Args:
-            module_name:
-                A name for the auditing node, to help identify it within system logs.
-            ini_params:
-                A JSON string containing configuration parameters.
-            verbose_logging:
-                `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            module_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            G2Exception:
+            AssertionError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
                 :linenos:
                 :language: python
-
         """
 
     @abstractmethod

@@ -14,6 +14,9 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
+# pylint: disable=R0903
+
+
 import os
 from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
 from typing import Any
@@ -76,7 +79,7 @@ class G2Product(G2ProductAbstract):
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        G2Exception: Raised when input parameters are incorrect.
+        AssertionError: Incorrect datatype detected on input parameter.
 
     .. collapse:: Example:
 
@@ -84,6 +87,9 @@ class G2Product(G2ProductAbstract):
             :linenos:
             :language: python
     """
+
+    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
+    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -106,14 +112,23 @@ class G2Product(G2ProductAbstract):
 
         # Verify parameters.
 
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(init_config_id, int)
+        assert isinstance(verbose_logging, int)
+
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4004, module_name, ini_params)
+                raise self.new_exception(4003, module_name, ini_params)
 
+        self.auto_init = False
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.verbose_logging = verbose_logging
+
+        if len(module_name) > 0:
+            self.auto_init = True
 
         # Load binary library.
 
@@ -153,12 +168,13 @@ class G2Product(G2ProductAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if len(module_name) > 0:
+        if self.auto_init:
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
+        if self.auto_init:
+            self.destroy()
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -196,6 +212,9 @@ class G2Product(G2ProductAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
+        assert isinstance(module_name, str)
+        assert isinstance(ini_params, str)
+        assert isinstance(verbose_logging, int)
         result = self.library_handle.G2Product_init(
             as_c_char_p(module_name),
             as_c_char_p(ini_params),
@@ -203,7 +222,7 @@ class G2Product(G2ProductAbstract):
         )
         if result < 0:
             raise self.new_exception(
-                4003, module_name, ini_params, verbose_logging, result
+                4002, module_name, ini_params, verbose_logging, result
             )
 
     def license(self, *args: Any, **kwargs: Any) -> str:
