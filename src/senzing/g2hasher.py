@@ -18,7 +18,7 @@ from .g2version import is_supported_senzingapi_version
 __all__ = ["G2Hasher"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5045"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6
@@ -89,11 +89,23 @@ class G2Hasher(G2HasherAbstract):
 
         self.library_handle.G2Hasher_clearLastException.argtypes = []
         self.library_handle.G2Hasher_clearLastException.restype = None
+        # self.library_handle.G2Hasher_destroy.argtypes = []
+        # self.library_handle.G2Hasher_destroy.restype = c_longlong
+        # self.library_handle.G2Hasher_exportTokenLibrary.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Hasher_exportTokenLibrary.restype = c_longlong
         self.library_handle.G2Hasher_getLastException.argtypes = [
             POINTER(c_char),
             c_size_t,
         ]
         self.library_handle.G2Hasher_getLastException.restype = c_longlong
+        # self.library_handle.G2Hasher_getLastExceptionCode.argtypes = []
+        # self.library_handle.G2Hasher_getLastExceptionCode.restype = c_longlong
+        # self.library_handle.G2Hasher_init.argtypes = [c_char_p, c_char_p, c_int]
+        # self.library_handle.G2Hasher_init.restype = c_longlong
+        # self.library_handle.G2Hasher_initWithConfig.argtypes = [c_char_p, c_char_p, c_char_p, c_int]
+        # self.library_handle.G2Hasher_initWithConfig.restype = c_longlong
+        # self.library_handle.G2Hasher_process.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Hasher_process.restype = c_longlong
 
         # Initialize Senzing engine.
 

@@ -19,7 +19,7 @@ from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
 from typing import Any
 
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_normalized_int, as_normalized_string, find_file_in_path
+from .g2helpers import as_c_char_p, as_c_int, find_file_in_path
 from .g2product_abstract import G2ProductAbstract
 
 # Metadata
@@ -27,7 +27,7 @@ from .g2product_abstract import G2ProductAbstract
 __all__ = ["G2Product"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5046"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
@@ -138,14 +138,16 @@ class G2Product(G2ProductAbstract):
             c_size_t,
         ]
         self.library_handle.G2Product_getLastException.restype = c_longlong
-        self.library_handle.G2Product_init.argtypes = [
-            c_char_p,
-            c_char_p,
-            c_int,
-        ]
+        self.library_handle.G2Product_getLastExceptionCode.argtypes = []
+        self.library_handle.G2Product_getLastExceptionCode.restype = c_longlong
+        self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
         self.library_handle.G2Product_license.restype = c_char_p
+        # self.library_handle.G2Product_validateLicenseFile.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Product_validateLicenseFile.restype = c_longlong
+        # self.library_handle.G2Product_validateLicenseStringBase64.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # self.library_handle.G2Product_validateLicenseStringBase64.restype = c_longlong
         self.library_handle.G2Product_version.argtypes = []
         self.library_handle.G2Product_version.restype = c_char_p
 
@@ -195,9 +197,9 @@ class G2Product(G2ProductAbstract):
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
-            as_normalized_string(module_name),
-            as_normalized_string(ini_params),
-            as_normalized_int(verbose_logging),
+            as_c_char_p(module_name),
+            as_c_char_p(ini_params),
+            as_c_int(verbose_logging),
         )
         if result < 0:
             raise self.new_exception(

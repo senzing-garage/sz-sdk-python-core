@@ -70,6 +70,13 @@ def test_check_db_perf_1(g2diagnostic_instance):
 #         g2diagnostic_instance.check_db_perf("string")
 
 
+def test_check_db_perf_3(g2diagnostic_instance):
+    """Check database performance fails with string input."""
+
+    with pytest.raises(AssertionError):
+        g2diagnostic_instance.check_db_perf("string")
+
+
 # TODO: Likely going away in V4
 def test_get_available_memory(g2diagnostic_instance):
     """Test available memory."""
