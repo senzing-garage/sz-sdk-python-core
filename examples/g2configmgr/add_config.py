@@ -1,9 +1,8 @@
 #! /usr/bin/env python3
 
 import json
-from typing import Any, Dict
 
-from senzing import g2configmgr
+from senzing import g2config, g2configmgr
 from senzing.g2exception import G2Exception
 
 ini_params_dict = {
@@ -15,13 +14,13 @@ ini_params_dict = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 MODULE_NAME = "Example"
-config_str_dict: Dict[
-    str, Any
-] = {}  # Naturally, this would be a full Senzing configuration.
 CONFIG_COMMENTS = "Just an empty example"
 
 try:
+    g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
     g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_ID = g2_configmgr.add_config(json.dumps(config_str_dict), CONFIG_COMMENTS)
+    config_handle = g2_config.create()
+    config_str = g2_config.save(config_handle)
+    CONFIG_ID = g2_configmgr.add_config(config_str, CONFIG_COMMENTS)
 except G2Exception as err:
     print(err)
