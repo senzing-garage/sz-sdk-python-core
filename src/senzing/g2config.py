@@ -28,14 +28,20 @@ from ctypes import (
     c_size_t,
     c_uint,
     c_void_p,
-    cast,
     cdll,
 )
 from typing import Any
 
 from .g2config_abstract import G2ConfigAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, as_uintptr_t, find_file_in_path
+from .g2helpers import (
+    as_c_char_p,
+    as_c_int,
+    as_python_int,
+    as_python_str,
+    as_uintptr_t,
+    find_file_in_path,
+)
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -305,11 +311,10 @@ class G2Config(G2ConfigAbstract):
                 raise self.new_exception(
                     4001, config_handle, input_json, result.return_code
                 )
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
+            result_response = as_python_str(result.response)
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
+        return result_response
 
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
         assert isinstance(config_handle, int)
@@ -321,10 +326,7 @@ class G2Config(G2ConfigAbstract):
         result = self.library_handle.G2Config_create_helper()
         if result.return_code != 0:
             raise self.new_exception(4003, result.return_code)
-        result_response = cast(result.response, c_void_p).value
-        if result_response is None:
-            result_response = 0
-        return result_response
+        return as_python_int(result.response)
 
     def delete_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
@@ -372,31 +374,25 @@ class G2Config(G2ConfigAbstract):
         try:
             if result.return_code != 0:
                 raise self.new_exception(4008, result.return_code)
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
+            result_response = as_python_str(result.response)
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
+        return result_response
 
     def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
         assert isinstance(json_config, str)
         result = self.library_handle.G2Config_load_helper(as_c_char_p(json_config))
         if result.return_code != 0:
             raise self.new_exception(4009, json_config, result.return_code)
-        result_response = cast(result.response, c_void_p).value
-        if result_response is None:
-            result_response = 0
-        return result_response
+        return as_python_int(result.response)
 
     def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        # TODO: nothing
         assert isinstance(config_handle, int)
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         try:
             if result.return_code != 0:
                 raise self.new_exception(4010, config_handle, result.return_code)
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
+            result_response = as_python_str(result.response)
         finally:
             self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
+        return result_response

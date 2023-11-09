@@ -32,7 +32,7 @@ from typing import Any
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, find_file_in_path
+from .g2helpers import as_c_char_p, as_c_int, as_python_int, find_file_in_path
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -280,8 +280,16 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def add_config(
         self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
     ) -> int:
-        self.fake_g2configmgr(config_str, config_comments)
-        return 0
+        assert isinstance(config_str, str)
+        assert isinstance(config_comments, str)
+        result = self.library_handle.G2ConfigMgr_addConfig_helper(
+            as_c_char_p(config_str), as_c_char_p(config_comments)
+        )
+        if result.return_code != 0:
+            raise self.new_exception(
+                4999, config_str, config_comments, result.return_code
+            )
+        return as_python_int(result.response)
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         self.fake_g2configmgr()
