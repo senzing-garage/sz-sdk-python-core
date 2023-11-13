@@ -158,18 +158,11 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Verify parameters.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4020, module_name, ini_params)
-
         self.auto_init = False
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.verbose_logging = verbose_logging
-
-        if len(module_name) > 0:
-            self.auto_init = True
 
         # Determine if Senzing API version is acceptable.
 
@@ -236,7 +229,11 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if self.auto_init:
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(4020, module_name, ini_params)
+        if len(module_name) > 0:
+            self.auto_init = True
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:

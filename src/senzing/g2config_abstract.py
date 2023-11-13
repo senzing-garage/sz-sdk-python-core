@@ -43,7 +43,7 @@ class G2ConfigAbstract(ABC):
         4009: PREFIX + "G2Config_load({0}) failed. Return code: {1}",
         4010: PREFIX + "G2Config_save({0}) failed. Return code: {1}",
         4020: PREFIX
-        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
+        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------

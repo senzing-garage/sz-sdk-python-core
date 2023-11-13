@@ -22,6 +22,10 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
+    if not isinstance(candidate_value, int):
+        raise TypeError(
+            f"{candidate_value} is type{type(candidate_value)}. Needs to be type(int)"
+        )
     result = cast(candidate_value, POINTER(c_uint))
     return result
 
@@ -66,7 +70,10 @@ def as_c_char_p(candidate_value: Any) -> Any:
     if isinstance(candidate_value, bytes):
         return str(candidate_value).encode("utf-8")
     # input is already a str
-    return candidate_value
+    # return candidate_value
+    raise TypeError(
+        f"{candidate_value} has unsupported type of {type(candidate_value)}"
+    )
 
 
 def as_python_int(candidate_value: Any) -> int:

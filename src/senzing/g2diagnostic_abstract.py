@@ -39,7 +39,7 @@ class G2DiagnosticAbstract(ABC):
         + "G2Diagnostic_initWithConfigID({0}, {1}, {2}, {3}) failed. Return code: {4}",
         4020: PREFIX + "G2Diagnostic_reinit({0}) failed. Return Code: {1}",
         4021: PREFIX
-        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
+        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------

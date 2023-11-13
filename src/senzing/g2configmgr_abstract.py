@@ -45,7 +45,7 @@ class G2ConfigMgrAbstract(ABC):
         + "G2ConfigMgr_replaceDefaultConfigID({0}, {1}) failed. Return code: {2}",
         4009: PREFIX + "G2ConfigMgr_setDefaultConfigID({0}) failed. Return code: {1}",
         4020: PREFIX
-        + "G2ConfigMgr({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
+        + "G2ConfigMgr({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------
