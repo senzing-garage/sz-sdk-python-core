@@ -1,4 +1,5 @@
 import json
+from ctypes import ArgumentError
 
 import psutil
 import pytest
@@ -71,7 +72,7 @@ def test_check_db_perf(g2_diagnostic):
 
 def test_check_db_perf_AssertionError(g2_diagnostic):
     """Test G2Diagnostic().check_db_perf() raising AssertionError."""
-    with pytest.raises(AssertionError):
+    with pytest.raises(ArgumentError):
         g2_diagnostic.check_db_perf("string")
 
 
@@ -131,15 +132,37 @@ def test_total_system_memory(g2_diagnostic):
     assert actual == expected
 
 
-def test_init_and_destroy(g2_diagnostic):
+def test_init_and_destroy_01(engine_vars):
     """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
-    g2_diagnostic.init("Example", "{}", 0)
-    g2_diagnostic.destroy()
-
-
-def test_init_with_config_id_and_destroy(g2_configmgr):
-    """Test G2Diagnostic().init_with_config_id() and G2Diagnostic.destroy()."""
     g2_diagnostic = g2diagnostic.G2Diagnostic()
-    default_config_id = g2_configmgr.get_default_config_id()
-    g2_diagnostic.init_with_config_id("Example", "{}", default_config_id, 0)
+    g2_diagnostic.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
     g2_diagnostic.destroy()
+
+
+def test_init_and_destroy_02(engine_vars):
+    """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
+    g2_diagnostic_2 = g2diagnostic.G2Diagnostic()
+    g2_diagnostic_2.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
+    g2_diagnostic_2.destroy()
+
+
+def test_init_and_destroy(g2_diagnostic, engine_vars):
+    """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
+    g2_diagnostic.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
+    g2_diagnostic.destroy()
+
+
+def test_init_and_destroy_2(g2_diagnostic, engine_vars):
+    """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
+    g2_diagnostic.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
+    g2_diagnostic.destroy()
+
+
+def test_init_with_config_id_and_destroy(g2_configmgr, engine_vars):
+    """Test G2Diagnostic().init_with_config_id() and G2Diagnostic.destroy()."""
+    default_config_id = g2_configmgr.get_default_config_id()
+    g2_diagnostic_2 = g2diagnostic.G2Diagnostic()
+    g2_diagnostic_2.init_with_config_id(
+        engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], default_config_id, 0
+    )
+    g2_diagnostic_2.destroy()
