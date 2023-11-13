@@ -141,7 +141,7 @@ class G2Config(G2ConfigAbstract):
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        AssertionError: Incorrect datatype detected on input parameter.
+        TypeError: Incorrect datatype detected on input parameter.
 
     .. collapse:: Example:
 
@@ -174,11 +174,6 @@ class G2Config(G2ConfigAbstract):
 
         # Verify parameters.
 
-        assert isinstance(module_name, str)
-        assert isinstance(ini_params, str)
-        assert isinstance(init_config_id, int)
-        assert isinstance(verbose_logging, int)
-
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
                 raise self.new_exception(4020, module_name, ini_params)
@@ -200,6 +195,7 @@ class G2Config(G2ConfigAbstract):
 
         try:
             if os.name == "nt":
+                # TODO: See if find_file_in_path can be factored out.
                 self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
@@ -305,8 +301,6 @@ class G2Config(G2ConfigAbstract):
     def add_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> str:
-        assert isinstance(config_handle, int)
-        assert isinstance(input_json, str)
         result = self.library_handle.G2Config_addDataSource_helper(
             as_uintptr_t(config_handle), as_c_char_p(input_json)
         )
@@ -321,7 +315,6 @@ class G2Config(G2ConfigAbstract):
         return result_response
 
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
-        assert isinstance(config_handle, int)
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
         if result != 0:
             raise self.new_exception(4002, config_handle, result)
@@ -335,8 +328,6 @@ class G2Config(G2ConfigAbstract):
     def delete_data_source(
         self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
     ) -> None:
-        assert isinstance(config_handle, int)
-        assert isinstance(input_json, str)
         result = self.library_handle.G2Config_deleteDataSource_helper(
             as_uintptr_t(config_handle), as_c_char_p(input_json)
         )
@@ -357,9 +348,6 @@ class G2Config(G2ConfigAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        assert isinstance(module_name, str)
-        assert isinstance(ini_params, str)
-        assert isinstance(verbose_logging, int)
         result = self.library_handle.G2Config_init(
             as_c_char_p(module_name),
             as_c_char_p(ini_params),
@@ -371,7 +359,6 @@ class G2Config(G2ConfigAbstract):
             )
 
     def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        assert isinstance(config_handle, int)
         result = self.library_handle.G2Config_listDataSources_helper(
             as_uintptr_t(config_handle)
         )
@@ -384,14 +371,12 @@ class G2Config(G2ConfigAbstract):
         return result_response
 
     def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
-        assert isinstance(json_config, str)
         result = self.library_handle.G2Config_load_helper(as_c_char_p(json_config))
         if result.return_code != 0:
             raise self.new_exception(4009, json_config, result.return_code)
         return as_python_int(result.response)
 
     def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        assert isinstance(config_handle, int)
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         try:
             if result.return_code != 0:

@@ -125,7 +125,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        AssertionError: Incorrect datatype detected on input parameter.
+        TypeError: Incorrect datatype detected on input parameter.
 
     .. collapse:: Example:
 
@@ -157,11 +157,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         # pylint: disable=W0613
 
         # Verify parameters.
-
-        assert isinstance(module_name, str)
-        assert isinstance(ini_params, str)
-        assert isinstance(init_config_id, int)
-        assert isinstance(verbose_logging, int)
 
         if (len(module_name) == 0) or (len(ini_params) == 0):
             if len(module_name) + len(ini_params) != 0:
@@ -276,8 +271,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def add_config(
         self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
     ) -> int:
-        assert isinstance(config_str, str)
-        assert isinstance(config_comments, str)
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
             as_c_char_p(config_str), as_c_char_p(config_comments)
         )
@@ -293,7 +286,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
             raise self.new_exception(4002, result)
 
     def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
-        assert isinstance(config_id, int)
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
         try:
             if result.return_code != 0:
@@ -326,9 +318,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        assert isinstance(module_name, str)
-        assert isinstance(ini_params, str)
-        assert isinstance(verbose_logging, int)
         result = self.library_handle.G2ConfigMgr_init(
             as_c_char_p(module_name),
             as_c_char_p(ini_params),
@@ -342,8 +331,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def replace_default_config_id(
         self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
     ) -> None:
-        assert isinstance(old_config_id, int)
-        assert isinstance(new_config_id, int)
         result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
             old_config_id, new_config_id
         )
@@ -351,7 +338,6 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
             raise self.new_exception(4008, old_config_id, new_config_id, result)
 
     def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
-        assert isinstance(config_id, int)
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
         if result < 0:
             raise self.new_exception(4009, config_id, result)

@@ -94,7 +94,7 @@ class G2ProductAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            TypeError: Incorrect datatype detected on input parameter.
 
         .. collapse:: Example:
 

@@ -430,6 +430,6 @@ def test_set_default_config_id(g2_configmgr, g2_config):
 
 
 def test_init_and_destroy(g2_configmgr):
-    """Test G2ConfigMgr().init() and G2ConfigMgr.init()."""
+    """Test G2ConfigMgr().init() and G2ConfigMgr.destroy()."""
     g2_configmgr.init("Example", "{}", 0)
     g2_configmgr.destroy()

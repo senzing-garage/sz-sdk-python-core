@@ -426,6 +426,6 @@ def test_save(g2_config):
 
 
 def test_init_and_destroy(g2_config):
-    """Test G2Config().init() and G2Config.init()."""
+    """Test G2Config().init() and G2Config.destroy()."""
     g2_config.init("Example", "{}", 0)
     g2_config.destroy()
