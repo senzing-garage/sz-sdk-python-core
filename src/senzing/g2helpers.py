@@ -3,10 +3,28 @@ TODO: g2helpers.py
 """
 
 import os
-from ctypes import POINTER, c_char_p, c_uint, c_void_p, cast
+from ctypes import POINTER, ArgumentError, c_char_p, c_uint, c_void_p, cast
 from typing import Any
 
 uintptr_type = POINTER(c_uint)
+
+# -----------------------------------------------------------------------------
+# Decorators
+# -----------------------------------------------------------------------------
+
+
+def Cast_Ctypes_Exceptions(function_to_decorate):
+    def inner_function(*args, **kwargs):
+        try:
+            result = function_to_decorate(*args, **kwargs)
+        except ArgumentError as err:
+            raise TypeError() from err
+        except Exception as err:
+            raise err
+        return result
+
+    return inner_function
+
 
 # -----------------------------------------------------------------------------
 # Helpers for working with C
@@ -112,7 +130,7 @@ def as_python_str(candidate_value: Any) -> str:
     return result
 
 
-# ---------------------w----------------------------------------------------
+# -----------------------------------------------------------------------------
 # Helpers for working with files and directories.
 # -----------------------------------------------------------------------------
 
