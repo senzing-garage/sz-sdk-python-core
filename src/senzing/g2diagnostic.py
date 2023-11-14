@@ -13,7 +13,8 @@ Example:
 
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
-# pylint: disable=R0903
+
+# pylint: disable=R0903,R0915
 
 import os
 from ctypes import (
@@ -140,14 +141,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # Verify parameters.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4004, module_name, ini_params)
-
+        self.auto_init = False
         self.ini_params = ini_params
         self.init_config_id = init_config_id
         self.module_name = module_name
-        self.noop = ""
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
@@ -158,6 +155,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         try:
             if os.name == "nt":
+                # TODO: See if find_file_in_path can be factored out.
                 self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
@@ -169,7 +167,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # self.library_handle.G2Diagnostic_checkDBPerf.argtypes = [c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_checkDBPerf.restype = c_longlong
-        self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = []
+        self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = [c_longlong]
         self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
             G2DiagnosticCheckDBPerfResult
         )
@@ -239,25 +237,17 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # Initialize Senzing engine.
 
+        if (len(module_name) == 0) or (len(ini_params) == 0):
+            if len(module_name) + len(ini_params) != 0:
+                raise self.new_exception(4021, module_name, ini_params)
         if len(module_name) > 0:
+            self.auto_init = True
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
-
-    # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2diagnostic(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
+        if self.auto_init:
+            self.destroy()
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -284,7 +274,6 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
-        assert isinstance(seconds_to_run, int)
         result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
         try:
             if result.return_code != 0:
@@ -296,7 +285,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
         return result_response_str
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2diagnostic()
+        result = self.library_handle.G2Diagnostic_destroy()
+        if result != 0:
+            raise self.new_exception(4003, result)
 
     # TODO: Likely going away in V4
     def get_available_memory(self, *args: Any, **kwargs: Any) -> int:
@@ -353,7 +344,16 @@ class G2Diagnostic(G2DiagnosticAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2diagnostic(module_name, ini_params, init_config_id, verbose_logging)
+        result = self.library_handle.G2Diagnostic_initWithConfigID(
+            as_c_char_p(module_name),
+            as_c_char_p(ini_params),
+            as_c_int(init_config_id),
+            as_c_int(verbose_logging),
+        )
+        if result < 0:
+            raise self.new_exception(
+                4019, module_name, ini_params, init_config_id, verbose_logging, result
+            )
 
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(init_config_id)

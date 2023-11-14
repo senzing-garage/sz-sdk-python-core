@@ -43,7 +43,7 @@ class G2ConfigAbstract(ABC):
         4009: PREFIX + "G2Config_load({0}) failed. Return code: {1}",
         4010: PREFIX + "G2Config_save({0}) failed. Return code: {1}",
         4020: PREFIX
-        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither. Return code: {2}",
+        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing the newly created data source.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -89,7 +89,7 @@ class G2ConfigAbstract(ABC):
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -113,7 +113,7 @@ class G2ConfigAbstract(ABC):
             int: A pointer to an in-memory Senzing configuration.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -134,7 +134,7 @@ class G2ConfigAbstract(ABC):
             input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -193,7 +193,7 @@ class G2ConfigAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -215,7 +215,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing all of the data sources.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -246,7 +246,7 @@ class G2ConfigAbstract(ABC):
             int: An identifier (config_handle) of an in-memory configuration.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -273,7 +273,7 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON Document representation of the Senzing G2Config object.
 
         Raises:
-            AssertionError: Incorrect datatype detected on input parameter.
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 

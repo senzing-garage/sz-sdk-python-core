@@ -3,15 +3,15 @@ import json
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import g2product
+from senzing import g2exception, g2product
 
 # -----------------------------------------------------------------------------
 # G2Product fixtures
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2product_instance", scope="module")
-def g2product_instance_fixture(engine_vars):
+@pytest.fixture(name="g2_product", scope="module")
+def g2product_fixture(engine_vars):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -63,29 +63,66 @@ version_schema = {
 # -----------------------------------------------------------------------------
 
 
-def test_exception(g2product_instance):
+def test_exception(g2_product):
     """Test exceptions."""
-    actual = g2product_instance.new_exception(0)
+    actual = g2_product.new_exception(0)
     assert isinstance(actual, Exception)
 
 
-def test_init_and_destroy(g2product_instance):
-    """Test Senzing license."""
-    g2product_instance.init("Example", "{}", 0)
-    g2product_instance.destroy()
+def test_constructor(engine_vars):
+    """Test constructor."""
+    actual = g2product.G2Product(
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS"],
+    )
+    assert isinstance(actual, g2product.G2Product)
 
 
-def test_license(g2product_instance):
+def test_constructor_bad_module_name(engine_vars):
+    """Test constructor."""
+    bad_module_name = ""
+    with pytest.raises(g2exception.G2Exception):
+        actual = g2product.G2Product(
+            bad_module_name,
+            engine_vars["INI_PARAMS"],
+        )
+        assert isinstance(actual, g2product.G2Product)
+
+
+def test_constructor_bad_ini_params(engine_vars):
+    """Test constructor."""
+    bad_ini_params = ""
+    with pytest.raises(g2exception.G2Exception):
+        actual = g2product.G2Product(
+            engine_vars["MODULE_NAME"],
+            bad_ini_params,
+        )
+        assert isinstance(actual, g2product.G2Product)
+
+
+def test_license(g2_product):
     """Test Senzing license."""
-    actual = g2product_instance.license()
+    actual = g2_product.license()
     assert isinstance(actual, str)
     actual_json = json.loads(actual)
     assert schema(license_schema) == actual_json
 
 
-def test_version(g2product_instance):
+def test_version(g2_product):
     """Test Senzing version."""
-    actual = g2product_instance.version()
+    actual = g2_product.version()
     assert isinstance(actual, str)
     actual_json = json.loads(actual)
     assert schema(version_schema) == actual_json
+
+
+def test_init_and_destroy(g2_product):
+    """Test Senzing license."""
+    g2_product.init("Example", "{}", 0)
+    g2_product.destroy()
+
+
+def test_init_and_destroy_again(g2_product):
+    """Test Senzing license."""
+    g2_product.init("Example", "{}", 0)
+    g2_product.destroy()

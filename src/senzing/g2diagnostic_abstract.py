@@ -32,33 +32,14 @@ class G2DiagnosticAbstract(ABC):
     ID_MESSAGES = {
         # TODO: remove + concats for f-strings
         4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
-        4002: PREFIX + "G2Diagnostic_closeEntityListBySize() failed. Return code: {0}",
         4003: PREFIX + "G2Diagnostic_destroy() failed.  Return code: {0}",
-        4004: PREFIX + "G2Diagnostic_fetchNextEntityBySize() failed.  Return code: {0}",
-        4005: PREFIX
-        + "G2Diagnostic_findEntitiesByFeatureIDs({0}) failed. Return code: {1}",
-        4006: PREFIX + "G2Diagnostic_getDataSourceCounts() failed. Return code: {0}",
         4007: PREFIX + "G2Diagnostic_getDBInfo() failed. Return code: {0}",
-        4008: PREFIX
-        + "G2Diagnostic_getEntityDetails({0}, {1}) failed. Return code: {2}",
-        4009: PREFIX + "G2Diagnostic_getEntityListBySize({0}) failed. Return code: {1}",
-        4010: PREFIX + "G2Diagnostic_getEntityResume({0}) failed. Return code: {1}",
-        4011: PREFIX
-        + "G2Diagnostic_getEntitySizeBreakdown({0}, {1}) failed. Return code: {2}",
-        4012: PREFIX + "G2Diagnostic_getFeature({0}) failed. Return code: {1}",
-        4013: PREFIX
-        + "G2Diagnostic_getGenericFeatures({0}, {1}) failed. Return code: {2}",
-        4014: PREFIX + "G2Diagnostic_getLastException() failed. Return code: {0}",
-        4015: PREFIX
-        + "G2Diagnostic_getMappingStatistics({0}) failed. Return code: {1}",
-        4016: PREFIX
-        + "G2Diagnostic_getRelationshipDetails({0}, {1}) failed. Return code: {2}",
-        4017: PREFIX
-        + "G2Diagnostic_getResolutionStatistics() failed. Return code: {0}",
         4018: PREFIX + "G2Diagnostic_init({0}, {1}, {2}) failed. Return code: {3}",
         4019: PREFIX
         + "G2Diagnostic_initWithConfigID({0}, {1}, {2}, {3}) failed. Return code: {4}",
         4020: PREFIX + "G2Diagnostic_reinit({0}) failed. Return Code: {1}",
+        4021: PREFIX
+        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------
