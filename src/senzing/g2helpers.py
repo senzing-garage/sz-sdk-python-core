@@ -4,17 +4,21 @@ TODO: g2helpers.py
 
 import os
 from ctypes import POINTER, ArgumentError, c_char_p, c_uint, c_void_p, cast
-from typing import Any
+from typing import Any, Callable, ParamSpec, TypeVar
 
 uintptr_type = POINTER(c_uint)
+T = TypeVar("T")
+P = ParamSpec("P")
 
 # -----------------------------------------------------------------------------
 # Decorators
 # -----------------------------------------------------------------------------
 
 
-def Cast_Ctypes_Exceptions(function_to_decorate):
-    def inner_function(*args, **kwargs):
+def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
+    """Modify a ctypes.ArgumentError to a TypeError."""
+
+    def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
         try:
             result = function_to_decorate(*args, **kwargs)
         except ArgumentError as err:
