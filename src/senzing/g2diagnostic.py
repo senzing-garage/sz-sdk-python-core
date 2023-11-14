@@ -111,7 +111,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        G2Exception: Raised when input parameters are incorrect.
+        TypeError: Incorrect datatype detected on input parameter.
+        g2exception.G2Exception: Failed to load the G2 library or incorrect `module_name`, `ini_params` combination.
+
 
     .. collapse:: Example:
 

@@ -65,7 +65,8 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing the newly created data source.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -89,7 +90,8 @@ class G2ConfigAbstract(ABC):
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -113,7 +115,7 @@ class G2ConfigAbstract(ABC):
             int: A pointer to an in-memory Senzing configuration.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -134,7 +136,8 @@ class G2ConfigAbstract(ABC):
             input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -160,7 +163,7 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
-            G2Exception:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -193,7 +196,8 @@ class G2ConfigAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -215,7 +219,8 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON document listing all of the data sources.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -246,7 +251,8 @@ class G2ConfigAbstract(ABC):
             int: An identifier (config_handle) of an in-memory configuration.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -273,7 +279,8 @@ class G2ConfigAbstract(ABC):
             str: A string containing a JSON Document representation of the Senzing G2Config object.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 

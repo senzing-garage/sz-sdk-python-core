@@ -58,7 +58,8 @@ class G2DiagnosticAbstract(ABC):
             str: A string containing a JSON document.
 
         Raises:
-            None: TODO:
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -90,7 +91,7 @@ class G2DiagnosticAbstract(ABC):
             g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
 
         Raises:
-            None: TODO:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -106,9 +107,6 @@ class G2DiagnosticAbstract(ABC):
 
         Returns:
             int: Number of bytes of available memory.
-
-        Raises:
-            None: TODO:
 
         .. collapse:: Example:
 
@@ -126,7 +124,7 @@ class G2DiagnosticAbstract(ABC):
             str: A JSON document enumerating data sources.
 
         Raises:
-            None: TODO:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -149,9 +147,6 @@ class G2DiagnosticAbstract(ABC):
         Returns:
             int: Number of logical cores.
 
-        Raises:
-            None: TODO:
-
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2diagnostic/get_logical_cores.py
@@ -167,9 +162,6 @@ class G2DiagnosticAbstract(ABC):
         Returns:
             int: Number of physical cores.
 
-        Raises:
-            None: TODO:
-
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2diagnostic/get_physical_cores.py
@@ -184,9 +176,6 @@ class G2DiagnosticAbstract(ABC):
 
         Returns:
             int: Number of bytes of memory.
-
-        Raises:
-            None: TODO:
 
         .. collapse:: Example:
 
@@ -219,7 +208,8 @@ class G2DiagnosticAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            None: TODO:
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -258,7 +248,8 @@ class G2DiagnosticAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            None: TODO:
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception::
 
         .. collapse:: Example:
 
@@ -276,7 +267,8 @@ class G2DiagnosticAbstract(ABC):
             init_config_id (int): The configuration ID used for the initialization
 
         Raises:
-            None: TODO:
+            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 

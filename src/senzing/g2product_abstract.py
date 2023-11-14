@@ -61,7 +61,7 @@ class G2ProductAbstract(ABC):
             g2_product = g2product.G2Product(module_name, ini_params)
 
         Raises:
-            G2Exception:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -94,7 +94,8 @@ class G2ProductAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -110,9 +111,6 @@ class G2ProductAbstract(ABC):
 
         Returns:
             str: A JSON document containing Senzing license metadata.
-
-        Raises:
-            None: No exceptions raised
 
         .. collapse:: Example:
 
@@ -134,9 +132,6 @@ class G2ProductAbstract(ABC):
 
         Returns:
             str: A JSON document containing metadata about the Senzing Engine version being used.
-
-        Raises:
-            None: No exceptions raised
 
         .. collapse:: Example:
 
@@ -163,8 +158,6 @@ class G2ProductAbstract(ABC):
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
 
-        Raises:
-            None: TODO:
         """
         return cast(
             Dict[str, Any],

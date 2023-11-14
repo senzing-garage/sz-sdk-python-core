@@ -67,7 +67,8 @@ class G2ConfigMgrAbstract(ABC):
             int: A configuration identifier.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -93,7 +94,7 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -115,6 +116,7 @@ class G2ConfigMgrAbstract(ABC):
 
         Raises:
             ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -138,7 +140,7 @@ class G2ConfigMgrAbstract(ABC):
             str: A JSON document containing Senzing configurations.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -162,7 +164,7 @@ class G2ConfigMgrAbstract(ABC):
             int:  A configuration identifier which identifies the current configuration in use.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -195,7 +197,8 @@ class G2ConfigMgrAbstract(ABC):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -220,6 +223,7 @@ class G2ConfigMgrAbstract(ABC):
 
         Raises:
             ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -239,6 +243,7 @@ class G2ConfigMgrAbstract(ABC):
 
         Raises:
             ctypes.ArgumentError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
