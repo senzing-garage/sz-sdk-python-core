@@ -58,7 +58,7 @@ class G2DiagnosticAbstract(ABC):
             str: A string containing a JSON document.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
+            TypeError: Incorrect datatype of input parameter.
             g2exception.G2Exception:
 
         .. collapse:: Example:
@@ -249,7 +249,7 @@ class G2DiagnosticAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception::
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -267,8 +267,8 @@ class G2DiagnosticAbstract(ABC):
             init_config_id (int): The configuration ID used for the initialization
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception: init_config_id does not exist.
 
         .. collapse:: Example:
 

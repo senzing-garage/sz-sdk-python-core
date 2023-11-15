@@ -8,7 +8,7 @@ TODO: g2engine_abstract.py
 
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Tuple, Union, cast
+from typing import Any, Dict, Tuple, cast
 
 from .g2engineflags import G2EngineFlags
 
@@ -153,10 +153,9 @@ class G2EngineAbstract(ABC):
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: str = "",
-        with_info: bool = False,
         flags: int = 0,
-        **kwargs: Any
-    ) -> Union[None, str]:
+        **kwargs: Any,
+    ) -> None:
         """TODO: document"""
 
     # @abstractmethod
@@ -180,7 +179,7 @@ class G2EngineAbstract(ABC):
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: None = None,
         flags: int = 0,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -199,7 +198,7 @@ class G2EngineAbstract(ABC):
         record_id: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: None = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """TODO: document"""
 
@@ -211,7 +210,7 @@ class G2EngineAbstract(ABC):
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: None = None,
         flags: int = 0,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -232,7 +231,7 @@ class G2EngineAbstract(ABC):
         self,
         csv_column_list: str,
         flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> int:
         """TODO: document"""
 
@@ -267,7 +266,7 @@ class G2EngineAbstract(ABC):
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -279,7 +278,7 @@ class G2EngineAbstract(ABC):
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -292,7 +291,7 @@ class G2EngineAbstract(ABC):
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -304,7 +303,7 @@ class G2EngineAbstract(ABC):
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -316,7 +315,7 @@ class G2EngineAbstract(ABC):
         entity_id_2: int,
         max_degree: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -327,7 +326,7 @@ class G2EngineAbstract(ABC):
         entity_id_2: int,
         max_degree: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -341,7 +340,7 @@ class G2EngineAbstract(ABC):
         record_id_2: str,
         max_degree: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -354,7 +353,7 @@ class G2EngineAbstract(ABC):
         record_id_2: str,
         max_degree: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -367,7 +366,7 @@ class G2EngineAbstract(ABC):
         max_degree: int,
         excluded_entities: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -379,7 +378,7 @@ class G2EngineAbstract(ABC):
         max_degree: int,
         excluded_entities: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -394,7 +393,7 @@ class G2EngineAbstract(ABC):
         max_degree: int,
         excluded_records: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -408,7 +407,7 @@ class G2EngineAbstract(ABC):
         max_degree: int,
         excluded_records: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -422,7 +421,7 @@ class G2EngineAbstract(ABC):
         excluded_entities: str,
         required_dsrcs: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -435,7 +434,7 @@ class G2EngineAbstract(ABC):
         excluded_entities: str,
         required_dsrcs: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -451,7 +450,7 @@ class G2EngineAbstract(ABC):
         excluded_records: str,
         required_dsrcs: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -466,7 +465,7 @@ class G2EngineAbstract(ABC):
         excluded_records: str,
         required_dsrcs: str,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -480,7 +479,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -489,7 +488,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -500,7 +499,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -510,7 +509,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -521,7 +520,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -531,7 +530,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -549,7 +548,7 @@ class G2EngineAbstract(ABC):
         self,
         record_list: str,
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -558,7 +557,7 @@ class G2EngineAbstract(ABC):
         self,
         record_list: str,
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -568,7 +567,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -577,7 +576,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -594,7 +593,7 @@ class G2EngineAbstract(ABC):
         ini_params: str,
         init_config_id: int,
         verbose_logging: int = 0,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """TODO: document"""
 
@@ -648,7 +647,7 @@ class G2EngineAbstract(ABC):
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: None = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """TODO: document"""
 
@@ -661,7 +660,7 @@ class G2EngineAbstract(ABC):
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: None = None,
         flags: int = 0,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -671,7 +670,7 @@ class G2EngineAbstract(ABC):
         self,
         json_data: str,
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -682,7 +681,7 @@ class G2EngineAbstract(ABC):
         json_data: str,
         search_profile: str,
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -691,7 +690,7 @@ class G2EngineAbstract(ABC):
         self,
         json_data: str,
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -705,7 +704,7 @@ class G2EngineAbstract(ABC):
         entity_id_1: int,
         entity_id_2: int,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -715,7 +714,7 @@ class G2EngineAbstract(ABC):
         entity_id_1: int,
         entity_id_2: int,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -725,7 +724,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: str,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -734,7 +733,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -745,7 +744,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -755,7 +754,7 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -768,7 +767,7 @@ class G2EngineAbstract(ABC):
         data_source_code_2: str,
         record_id_2: str,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
@@ -780,11 +779,11 @@ class G2EngineAbstract(ABC):
         data_source_code_2: str,
         record_id_2: str,
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> str:
         """TODO: document"""
 
-    # RODO Is why_record_in_entity missing?
+    # TODO: Is why_record_in_entity missing?
 
     # -------------------------------------------------------------------------
     # Convenience methods
@@ -796,10 +795,10 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
         return cast(
             Dict[str, Any],
-            json.loads(self.get_record(data_source_code, record_id, flags, kwargs)),
+            json.loads(self.get_record(data_source_code, record_id, flags, **kwargs)),
         )

@@ -14,7 +14,7 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-# pylint: disable=R0903,C0302,R0915
+# pylint: disable=R0903,C0302,R0915,W0613
 
 import os
 from ctypes import (
@@ -32,6 +32,7 @@ from ctypes import (
 from typing import Any, Tuple
 
 from .g2engine_abstract import G2EngineAbstract
+from .g2engineflags import G2EngineFlags
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import find_file_in_path
 from .g2version import is_supported_senzingapi_version
@@ -41,7 +42,7 @@ from .g2version import is_supported_senzingapi_version
 __all__ = ["G2Engine"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-02"
+__updated__ = "2023-11-15"
 
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
@@ -931,8 +932,9 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         json_data: str,
-        load_id: str,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: str = "",
+        flags: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id)
@@ -942,18 +944,18 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         json_data: str,
-        load_id: str,
-        flags: int,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: None = None,
+        flags: int = 0,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
         return "string"
 
-    def close_export(self, response_handle: int, *args: Any, **kwargs: Any) -> None:
+    def close_export(self, response_handle: int, **kwargs: Any) -> None:
         self.fake_g2engine(response_handle)
 
-    def count_redo_records(self, *args: Any, **kwargs: Any) -> int:
+    def count_redo_records(self, **kwargs: Any) -> int:
         self.fake_g2engine()
         return 0
 
@@ -961,8 +963,8 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        load_id: str,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: None = None,
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, load_id)
@@ -971,41 +973,46 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        load_id: str,
-        flags: int,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: None = None,
+        flags: int = 0,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, load_id, flags)
         return "string"
 
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         self.fake_g2engine()
 
-    def export_config(self, *args: Any, **kwargs: Any) -> str:
+    def export_config(self, **kwargs: Any) -> str:
         self.fake_g2engine()
         return "string"
 
-    def export_config_and_config_id(self, *args: Any, **kwargs: Any) -> Tuple[str, int]:
+    def export_config_and_config_id(self, **kwargs: Any) -> Tuple[str, int]:
         self.fake_g2engine()
         return "string", 0
 
     def export_csv_entity_report(
-        self, csv_column_list: str, flags: int, *args: Any, **kwargs: Any
+        self,
+        csv_column_list: str,
+        flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> int:
         self.fake_g2engine(csv_column_list, flags)
         return 0
 
-    def export_json_entity_report(self, flags: int, *args: Any, **kwargs: Any) -> int:
+    def export_json_entity_report(
+        self, flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, **kwargs: Any
+    ) -> int:
         self.fake_g2engine(flags)
         return 0
 
-    def fetch_next(self, response_handle: int, *args: Any, **kwargs: Any) -> str:
+    def fetch_next(self, response_handle: int, **kwargs: Any) -> str:
         self.fake_g2engine(response_handle)
         return "string"
 
     def find_interesting_entities_by_entity_id(
-        self, entity_id: int, flags: int, *args: Any, **kwargs: Any
+        self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
         self.fake_g2engine(entity_id, flags)
         return "string"
@@ -1014,8 +1021,7 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = 0,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
@@ -1027,8 +1033,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1042,7 +1047,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         build_out_degree: int,
         max_entities: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_list, max_degree, build_out_degree, max_entities)
@@ -1054,8 +1059,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1069,7 +1073,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         build_out_degree: int,
         max_entities: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(record_list, max_degree, build_out_degree, max_entities)
@@ -1080,8 +1084,7 @@ class G2Engine(G2EngineAbstract):
         entity_id_1: int,
         entity_id_2: int,
         max_degree: int,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree, flags)
@@ -1092,7 +1095,7 @@ class G2Engine(G2EngineAbstract):
         entity_id_1: int,
         entity_id_2: int,
         max_degree: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree)
@@ -1105,8 +1108,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code_2: str,
         record_id_2: str,
         max_degree: int,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1126,7 +1128,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code_2: str,
         record_id_2: str,
         max_degree: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1140,8 +1142,7 @@ class G2Engine(G2EngineAbstract):
         entity_id_2: int,
         max_degree: int,
         excluded_entities: str,
-        flags: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1155,7 +1156,7 @@ class G2Engine(G2EngineAbstract):
         entity_id_2: int,
         max_degree: int,
         excluded_entities: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, max_degree, excluded_entities)
@@ -1169,8 +1170,7 @@ class G2Engine(G2EngineAbstract):
         record_id_2: str,
         max_degree: int,
         excluded_records: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1192,7 +1192,7 @@ class G2Engine(G2EngineAbstract):
         record_id_2: str,
         max_degree: int,
         excluded_records: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1212,8 +1212,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_entities: str,
         required_dsrcs: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1233,7 +1232,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_entities: str,
         required_dsrcs: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1250,8 +1249,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_records: str,
         required_dsrcs: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1275,7 +1273,7 @@ class G2Engine(G2EngineAbstract):
         max_degree: int,
         excluded_records: str,
         required_dsrcs: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1289,17 +1287,25 @@ class G2Engine(G2EngineAbstract):
         )
         return "string"
 
-    def get_active_config_id(self, *args: Any, **kwargs: Any) -> int:
+    def get_active_config_id(self, **kwargs: Any) -> int:
         self.fake_g2engine()
         return 0
 
     def get_entity_by_entity_id_v2(
-        self, entity_id: int, flags: int, *args: Any, **kwargs: Any
+        self,
+        entity_id: int,
+        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id, flags)
         return "string"
 
-    def get_entity_by_entity_id(self, entity_id: int, *args: Any, **kwargs: Any) -> str:
+    def get_entity_by_entity_id(
+        self,
+        entity_id: int,
+        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
         self.fake_g2engine(entity_id)
         return "string"
 
@@ -1307,15 +1313,18 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
 
     def get_entity_by_record_id(
-        self, data_source_code: str, record_id: str, *args: Any, **kwargs: Any
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id)
         return "string"
@@ -1324,55 +1333,68 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
 
     def get_record(
-        self, data_source_code: str, record_id: str, *args: Any, **kwargs: Any
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id)
         return "string"
 
-    def get_redo_record(self, *args: Any, **kwargs: Any) -> str:
+    def get_redo_record(self, **kwargs: Any) -> str:
         self.fake_g2engine()
         return "string"
 
-    def get_repository_last_modified_time(self, *args: Any, **kwargs: Any) -> int:
+    def get_repository_last_modified_time(self, **kwargs: Any) -> int:
         self.fake_g2engine()
         return 0
 
     def get_virtual_entity_by_record_id_v2(
-        self, record_list: str, flags: int, *args: Any, **kwargs: Any
+        self,
+        record_list: str,
+        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(record_list, flags)
         return "string"
 
     def get_virtual_entity_by_record_id(
-        self, record_list: str, *args: Any, **kwargs: Any
+        self,
+        record_list: str,
+        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(record_list)
         return "string"
 
     def how_entity_by_entity_id_v2(
-        self, entity_id: int, flags: int, *args: Any, **kwargs: Any
+        self,
+        entity_id: int,
+        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id, flags)
         return "string"
 
-    def how_entity_by_entity_id(self, entity_id: int, *args: Any, **kwargs: Any) -> str:
+    def how_entity_by_entity_id(
+        self,
+        entity_id: int,
+        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
         self.fake_g2engine(entity_id)
         return "string"
 
     def init(
-        self,
-        module_name: str,
-        ini_params: str,
-        verbose_logging: int = 0,
-        **kwargs: Any,
+        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         self.fake_g2engine(module_name, ini_params, verbose_logging)
 
@@ -1386,28 +1408,24 @@ class G2Engine(G2EngineAbstract):
     ) -> None:
         self.fake_g2engine(module_name, ini_params, init_config_id, verbose_logging)
 
-    def prime_engine(self, *args: Any, **kwargs: Any) -> None:
+    def prime_engine(self, **kwargs: Any) -> None:
         self.fake_g2engine()
 
-    def process(self, record: str, *args: Any, **kwargs: Any) -> None:
+    def process(self, record: str, **kwargs: Any) -> None:
         self.fake_g2engine(record)
 
-    def process_with_info(
-        self, record: str, flags: int, *args: Any, **kwargs: Any
-    ) -> str:
+    def process_with_info(self, record: str, flags: int, **kwargs: Any) -> str:
         self.fake_g2engine(record, flags)
         return "string"
 
-    def purge_repository(self, *args: Any, **kwargs: Any) -> None:
+    def purge_repository(self, **kwargs: Any) -> None:
         self.fake_g2engine()
 
-    def reevaluate_entity(
-        self, entity_id: int, flags: int, *args: Any, **kwargs: Any
-    ) -> None:
+    def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> None:
         self.fake_g2engine(entity_id, flags)
 
     def reevaluate_entity_with_info(
-        self, entity_id: int, flags: int, *args: Any, **kwargs: Any
+        self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
         self.fake_g2engine(entity_id, flags)
         return "string"
@@ -1416,8 +1434,7 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = 0,
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, flags)
@@ -1426,14 +1443,13 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = 0,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
 
-    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
+    def reinit(self, init_config_id: int, **kwargs: Any) -> None:
         self.fake_g2engine(init_config_id)
 
     def replace_record(
@@ -1441,8 +1457,8 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         json_data: str,
-        load_id: str,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: None = None,
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id)
@@ -1452,47 +1468,81 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         json_data: str,
-        load_id: str,
-        flags: int,
-        *args: Any,
+        # TODO: load_id is no longer used, being removed from V4 C api?
+        load_id: None = None,
+        flags: int = 0,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
         return "string"
 
     def search_by_attributes_v2(
-        self, json_data: str, flags: int, *args: Any, **kwargs: Any
+        self,
+        json_data: str,
+        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(json_data, flags)
+        self.fake_g2engine(json_data, flags, flags)
         return "string"
 
-    def search_by_attributes(self, json_data: str, *args: Any, **kwargs: Any) -> str:
+    def search_by_attributes_v3(
+        self,
+        json_data: str,
+        search_profile: str,
+        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
+        self.fake_g2engine(json_data, search_profile, flags)
+        return "string"
+
+    def search_by_attributes(
+        self,
+        json_data: str,
+        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
         self.fake_g2engine(json_data)
         return "string"
 
-    def stats(self, *args: Any, **kwargs: Any) -> str:
+    def stats(self, **kwargs: Any) -> str:
         self.fake_g2engine()
         return "string"
 
     def why_entities_v2(
-        self, entity_id_1: int, entity_id_2: int, flags: int, *args: Any, **kwargs: Any
+        self,
+        entity_id_1: int,
+        entity_id_2: int,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2, flags)
         return "string"
 
     def why_entities(
-        self, entity_id_1: int, entity_id_2: int, *args: Any, **kwargs: Any
+        self,
+        entity_id_1: int,
+        entity_id_2: int,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id_1, entity_id_2)
         return "string"
 
     def why_entity_by_entity_id_v2(
-        self, entity_id: str, flags: int, *args: Any, **kwargs: Any
+        self,
+        entity_id: str,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(entity_id, flags)
         return "string"
 
-    def why_entity_by_entity_id(self, entity_id: int, *args: Any, **kwargs: Any) -> str:
+    def why_entity_by_entity_id(
+        self,
+        entity_id: int,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
         self.fake_g2engine(entity_id)
         return "string"
 
@@ -1500,15 +1550,18 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id, flags)
         return "string"
 
     def why_entity_by_record_id(
-        self, data_source_code: str, record_id: str, *args: Any, **kwargs: Any
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2engine(data_source_code, record_id)
         return "string"
@@ -1519,8 +1572,7 @@ class G2Engine(G2EngineAbstract):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
@@ -1534,7 +1586,7 @@ class G2Engine(G2EngineAbstract):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        *args: Any,
+        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         self.fake_g2engine(
