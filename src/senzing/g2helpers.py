@@ -3,8 +3,14 @@ TODO: g2helpers.py
 """
 
 import os
+import sys
 from ctypes import POINTER, ArgumentError, c_char_p, c_uint, c_void_p, cast
-from typing import Any, Callable, ParamSpec, TypeVar
+from typing import Any, Callable, TypeVar
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
 
 uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
