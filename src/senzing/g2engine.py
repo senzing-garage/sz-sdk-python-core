@@ -14,7 +14,7 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-# pylint: disable=R0903,C0302,R0915,W0613
+# pylint: disable=R0903,C0302,R0915
 
 import os
 from ctypes import (
