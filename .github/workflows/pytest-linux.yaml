@@ -28,8 +28,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install psutil pytest pytest-cov pytest-schema
-      - if: matrix.python-version == '3.8'
-        name: Install python libraries for python 3.8
+      - if: matrix.python-version == '3.8' || matrix.python-version == '3.9'
+        name: Install python libraries for python 3.8 and 3.9
         run: pip install typing_extensions
       - name: Install Senzing API
         uses: Senzing/github-action-install-senzing-api@latest
