@@ -28,6 +28,7 @@ from .g2helpers import (
     as_c_int,
     as_python_int,
     as_python_str,
+    cast_ctypes_exceptions,
     find_file_in_path,
 )
 from .g2version import is_supported_senzingapi_version
@@ -282,6 +283,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         if result != 0:
             raise self.new_exception(4002, result)
 
+    @cast_ctypes_exceptions
     def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
         try:
@@ -325,6 +327,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
                 4007, module_name, ini_params, verbose_logging, result
             )
 
+    @cast_ctypes_exceptions
     def replace_default_config_id(
         self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
     ) -> None:
@@ -334,6 +337,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         if result < 0:
             raise self.new_exception(4008, old_config_id, new_config_id, result)
 
+    @cast_ctypes_exceptions
     def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
         if result < 0:

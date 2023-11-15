@@ -1,5 +1,4 @@
 import json
-from ctypes import ArgumentError
 
 import psutil
 import pytest
@@ -105,7 +104,7 @@ def test_check_db_perf(g2_diagnostic):
 def test_check_db_perf_bad_seconds_to_run(g2_diagnostic):
     """Test G2Diagnostic().check_db_perf()."""
     bad_seconds_to_run = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_diagnostic.check_db_perf(bad_seconds_to_run)
 
 
@@ -156,7 +155,7 @@ def test_reinit(g2_diagnostic, g2_configmgr):
 def test_reinit_bad_config_id(g2_diagnostic):
     """Test G2Diagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_diagnostic.reinit(bad_default_config_id)
 
 

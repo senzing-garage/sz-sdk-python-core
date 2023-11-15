@@ -1,5 +1,4 @@
 import json
-from ctypes import ArgumentError
 
 import pytest
 from pytest_schema import Or, schema
@@ -441,7 +440,7 @@ def test_get_config(g2_configmgr):
 def test_get_config_bad_config_id(g2_configmgr):
     """Test G2ConfigMgr().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_configmgr.get_config(bad_config_id)
 
 
@@ -480,7 +479,7 @@ def test_replace_default_config_id_bad_old_id(g2_configmgr, g2_config):
     g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
     json_config = g2_config.save(config_handle)
     new_config_id = g2_configmgr.add_config(json_config, "Test")
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_configmgr.replace_default_config_id(bad_old_config_id, new_config_id)
 
 
@@ -488,7 +487,7 @@ def test_replace_default_config_id_bad_new_id(g2_configmgr):
     """Test G2ConfigMgr().get_default_config_id()."""
     old_config_id = g2_configmgr.get_default_config_id()
     bad_new_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_configmgr.replace_default_config_id(old_config_id, bad_new_config_id)
 
 
@@ -510,7 +509,7 @@ def test_set_default_config_id_bad_config_id(g2_configmgr):
     """Test G2ConfigMgr().get_default_config_id()."""
 
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         g2_configmgr.set_default_config_id(bad_config_id)
 
 
