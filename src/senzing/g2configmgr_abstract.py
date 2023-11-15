@@ -68,7 +68,6 @@ class G2ConfigMgrAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -94,7 +93,7 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Raises:
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -115,8 +114,7 @@ class G2ConfigMgrAbstract(ABC):
             str: A JSON document containing the Senzing configuration.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -140,7 +138,7 @@ class G2ConfigMgrAbstract(ABC):
             str: A JSON document containing Senzing configurations.
 
         Raises:
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -164,7 +162,7 @@ class G2ConfigMgrAbstract(ABC):
             int:  A configuration identifier which identifies the current configuration in use.
 
         Raises:
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -198,7 +196,6 @@ class G2ConfigMgrAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -222,8 +219,7 @@ class G2ConfigMgrAbstract(ABC):
             new_config_id (int): The configuration identifier to use as the default.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -242,8 +238,7 @@ class G2ConfigMgrAbstract(ABC):
             config_id (int): The configuration identifier of the Senzing Engine configuration to use as the default.
 
         Raises:
-            ctypes.ArgumentError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 

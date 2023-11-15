@@ -95,7 +95,6 @@ class G2ProductAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 

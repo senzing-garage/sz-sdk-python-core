@@ -66,7 +66,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -91,7 +90,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -115,7 +113,7 @@ class G2ConfigAbstract(ABC):
             int: A pointer to an in-memory Senzing configuration.
 
         Raises:
-            g2exception.G2Exception:
+            TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
@@ -137,7 +135,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -197,7 +194,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -220,7 +216,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -252,7 +247,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -280,7 +274,6 @@ class G2ConfigAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
 
         .. collapse:: Example:
 

@@ -3,10 +3,38 @@ TODO: g2helpers.py
 """
 
 import os
-from ctypes import POINTER, c_char_p, c_uint, c_void_p, cast
-from typing import Any
+import sys
+from ctypes import POINTER, ArgumentError, c_char_p, c_uint, c_void_p, cast
+from typing import Any, Callable, TypeVar
+
+if sys.version_info < (3, 10):
+    from typing_extensions import ParamSpec
+else:
+    from typing import ParamSpec
 
 uintptr_type = POINTER(c_uint)
+T = TypeVar("T")
+P = ParamSpec("P")
+
+# -----------------------------------------------------------------------------
+# Decorators
+# -----------------------------------------------------------------------------
+
+
+def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
+    """Modify a ctypes.ArgumentError to a TypeError."""
+
+    def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
+        try:
+            result = function_to_decorate(*args, **kwargs)
+        except ArgumentError as err:
+            raise TypeError() from err
+        except Exception as err:
+            raise err
+        return result
+
+    return inner_function
+
 
 # -----------------------------------------------------------------------------
 # Helpers for working with C
@@ -112,7 +140,7 @@ def as_python_str(candidate_value: Any) -> str:
     return result
 
 
-# ---------------------w----------------------------------------------------
+# -----------------------------------------------------------------------------
 # Helpers for working with files and directories.
 # -----------------------------------------------------------------------------
 
