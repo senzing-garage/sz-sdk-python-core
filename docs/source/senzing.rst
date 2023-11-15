@@ -11,6 +11,7 @@ senzing.g2config module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2configmgr module
 --------------------------
@@ -19,6 +20,7 @@ senzing.g2configmgr module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2diagnostic module
 ---------------------------
@@ -27,6 +29,7 @@ senzing.g2diagnostic module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2engine module
 -----------------------
@@ -35,6 +38,7 @@ senzing.g2engine module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2engineflags module
 ----------------------------
@@ -43,6 +47,7 @@ senzing.g2engineflags module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2exception module
 --------------------------
@@ -51,6 +56,7 @@ senzing.g2exception module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2hasher module
 -----------------------
@@ -59,6 +65,7 @@ senzing.g2hasher module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 senzing.g2product module
 ------------------------
@@ -67,6 +74,7 @@ senzing.g2product module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
 
 Module contents
 ---------------
@@ -75,3 +83,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:

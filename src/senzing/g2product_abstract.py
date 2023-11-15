@@ -61,7 +61,7 @@ class G2ProductAbstract(ABC):
             g2_product = g2product.G2Product(module_name, ini_params)
 
         Raises:
-            G2Exception:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
@@ -111,9 +111,6 @@ class G2ProductAbstract(ABC):
         Returns:
             str: A JSON document containing Senzing license metadata.
 
-        Raises:
-            None: No exceptions raised
-
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2product/license.py
@@ -134,9 +131,6 @@ class G2ProductAbstract(ABC):
 
         Returns:
             str: A JSON document containing metadata about the Senzing Engine version being used.
-
-        Raises:
-            None: No exceptions raised
 
         .. collapse:: Example:
 
@@ -163,8 +157,6 @@ class G2ProductAbstract(ABC):
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
 
-        Raises:
-            None: TODO:
         """
         return cast(
             Dict[str, Any],

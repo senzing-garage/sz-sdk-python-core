@@ -160,7 +160,7 @@ class G2ConfigAbstract(ABC):
             g2_config = g2config.G2Config(module_name, ini_params)
 
         Raises:
-            G2Exception:
+            g2exception.G2Exception:
 
         .. collapse:: Example:
 
