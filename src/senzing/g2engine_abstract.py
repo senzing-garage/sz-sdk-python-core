@@ -32,6 +32,8 @@ class G2EngineAbstract(ABC):
     # TODO: Change to f-strings
     # Change to be same as g2Product: G2Engine_<method_name()>
     PREFIX = "g2engine."
+    """ :meta private: """
+
     ID_MESSAGES = {
         4001: PREFIX + "G2_addRecord({0}, {1}, {2}, {3}) failed. Return code: {4}",
         4002: PREFIX
@@ -140,6 +142,7 @@ class G2EngineAbstract(ABC):
         4075: PREFIX
         + "G2Engine{0}, {1}) failed. module_name and ini_params must both be set or both be empty",
     }
+    """ :meta private: """
 
     # -------------------------------------------------------------------------
     # Interface definition
@@ -153,22 +156,25 @@ class G2EngineAbstract(ABC):
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
         load_id: str = "",
-        flags: int = 0,
         **kwargs: Any,
     ) -> None:
-        """TODO: document"""
+        """
+        The `add_record` method adds a record into the Senzing repository.
 
-    # @abstractmethod
-    # def add_record(
-    #     self,
-    #     data_source_code: str,
-    #     record_id: str,
-    #     json_data: str,
-    #     # TODO: load_id is no longer used, being removed from V4 C api?
-    #     load_id: None = None,
-    #     **kwargs: Any
-    # ) -> None:
-    #     """TODO: document"""
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            json_data (str): A JSON document containing the record to be added to the Senzing repository.
+            load_id (str, optional): A JSON document containing the record to be added to the Senzing repository. Defaults to "".
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/add_record.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def add_record_with_info(
@@ -177,19 +183,79 @@ class G2EngineAbstract(ABC):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `add_record_with_info` method adds a record into the Senzing repository and returns information on the affected entities.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            json_data (str): A JSON document containing the record to be added to the Senzing repository.
+            load_id (str, optional): A JSON document containing the record to be added to the Senzing repository. Defaults to "".
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/add_record_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/add_record_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def close_export(self, response_handle: int, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `close_export` method closes the exported document created by `export_json_entity_report`.
+        It is part of the `export_json_entity_report`, `fetch_next`, `close_export`
+        lifecycle of a list of sized entities.
+
+        Args:
+            response_handle (int): A handle created by `export_json_entity_report` or `export_csv_entity_report`.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_fetch_close.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_fetch_close.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def count_redo_records(self, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The `count_redo_records` method returns the number of records in need of redo-ing.
+
+        Returns:
+            int: The number of redo records in Senzing's redo queue.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/count_redo_records.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def delete_record(
@@ -197,10 +263,25 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         **kwargs: Any,
     ) -> None:
-        """TODO: document"""
+        """
+        The `delete_record` method deletes a record from the Senzing repository.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/delete_record.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def delete_record_with_info(
@@ -208,23 +289,108 @@ class G2EngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `delete_record_with_info` method deletes a record from the Senzing repository and returns information on the affected entities.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
+            flags (int, optional): Flags used to control information returned.. Defaults to 0.
+
+        Returns:
+            str: Flags used to control information returned.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/delete_record_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/delete_record_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def destroy(self, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `destroy` method will destroy and perform cleanup for the Senzing G2Engine object.
+        It should be called after all other calls are complete.
+
+        **Note:** If the `G2Engine` constructor was called with parameters,
+        the destructor will automatically call the destroy() method.
+        In this case, a separate call to `destroy()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_engine = g2engine.G2Engine(module_name, ini_params)
+
+        Raises:
+            g2exception.G2Exception:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/g2engine_init_and_destroy.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def export_config(self, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `export_config` method returns the Senzing engine configuration.
+
+        Returns:
+            str: A JSON document containing the current Senzing Engine configuration.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_config.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_config.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def export_config_and_config_id(self, **kwargs: Any) -> Tuple[str, int]:
-        """TODO: document"""
+        """
+        Similar to `export_config`, the `export_config_and_config_id` method returns the Senzing engine configuration and it's identifier.
+
+        Returns:
+            Tuple[str, int]: [A JSON document containing the current Senzing Engine configuration, The unique identifier of the Senzing Engine configuration]
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_config_and_config_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_config_and_config_id.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def export_csv_entity_report(
