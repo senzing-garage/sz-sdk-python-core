@@ -163,12 +163,13 @@ class G2EngineAbstract(ABC):
     ) -> None:
         """
         The `add_record` method adds a record into the Senzing repository.
+        Can be called as many times as desired and from multiple threads at the same time.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
             json_data (str): A JSON document containing the record to be added to the Senzing repository.
-            load_id (str, optional): A JSON document containing the record to be added to the Senzing repository. Defaults to "".
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
 
         Raises:
 
@@ -191,17 +192,19 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `add_record_with_info` method adds a record into the Senzing repository and returns information on the affected entities.
+        The `add_record_with_info` method adds a record into the Senzing repository
+        and returns information on the affected entities.
+        Can be called as many times as desired and from multiple threads at the same time.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
             json_data (str): A JSON document containing the record to be added to the Senzing repository.
-            load_id (str, optional): A JSON document containing the record to be added to the Senzing repository. Defaults to "".
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
             flags (int, optional): Flags used to control information returned. Defaults to 0.
 
         Returns:
-            str: A JSON document.
+            str: A JSON document containing the ENTITY_ID values of the affected entities.
 
         Raises:
 
@@ -271,6 +274,7 @@ class G2EngineAbstract(ABC):
     ) -> None:
         """
         The `delete_record` method deletes a record from the Senzing repository.
+        Can be called as many times as desired and from multiple threads at the same time.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -297,7 +301,8 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `delete_record_with_info` method deletes a record from the Senzing repository and returns information on the affected entities.
+        The `delete_record_with_info` method deletes a record from the Senzing repository
+        and returns a JSON document containing the IDs of the affected entities.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -326,7 +331,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def destroy(self, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2Engine object.
+        The `destroy` method releases resources and performs cleanup for the G2Engine object and any in-memory configurations.
         It should be called after all other calls are complete.
 
         **Note:** If the `G2Engine` constructor was called with parameters,
@@ -352,7 +357,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def export_config(self, **kwargs: Any) -> str:
         """
-        The `export_config` method returns the Senzing engine configuration.
+        The `export_config` method returns the current Senzing engine configuration.
 
         Returns:
             str: A JSON document containing the current Senzing Engine configuration.
@@ -375,7 +380,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def export_config_and_config_id(self, **kwargs: Any) -> Tuple[str, int]:
         """
-        Similar to `export_config`, the `export_config_and_config_id` method returns the Senzing engine configuration and it's identifier.
+        Similar to `export_config`, the `export_config_and_config_id` method returns the current Senzing engine configuration and it's identifier.
 
         Returns:
             Tuple[str, int]: [A JSON document containing the current Senzing Engine configuration, The unique identifier of the Senzing Engine configuration]
@@ -491,7 +496,7 @@ class G2EngineAbstract(ABC):
     def find_interesting_entities_by_entity_id(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
-        """The `find_interesting_entities_by_entity_id` method TODO:
+        """The `find_interesting_entities_by_entity_id` method... TODO:
 
         Args:
             entity_id (int): The unique identifier of an entity.
@@ -520,7 +525,7 @@ class G2EngineAbstract(ABC):
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> str:
         """
-        The `find_interesting_entities_by_record_id` method TODO:
+        The `find_interesting_entities_by_record_id` method... TODO:
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -756,7 +761,9 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_by_entity_id` method finds single relationship paths between two entities.
+        The `find_path_by_entity_id` method finds the most efficient relationship between two entities path based on the parameters
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities. Paths are found using known relationships with other entities.
         Paths are found using known relationships with other entities.
         To control output, use `find_path_by_entity_id_v2` instead.
 
@@ -767,7 +774,7 @@ class G2EngineAbstract(ABC):
             flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
-            str: A JSON document.
+            str: A JSON document with an ENTITY_PATHS section that details the path between the entities.
 
         Raises:
 
@@ -839,9 +846,12 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_by_record_id` method finds single relationship paths between two entities.
-        The entities are identified by starting and ending records.
+        The `find_path_by_record_id` method finds the most efficient relationship between
+        two entities path based on the parameters by RECORD_ID values
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities.
         Paths are found using known relationships with other entities.
+        The entities are identified by starting and ending records.
         To control output, use `find_path_by_record_id_v2` instead.
 
         Args:
@@ -923,10 +933,17 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_excluding_by_entity_id` method finds single relationship paths between two entities.
+        The `find_path_excluding_by_entity_id` method finds the most efficient relationship between
+        two entities path based on the parameters while preferentially excluding specific ENTITY_IDs,
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities.
         Paths are found using known relationships with other entities.
-        In addition, it will find paths that exclude certain entities from being on the path.
         To control output, use `find_path_excluding_by_entity_id_v2` instead.
+
+        By default, any excluded entities are strictly excluded.
+        The G2_FIND_PATH_PREFER_EXCLUDE flag sets the exclusion to preferred instead of strict exclusion.
+        Preferred exclusion means that if an excluded entity is the only one in the path, it will be used,
+        but strict will never include excluded entities in the path.
 
         Args:
             entity_id_1 (int): The entity ID for the starting entity of the search path.
@@ -1017,10 +1034,17 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_excluding_by_record_id` method finds single relationship paths between two entities.
+        The `find_path_excluding_by_record_id` method finds the most efficient relationship between two entities
+        path based on the parameters by RECORD_IDs while preferentially excluding specific ENTITY_IDs
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities.
         Paths are found using known relationships with other entities.
-        In addition, it will find paths that exclude certain entities from being on the path.
         To control output, use `find_path_excluding_by_record_id_v2` instead.
+
+        By default, any excluded entities are strictly excluded.
+        The G2_FIND_PATH_PREFER_EXCLUDE flag sets the exclusion to preferred instead of strict exclusion.
+        Preferred exclusion means that if an excluded entity is the only one in the path, it will be used,
+        but strict will never include excluded entities in the path.
 
         Args:
             data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
@@ -1106,8 +1130,18 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_including_source_by_entity_id` method finds single relationship paths between two entities.
-        In addition, one of the enties along the path must include a specified data source.
+        The `find_path_including_source_by_entity_id` method finds the most efficient relationship between two entities
+        path based on the parameters, requiring a path entity to include a RECORD_ID from specified data source.
+        Specific ENTITY_IDs to exclude can optionally be listed.
+
+        Returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities. Paths are found using known relationships with other entities.
+
+        By default, any excluded entities are strictly excluded.
+        The G2_FIND_PATH_PREFER_EXCLUDE flag sets the exclusion to preferred instead of strict exclusion.
+        Preferred exclusion means that if an excluded entity is the only one in the path, it will be used,
+        but strict will never include excluded entities in the path.
+
         Specific entities may also be excluded,
         using the same methodology as the `find_path_excluding_by_entity_id` and `find_path_excluding_by_record_id`.
         To control output, use `find_path_including_source_by_entity_id_v2` instead.
@@ -1238,7 +1272,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def get_active_config_id(self, **kwargs: Any) -> int:
         """
-        The `get_active_config_id` method returns the identifier of the loaded Senzing engine configuration.
+        The `get_active_config_id` method returns the identifier of the currently active Senzing engine configuration.
 
         Returns:
             int: The identifier of the active Senzing Engine configuration.
@@ -1408,6 +1442,7 @@ class G2EngineAbstract(ABC):
         """
         The `get_record_v2` method returns a JSON document of a single record from the Senzing repository.
         It extends `get_record` by adding output control flags.
+        Can be called as many times as desired and from multiple threads at the same time.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -1443,6 +1478,7 @@ class G2EngineAbstract(ABC):
         """
         The `get_record` method returns a JSON document of a single record from the Senzing repository.
         To control output, use `get_record_v2` instead.
+        Can be called as many times as desired and from multiple threads at the same time.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -1450,7 +1486,7 @@ class G2EngineAbstract(ABC):
             flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_RECORD_DEFAULT_FLAGS.
 
         Returns:
-            str: A JSON document.
+            str: A JSON document of a single record.
 
         Raises:
 
@@ -1470,8 +1506,8 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def get_redo_record(self, **kwargs: Any) -> str:
         """
-        The `get_redo_record` method returns the next internally queued maintenance record from the Senzing repository.
-        Usually, the `process_redo_record` or `process_redo_record_with_info` method is called to process the maintenance record
+        The `get_redo_record` method returns the next internally queued redo record from the Senzing repository.
+        Usually, the `process_redo_record` or `process_redo_record_with_info` method is called to process the redo record
         retrieved by `get_redo_record`.
 
         Returns:
@@ -1529,7 +1565,7 @@ class G2EngineAbstract(ABC):
         It extends `get_virtual_entity_by_record_id` by adding output control flags.
 
         Args:
-            record_list (str): A JSON document.
+            record_list (str): A JSON document of one or more records by DATA_SOURCE and RECORD_ID pairs, formatted as `{"RECORDS":[{"DATA_SOURCE":"DS1","RECORD_ID":"R1"},{"DATA_SOURCE":"DS2","RECORD_ID":"R2"}]}`.
             flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
 
         Returns:
@@ -1558,11 +1594,14 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        TODO: The `get_virtual_entity_by_record_id` method...
+        The `get_virtual_entity_by_record_id` method creates a view of a virtual entity
+        using a list of existing loaded records.
+        The virtual entity is composed of only those records and their features.
+        Entity resolution is not performed.
         To control output, use `get_virtual_entity_by_record_id_v2` instead.
 
         Args:
-            record_list (str): A JSON document.
+            record_list (str): A JSON document of one or more records by DATA_SOURCE and RECORD_ID pairs, formatted as `{"RECORDS":[{"DATA_SOURCE":"DS1","RECORD_ID":"R1"},{"DATA_SOURCE":"DS2","RECORD_ID":"R2"}]}`.
             flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
 
         Returns:
@@ -1707,7 +1746,7 @@ class G2EngineAbstract(ABC):
             g2_engine = g2engine.G2Engine(module_name, ini_params, init_config_id)
 
         Args:
-            module_name (str): A name for the auditing node, to help identify it within system logs.
+            module_name (str): A short name given to this instance of the G2Engine object, to help identify it within system logs.
             ini_params (str): A JSON string containing configuration parameters.
             init_config_id (int): The configuration ID used for the initialization.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
@@ -1726,9 +1765,10 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def prime_engine(self, **kwargs: Any) -> None:
         """
-        The `prime_engine` method pre-initializes some of the heavier weight internal resources of the G2 engine.
-        The G2 Engine uses "lazy initialization".
-        PrimeEngine() forces initialization.
+        The `prime_engine` method Initializes high resource consumption components of Senzing
+        used in some functions. If this call is not made, these resources are initialized the
+        first time they are needed and can cause unusually long processing times the first time
+        a function is called that requries these resources.
 
         Raises:
 
@@ -1742,10 +1782,11 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def process(self, record: str, **kwargs: Any) -> None:
         """
-        TODO: The `process` method...
+        The `process` method processes the redo record.
+        Usually the redo record is retrieved with `get_redo_record`.
 
         Args:
-            record (str):  A JSON document containing the record to be added to the Senzing repository.
+            record (str):  A JSON document containing the redo record to be processed.
 
         Raises:
 
@@ -1759,14 +1800,15 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def process_with_info(self, record: str, flags: int, **kwargs: Any) -> str:
         """_summary_
-        TODO: The `process_with_info` method...
+        The `process_with_info` method processes the redo record
+        and returns a JSON document containing the ENTITY_ID values of the affected entities.
 
         Args:
             record (str): A JSON document containing the record to be added to the Senzing repository.
             flags (int): Flags used to control information returned.
 
         Returns:
-            str:  A JSON document.
+            str:  A JSON document containing the ENTITY_ID values of the affected entities.
 
         Raises:
 
@@ -1803,7 +1845,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> None:
         """
-        TODO: The `reevaluate_entity` method...
+        The `reevaluate_entity` method reevaluates the specified entity.
 
         Args:
             entity_id (int): The unique identifier of an entity.
@@ -1823,7 +1865,8 @@ class G2EngineAbstract(ABC):
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
         """
-        TODO: The `reevaluate_entity_with_info` method...
+        TODO: The `reevaluate_entity_with_info` method reevaluates the specified entity.
+        and returns a JSON document containing the ENTITY_ID values of the affected entities.
 
         Args:
             entity_id (int): The unique identifier of an entity.
@@ -1852,7 +1895,7 @@ class G2EngineAbstract(ABC):
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> None:
         """
-        TODO: The `reevaluate_record` method...
+        The `reevaluate_record` method reevaluates a specific record.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -1873,7 +1916,8 @@ class G2EngineAbstract(ABC):
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> str:
         """
-        TODO: The `reevaluate_record_with_info` method...
+        The `reevaluate_record_with_info` reevaluates a specific record
+        and returns a JSON document containing the ENTITY_ID values of the affected entities.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
@@ -1881,7 +1925,7 @@ class G2EngineAbstract(ABC):
             flags (int, optional):  Flags used to control information returned. Defaults to 0.
 
         Returns:
-            str: A JSON document.
+            str: A JSON document containing the ENTITY_ID values of the affected entities.
 
         Raises:
 
@@ -1901,7 +1945,9 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def reinit(self, init_config_id: int, **kwargs: Any) -> None:
         """
-        The `reinit` method re-initializes the Senzing G2Engine object.
+        The `reinit` method re-initializes the Senzing G2Engine object using a specific configuration
+        identifier. A list of available configuration identifiers can be retrieved using
+        `g2configmgr.get_config_list`.
 
         Args:
             init_config_id (int): The configuration ID used for the initialization
@@ -1935,7 +1981,7 @@ class G2EngineAbstract(ABC):
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
             json_data (str): A JSON document containing the record to be added to the Senzing repository.
-            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable.. Defaults to "".
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
 
         Raises:
 
@@ -1958,14 +2004,15 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `replace_record_with_info` method updates/replaces a record in the Senzing repository and returns information on the affected entities.
+        The `replace_record_with_info` method updates/replaces a record in the Senzing repository
+        and returns information on the affected entities.
         If record doesn't exist, a new record is added to the data repository.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
             json_data (str): A JSON document containing the record to be added to the Senzing repository.
-            load_id (str, optional):  An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
             flags (int, optional): Flags used to control information returned. Defaults to 0.
 
         Returns:
@@ -2066,9 +2113,10 @@ class G2EngineAbstract(ABC):
         """
         The `search_by_attributes` method retrieves entity data based on a user-specified set of entity attributes.
         To control output, use `search_by_attributes_v2` instead.
+        To specify a search profile, use `search_by_attributes_v3` instead.
 
         Args:
-            json_data (str): TODO:
+            json_data (str):  A JSON document with the attribute data to search for.
             flags (int, optional): _description_. Defaults to G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
 
         Returns:
