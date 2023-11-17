@@ -1718,7 +1718,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/init_with_config_id.py
+            .. literalinclude:: ../../examples/g2engine/g2engine_init_with_config_id.py
                 :linenos:
                 :language: python
         """
