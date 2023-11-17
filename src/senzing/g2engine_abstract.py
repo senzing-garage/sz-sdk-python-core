@@ -408,6 +408,9 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> int:
         """
+        **Warning:** `export_csv_entity_report` is not recommended for large systems as it does not scale.
+        It is recommended larger systems implement real-time replication to a data warehouse.
+
         The `export_csv_entity_report` method initializes a cursor over a document of exported entities.
         It is part of the `export_csv_entity_report`, `fetch_next`, `close_export`
         lifecycle of a list of entities to export.
@@ -439,6 +442,9 @@ class G2EngineAbstract(ABC):
         self, flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, **kwargs: Any
     ) -> int:
         """
+        **Warning:** `export_json_entity_report` is not recommended for large systems as it does not scale.
+        It is recommended larger systems implement real-time replication to a data warehouse.
+
         The `export_json_entity_report` method initializes a cursor over a document of exported entities.
         It is part of the `export_json_entity_report`, `fetch_next`, `close_export`
         lifecycle of a list of entities to export.
@@ -467,7 +473,8 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def fetch_next(self, response_handle: int, **kwargs: Any) -> str:
         """
-        The `fetch_next` method is used to scroll through an exported document.
+        The `fetch_next` method is used to scroll through an exported document one entity at a time.
+        Successive calls of `fetch_next` will export successive rows of entity data until there is no more.
         It is part of the `export_json_entity_report` or `export_json_entity_report`, `fetch_next`, `close_export`
         lifecycle of a list of exported entities.
 
@@ -604,6 +611,9 @@ class G2EngineAbstract(ABC):
         """
         The `find_network_by_entity_id` method finds all entities surrounding a requested set of entities.
         This includes the requested entities, paths between them, and relations to other nearby entities.
+        Returns a JSON document that identifies the path between the each set of search entities (if the path exists),
+        and the information for the entities in the path.
+
         To control output, use `find_network_by_entity_id_v2` instead.
 
         Args:
@@ -643,8 +653,11 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_network_by_record_id_v2` method finds all entities surrounding a requested set of entities identified by record identifiers.
+        The `find_network_by_record_id_v2` method finds all entities surrounding a requested set of entities by their RECORD_ID values.
         This includes the requested entities, paths between them, and relations to other nearby entities.
+        Returns a JSON document that identifies the path between the each set of search entities (if the path exists),
+        and the information for the entities in the path.
+
         It extends `find_network_by_record_id` by adding output control flags.
 
         Args:
@@ -683,8 +696,11 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_network_by_record_id` method finds all entities surrounding a requested set of entities identified by record identifiers.
+        The `find_network_by_record_id` method finds all entities surrounding a requested set of entities by their RECORD_ID values.
         This includes the requested entities, paths between them, and relations to other nearby entities.
+        Returns a JSON document that identifies the path between the each set of search entities (if the path exists),
+        and the information for the entities in the path.
+
         To control output, use `find_network_by_record_id_v2` instead.
 
         Args:
@@ -1142,8 +1158,6 @@ class G2EngineAbstract(ABC):
         Preferred exclusion means that if an excluded entity is the only one in the path, it will be used,
         but strict will never include excluded entities in the path.
 
-        Specific entities may also be excluded,
-        using the same methodology as the `find_path_excluding_by_entity_id` and `find_path_excluding_by_record_id`.
         To control output, use `find_path_including_source_by_entity_id_v2` instead.
 
         Args:
@@ -1235,10 +1249,19 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `find_path_including_source_by_record_id` method finds single relationship paths between two entities.
-        In addition, one of the enties along the path must include a specified data source.
-        Specific entities may also be excluded,
-        using the same methodology as the `find_path_excluding_by_entity_id` and `find_path_excluding_by_record_id`.
+        The `find_path_including_source_by_record_id` method finds the most efficient relationship between two entities
+        path based on the parameters by RECORD_IDs, requiring a path entity to include a RECORD_ID from specified data source.
+        Specific ENTITY_IDs to exclude can optionally be listed.
+
+        Returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities.
+        Paths are found using known relationships with other entities.
+
+        By default, any excluded entities are strictly excluded.
+        The G2_FIND_PATH_PREFER_EXCLUDE flag sets the exclusion to preferred instead of strict exclusion.
+        Preferred exclusion means that if an excluded entity is the only one in the path, it will be used,
+        but strict will never include excluded entities in the path.
+
         To control output, use `find_path_including_source_by_record_id_v2` instead.
 
         Args:
@@ -1664,7 +1687,10 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        TODO: The `how_entity_by_entity_id` method...
+        TODO: The `how_entity_by_entity_id` method determines and details steps-by-step *how* records resolved to an ENTITY_ID.
+
+        In most cases, *how* provides more detailed information than *why* as the resolution is detailed step-by-step.
+
         To control output, use `how_entity_by_entity_id_v2` instead.
 
         Args:
@@ -1828,6 +1854,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def purge_repository(self, **kwargs: Any) -> None:
         """
+        **Warning:**
         The `purge_repository` method removes every record in the Senzing repository.
 
         Before calling `purge_repository` all other instances of the Senzing API
@@ -2208,10 +2235,8 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `why_entities` method explains why records belong to their resolved entities.
-        `why_entities` will compare the record data within an entity
-        against the rest of the entity data and show why they are connected.
-        This is calculated based on the features that record data represents.
+        The `why_entities` method determines why entities did not resolve or why they do relate.
+
         To control output, use `why_entities_v2` instead.
 
         Args:
@@ -2279,7 +2304,20 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `why_entity_by_entity_id` method explains why records belong to their resolved entities.
+        The `why_entity_by_entity_id` method determines *why* records resolved to an ENTITY_ID.
+        Returns a JSON document that gives the results of the record analysis.
+
+        It has a “WHY_KEY”, which is similar to a match key, in defining the relevant connected data.
+        It shows candidate keys for features that initially cause the records to be analyzed for a relationship,
+        plus a series of feature scores that show how similar the feature data was.
+
+        The response JSON document also contains a separate ENTITIES section,
+        with the full information about the resolved entity.
+
+        The recommended composite flag is G2_WHY_ENTITY_DEFAULT_FLAGS.
+        Additional recommended flags are G2_ENTITY_OPTION_INCLUDE_INTERNAL_FEATURES and G2_ENTITY_OPTION_INCLUDE_FEATURE_STATS,
+        which provide detailed feature data that is useful for understanding the WHY_RESULTS data.
+
         To control output, use `why_entity_by_entity_id_v2` instead.
 
         Args:
@@ -2349,7 +2387,20 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `why_entity_by_record_id` method explains why records belong to their resolved entities.
+        The `why_entity_by_record_id` method determines *why* records resolved to an ENTITY_ID by a RECORD_ID.
+        Returns a JSON document that gives the results of the record analysis.
+
+        It has a “WHY_KEY”, which is similar to a match key, in defining the relevant connected data.
+        It shows candidate keys for features that initially cause the records to be analyzed for a relationship,
+        plus a series of feature scores that show how similar the feature data was.
+
+        The response JSON document also contains a separate ENTITIES section,
+        with the full information about the resolved entity.
+
+        The recommended composite flag is G2_WHY_ENTITY_DEFAULT_FLAGS.
+        Additional recommended flags are G2_ENTITY_OPTION_INCLUDE_INTERNAL_FEATURES and G2_ENTITY_OPTION_INCLUDE_FEATURE_STATS,
+        which provide detailed feature data that is useful for understanding the WHY_RESULTS data.
+
         To control output, use `why_entity_by_record_id_v2` instead.
 
         Args:
@@ -2387,7 +2438,7 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `why_records_v2` method explains why records belong to their resolved entities.
+        The `why_records_v2` determines if any two records can or cannot resolve together, or if they relate.
         It extends `why_records` by adding output control flags.
 
         Args:
@@ -2426,7 +2477,8 @@ class G2EngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        The `why_records` method explains why records belong to their resolved entities.
+        The `why_records` determines if any two records can or cannot resolve together, or if they relate.
+
         To control output, use `why_records_v2` instead.
 
         Args:
