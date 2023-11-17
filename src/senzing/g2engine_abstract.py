@@ -1912,7 +1912,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/reinit.py
+            .. literalinclude:: ../../examples/g2engine/g2engine_reinit.py
                 :linenos:
                 :language: python
         """

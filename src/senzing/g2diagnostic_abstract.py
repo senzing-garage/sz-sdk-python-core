@@ -272,7 +272,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/reinit.py
+            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_reinit.py
                 :linenos:
                 :language: python
         """
