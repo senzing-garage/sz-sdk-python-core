@@ -2267,7 +2267,7 @@ class G2EngineAbstract(ABC):
     ) -> str:
         """
         The `why_entity_by_record_id_v2` method explains why records belong to their resolved entities.
-        It extends `why_entity_by_record_id`by adding output control flags.
+        It extends `why_entity_by_record_id` by adding output control flags.
 
         Args:
             data_source_code (str): Identifies the provenance of the data.
