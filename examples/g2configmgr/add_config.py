@@ -21,6 +21,6 @@ try:
     g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
     config_handle = g2_config.create()
     config_str = g2_config.save(config_handle)
-    CONFIG_ID = g2_configmgr.add_config(config_str, CONFIG_COMMENTS)
+    config_id = g2_configmgr.add_config(config_str, CONFIG_COMMENTS)
 except G2Exception as err:
     print(err)

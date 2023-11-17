@@ -17,10 +17,10 @@ MODULE_NAME = "Example"
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE_1 = g2_config.create()  # Create first in-memory.
-    JSON_CONFIG = g2_config.save(CONFIG_HANDLE_1)  # Save in-memory to string.
-    CONFIG_HANDLE_2 = g2_config.load(JSON_CONFIG)  # Create second in-memory.
-    g2_config.close(CONFIG_HANDLE_1)
-    g2_config.close(CONFIG_HANDLE_2)
+    config_handle_1 = g2_config.create()  # Create first in-memory.
+    json_config = g2_config.save(config_handle_1)  # Save in-memory to string.
+    config_handle_2 = g2_config.load(json_config)  # Create second in-memory.
+    g2_config.close(config_handle_1)
+    g2_config.close(config_handle_2)
 except G2Exception as err:
     print(err)

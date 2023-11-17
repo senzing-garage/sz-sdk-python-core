@@ -26,8 +26,8 @@ try:
     input_json_dict = {"DSRC_CODE": "SET_DEFAULT_CONFIG_ID"}
     g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
     json_config = g2_config.save(config_handle)
-    CONFIG_ID = g2_configmgr.add_config(json_config, "Test")
+    config_id = g2_configmgr.add_config(json_config, "Test")
 
-    g2_configmgr.set_default_config_id(CONFIG_ID)
+    g2_configmgr.set_default_config_id(config_id)
 except G2Exception as err:
     print(err)

@@ -21,6 +21,6 @@ json_config_dict: Dict[
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE = g2_config.load(json.dumps(json_config_dict))
+    config_handle = g2_config.load(json.dumps(json_config_dict))
 except G2Exception as err:
     print(err)

@@ -4,6 +4,9 @@
 TODO: g2engine_abstract.py
 """
 
+# pylint: disable=C0302
+
+
 # Import from standard library. https://docs.python.org/3/library/
 
 import json
@@ -22,7 +25,7 @@ __updated__ = "2023-10-30"
 
 class G2EngineAbstract(ABC):
     """
-    G2 diagnostic module access library
+    G2 engine module access library
     """
 
     # -------------------------------------------------------------------------
@@ -229,13 +232,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/export_fetch_close.py
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/export_fetch_close.txt
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
                 :linenos:
                 :language: json
         """
@@ -300,7 +303,7 @@ class G2EngineAbstract(ABC):
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
             load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
-            flags (int, optional): Flags used to control information returned.. Defaults to 0.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
 
         Returns:
             str: Flags used to control information returned.
@@ -399,29 +402,148 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
-        """TODO: document"""
+        """
+        The `export_csv_entity_report` method initializes a cursor over a document of exported entities.
+        It is part of the `export_csv_entity_report`, `fetch_next`, `close_export`
+        lifecycle of a list of entities to export.
+
+        Args:
+            csv_column_list (str): A comma-separated list of column names for the CSV export.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS.
+
+        Returns:
+            int: A handle that identifies the document to be scrolled through using `fetch_next`.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_csv_fetch_close.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_csv_fetch_close.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def export_json_entity_report(
         self, flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, **kwargs: Any
     ) -> int:
-        """TODO: document"""
+        """
+        The `export_json_entity_report` method initializes a cursor over a document of exported entities.
+        It is part of the `export_json_entity_report`, `fetch_next`, `close_export`
+        lifecycle of a list of entities to export.
+
+        Args:
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS.
+
+        Returns:
+            int: A handle that identifies the document to be scrolled through using `fetch_next`.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def fetch_next(self, response_handle: int, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `fetch_next` method is used to scroll through an exported document.
+        It is part of the `export_json_entity_report` or `export_json_entity_report`, `fetch_next`, `close_export`
+        lifecycle of a list of exported entities.
+
+        Args:
+            response_handle (int): A handle created by `export_json_entity_report` or `export_json_entity_report`.
+
+        Returns:
+            str: TODO:
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_interesting_entities_by_entity_id(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """The `find_interesting_entities_by_entity_id` method TODO:
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_interesting_entities_by_record_id(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_interesting_entities_by_record_id` method TODO:
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -434,7 +556,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_network_by_entity_id_v2` method finds all entities surrounding a requested set of entities.
+        This includes the requested entities, paths between them, and relations to other nearby entities.
+        It extends `find_network_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_list (str): A JSON document listing entities.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            max_entities (int): The maximum number of entities to return in the discovered network.
+            flags (int, optional): The maximum number of entities to return in the discovered network.. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_network_by_entity_id(
@@ -446,7 +596,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_network_by_entity_id` method finds all entities surrounding a requested set of entities.
+        This includes the requested entities, paths between them, and relations to other nearby entities.
+        To control output, use `find_network_by_entity_id_v2` instead.
+
+        Args:
+            entity_list (str): A JSON document listing entities.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            max_entities (int): The maximum number of entities to return in the discovered network.
+            flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -459,7 +637,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_network_by_record_id_v2` method finds all entities surrounding a requested set of entities identified by record identifiers.
+        This includes the requested entities, paths between them, and relations to other nearby entities.
+        It extends `find_network_by_record_id` by adding output control flags.
+
+        Args:
+            record_list (str): A JSON document listing records.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            max_entities (int): The maximum number of entities to return in the discovered network.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_network_by_record_id(
@@ -471,7 +677,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_network_by_record_id` method finds all entities surrounding a requested set of entities identified by record identifiers.
+        This includes the requested entities, paths between them, and relations to other nearby entities.
+        To control output, use `find_network_by_record_id_v2` instead.
+
+        Args:
+            record_list (str): A JSON document listing records.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            max_entities (int): The maximum number of entities to return in the discovered network.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -483,7 +717,34 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_by_entity_id_v2` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        It extends `find_path_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_by_entity_id(
@@ -494,7 +755,34 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_by_entity_id` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        To control output, use `find_path_by_entity_id_v2` instead.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -508,7 +796,36 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_by_record_id_v2` method finds all entities surrounding a requested set of entities identified by record identifiers.
+        This includes the requested entities, paths between them, and relations to other nearby entities.
+        It extends `find_path_by_record_id` by adding output control flags.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_by_record_id(
@@ -521,7 +838,37 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_by_record_id` method finds single relationship paths between two entities.
+        The entities are identified by starting and ending records.
+        Paths are found using known relationships with other entities.
+        To control output, use `find_path_by_record_id_v2` instead.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -534,7 +881,36 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_excluding_by_entity_id_v2` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        In addition, it will find paths that exclude certain entities from being on the path.
+        It extends `find_path_excluding_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_entities (str): A JSON document listing entities that should be avoided on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_excluding_by_entity_id(
@@ -546,7 +922,36 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_excluding_by_entity_id` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        In addition, it will find paths that exclude certain entities from being on the path.
+        To control output, use `find_path_excluding_by_entity_id_v2` instead.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_entities (str): A JSON document listing entities that should be avoided on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -561,7 +966,43 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_excluding_by_record_id_v2` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        In addition, it will find paths that exclude certain entities from being on the path.
+        It extends `find_path_excluding_by_record_id` by adding output control flags.
+
+        When excluding entities, the user may choose to either strictly exclude the entities,
+        or prefer to exclude the entities but still include them if no other path is found.
+        By default, entities will be strictly excluded.
+        A "preferred exclude" may be done by specifying the G2_FIND_PATH_PREFER_EXCLUDE control flag.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_records (str): A JSON document listing entities that should be avoided on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_excluding_by_record_id(
@@ -575,7 +1016,38 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_excluding_by_record_id` method finds single relationship paths between two entities.
+        Paths are found using known relationships with other entities.
+        In addition, it will find paths that exclude certain entities from being on the path.
+        To control output, use `find_path_excluding_by_record_id_v2` instead.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_records (str): A JSON document listing entities that should be avoided on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_excluding_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -589,7 +1061,38 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_including_source_by_entity_id_v2` method finds single relationship paths between two entities.
+        In addition, one of the enties along the path must include a specified data source.
+        Specific entities may also be excluded,
+        using the same methodology as the `find_path_excluding_by_entity_id_v2` and `find_path_excluding_by_record_id`.
+        It extends `find_path_including_source_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_entities (str): A JSON document listing entities that should be avoided on the path.
+            required_dsrcs (str): A JSON document listing data sources that should be included on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_including_source_by_entity_id(
@@ -602,7 +1105,38 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_including_source_by_entity_id` method finds single relationship paths between two entities.
+        In addition, one of the enties along the path must include a specified data source.
+        Specific entities may also be excluded,
+        using the same methodology as the `find_path_excluding_by_entity_id` and `find_path_excluding_by_record_id`.
+        To control output, use `find_path_including_source_by_entity_id_v2` instead.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_entities (str): A JSON document listing entities that should be avoided on the path.
+            required_dsrcs (str): A JSON document listing data sources that should be included on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -618,7 +1152,40 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_including_source_by_record_id_v2` method finds single relationship paths between two entities.
+        In addition, one of the enties along the path must include a specified data source.
+        Specific entities may also be excluded,
+        using the same methodology as the `find_path_excluding_by_entity_id_v2` and `find_path_excluding_by_record_id_v2`.
+        It extends `find_path_including_source_by_record_id` by adding output control flags.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_records (str): A JSON document listing entities that should be avoided on the path.
+            required_dsrcs (str):  A JSON document listing data sources that should be included on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def find_path_including_source_by_record_id(
@@ -633,11 +1200,63 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `find_path_including_source_by_record_id` method finds single relationship paths between two entities.
+        In addition, one of the enties along the path must include a specified data source.
+        Specific entities may also be excluded,
+        using the same methodology as the `find_path_excluding_by_entity_id` and `find_path_excluding_by_record_id`.
+        To control output, use `find_path_including_source_by_record_id_v2` instead.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the record for the starting entity of the search path.
+            record_id_1 (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            data_source_code_2 (str): Identifies the provenance of the record for the ending entity of the search path.
+            record_id_2 (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degree (int): The maximum number of degrees in paths between search entities.
+            excluded_records (str): A JSON document listing entities that should be avoided on the path.
+            required_dsrcs (str): A JSON document listing data sources that should be included on the path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/find_path_including_source_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_active_config_id(self, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The `get_active_config_id` method returns the identifier of the loaded Senzing engine configuration.
+
+        Returns:
+            int: The identifier of the active Senzing Engine configuration.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_active_config_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_active_config_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -647,7 +1266,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_entity_by_entity_id_v2` method returns entity data based on the ID of a resolved identity.
+        It extends `get_entity_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_entity_by_entity_id(
@@ -656,7 +1299,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_entity_by_entity_id` method returns entity data based on the ID of a resolved identity.
+        To control output, use `get_entity_by_entity_id_v2` instead.
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -667,7 +1334,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_entity_by_record_id_v2` method returns entity data based on the ID of a record which is a member of the entity.
+        It extends `get_entity_by_record_id` by adding output control flags.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_entity_by_record_id(
@@ -677,7 +1369,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_entity_by_record_id` method returns entity data based on the ID of a record which is a member of the entity.
+        To control output, use `get_entity_by_record_id_v2` instead.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -688,7 +1405,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_record_v2` method returns a JSON document of a single record from the Senzing repository.
+        It extends `get_record` by adding output control flags.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_RECORD_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_record_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_record_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_record(
@@ -698,15 +1440,81 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `get_record` method returns a JSON document of a single record from the Senzing repository.
+        To control output, use `get_record_v2` instead.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_RECORD_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_record.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_record.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_redo_record(self, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `get_redo_record` method returns the next internally queued maintenance record from the Senzing repository.
+        Usually, the `process_redo_record` or `process_redo_record_with_info` method is called to process the maintenance record
+        retrieved by `get_redo_record`.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_redo_record.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_redo_record.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_repository_last_modified_time(self, **kwargs: Any) -> int:
-        """TODO: document"""
+        """
+        The `get_repository_last_modified_time` method retrieves the last modified time of the Senzing repository,
+        measured in the number of seconds between the last modified time and January 1, 1970 12:00am GMT (epoch time).
+
+        Returns:
+            int: A Unix Timestamp.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_repository_last_modified_time.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_repository_last_modified_time.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -716,7 +1524,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `get_virtual_entity_by_record_id_v2` method...
+        It extends `get_virtual_entity_by_record_id` by adding output control flags.
+
+        Args:
+            record_list (str): A JSON document.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def get_virtual_entity_by_record_id(
@@ -725,7 +1557,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `get_virtual_entity_by_record_id` method...
+        To control output, use `get_virtual_entity_by_record_id_v2` instead.
+
+        Args:
+            record_list (str): A JSON document.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -735,7 +1591,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `how_entity_by_entity_id_v2` method...
+        It extends `how_entity_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def how_entity_by_entity_id(
@@ -744,13 +1624,64 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `how_entity_by_entity_id` method...
+        To control output, use `how_entity_by_entity_id_v2` instead.
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def init(
         self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
-        """TODO: document"""
+        """
+        The `init` method initializes the Senzing G2Engine object.
+        It must be called prior to any other calls.
+
+        **Note:** If the G2Engine constructor is called with parameters,
+        the constructor will automatically call the `init()` method.
+        In this case, a separate call to `init()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_engine = g2engine.G2Engine(module_name, ini_params)
+
+        Args:
+            module_name (str): A short name given to this instance of the G2Engine object, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+        Raises:
+            TypeError: Incorrect datatype of input parameter.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/g2engine_init_and_destroy.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def init_with_config_id(
@@ -761,49 +1692,230 @@ class G2EngineAbstract(ABC):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        """TODO: document"""
+        """
+        The `init_with_config_id` method initializes the Senzing G2Engine object with a non-default configuration ID.
+        It must be called prior to any other calls.
+
+        **Note:** If the G2Engine constructor is called with parameters,
+        the constructor will automatically call the `init()` method.
+        In this case, a separate call to `init()` is not needed.
+
+        Example:
+
+        .. code-block:: python
+
+            g2_engine = g2engine.G2Engine(module_name, ini_params, init_config_id)
+
+        Args:
+            module_name (str): A name for the auditing node, to help identify it within system logs.
+            ini_params (str): A JSON string containing configuration parameters.
+            init_config_id (int): The configuration ID used for the initialization.
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+        Raises:
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/init_with_config_id.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def prime_engine(self, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `prime_engine` method pre-initializes some of the heavier weight internal resources of the G2 engine.
+        The G2 Engine uses "lazy initialization".
+        PrimeEngine() forces initialization.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/prime_engine.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def process(self, record: str, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        TODO: The `process` method...
+
+        Args:
+            record (str):  A JSON document containing the record to be added to the Senzing repository.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/process.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def process_with_info(self, record: str, flags: int, **kwargs: Any) -> str:
-        """TODO: document"""
+        """_summary_
+        TODO: The `process_with_info` method...
+
+        Args:
+            record (str): A JSON document containing the record to be added to the Senzing repository.
+            flags (int): Flags used to control information returned.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/process_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/process_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def purge_repository(self, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `purge_repository` method removes every record in the Senzing repository.
+
+        Before calling `purge_repository` all other instances of the Senzing API
+        MUST be destroyed or shutdown.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/purge_repository.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        TODO: The `reevaluate_entity` method...
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_entity.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def reevaluate_entity_with_info(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `reevaluate_entity_with_info` method...
+
+        Args:
+            entity_id (int): The unique identifier of an entity.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_entity_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_entity_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def reevaluate_record(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> None:
-        """TODO: document"""
+        """
+        TODO: The `reevaluate_record` method...
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional):  Flags used to control information returned. Defaults to 0.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_entity.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def reevaluate_record_with_info(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> str:
-        """TODO: document"""
+        """
+        TODO: The `reevaluate_record_with_info` method...
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional):  Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_record_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/reevaluate_record_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def reinit(self, init_config_id: int, **kwargs: Any) -> None:
-        """TODO: document"""
+        """
+        The `reinit` method re-initializes the Senzing G2Engine object.
+
+        Args:
+            init_config_id (int): The configuration ID used for the initialization
+
+        Raises:
+            TypeError: Incorrect datatype of input parameter.
+            g2exception.G2Exception: init_config_id does not exist.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/reinit.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def replace_record(
@@ -812,10 +1924,27 @@ class G2EngineAbstract(ABC):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         **kwargs: Any,
     ) -> None:
-        """TODO: document"""
+        """
+        The `replace_record` method updates/replaces a record in the Senzing repository.
+        If record doesn't exist, a new record is added to the data repository.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            json_data (str): A JSON document containing the record to be added to the Senzing repository.
+            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable.. Defaults to "".
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/replace_record.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def replace_record_with_info(
@@ -824,11 +1953,38 @@ class G2EngineAbstract(ABC):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `replace_record_with_info` method updates/replaces a record in the Senzing repository and returns information on the affected entities.
+        If record doesn't exist, a new record is added to the data repository.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            json_data (str): A JSON document containing the record to be added to the Senzing repository.
+            load_id (str, optional):  An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/replace_record_with_info.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/replace_record_with_info.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -838,7 +1994,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `search_by_attributes_v2` method retrieves entity data based on a user-specified set of entity attributes.
+        It extends `search_by_attributes` by adding output control flags.
+
+        Args:
+            json_data (str): TODO:
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes_v2.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -849,7 +2029,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `search_by_attributes_v3` method retrieves entity data based on a user-specified set of entity attributes.
+        It extends `search_by_attributes` by adding output control flags and supporting a `search_profile`.
+
+        Args:
+            json_data (str): TODO:
+            search_profile (str): TODO:
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes_v3.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes_v3.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def search_by_attributes(
@@ -858,11 +2063,55 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `search_by_attributes` method retrieves entity data based on a user-specified set of entity attributes.
+        To control output, use `search_by_attributes_v2` instead.
+
+        Args:
+            json_data (str): TODO:
+            flags (int, optional): _description_. Defaults to G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/search_by_attributes.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def stats(self, **kwargs: Any) -> str:
-        """TODO: document"""
+        """
+        The `stats` method retrieves workload statistics for the current process.
+        These statistics will automatically reset after retrieval.
+
+        Returns:
+            str:  A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/stats.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/stats.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def why_entities_v2(
@@ -872,7 +2121,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entities_v2` method explains why records belong to their resolved entities.
+        `why_entities_v2` will compare the record data within an entity
+        against the rest of the entity data and show why they are connected.
+        This is calculated based on the features that record data represents.
+        It extends `why_entities` by adding output control flags.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entities_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entities_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def why_entities(
@@ -882,7 +2159,35 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entities` method explains why records belong to their resolved entities.
+        `why_entities` will compare the record data within an entity
+        against the rest of the entity data and show why they are connected.
+        This is calculated based on the features that record data represents.
+        To control output, use `why_entities_v2` instead.
+
+        Args:
+            entity_id_1 (int): The entity ID for the starting entity of the search path.
+            entity_id_2 (int): The entity ID for the ending entity of the search path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entities.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entities.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -892,7 +2197,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entity_by_entity_id_v2` method explains why records belong to their resolved entities.
+        It extends `why_entity_by_entity_id` by adding output control flags.
+
+        Args:
+            entity_id (str): The unique identifier of an entity for the starting entity of the search path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_entity_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_entity_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def why_entity_by_entity_id(
@@ -901,7 +2230,31 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entity_by_entity_id` method explains why records belong to their resolved entities.
+        To control output, use `why_entity_by_entity_id_v2` instead.
+
+        Args:
+            entity_id (int): The unique identifier of an entity for the starting entity of the search path.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_entity_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -912,7 +2265,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entity_by_record_id_v2` method explains why records belong to their resolved entities.
+        It extends `why_entity_by_record_id`by adding output control flags.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id_v2.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id_v2.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def why_entity_by_record_id(
@@ -922,7 +2300,32 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_entity_by_record_id` method explains why records belong to their resolved entities.
+        To control output, use `why_entity_by_record_id_v2` instead.
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: This should be going away in V4?
     @abstractmethod
@@ -935,7 +2338,34 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_records_v2` method explains why records belong to their resolved entities.
+        It extends `why_records` by adding output control flags.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the data.
+            record_id_1 (str): The unique identifier within the records of the same data source.
+            data_source_code_2 (str): Identifies the provenance of the data.
+            record_id_2 (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_entity_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
     @abstractmethod
     def why_records(
@@ -947,9 +2377,37 @@ class G2EngineAbstract(ABC):
         flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        """TODO: document"""
+        """
+        The `why_records` method explains why records belong to their resolved entities.
+        To control output, use `why_records_v2` instead.
+
+        Args:
+            data_source_code_1 (str): Identifies the provenance of the data.
+            record_id_1 (str): The unique identifier within the records of the same data source.
+            data_source_code_2 (str): Identifies the provenance of the data.
+            record_id_2 (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2engine/why_records.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/g2engine/why_records.txt
+                :linenos:
+                :language: json
+        """
 
     # TODO: Is why_record_in_entity missing?
+    # TODO: MJD: Mistake on my part.  Need to add it.
 
     # -------------------------------------------------------------------------
     # Convenience methods
