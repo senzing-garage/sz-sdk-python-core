@@ -18,7 +18,7 @@ MODULE_NAME = "Example"
 try:
     g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
     config_id = g2_configmgr.get_default_config_id()
-    CONFIG_STR = g2_configmgr.get_config(config_id)
-    print(CONFIG_STR)
+    config_str = g2_configmgr.get_config(config_id)
+    print(config_str)
 except G2Exception as err:
     print(err)

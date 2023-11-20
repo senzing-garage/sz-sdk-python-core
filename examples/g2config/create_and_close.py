@@ -17,10 +17,10 @@ MODULE_NAME = "Example"
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE = g2_config.create()
+    config_handle = g2_config.create()
 
     # Do work.
 
-    g2_config.close(CONFIG_HANDLE)
+    g2_config.close(config_handle)
 except G2Exception as err:
     print(err)

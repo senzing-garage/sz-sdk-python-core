@@ -17,9 +17,9 @@ MODULE_NAME = "Example"
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE = g2_config.create()  # Create first in-memory.
-    JSON_CONFIG = g2_config.save(CONFIG_HANDLE)  # Save in-memory to string.
-    g2_config.close(CONFIG_HANDLE)
-    print(JSON_CONFIG)
+    config_handle = g2_config.create()  # Create first in-memory.
+    json_config = g2_config.save(config_handle)  # Save in-memory to string.
+    g2_config.close(config_handle)
+    print(json_config)
 except G2Exception as err:
     print(err)

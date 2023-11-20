@@ -937,7 +937,7 @@ class G2Engine(G2EngineAbstract):
         flags: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2engine(data_source_code, record_id, json_data, load_id)
+        self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
 
     def add_record_with_info(
         self,
@@ -945,7 +945,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
@@ -964,7 +964,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, load_id)
@@ -974,7 +974,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
@@ -1458,7 +1458,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         **kwargs: Any,
     ) -> None:
         self.fake_g2engine(data_source_code, record_id, json_data, load_id)
@@ -1469,7 +1469,7 @@ class G2Engine(G2EngineAbstract):
         record_id: str,
         json_data: str,
         # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: None = None,
+        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:

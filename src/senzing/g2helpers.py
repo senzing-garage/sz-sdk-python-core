@@ -2,10 +2,11 @@
 TODO: g2helpers.py
 """
 
+import json
 import os
 import sys
 from ctypes import POINTER, ArgumentError, c_char_p, c_uint, c_void_p, cast
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Dict, TypeVar, Union
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -34,6 +35,26 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
         return result
 
     return inner_function
+
+
+# -----------------------------------------------------------------------------
+# Helpers for working with parameters
+# -----------------------------------------------------------------------------
+
+
+def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
+    """
+    Given a string or dict, return a str.
+
+    Args:
+        candidate_value (Union[str, Dict[Any, Any]]): _description_
+
+    Returns:
+        str: The string representation of the candidate_value
+    """
+    if isinstance(candidate_value, dict):
+        return json.dumps(candidate_value)
+    return candidate_value
 
 
 # -----------------------------------------------------------------------------

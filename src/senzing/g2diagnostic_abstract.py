@@ -253,7 +253,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/init_with_config_id.py
+            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_with_config_id.py
                 :linenos:
                 :language: python
         """
@@ -272,7 +272,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/reinit.py
+            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_reinit.py
                 :linenos:
                 :language: python
         """

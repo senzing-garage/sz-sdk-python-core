@@ -30,9 +30,9 @@ try:
     input_json_dict = {"DSRC_CODE": "REPLACE_DEFAULT_CONFIG_ID"}
     g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
     json_config = g2_config.save(config_handle)
-    NEW_CONFIG_ID = g2_configmgr.add_config(json_config, "Test")
+    new_config_id = g2_configmgr.add_config(json_config, "Test")
 
     old_config_id = g2_configmgr.get_default_config_id()
-    g2_configmgr.replace_default_config_id(old_config_id, NEW_CONFIG_ID)
+    g2_configmgr.replace_default_config_id(old_config_id, new_config_id)
 except G2Exception as err:
     print(err)

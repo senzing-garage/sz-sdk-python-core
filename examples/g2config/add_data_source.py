@@ -18,9 +18,9 @@ input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE = g2_config.create()
-    RESULT = g2_config.add_data_source(CONFIG_HANDLE, json.dumps(input_json_dict))
-    g2_config.close(CONFIG_HANDLE)
-    print(RESULT)
+    config_handle = g2_config.create()
+    result = g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
+    g2_config.close(config_handle)
+    print(result)
 except G2Exception as err:
     print(err)

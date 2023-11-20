@@ -17,9 +17,9 @@ MODULE_NAME = "Example"
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
-    CONFIG_HANDLE = g2_config.create()
-    RESULT = g2_config.list_data_sources(CONFIG_HANDLE)
-    g2_config.close(CONFIG_HANDLE)
-    print(RESULT)
+    config_handle = g2_config.create()
+    result = g2_config.list_data_sources(config_handle)
+    g2_config.close(config_handle)
+    print(result)
 except G2Exception as err:
     print(err)
