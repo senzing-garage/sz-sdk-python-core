@@ -46,11 +46,15 @@ def engine_vars_fixture():
 
     if run_platform == "Linux":
         result["INI_PARAMS"] = json.dumps(linux_config)
+        result["INI_PARAMS_DICT"] = linux_config
     elif run_platform == "Darwin":
         result["INI_PARAMS"] = json.dumps(darwin_config)
+        result["INI_PARAMS_DICT"] = darwin_config
     elif run_platform == "Windows":
         result["INI_PARAMS"] = json.dumps(windows_config)
+        result["INI_PARAMS_DICT"] = windows_config
     else:
         result["INI_PARAMS"] = json.dumps({})
+        result["INI_PARAMS_DICT"] = {}
 
     return result

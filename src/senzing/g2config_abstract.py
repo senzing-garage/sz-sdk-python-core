@@ -7,7 +7,7 @@ g2config_abstract.py is the abstract class for all implementaions of g2config.
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -52,7 +52,11 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def add_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any
     ) -> str:
         """
         The `add_data_source` method adds a data source to an existing in-memory configuration.
@@ -124,7 +128,11 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def delete_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         The `delete_data_source` method removes a data source from an existing in-memory configuration.
@@ -171,7 +179,11 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Config object.
@@ -231,7 +243,9 @@ class G2ConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
+    def load(
+        self, json_config: Union[str, Dict[Any, Any]], *args: Any, **kwargs: Any
+    ) -> int:
         """
         The `load` method initializes an in-memory Senzing G2Config object from a JSON string.
         A handle is returned to identify the in-memory configuration.

@@ -6,7 +6,7 @@ TODO: g2config_grpc.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-from typing import Any
+from typing import Any, Dict, Union
 
 # from .g2exception import translate_exception
 from .g2config_abstract import G2ConfigAbstract
@@ -91,7 +91,11 @@ class G2ConfigGrpc(G2ConfigAbstract):
     # -------------------------------------------------------------------------
 
     def add_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any,
     ) -> str:
         self.fake_g2config(config_handle, input_json)
         return "string"
@@ -104,7 +108,11 @@ class G2ConfigGrpc(G2ConfigAbstract):
         return 0
 
     def delete_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         self.fake_g2config(config_handle, input_json)
 
@@ -114,7 +122,7 @@ class G2ConfigGrpc(G2ConfigAbstract):
     def init(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -124,7 +132,9 @@ class G2ConfigGrpc(G2ConfigAbstract):
         self.fake_g2config(config_handle)
         return "string"
 
-    def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
+    def load(
+        self, json_config: Union[str, Dict[Any, Any]], *args: Any, **kwargs: Any
+    ) -> int:
         self.fake_g2config(json_config)
         return 0
 
