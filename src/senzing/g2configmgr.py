@@ -19,7 +19,7 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_size_t, cdll
-from typing import Any
+from typing import Any, Dict, Union
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
@@ -28,6 +28,7 @@ from .g2helpers import (
     as_c_int,
     as_python_int,
     as_python_str,
+    as_str,
     cast_ctypes_exceptions,
     find_file_in_path,
 )
@@ -146,7 +147,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -161,7 +162,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.verbose_logging = verbose_logging
@@ -231,10 +232,10 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4020, module_name, ini_params)
-        if len(module_name) > 0:
+        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
+            if len(self.module_name) + len(self.ini_params) != 0:
+                raise self.new_exception(4020, self.module_name, self.ini_params)
+        if len(self.module_name) > 0:
             self.auto_init = True
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
@@ -268,14 +269,18 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     # -------------------------------------------------------------------------
 
     def add_config(
-        self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
+        self,
+        config_str: Union[str, Dict[Any, Any]],
+        config_comments: str,
+        *args: Any,
+        **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(config_str), as_c_char_p(config_comments)
+            as_c_char_p(as_str(config_str)), as_c_char_p(config_comments)
         )
         if result.return_code != 0:
             raise self.new_exception(
-                4001, config_str, config_comments, result.return_code
+                4001, as_str(config_str), config_comments, result.return_code
             )
         return as_python_int(result.response)
 
@@ -314,18 +319,18 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     def init(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_init(
             as_c_char_p(module_name),
-            as_c_char_p(ini_params),
+            as_c_char_p(as_str(ini_params)),
             as_c_int(verbose_logging),
         )
         if result < 0:
             raise self.new_exception(
-                4007, module_name, ini_params, verbose_logging, result
+                4007, module_name, as_str(ini_params), verbose_logging, result
             )
 
     @cast_ctypes_exceptions

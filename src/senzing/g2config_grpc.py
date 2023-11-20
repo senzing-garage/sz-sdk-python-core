@@ -8,8 +8,8 @@ TODO: g2config_grpc.py
 
 from typing import Any, Dict, Union
 
-# from .g2exception import translate_exception
 from .g2config_abstract import G2ConfigAbstract
+from .g2helpers import as_str
 
 # from ctypes import *
 # import functools
@@ -53,7 +53,7 @@ class G2ConfigGrpc(G2ConfigAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -65,7 +65,7 @@ class G2ConfigGrpc(G2ConfigAbstract):
         """
         # pylint: disable=W0613
 
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""

@@ -7,7 +7,7 @@ g2configmgr_abstract.py is the abstract class for all implementaions of g2config
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -54,13 +54,17 @@ class G2ConfigMgrAbstract(ABC):
 
     @abstractmethod
     def add_config(
-        self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
+        self,
+        config_str: Union[str, Dict[Any, Any]],
+        config_comments: str,
+        *args: Any,
+        **kwargs: Any
     ) -> int:
         """
         The `add_config` method adds a Senzing configuration JSON document to the Senzing database.
 
         Args:
-            config_str (str): The Senzing configuration JSON document.
+            config_str (Union[str, Dict[Any, Any]]): The Senzing configuration JSON document.
             config_comments (str):  free-form string of comments describing the configuration document.
 
         Returns:
@@ -173,7 +177,11 @@ class G2ConfigMgrAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2ConfigMgr object.
@@ -191,7 +199,7 @@ class G2ConfigMgrAbstract(ABC):
 
         Args:
             module_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            ini_params (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:

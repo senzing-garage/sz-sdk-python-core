@@ -6,10 +6,11 @@ TODO: g2configmgr_grpc.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-from typing import Any
+from typing import Any, Dict, Union
 
 # from .g2exception import translate_exception
 from .g2configmgr_abstract import G2ConfigMgrAbstract
+from .g2helpers import as_str
 
 # from ctypes import *
 # import functools
@@ -49,7 +50,7 @@ class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -61,7 +62,7 @@ class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
         """
         # pylint: disable=W0613
 
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
@@ -87,7 +88,11 @@ class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
     # -------------------------------------------------------------------------
 
     def add_config(
-        self, config_str: str, config_comments: str, *args: Any, **kwargs: Any
+        self,
+        config_str: Union[str, Dict[Any, Any]],
+        config_comments: str,
+        *args: Any,
+        **kwargs: Any,
     ) -> int:
         self.fake_g2configmgr(config_str, config_comments)
         return 0
@@ -110,7 +115,7 @@ class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
     def init(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:

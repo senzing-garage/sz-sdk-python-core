@@ -63,7 +63,7 @@ class G2ConfigAbstract(ABC):
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
-            input_json (str):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            input_json (Union[str, Dict[Any, Any]]):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Returns:
             str: A string containing a JSON document listing the newly created data source.
@@ -139,7 +139,7 @@ class G2ConfigAbstract(ABC):
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
-            input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            input_json (Union[str, Dict[Any, Any]]): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
@@ -201,7 +201,7 @@ class G2ConfigAbstract(ABC):
 
         Args:
             module_name (str): A short name given to this instance of the G2Config object, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            ini_params (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -254,7 +254,7 @@ class G2ConfigAbstract(ABC):
         The handle is terminated by the `close` method.
 
         Args:
-            json_config (str): A JSON document containing the Senzing configuration.
+            json_config (Union[str, Dict[Any, Any]]): A JSON document containing the Senzing configuration.
 
         Returns:
             int: An identifier (config_handle) of an in-memory configuration.
