@@ -1,6 +1,6 @@
 """
-The `observer_example` package...
-
+The `observer_example` package shows a simple Observer that can be used
+when calling G2Engine calls using Observers.
 """
 
 import queue
@@ -23,7 +23,7 @@ __updated__ = "2023-11-20"
 
 class ObserverExample(ObserverAbstract):
     """
-    A simple Observer that can be used to receive "with-info" messages.
+    A simple Observer that can be used to receive processing messages.
     """
 
     # -------------------------------------------------------------------------
@@ -34,13 +34,22 @@ class ObserverExample(ObserverAbstract):
         self,
         **kwargs: Any,
     ) -> None:
-        self.queue = queue.SimpleQueue()
+        """
+        Create an example Observer for use with Senzing processing processing.
+        """
+        self.queue: queue.SimpleQueue[str] = queue.SimpleQueue()
 
     # -------------------------------------------------------------------------
     # ObserverExample methods for Observer pattern
     # -------------------------------------------------------------------------
 
     def update(self, message: str, *args: Any, **kwargs: Any) -> None:
+        """
+        The `update` method of an Observer pattern.
+
+        Args:
+            message (str): A JSON document containing processing information.
+        """
         self.queue.put(message)
 
     # -------------------------------------------------------------------------
@@ -49,10 +58,28 @@ class ObserverExample(ObserverAbstract):
     # -------------------------------------------------------------------------
 
     def empty(self) -> bool:
+        """
+        Determine if there are no messages.
+
+        Returns:
+            bool: True, if no message exist.
+        """
         return self.queue.empty()
 
     def get(self) -> str:
-        return self.queue.get()
+        """
+        Get the oldest message.
 
-    def qsize(self) -> int:
+        Returns:
+            str: A JSON document containing process information.
+        """
+        return str(self.queue.get())
+
+    def size(self) -> int:
+        """
+        The number of messages available.
+
+        Returns:
+            int: The number of messages that are available.
+        """
         return self.queue.qsize()

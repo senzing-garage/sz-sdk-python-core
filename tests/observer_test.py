@@ -57,7 +57,7 @@ def test_qsize():
     observer = observer_example.ObserverExample()
     for i in range(actual):
         observer.update(message_template.format(i))
-    result = observer.qsize()
+    result = observer.size()
     assert result == actual
 
 
@@ -68,7 +68,7 @@ def test_qsize_drain_with_qsize():
     observer = observer_example.ObserverExample()
     for i in range(actual):
         observer.update(message_template.format(i))
-    while observer.qsize() > 0:
+    while observer.size() > 0:
         _ = observer.get()
     assert observer.empty()
 
@@ -82,7 +82,7 @@ def test_qsize_drain_with_empty():
         observer.update(message_template.format(i))
     while not observer.empty():
         _ = observer.get()
-    assert observer.qsize() == 0
+    assert observer.size() == 0
 
 
 def test_method_calling():
@@ -90,7 +90,7 @@ def test_method_calling():
     actual = "A test message"
     observer = observer_example.ObserverExample()
     mock_senzing_method(actual, observer)
-    assert observer.qsize() == 1
+    assert observer.size() == 1
     result = observer.get()
     assert result == actual
     assert observer.empty()

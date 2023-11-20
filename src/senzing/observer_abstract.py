@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
 
 """
-observer_abstract.py is the abstract class for all implementations of a Senzing
-'with_info' observer.
+observer_abstract.py is the abstract class for implementations of a Senzing Observer.
+in the Observer pattern.
+
+Reference:
+    https://en.wikipedia.org/wiki/Observer_pattern
 """
+
+# pylint: disable=R0903
 
 from abc import ABC, abstractmethod
 from typing import Any
@@ -17,7 +22,8 @@ __all__ = ["ObserverAbstract"]
 
 class ObserverAbstract(ABC):
     """
-    ObserverAbstract is...
+    ObserverAbstract is the abstract class used as a type for returning
+    in process information.
     """
 
     # -------------------------------------------------------------------------
@@ -30,5 +36,5 @@ class ObserverAbstract(ABC):
         The `update` method of the Observer pattern.
 
         Args:
-            message (str): A observed message
+            message (str): A observed message.
         """
