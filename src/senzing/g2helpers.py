@@ -43,6 +43,15 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
 
 
 def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
+    """
+    Given a string or dict, return a str.
+
+    Args:
+        candidate_value (Union[str, Dict[Any, Any]]): _description_
+
+    Returns:
+        str: The string representation of the candidate_value
+    """
     if isinstance(candidate_value, str):
         return candidate_value
     if isinstance(candidate_value, dict):
