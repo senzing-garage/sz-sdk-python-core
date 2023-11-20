@@ -52,10 +52,9 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     Returns:
         str: The string representation of the candidate_value
     """
-    if isinstance(candidate_value, str):
-        return str(candidate_value)
     if isinstance(candidate_value, dict):
-        return str(json.dumps(candidate_value))
+        return json.dumps(candidate_value)
+    return candidate_value
 
 
 # -----------------------------------------------------------------------------
