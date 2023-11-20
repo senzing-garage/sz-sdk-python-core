@@ -11,7 +11,6 @@ Reference:
 # pylint: disable=R0903
 
 from abc import ABC, abstractmethod
-from typing import Any
 
 __all__ = ["ObserverAbstract"]
 
@@ -31,7 +30,7 @@ class ObserverAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def update(self, message: str, *args: Any, **kwargs: Any) -> None:
+    def update(self, message: str) -> None:
         """
         The `update` method of the Observer pattern.
 

@@ -10,6 +10,13 @@ from senzing import observer_example
 def mock_senzing_method(
     fake_message: str, observer: Union[observer_example.ObserverAbstract, None] = None
 ) -> None:
+    """
+    An example of a call to a G2Engine method that has an optional Observer passed in.
+
+    Args:
+        fake_message (str): Just a message that the mock method will send to the Observer.
+        observer (Union[observer_example.ObserverAbstract, None], optional): An observer to test. Defaults to None.
+    """
     if observer is not None:
         observer.update(fake_message)
 

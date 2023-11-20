@@ -4,7 +4,6 @@ when calling G2Engine calls using Observers.
 """
 
 import queue
-from typing import Any
 
 from .observer_abstract import ObserverAbstract
 
@@ -32,7 +31,6 @@ class ObserverExample(ObserverAbstract):
 
     def __init__(
         self,
-        **kwargs: Any,
     ) -> None:
         """
         Create an example Observer for use with Senzing processing processing.
@@ -43,7 +41,7 @@ class ObserverExample(ObserverAbstract):
     # ObserverExample methods for Observer pattern
     # -------------------------------------------------------------------------
 
-    def update(self, message: str, *args: Any, **kwargs: Any) -> None:
+    def update(self, message: str) -> None:
         """
         The `update` method of an Observer pattern.
 
