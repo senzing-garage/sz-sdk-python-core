@@ -71,6 +71,15 @@ def test_constructor(engine_vars):
     assert isinstance(actual, g2diagnostic.G2Diagnostic)
 
 
+def test_constructor_dict(engine_vars):
+    """Test constructor."""
+    actual = g2diagnostic.G2Diagnostic(
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS_DICT"],
+    )
+    assert isinstance(actual, g2diagnostic.G2Diagnostic)
+
+
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
