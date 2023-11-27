@@ -17,7 +17,9 @@ TODO: g2product_grpc.py
 
 # Import from Senzing.
 
-from typing import Any
+from typing import Any, Dict, Union
+
+from .g2helpers import as_str
 
 # from .g2exception import translate_exception
 from .g2product_abstract import G2ProductAbstract
@@ -27,7 +29,7 @@ from .g2product_abstract import G2ProductAbstract
 __all__ = ["G2ProductGrpc"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-10-30"
+__updated__ = "2023-11-27"
 
 SENZING_PRODUCT_ID = "5056"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
@@ -48,7 +50,7 @@ class G2ProductGrpc(G2ProductAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -60,13 +62,11 @@ class G2ProductGrpc(G2ProductAbstract):
         """
         # pylint: disable=W0613
 
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
-
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -89,7 +89,11 @@ class G2ProductGrpc(G2ProductAbstract):
         self.fake_g2config()
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         self.fake_g2config(module_name, ini_params, verbose_logging)
 

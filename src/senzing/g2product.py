@@ -19,10 +19,10 @@ Example:
 
 import os
 from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
-from typing import Any
+from typing import Any, Dict, Union
 
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, find_file_in_path
+from .g2helpers import as_c_char_p, as_c_int, as_str, find_file_in_path
 from .g2product_abstract import G2ProductAbstract
 
 # Metadata
@@ -99,7 +99,7 @@ class G2Product(G2ProductAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -114,7 +114,7 @@ class G2Product(G2ProductAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.verbose_logging = verbose_logging
@@ -157,9 +157,9 @@ class G2Product(G2ProductAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4003, module_name, ini_params)
+        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
+            if len(self.module_name) + len(self.ini_params) != 0:
+                raise self.new_exception(4003, self.module_name, self.ini_params)
         if len(module_name) > 0:
             self.auto_init = True
             self.init(self.module_name, self.ini_params, self.verbose_logging)
@@ -201,13 +201,13 @@ class G2Product(G2ProductAbstract):
     def init(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
             as_c_char_p(module_name),
-            as_c_char_p(ini_params),
+            as_c_char_p(as_str(ini_params)),
             as_c_int(verbose_logging),
         )
         if result < 0:
