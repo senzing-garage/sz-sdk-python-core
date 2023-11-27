@@ -8,14 +8,14 @@ g2product_abstract.py is the abstract class for all implementaions of g2product.
 
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, cast
+from typing import Any, Dict, Union, cast
 
 # Metadata
 
 __all__ = ["G2ProductAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-08"
+__updated__ = "2023-11-27"
 
 # -----------------------------------------------------------------------------
 # G2ProductAbstract
@@ -72,7 +72,11 @@ class G2ProductAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Product object.
@@ -106,6 +110,8 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def license(self, *args: Any, **kwargs: Any) -> str:
         """
+        .. _license:
+
         The `license` method retrieves information about the currently used license by the Senzing API.
 
         Returns:
@@ -127,6 +133,8 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def version(self, *args: Any, **kwargs: Any) -> str:
         """
+        .. _version:
+
         The `version` method returns the version of the Senzing API.
 
         Returns:
@@ -149,10 +157,24 @@ class G2ProductAbstract(ABC):
     # Convenience methods
     # -------------------------------------------------------------------------
 
+    def license_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        """
+        A convenience method for
+        :ref:`license<license>`.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing Senzing license metadata.
+
+        """
+        return cast(
+            Dict[str, Any],
+            json.loads(self.license(args, kwargs)),
+        )
+
     def version_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
-        :ref`version<version>`.
+        :ref:`version<version>`.
 
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.

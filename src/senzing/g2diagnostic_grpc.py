@@ -7,11 +7,10 @@ TODO: g2diagnostic_grpc.py
 # Import from standard library. https://docs.python.org/3/library/
 
 import os
-from ctypes import cdll
-from typing import Any
+from typing import Any, Dict, Union
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
-from .g2exception import G2Exception
+from .g2helpers import as_str
 
 # Import from https://pypi.org/
 
@@ -60,7 +59,7 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -72,25 +71,11 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
         """
         # pylint: disable=W0613
 
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.noop = ""
         self.verbose_logging = verbose_logging
-
-        try:
-            if os.name == "nt":
-                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            else:
-                self.library_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as err:
-            raise G2Exception("Failed to load the G2 library") from err
-
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
-
-    def __del__(self) -> None:
-        """Destructor"""
-        self.destroy()
 
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
@@ -137,14 +122,18 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
         return 0
 
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         self.fake_g2diagnostic(module_name, ini_params, verbose_logging)
 
     def init_with_config_id(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         init_config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any,

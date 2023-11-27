@@ -5,7 +5,7 @@ TODO: g2diagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -186,7 +186,11 @@ class G2DiagnosticAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Diagnosis object.
@@ -204,7 +208,7 @@ class G2DiagnosticAbstract(ABC):
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            ini_params (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -222,7 +226,7 @@ class G2DiagnosticAbstract(ABC):
     def init_with_config_id(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         init_config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any
@@ -243,7 +247,7 @@ class G2DiagnosticAbstract(ABC):
 
         Args:
             module_name (str): A name for the auditing node, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            ini_params Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             init_config_id (int): The configuration ID used for the initialization.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 

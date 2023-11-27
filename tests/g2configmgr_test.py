@@ -380,6 +380,15 @@ def test_constructor(engine_vars):
     assert isinstance(actual, g2configmgr.G2ConfigMgr)
 
 
+def test_constructor_dict(engine_vars):
+    """Test constructor."""
+    actual = g2configmgr.G2ConfigMgr(
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS_DICT"],
+    )
+    assert isinstance(actual, g2configmgr.G2ConfigMgr)
+
+
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
@@ -408,6 +417,17 @@ def test_add_config(g2_configmgr, g2_config):
     config_str = g2_config.save(config_handle)
     config_comments = "Test"
     actual = g2_configmgr.add_config(config_str, config_comments)
+    assert isinstance(actual, int)
+    assert actual > 0
+
+
+def test_add_config_dict(g2_configmgr, g2_config):
+    """Test G2ConfigMgr().add_config()."""
+    config_handle = g2_config.create()
+    config_str = g2_config.save(config_handle)
+    config_str_dict = json.loads(config_str)
+    config_comments = "Test"
+    actual = g2_configmgr.add_config(config_str_dict, config_comments)
     assert isinstance(actual, int)
     assert actual > 0
 

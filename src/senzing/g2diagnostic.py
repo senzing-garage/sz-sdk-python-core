@@ -28,11 +28,17 @@ from ctypes import (
     cast,
     cdll,
 )
-from typing import Any
+from typing import Any, Dict, Union
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, cast_ctypes_exceptions, find_file_in_path
+from .g2helpers import (
+    as_c_char_p,
+    as_c_int,
+    as_str,
+    cast_ctypes_exceptions,
+    find_file_in_path,
+)
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -40,7 +46,7 @@ from .g2version import is_supported_senzingapi_version
 __all__ = ["G2Diagnostic"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-07"
+__updated__ = "2023-11-27"
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6
@@ -129,7 +135,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def __init__(
         self,
         module_name: str = "",
-        ini_params: str = "",
+        ini_params: Union[str, Dict[Any, Any]] = "",
         init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
@@ -144,7 +150,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = ini_params
+        self.ini_params = as_str(ini_params)
         self.init_config_id = init_config_id
         self.module_name = module_name
         self.verbose_logging = verbose_logging
@@ -239,10 +245,10 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # Initialize Senzing engine.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(4021, module_name, ini_params)
-        if len(module_name) > 0:
+        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
+            if len(self.module_name) + len(self.ini_params) != 0:
+                raise self.new_exception(4021, self.module_name, self.ini_params)
+        if len(self.module_name) > 0:
             self.auto_init = True
             self.init(self.module_name, self.ini_params, self.verbose_logging)
 
@@ -325,37 +331,42 @@ class G2Diagnostic(G2DiagnosticAbstract):
     def init(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Diagnostic_init(
             as_c_char_p(module_name),
-            as_c_char_p(ini_params),
+            as_c_char_p(as_str(ini_params)),
             as_c_int(verbose_logging),
         )
         if result < 0:
             raise self.new_exception(
-                4018, module_name, ini_params, verbose_logging, result
+                4018, module_name, as_str(ini_params), verbose_logging, result
             )
 
     def init_with_config_id(
         self,
         module_name: str,
-        ini_params: str,
+        ini_params: Union[str, Dict[Any, Any]],
         init_config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(module_name),
-            as_c_char_p(ini_params),
+            as_c_char_p(as_str(ini_params)),
             as_c_int(init_config_id),
             as_c_int(verbose_logging),
         )
         if result < 0:
             raise self.new_exception(
-                4019, module_name, ini_params, init_config_id, verbose_logging, result
+                4019,
+                module_name,
+                as_str(ini_params),
+                init_config_id,
+                verbose_logging,
+                result,
             )
 
     @cast_ctypes_exceptions

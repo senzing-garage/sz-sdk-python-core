@@ -7,7 +7,7 @@ g2config_abstract.py is the abstract class for all implementaions of g2config.
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -52,14 +52,18 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def add_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any
     ) -> str:
         """
         The `add_data_source` method adds a data source to an existing in-memory configuration.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
-            input_json (str):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            input_json (Union[str, Dict[Any, Any]]):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Returns:
             str: A string containing a JSON document listing the newly created data source.
@@ -124,14 +128,18 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def delete_data_source(
-        self, config_handle: int, input_json: str, *args: Any, **kwargs: Any
+        self,
+        config_handle: int,
+        input_json: Union[str, Dict[Any, Any]],
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         The `delete_data_source` method removes a data source from an existing in-memory configuration.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
-            input_json (str): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            input_json (Union[str, Dict[Any, Any]]): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
@@ -171,7 +179,11 @@ class G2ConfigAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self,
+        module_name: str,
+        ini_params: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+        **kwargs: Any
     ) -> None:
         """
         The `init` method initializes the Senzing G2Config object.
@@ -189,7 +201,7 @@ class G2ConfigAbstract(ABC):
 
         Args:
             module_name (str): A short name given to this instance of the G2Config object, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            ini_params (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -231,7 +243,9 @@ class G2ConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def load(self, json_config: str, *args: Any, **kwargs: Any) -> int:
+    def load(
+        self, json_config: Union[str, Dict[Any, Any]], *args: Any, **kwargs: Any
+    ) -> int:
         """
         The `load` method initializes an in-memory Senzing G2Config object from a JSON string.
         A handle is returned to identify the in-memory configuration.
@@ -240,7 +254,7 @@ class G2ConfigAbstract(ABC):
         The handle is terminated by the `close` method.
 
         Args:
-            json_config (str): A JSON document containing the Senzing configuration.
+            json_config (Union[str, Dict[Any, Any]]): A JSON document containing the Senzing configuration.
 
         Returns:
             int: An identifier (config_handle) of an in-memory configuration.

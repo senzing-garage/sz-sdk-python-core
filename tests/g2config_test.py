@@ -375,6 +375,15 @@ def test_constructor(engine_vars):
     assert isinstance(actual, g2config.G2Config)
 
 
+def test_constructor_dict(engine_vars):
+    """Test constructor."""
+    actual = g2config.G2Config(
+        engine_vars["MODULE_NAME"],
+        engine_vars["INI_PARAMS_DICT"],
+    )
+    assert isinstance(actual, g2config.G2Config)
+
+
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
@@ -402,6 +411,17 @@ def test_add_data_source(g2_config):
     input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
     config_handle = g2_config.create()
     actual = g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
+    g2_config.close(config_handle)
+    assert isinstance(actual, str)
+    actual_json = json.loads(actual)
+    assert schema(add_data_source_schema) == actual_json
+
+
+def test_add_data_source_dict(g2_config):
+    """Test G2Config().add_data_source()."""
+    input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
+    config_handle = g2_config.create()
+    actual = g2_config.add_data_source(config_handle, input_json_dict)
     g2_config.close(config_handle)
     assert isinstance(actual, str)
     actual_json = json.loads(actual)
@@ -452,6 +472,14 @@ def test_delete_data_source(g2_config):
     g2_config.close(config_handle)
 
 
+def test_delete_data_source_dict(g2_config):
+    """Test G2Config().delete_data_source()."""
+    input_json_dict = {"DSRC_CODE": "TEST"}
+    config_handle = g2_config.create()
+    g2_config.delete_data_source(config_handle, input_json_dict)
+    g2_config.close(config_handle)
+
+
 def test_delete_data_source_bad_config_handle(g2_config):
     """Test G2Config().delete_data_source()."""
     input_json_dict = {"DSRC_CODE": "TEST"}
@@ -496,6 +524,17 @@ def test_load(g2_config):
     g2_config.close(config_handle)
 
 
+def test_load_dict(g2_config):
+    """Test G2Config().load()."""
+    config_handle = g2_config.create()
+    json_config = g2_config.save(config_handle)
+    json_config_dict = json.loads(json_config)
+    config_handle = g2_config.load(json_config_dict)
+    assert isinstance(config_handle, int)
+    assert config_handle > 0
+    g2_config.close(config_handle)
+
+
 def test_load_bad_json_config(g2_config):
     """Test G2Config().load()."""
     bad_json_config = 0
@@ -523,6 +562,12 @@ def test_save_bad_config_handle(g2_config):
 def test_init_and_destroy(g2_config):
     """Test G2Config().init() and G2Config.destroy()."""
     g2_config.init("Example", "{}", 0)
+    g2_config.destroy()
+
+
+def test_init_and_destroy_dict(g2_config):
+    """Test G2Config().init() and G2Config.destroy()."""
+    g2_config.init("Example", {}, 0)
     g2_config.destroy()
 
 
