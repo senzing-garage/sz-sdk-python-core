@@ -110,6 +110,8 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def license(self, *args: Any, **kwargs: Any) -> str:
         """
+        .. _license:
+
         The `license` method retrieves information about the currently used license by the Senzing API.
 
         Returns:
@@ -131,6 +133,8 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def version(self, *args: Any, **kwargs: Any) -> str:
         """
+        .. _version:
+
         The `version` method returns the version of the Senzing API.
 
         Returns:
@@ -156,7 +160,7 @@ class G2ProductAbstract(ABC):
     def license_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
-        :ref`license<license>`.
+        :ref:`license<license>`.
 
         Returns:
             Dict[str, Any]: A dictionary containing Senzing license metadata.
@@ -170,7 +174,7 @@ class G2ProductAbstract(ABC):
     def version_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
-        :ref`version<version>`.
+        :ref:`version<version>`.
 
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
