@@ -77,10 +77,6 @@ class G2DiagnosticGrpc(G2DiagnosticAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
-    def __del__(self) -> None:
-        """Destructor"""
-        self.destroy()
-
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------

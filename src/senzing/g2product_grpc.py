@@ -68,10 +68,6 @@ class G2ProductGrpc(G2ProductAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
-    def __del__(self) -> None:
-        """Destructor"""
-        self.destroy()
-
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------

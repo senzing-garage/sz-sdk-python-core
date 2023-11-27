@@ -68,12 +68,6 @@ class G2ConfigMgrGrpc(G2ConfigMgrAbstract):
         self.noop = ""
         self.verbose_logging = verbose_logging
 
-        self.init(self.module_name, self.ini_params, self.verbose_logging)
-
-    def __del__(self) -> None:
-        """Destructor"""
-        self.destroy()
-
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
