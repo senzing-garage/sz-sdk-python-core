@@ -117,12 +117,12 @@ def test_version(g2_product):
 
 
 def test_init_and_destroy(g2_product):
-    """Test Senzing license."""
+    """Test init/destroy cycle."""
     g2_product.init("Example", "{}", 0)
     g2_product.destroy()
 
 
 def test_init_and_destroy_again(g2_product):
-    """Test Senzing license."""
+    """Test init/destroy cycle a second time."""
     g2_product.init("Example", "{}", 0)
     g2_product.destroy()
