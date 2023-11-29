@@ -50,7 +50,6 @@ get_db_info_schema = {
 
 check_db_perf_schema = {"numRecordsInserted": int, "insertTime": int}
 
-
 # -----------------------------------------------------------------------------
 # G2Diagnostic testcases
 # -----------------------------------------------------------------------------
@@ -110,20 +109,25 @@ def test_check_db_perf(g2_diagnostic):
     assert schema(check_db_perf_schema) == actual_json
 
 
-def test_check_db_perf_bad_seconds_to_run(g2_diagnostic):
+def test_check_db_perf_bad_seconds_to_run_type(g2_diagnostic):
     """Test G2Diagnostic().check_db_perf()."""
     bad_seconds_to_run = "string"
     with pytest.raises(TypeError):
         g2_diagnostic.check_db_perf(bad_seconds_to_run)
 
 
-# TODO: Likely going away in V4
-# def test_get_available_memory(g2_diagnostic):
-#     """Test available memory."""
-#     # TODO: See if there's a fix.
-#     actual = g2diagnostic.get_available_memory()
-#     expected = psutil.virtual_memory().available
-#     assert actual == expected
+def test_check_db_perf_bad_seconds_to_run_value(g2_diagnostic):
+    """Test G2Diagnostic().check_db_perf()."""
+    bad_seconds_to_run = -1
+    g2_diagnostic.check_db_perf(bad_seconds_to_run)
+
+
+def test_get_available_memory(g2_diagnostic):
+    """Test available memory."""
+    # TODO: See if there's a fix.
+    actual = g2_diagnostic.get_available_memory()
+    expected = psutil.virtual_memory().available
+    assert actual == expected
 
 
 def test_get_db_info(g2_diagnostic):
@@ -133,7 +137,6 @@ def test_get_db_info(g2_diagnostic):
     assert schema(get_db_info_schema) == actual_json
 
 
-# TODO: Likely going away in V4
 def test_get_logical_cores(g2_diagnostic):
     """Test G2Diagnostic().get_logical_cores()."""
     actual = g2_diagnostic.get_logical_cores()
@@ -141,7 +144,6 @@ def test_get_logical_cores(g2_diagnostic):
     assert actual == expected
 
 
-# TODO: Likely going away in V4
 # BUG: Returns wrong value!
 def test_get_physical_cores(g2_diagnostic):
     """Test G2Diagnostic().get_physical_cores()."""

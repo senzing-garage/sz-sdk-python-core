@@ -428,7 +428,7 @@ def test_add_data_source_dict(g2_config):
     assert schema(add_data_source_schema) == actual_json
 
 
-def test_add_data_source_bad_config_handle(g2_config):
+def test_add_data_source_bad_config_handle_type(g2_config):
     """Test G2Config().add_data_source()."""
     bad_config_handle = "string"
     input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
@@ -436,7 +436,16 @@ def test_add_data_source_bad_config_handle(g2_config):
         g2_config.add_data_source(bad_config_handle, json.dumps(input_json_dict))
 
 
-def test_add_data_source_bad_input_json(g2_config):
+# TODO: Crashes the gRPC Server.
+# def test_add_data_source_bad_config_handle_value(g2_config):
+#     """Test G2Config().add_data_source()."""
+#     bad_config_handle = 1234
+#     input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
+#     with pytest.raises(TypeError):
+#         g2_config.add_data_source(bad_config_handle, json.dumps(input_json_dict))
+
+
+def test_add_data_source_bad_input_json_type(g2_config):
     """Test G2Config().add_data_source()."""
     config_handle = g2_config.create()
     bad_input_json = 0
@@ -447,11 +456,30 @@ def test_add_data_source_bad_input_json(g2_config):
         g2_config.close(config_handle)
 
 
-def test_close_bad_config_handle(g2_config):
+def test_add_data_source_bad_input_json_value(g2_config):
+    """Test G2Config().add_data_source()."""
+    config_handle = g2_config.create()
+    bad_input_dict = {"XXXX": "YYYY"}
+    try:
+        with pytest.raises(g2exception.G2BadInputError):
+            g2_config.add_data_source(config_handle, bad_input_dict)
+    finally:
+        g2_config.close(config_handle)
+
+
+def test_close_bad_config_handle_type(g2_config):
     """Test G2Config().create()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         g2_config.close(bad_config_handle)
+
+
+# TODO: Crashes the gRPC Server.
+# def test_close_bad_config_handle_value(g2_config):
+#     """Test G2Config().create()."""
+#     bad_config_handle = 1234
+#     with pytest.raises(TypeError):
+#         g2_config.close(bad_config_handle)
 
 
 def test_create(g2_config):
@@ -480,7 +508,7 @@ def test_delete_data_source_dict(g2_config):
     g2_config.close(config_handle)
 
 
-def test_delete_data_source_bad_config_handle(g2_config):
+def test_delete_data_source_bad_config_handle_type(g2_config):
     """Test G2Config().delete_data_source()."""
     input_json_dict = {"DSRC_CODE": "TEST"}
     bad_config_handle = "string"
@@ -488,12 +516,29 @@ def test_delete_data_source_bad_config_handle(g2_config):
         g2_config.delete_data_source(bad_config_handle, json.dumps(input_json_dict))
 
 
-def test_delete_data_source_bad_input_json(g2_config):
+# TODO: Crashes the gRPC Server.
+# def test_delete_data_source_bad_config_handle_value(g2_config):
+#     """Test G2Config().delete_data_source()."""
+#     input_json_dict = {"XXXX": "YYYY"}
+#     config_handle = 1234
+#     g2_config.delete_data_source(config_handle, json.dumps(input_json_dict))
+#     g2_config.close(config_handle)
+
+
+def test_delete_data_source_bad_input_json_type(g2_config):
     """Test G2Config().delete_data_source()."""
     bad_input_json = 0
     config_handle = g2_config.create()
     with pytest.raises(TypeError):
         g2_config.delete_data_source(config_handle, bad_input_json)
+    g2_config.close(config_handle)
+
+
+def test_delete_data_source_bad_input_json_value(g2_config):
+    """Test G2Config().delete_data_source()."""
+    input_json_dict = {"XXXX": "YYYY"}
+    config_handle = g2_config.create()
+    g2_config.delete_data_source(config_handle, json.dumps(input_json_dict))
     g2_config.close(config_handle)
 
 
@@ -507,11 +552,19 @@ def test_list_data_sources(g2_config):
     assert schema(list_data_sources_schema) == actual_json
 
 
-def test_list_data_sources_bad_config_handle(g2_config):
+def test_list_data_sources_bad_config_handle_type(g2_config):
     """Test G2Config().list_data_sources()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         g2_config.list_data_sources(bad_config_handle)
+
+
+# TODO: Crashes the gRPC Server.
+# def test_list_data_sources_bad_config_handle_value(g2_config):
+#     """Test G2Config().list_data_sources()."""
+#     bad_config_handle = 1
+#     with pytest.raises(TypeError):
+#         g2_config.list_data_sources(bad_config_handle)
 
 
 def test_load(g2_config):
@@ -535,10 +588,17 @@ def test_load_dict(g2_config):
     g2_config.close(config_handle)
 
 
-def test_load_bad_json_config(g2_config):
+def test_load_bad_json_config_type(g2_config):
     """Test G2Config().load()."""
     bad_json_config = 0
     with pytest.raises(TypeError):
+        g2_config.load(bad_json_config)
+
+
+def test_load_bad_json_config_value(g2_config):
+    """Test G2Config().load()."""
+    bad_json_config = {"Just": "Junk"}
+    with pytest.raises(g2exception.G2ConfigurationError):
         g2_config.load(bad_json_config)
 
 
@@ -552,11 +612,19 @@ def test_save(g2_config):
     assert schema(save_schema) == actual_json
 
 
-def test_save_bad_config_handle(g2_config):
+def test_save_bad_config_handle_type(g2_config):
     """Test G2Config().save()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         g2_config.save(bad_config_handle)
+
+
+# TODO: Crashes the gRPC Server.
+# def test_save_bad_config_handle_value(g2_config):
+#     """Test G2Config().save()."""
+#     bad_config_handle = 1234
+#     with pytest.raises(TypeError):
+#         g2_config.save(bad_config_handle)
 
 
 def test_init_and_destroy(g2_config):
