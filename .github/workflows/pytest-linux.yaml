@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11"]
         python-version: ["3.8", "3.11"]
-        senzingapi-version: [staging]
+        senzingapi-version: [latest]
     name: "pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     steps:
       - name: Checkout repository
