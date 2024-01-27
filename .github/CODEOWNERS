@@ -1,5 +1,5 @@
 # Default code owner
 
-* @Senzing/senzing-community
+* @senzing-garage/senzing-python-developers
 
-/.github/ @Senzing/senzing-devsecops
+/.github/ @senzing-garage/senzing-devsecops
