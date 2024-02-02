@@ -2,7 +2,7 @@
 The g2engine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's G2Engine C binding.
 It conforms to the interface specified in
-`g2engine_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2engine_abstract.py>`_
+`g2engine_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2engine_abstract.py>`_
 
 To use g2engine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -44,7 +44,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
 
-SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5043"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
 
 # -----------------------------------------------------------------------------

@@ -32,7 +32,7 @@ jobs:
         name: Install python libraries for python 3.8 and 3.9
         run: pip install typing_extensions
       - name: Install Senzing API
-        uses: Senzing/github-action-install-senzing-api@latest
+        uses: senzing-factory/github-action-install-senzing-api@latest
         with:
           senzingapi-version: ${{ matrix.senzingapi-version }}
       - name: Copy /etc files
