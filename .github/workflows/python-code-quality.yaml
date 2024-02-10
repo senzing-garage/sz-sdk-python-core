@@ -1,6 +1,6 @@
 name: python code quality
 
-on: [push,pull_request]
+on: [push, pull_request]
 
 jobs:
   python-code-quality:
