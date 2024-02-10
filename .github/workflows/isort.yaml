@@ -1,12 +1,14 @@
-name: isort.yaml
+name: isort
 
 on: [push]
 
 jobs:
   isort:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: isort/isort-action@v1
         with:
           configuration:

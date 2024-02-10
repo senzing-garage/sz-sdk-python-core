@@ -1,4 +1,4 @@
-name: create-sphinx-documentation.yaml
+name: create sphinx documentation
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -8,16 +8,21 @@ permissions:
 jobs:
   docs:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-      - name: Install dependencies
+
+      - name: install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme myst_parser autodocsumm sphinx-toolbox
+
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
-      - name: Deploy to GitHub Pages
+
+      - name: deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
