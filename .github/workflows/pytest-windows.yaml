@@ -9,14 +9,14 @@ env:
 
 jobs:
   pytest-windows:
-    name: "pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11"]
-        python-version: ["3.8", "3.11"]
-        senzingapi-version: [staging]
+        python-version: ['3.8', '3.11']
+        senzingapi-version: [production-v3]
 
     steps:
       - name: checkout repository
