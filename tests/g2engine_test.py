@@ -92,21 +92,19 @@ export_json_entity_report_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORDS": [
-            {
-                "DATA_SOURCE": str,
-                "RECORD_ID": str,
-                "ENTITY_TYPE": str,
-                "INTERNAL_ID": int,
-                "ENTITY_KEY": str,
-                "ENTITY_DESC": str,
-                "MATCH_KEY": str,
-                "MATCH_LEVEL": int,
-                "MATCH_LEVEL_CODE": str,
-                "ERRULE_CODE": str,
-                "LAST_SEEN_DT": str,
-            }
-        ],
+        "RECORDS": [{
+            "DATA_SOURCE": str,
+            "RECORD_ID": str,
+            "ENTITY_TYPE": str,
+            "INTERNAL_ID": int,
+            "ENTITY_KEY": str,
+            "ENTITY_DESC": str,
+            "MATCH_KEY": str,
+            "MATCH_LEVEL": int,
+            "MATCH_LEVEL_CODE": str,
+            "ERRULE_CODE": str,
+            "LAST_SEEN_DT": str,
+        }],
     },
     "RELATED_ENTITIES": [{}],
 }
@@ -399,17 +397,13 @@ how_results_schema = {
         "RESOLUTION_STEPS": [{}],
         "FINAL_STATE": {
             "NEED_REEVALUATION": int,
-            "VIRTUAL_ENTITIES": [
-                {
-                    "VIRTUAL_ENTITY_ID": str,
-                    "MEMBER_RECORDS": [
-                        {
-                            "INTERNAL_ID": int,
-                            "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}],
-                        }
-                    ],
-                }
-            ],
+            "VIRTUAL_ENTITIES": [{
+                "VIRTUAL_ENTITY_ID": str,
+                "MEMBER_RECORDS": [{
+                    "INTERNAL_ID": int,
+                    "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}],
+                }],
+            }],
         },
     }
 }
@@ -420,67 +414,55 @@ interesting_entities_schema: Dict[Any, Any] = {
 
 network_schema = {
     "ENTITY_PATHS": [{"START_ENTITY_ID": int, "END_ENTITY_ID": int, "ENTITIES": []}],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": str,
-                        "RECORD_COUNT": int,
-                        "FIRST_SEEN_DT": str,
-                        "LAST_SEEN_DT": str,
-                    }
-                ],
+    "ENTITIES": [{
+        "RESOLVED_ENTITY": {
+            "ENTITY_ID": int,
+            "ENTITY_NAME": str,
+            "RECORD_SUMMARY": [{
+                "DATA_SOURCE": str,
+                "RECORD_COUNT": int,
+                "FIRST_SEEN_DT": str,
                 "LAST_SEEN_DT": str,
-            },
-            "RELATED_ENTITIES": [
-                {
-                    "ENTITY_ID": int,
-                    "MATCH_LEVEL": int,
-                    "MATCH_LEVEL_CODE": str,
-                    "MATCH_KEY": str,
-                    "ERRULE_CODE": str,
-                    "IS_DISCLOSED": int,
-                    "IS_AMBIGUOUS": int,
-                }
-            ],
-        }
-    ],
+            }],
+            "LAST_SEEN_DT": str,
+        },
+        "RELATED_ENTITIES": [{
+            "ENTITY_ID": int,
+            "MATCH_LEVEL": int,
+            "MATCH_LEVEL_CODE": str,
+            "MATCH_KEY": str,
+            "ERRULE_CODE": str,
+            "IS_DISCLOSED": int,
+            "IS_AMBIGUOUS": int,
+        }],
+    }],
 }
 
 
 path_schema = {
     "ENTITY_PATHS": [{"START_ENTITY_ID": int, "END_ENTITY_ID": int, "ENTITIES": [int]}],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": str,
-                        "RECORD_COUNT": int,
-                        "FIRST_SEEN_DT": str,
-                        "LAST_SEEN_DT": str,
-                    }
-                ],
+    "ENTITIES": [{
+        "RESOLVED_ENTITY": {
+            "ENTITY_ID": int,
+            "ENTITY_NAME": str,
+            "RECORD_SUMMARY": [{
+                "DATA_SOURCE": str,
+                "RECORD_COUNT": int,
+                "FIRST_SEEN_DT": str,
                 "LAST_SEEN_DT": str,
-            },
-            "RELATED_ENTITIES": [
-                {
-                    "ENTITY_ID": int,
-                    "MATCH_LEVEL": int,
-                    "MATCH_LEVEL_CODE": str,
-                    "MATCH_KEY": str,
-                    "ERRULE_CODE": str,
-                    "IS_DISCLOSED": int,
-                    "IS_AMBIGUOUS": int,
-                }
-            ],
-        }
-    ],
+            }],
+            "LAST_SEEN_DT": str,
+        },
+        "RELATED_ENTITIES": [{
+            "ENTITY_ID": int,
+            "MATCH_LEVEL": int,
+            "MATCH_LEVEL_CODE": str,
+            "MATCH_KEY": str,
+            "ERRULE_CODE": str,
+            "IS_DISCLOSED": int,
+            "IS_AMBIGUOUS": int,
+        }],
+    }],
 }
 
 
@@ -506,14 +488,12 @@ resolved_entity_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORD_SUMMARY": [
-            {
-                "DATA_SOURCE": str,
-                "RECORD_COUNT": int,
-                "FIRST_SEEN_DT": str,
-                "LAST_SEEN_DT": str,
-            }
-        ],
+        "RECORD_SUMMARY": [{
+            "DATA_SOURCE": str,
+            "RECORD_COUNT": int,
+            "FIRST_SEEN_DT": str,
+            "LAST_SEEN_DT": str,
+        }],
         "LAST_SEEN_DT": str,
         "RECORDS": [
             {
@@ -535,33 +515,29 @@ resolved_entity_schema = {
 }
 
 search_schema = {
-    "RESOLVED_ENTITIES": [
-        {
-            "MATCH_INFO": {
-                "MATCH_LEVEL": int,
-                "MATCH_LEVEL_CODE": str,
-                "MATCH_KEY": str,
-                "ERRULE_CODE": str,
-                "FEATURE_SCORES": {},
-            },
-            "ENTITY": {
-                "RESOLVED_ENTITY": {
-                    "ENTITY_ID": int,
-                    "ENTITY_NAME": str,
-                    "FEATURES": {},
-                    "RECORD_SUMMARY": [
-                        {
-                            "DATA_SOURCE": str,
-                            "RECORD_COUNT": int,
-                            "FIRST_SEEN_DT": str,
-                            "LAST_SEEN_DT": str,
-                        }
-                    ],
+    "RESOLVED_ENTITIES": [{
+        "MATCH_INFO": {
+            "MATCH_LEVEL": int,
+            "MATCH_LEVEL_CODE": str,
+            "MATCH_KEY": str,
+            "ERRULE_CODE": str,
+            "FEATURE_SCORES": {},
+        },
+        "ENTITY": {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "FEATURES": {},
+                "RECORD_SUMMARY": [{
+                    "DATA_SOURCE": str,
+                    "RECORD_COUNT": int,
+                    "FIRST_SEEN_DT": str,
                     "LAST_SEEN_DT": str,
-                }
-            },
-        }
-    ]
+                }],
+                "LAST_SEEN_DT": str,
+            }
+        },
+    }]
 }
 
 stats_schema = {
@@ -631,14 +607,12 @@ virtual_entity_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORD_SUMMARY": [
-            {
-                "DATA_SOURCE": str,
-                "RECORD_COUNT": int,
-                "FIRST_SEEN_DT": str,
-                "LAST_SEEN_DT": str,
-            }
-        ],
+        "RECORD_SUMMARY": [{
+            "DATA_SOURCE": str,
+            "RECORD_COUNT": int,
+            "FIRST_SEEN_DT": str,
+            "LAST_SEEN_DT": str,
+        }],
         "LAST_SEEN_DT": str,
         "RECORDS": [
             {
@@ -656,87 +630,75 @@ virtual_entity_schema = {
 }
 
 why_entities_results_schema = {
-    "WHY_RESULTS": [
-        {
+    "WHY_RESULTS": [{
+        "ENTITY_ID": int,
+        "ENTITY_ID_2": int,
+        "MATCH_INFO": {},
+    }],
+    "ENTITIES": [{
+        "RESOLVED_ENTITY": {
             "ENTITY_ID": int,
-            "ENTITY_ID_2": int,
-            "MATCH_INFO": {},
-        }
-    ],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "FEATURES": {},
-                "RECORD_SUMMARY": [{}],
+            "ENTITY_NAME": str,
+            "FEATURES": {},
+            "RECORD_SUMMARY": [{}],
+            "LAST_SEEN_DT": str,
+            "RECORDS": [{
+                "DATA_SOURCE": str,
+                "RECORD_ID": str,
+                "ENTITY_TYPE": str,
+                "INTERNAL_ID": int,
+                "ENTITY_KEY": str,
+                "ENTITY_DESC": str,
+                "MATCH_KEY": str,
+                "MATCH_LEVEL": int,
+                "MATCH_LEVEL_CODE": str,
+                "ERRULE_CODE": str,
                 "LAST_SEEN_DT": str,
-                "RECORDS": [
-                    {
-                        "DATA_SOURCE": str,
-                        "RECORD_ID": str,
-                        "ENTITY_TYPE": str,
-                        "INTERNAL_ID": int,
-                        "ENTITY_KEY": str,
-                        "ENTITY_DESC": str,
-                        "MATCH_KEY": str,
-                        "MATCH_LEVEL": int,
-                        "MATCH_LEVEL_CODE": str,
-                        "ERRULE_CODE": str,
-                        "LAST_SEEN_DT": str,
-                        "FEATURES": [{}],
-                    }
-                ],
-            },
-            "RELATED_ENTITIES": [{}],
-        }
-    ],
+                "FEATURES": [{}],
+            }],
+        },
+        "RELATED_ENTITIES": [{}],
+    }],
 }
 
 
 why_entity_results_schema = {
-    "WHY_RESULTS": [
-        {
-            "INTERNAL_ID": int,
+    "WHY_RESULTS": [{
+        "INTERNAL_ID": int,
+        "ENTITY_ID": int,
+        "FOCUS_RECORDS": [{}],
+        "MATCH_INFO": {
+            "WHY_KEY": str,
+            "WHY_ERRULE_CODE": str,
+            "MATCH_LEVEL_CODE": str,
+            "CANDIDATE_KEYS": {},
+            "FEATURE_SCORES": {},
+        },
+    }],
+    "ENTITIES": [{
+        "RESOLVED_ENTITY": {
             "ENTITY_ID": int,
-            "FOCUS_RECORDS": [{}],
-            "MATCH_INFO": {
-                "WHY_KEY": str,
-                "WHY_ERRULE_CODE": str,
+            "ENTITY_NAME": str,
+            "FEATURES": {},
+            "RECORD_SUMMARY": [{}],
+            "LAST_SEEN_DT": str,
+            "RECORDS": [{
+                "DATA_SOURCE": str,
+                "RECORD_ID": str,
+                "ENTITY_TYPE": str,
+                "INTERNAL_ID": int,
+                "ENTITY_KEY": str,
+                "ENTITY_DESC": str,
+                "MATCH_KEY": str,
+                "MATCH_LEVEL": int,
                 "MATCH_LEVEL_CODE": str,
-                "CANDIDATE_KEYS": {},
-                "FEATURE_SCORES": {},
-            },
-        }
-    ],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "FEATURES": {},
-                "RECORD_SUMMARY": [{}],
+                "ERRULE_CODE": str,
                 "LAST_SEEN_DT": str,
-                "RECORDS": [
-                    {
-                        "DATA_SOURCE": str,
-                        "RECORD_ID": str,
-                        "ENTITY_TYPE": str,
-                        "INTERNAL_ID": int,
-                        "ENTITY_KEY": str,
-                        "ENTITY_DESC": str,
-                        "MATCH_KEY": str,
-                        "MATCH_LEVEL": int,
-                        "MATCH_LEVEL_CODE": str,
-                        "ERRULE_CODE": str,
-                        "LAST_SEEN_DT": str,
-                        "FEATURES": [{}],
-                    }
-                ],
-            },
-            "RELATED_ENTITIES": [{}],
-        }
-    ],
+                "FEATURES": [{}],
+            }],
+        },
+        "RELATED_ENTITIES": [{}],
+    }],
 }
 
 # -----------------------------------------------------------------------------
@@ -979,6 +941,17 @@ def test_add_record_with_info_record_str_empty(g2_engine):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
+def test_add_record_with_info_return_dict_type(g2_engine):
+    """Test add_record_with_info_return_dict returns a dict"""
+    data_source_code = "TEST"
+    record_id = "1"
+    json_data = RECORD_DICT
+    actual = g2_engine.add_record_with_info_return_dict(
+        data_source_code, record_id, json_data
+    )
+    assert isinstance(actual, dict)
+
+
 # TODO Close export
 
 
@@ -1054,6 +1027,14 @@ def test_delete_record_with_info_data_source_code_empty(g2_engine):
         g2_engine.delete_record_with_info(data_source_code, record_id)
 
 
+def test_delete_record_with_info_return_dict_type(g2_engine):
+    """Test delete_record_with_info_return_dict returns a dict"""
+    data_source_code = "TEST"
+    record_id = "1"
+    actual = g2_engine.delete_record_with_info_return_dict(data_source_code, record_id)
+    assert isinstance(actual, dict)
+
+
 # TODO Do destroy if using constructor?
 
 
@@ -1061,14 +1042,6 @@ def test_export_config(g2_engine) -> None:
     """Test export_config."""
     actual = g2_engine.export_config()
     actual_dict = json.loads(actual)
-    assert schema(g2_config_schema) == actual_dict
-
-
-def test_export_config_and_config_id(g2_engine) -> None:
-    """Test export_config_and_config_id."""
-    actual, actual_id = g2_engine.export_config_and_config_id()
-    actual_dict = json.loads(actual)
-    assert actual_id > 0
     assert schema(g2_config_schema) == actual_dict
 
 
@@ -1175,6 +1148,25 @@ def test_find_network_by_entity_id_empty_entity_list(g2_engine) -> None:
     assert schema(network_schema) == actual_dict
 
 
+def test_find_network_by_entity_id_return_dict_type(g2_engine):
+    """Test find_network_by_entity_id_return_dict returns a dict"""
+    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1027")
+    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1069")
+    entity_list = {
+        "ENTITIES": [
+            {"ENTITY_ID": entity_id_1},
+            {"ENTITY_ID": entity_id_2},
+        ]
+    }
+    max_degree = 5
+    build_out_degree = 2
+    max_entities = 10
+    actual = g2_engine.find_network_by_entity_id_return_dict(
+        entity_list, max_degree, build_out_degree, max_entities
+    )
+    assert isinstance(actual, dict)
+
+
 def test_find_network_by_record_id_list_as_dict(g2_engine) -> None:
     """Test find_network_by_record_id with record_list as a dict."""
     record_list = {
@@ -1256,6 +1248,23 @@ def test_find_network_by_record_id_empty_record_list(g2_engine) -> None:
     assert schema(network_schema) == actual_dict
 
 
+def test_find_network_by_record_id_return_dict_type(g2_engine):
+    """Test find_network_by_record_id_return_dict returns a dict"""
+    record_list = {
+        "RECORDS": [
+            {"DATA_SOURCE": "WATCHLIST", "RECORD_ID": "1027"},
+            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1069"},
+        ]
+    }
+    max_degree = 5
+    build_out_degree = 2
+    max_entities = 10
+    actual = g2_engine.find_network_by_record_id_return_dict(
+        record_list, max_degree, build_out_degree, max_entities
+    )
+    assert isinstance(actual, dict)
+
+
 def test_find_path_by_entity_id(g2_engine) -> None:
     """Test find_path_by_entity_id."""
     entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "2082")
@@ -1273,6 +1282,17 @@ def test_find_path_by_entity_id_bad_entity_ids(g2_engine) -> None:
     max_degree = 5
     with pytest.raises(g2exception.G2Exception):
         g2_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
+
+
+def test_find_path_by_entity_id_return_dict_type(g2_engine):
+    """Test find_path_by_entity_id_return_dict returns a dict"""
+    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "2082")
+    entity_id_2 = get_entity_id_from_record_id(g2_engine, "REFERENCE", "2131")
+    max_degree = 5
+    actual = g2_engine.find_path_by_entity_id_return_dict(
+        entity_id_1, entity_id_2, max_degree
+    )
+    assert isinstance(actual, dict)
 
 
 def test_find_path_by_record_id(g2_engine) -> None:
@@ -1313,6 +1333,19 @@ def test_find_path_by_record_id_bad_record_ids(g2_engine) -> None:
         g2_engine.find_path_by_record_id(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
         )
+
+
+def test_find_path_by_record_id_return_dict_type(g2_engine):
+    """Test find_path_by_record_id_return_dict returns a dict"""
+    data_source_code_1 = "REFERENCE"
+    record_id_1 = "2081"
+    data_source_code_2 = "REFERENCE"
+    record_id_2 = "2132"
+    max_degree = 5
+    actual = g2_engine.find_path_by_record_id_return_dict(
+        data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
+    )
+    assert isinstance(actual, dict)
 
 
 def test_find_path_excluding_by_entity_id_dict(g2_engine) -> None:
@@ -1356,6 +1389,19 @@ def test_find_path_excluding_by_entity_id_bad_entity_ids(g2_engine) -> None:
         )
 
 
+def test_find_path_excluding_by_entity_id_return_dict_type(g2_engine):
+    """Test find_path_by_entity_id_return_dict returns a dict"""
+    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1019")
+    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1021")
+    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
+    max_degree = 5
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
+    actual = g2_engine.find_path_excluding_by_entity_id_return_dict(
+        entity_id_1, entity_id_2, max_degree, excluded_entities
+    )
+    assert isinstance(actual, dict)
+
+
 # TODO excluded_records_dict = {"RECORDS": [{"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"}]}
 # TODO Jira to look into / improve this in the engine
 def test_find_path_excluding_by_record_id_dict(g2_engine) -> None:
@@ -1365,7 +1411,7 @@ def test_find_path_excluding_by_record_id_dict(g2_engine) -> None:
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1020"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     actual = g2_engine.find_path_excluding_by_record_id(
         data_source_code_1,
         record_id_1,
@@ -1386,7 +1432,7 @@ def test_find_path_excluding_by_record_id_str(g2_engine) -> None:
     record_id_2 = "1020"
     max_degree = 3
     # TODO Change to get the entity by record id?
-    excluded_entities = '{"ENTITIES": [{"ENTITY_ID": "6"}]}'
+    excluded_entities = '{"ENTITIES": [{"ENTITY_ID": 6}]}'
     actual = g2_engine.find_path_excluding_by_record_id(
         data_source_code_1,
         record_id_1,
@@ -1406,7 +1452,7 @@ def test_find_path_excluding_by_record_id_bad_data_source_code(g2_engine) -> Non
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1020"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     with pytest.raises(g2exception.G2Exception):
         g2_engine.find_path_excluding_by_record_id(
             data_source_code_1,
@@ -1425,7 +1471,7 @@ def test_find_path_excluding_by_record_id_bad_record_ids(g2_engine) -> None:
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     with pytest.raises(g2exception.G2Exception):
         g2_engine.find_path_excluding_by_record_id(
             data_source_code_1,
@@ -1455,6 +1501,25 @@ def test_find_path_excluding_by_record_id_excluded_entities_empty(g2_engine) -> 
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
+
+
+def test_find_path_excluding_by_record_id_return_dict_type(g2_engine):
+    """Test find_path_excluding_by_record_id_return_dict returns a dict"""
+    data_source_code_1 = "CUSTOMERS"
+    record_id_1 = "1019"
+    data_source_code_2 = "CUSTOMERS"
+    record_id_2 = "1020"
+    max_degree = 3
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
+    actual = g2_engine.find_path_excluding_by_record_id_return_dict(
+        data_source_code_1,
+        record_id_1,
+        data_source_code_2,
+        record_id_2,
+        max_degree,
+        excluded_entities,
+    )
+    assert isinstance(actual, dict)
 
 
 # TODO Can excluded use records like find path? Jira to discuss and recommend
@@ -1535,6 +1600,20 @@ def test_find_path_including_source_by_entity_id_required_dsrcs_empty(
     assert schema(path_schema) == actual_dict
 
 
+def test_find_path_including_source_by_entity_id_return_dict_type(g2_engine):
+    """Test find_path_including_source_by_entity_id_return_dict returns a dict"""
+    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    max_degree = 3
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
+    required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
+    actual = g2_engine.find_path_including_source_by_entity_id_return_dict(
+        entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
+    )
+    assert isinstance(actual, dict)
+
+
 def test_find_path_including_source_by_record_id_dict(g2_engine) -> None:
     """Test find_path_including_source_by_record_id excluded/required args are dicts."""
     data_source_code_1 = "CUSTOMERS"
@@ -1542,7 +1621,7 @@ def test_find_path_including_source_by_record_id_dict(g2_engine) -> None:
     data_source_code_2 = "WATCHLIST"
     record_id_2 = "1007"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "5"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 5}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
     actual = g2_engine.find_path_including_source_by_record_id(
         data_source_code_1,
@@ -1565,7 +1644,7 @@ def test_find_path_including_source_by_record_id_str(g2_engine) -> None:
     record_id_2 = "1007"
     max_degree = 3
     # TODO Change these in all methods to get by record id
-    excluded_entities = '{"ENTITIES": [{"ENTITY_ID": "5"}]}'
+    excluded_entities = '{"ENTITIES": [{"ENTITY_ID": 5}]}'
     required_dsrcs = '{"DATA_SOURCES": ["WATCHLIST"]}'
     actual = g2_engine.find_path_including_source_by_record_id(
         data_source_code_1,
@@ -1589,7 +1668,7 @@ def test_find_path_including_source_by_record_id_bad_data_source_code(
     data_source_code_2 = "WATCHLIST"
     record_id_2 = "1007"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
     with pytest.raises(g2exception.G2Exception):
         g2_engine.find_path_including_source_by_record_id(
@@ -1610,7 +1689,7 @@ def test_find_path_including_source_by_record_id_bad_record_ids(g2_engine) -> No
     data_source_code_2 = "WATCHLIST"
     record_id_2 = "1007"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
     with pytest.raises(g2exception.G2Exception):
         g2_engine.find_path_including_source_by_record_id(
@@ -1657,7 +1736,7 @@ def test_find_path_including_source_by_record_id_required_dsrcs_empty(
     data_source_code_2 = "WATCHLIST"
     record_id_2 = "1007"
     max_degree = 3
-    excluded_entities = {"ENTITIES": [{"ENTITY_ID": "6"}]}
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {}
     actual = g2_engine.find_path_including_source_by_record_id(
         data_source_code_1,
@@ -1670,6 +1749,27 @@ def test_find_path_including_source_by_record_id_required_dsrcs_empty(
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
+
+
+def test_find_path_including_source_by_record_id_return_dict_type(g2_engine):
+    """Test find_path_including_source_by_record_id_return_dict returns a dict"""
+    data_source_code_1 = "CUSTOMERS"
+    record_id_1 = "1001"
+    data_source_code_2 = "WATCHLIST"
+    record_id_2 = "1007"
+    max_degree = 3
+    excluded_entities = {"ENTITIES": [{"ENTITY_ID": 5}]}
+    required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
+    actual = g2_engine.find_path_including_source_by_record_id_return_dict(
+        data_source_code_1,
+        record_id_1,
+        data_source_code_2,
+        record_id_2,
+        max_degree,
+        excluded_entities,
+        required_dsrcs,
+    )
+    assert isinstance(actual, dict)
 
 
 def test_get_active_config_id(g2_engine):
@@ -1693,6 +1793,13 @@ def test_get_entity_by_entity_id_bad_entity_ids(g2_engine) -> None:
     entity_id = 9999999999999999
     with pytest.raises(g2exception.G2Exception):
         g2_engine.get_entity_by_entity_id(entity_id)
+
+
+def test_get_entity_by_entity_id_return_dict_type(g2_engine):
+    """Test find_get_entity_by_entity_id_return_dict returns a dict"""
+    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
+    actual = g2_engine.get_entity_by_entity_id_return_dict(entity_id)
+    assert isinstance(actual, dict)
 
 
 def test_get_entity_by_record_id(g2_engine) -> None:
@@ -1743,6 +1850,14 @@ def test_get_record_bad_record_id(g2_engine) -> None:
     record_id = "9999999999999999"
     with pytest.raises(g2exception.G2Exception):
         g2_engine.get_record(data_source_code, record_id)
+
+
+def test_get_record_return_dict_type(g2_engine):
+    """Test get_record_return_dict returns a dict"""
+    data_source_code = "CUSTOMERS"
+    record_id = "1001"
+    actual = g2_engine.get_record_return_dict(data_source_code, record_id)
+    assert isinstance(actual, dict)
 
 
 def test_get_redo_record(g2_engine):
@@ -1817,6 +1932,18 @@ def test_get_virtual_entity_by_record_id_bad_record_id(
         g2_engine.get_virtual_entity_by_record_id(record_list)
 
 
+def test_get_virtual_entity_by_record_id_return_dict_type(g2_engine):
+    """Test get_virtual_entity_by_record_id_return_dict returns a dict"""
+    record_list = {
+        "RECORDS": [
+            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
+            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
+        ]
+    }
+    actual = g2_engine.get_virtual_entity_by_record_id_return_dict(record_list)
+    assert isinstance(actual, dict)
+
+
 def test_how_entity_by_entity_id(g2_engine) -> None:
     """Test how_entity_by_entity_id."""
     data_source_code = "CUSTOMERS"
@@ -1832,6 +1959,15 @@ def test_how_entity_by_entity_id_bad_entity_id(g2_engine) -> None:
     entity_id = "9999999999999999"
     with pytest.raises(g2exception.G2Exception):
         g2_engine.how_entity_by_entity_id(entity_id)
+
+
+def test_how_entity_by_entity_id_return_dict_type(g2_engine):
+    """Test how_entity_by_entity_id_return_dict returns a dict"""
+    data_source_code = "CUSTOMERS"
+    record_id = "1001"
+    entity_id = get_entity_id_from_record_id(g2_engine, data_source_code, record_id)
+    actual = g2_engine.how_entity_by_entity_id_return_dict(entity_id)
+    assert isinstance(actual, dict)
 
 
 # TODO Add testing bad args
@@ -1898,6 +2034,13 @@ def test_reevaluate_entity_with_info(g2_engine) -> None:
     assert schema(with_info_schema) == actual_dict
 
 
+def test_reevaluate_entity_with_info_return_dict_type(g2_engine):
+    """Test reevaluate_entity_with_info_return_dict returns a dict"""
+    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
+    actual = g2_engine.reevaluate_entity_with_info_return_dict(entity_id)
+    assert isinstance(actual, dict)
+
+
 def test_reevaluate_record(g2_engine) -> None:
     """Test reevaluate_record."""
     data_source_code = "CUSTOMERS"
@@ -1944,6 +2087,16 @@ def test_reevaluate_record_with_info_bad_record_id(g2_engine) -> None:
     record_id = "9999999999999999"
     with pytest.raises(g2exception.G2Exception):
         g2_engine.reevaluate_record_with_info(data_source_code, record_id)
+
+
+def test_reevaluate_record_with_info_return_dict_type(g2_engine):
+    """Test reevaluate_record_with_info_return_dict returns a dict"""
+    data_source_code = "CUSTOMERS"
+    record_id = "1001"
+    actual = g2_engine.reevaluate_record_with_info_return_dict(
+        data_source_code, record_id
+    )
+    assert isinstance(actual, dict)
 
 
 def test_reinit(g2_engine) -> None:
@@ -2083,6 +2236,21 @@ def test_replace_record_with_info_bad_record(g2_engine) -> None:
         g2_engine.replace_record(data_source_code, record_id, current_json_data)
 
 
+def test_replace_record_with_info_return_dict_type(g2_engine):
+    """Test find_path_including_source_by_record_id_return_dict returns a dict"""
+    data_source_code = "CUSTOMERS"
+    record_id = "1001"
+    current_record = g2_engine.get_record(data_source_code, record_id)
+    data = json.loads(current_record)
+    current_json_data = data["JSON_DATA"]
+    new_json_record = current_json_data
+    new_json_record["ADDR_LINE1"] = "123 Main Street, Las Vegas NV 99999"
+    actual = g2_engine.replace_record_with_info_return_dict(
+        data_source_code, record_id, new_json_record
+    )
+    assert isinstance(actual, dict)
+
+
 def test_search_by_attributes(g2_engine) -> None:
     """Test search_by_attributes."""
     json_data = {"NAME_FULL": "robert smith", "DATE_OF_BIRTH": "12/11/1978"}
@@ -2096,6 +2264,13 @@ def test_search_by_attributes_bad_json_data(g2_engine) -> None:
     json_data = '{"NAME_FULL" "robert smith", "DATE_OF_BIRTH": "12/11/1978"}'
     with pytest.raises(g2exception.G2Exception):
         g2_engine.search_by_attributes(json_data)
+
+
+def test_search_by_attributes_return_dict_type(g2_engine):
+    """Test search_by_attributes_return_dict returns a dict"""
+    json_data = {"NAME_FULL": "robert smith", "DATE_OF_BIRTH": "12/11/1978"}
+    actual = g2_engine.search_by_attributes_return_dict(json_data)
+    assert isinstance(actual, dict)
 
 
 # NOTE Having issues with this, coming back to...
@@ -2130,6 +2305,14 @@ def test_why_entities_bad_entity_id(g2_engine) -> None:
     entity_id_2 = 9999999999999999
     with pytest.raises(g2exception.G2Exception):
         g2_engine.why_entities(entity_id_1, entity_id_2)
+
+
+def test_why_entities_return_dict_type(g2_engine):
+    """Test why_entities_return_dict returns a dict"""
+    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
+    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1002")
+    actual = g2_engine.why_entities_return_dict(entity_id_1, entity_id_2)
+    assert isinstance(actual, dict)
 
 
 def test_why_records(g2_engine) -> None:
@@ -2167,6 +2350,18 @@ def test_why_records_bad_record_id(g2_engine) -> None:
         g2_engine.why_records(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2
         )
+
+
+def test_why_records_return_dict_type(g2_engine):
+    """Test why_records_return_dict returns a dict"""
+    data_source_code_1 = "CUSTOMERS"
+    record_id_1 = "1001"
+    data_source_code_2 = "CUSTOMERS"
+    record_id_2 = "1002"
+    actual = g2_engine.why_records_return_dict(
+        data_source_code_1, record_id_1, data_source_code_2, record_id_2
+    )
+    assert isinstance(actual, dict)
 
 
 # -----------------------------------------------------------------------------

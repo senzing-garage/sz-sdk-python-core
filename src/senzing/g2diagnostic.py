@@ -369,6 +369,11 @@ class G2Diagnostic(G2DiagnosticAbstract):
                 result,
             )
 
+    def purge_repository(self, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2_purgeRepository()
+        if result < 0:
+            raise self.new_exception(4057, result)
+
     @cast_ctypes_exceptions
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(init_config_id)

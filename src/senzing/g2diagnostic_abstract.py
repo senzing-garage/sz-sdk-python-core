@@ -30,7 +30,7 @@ class G2DiagnosticAbstract(ABC):
 
     PREFIX = "g2diagnostic."
     ID_MESSAGES = {
-        # TODO: remove + concats for f-strings
+        # TODO: remove + concats for f-strings?
         4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
         4003: PREFIX + "G2Diagnostic_destroy() failed.  Return code: {0}",
         4007: PREFIX + "G2Diagnostic_getDBInfo() failed. Return code: {0}",
@@ -40,6 +40,9 @@ class G2DiagnosticAbstract(ABC):
         4020: PREFIX + "G2Diagnostic_reinit({0}) failed. Return Code: {1}",
         4021: PREFIX
         + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
+        # TODO What style for the API name?
+        # TODO Reorder
+        4023: PREFIX + "G2_purgeRepository() failed. Return code: {0}",
     }
 
     # -------------------------------------------------------------------------
@@ -258,6 +261,24 @@ class G2DiagnosticAbstract(ABC):
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_with_config_id.py
+                :linenos:
+                :language: python
+        """
+
+    @abstractmethod
+    def purge_repository(self, **kwargs: Any) -> None:
+        """
+        **Warning:**
+        The `purge_repository` method removes every record in the Senzing repository.
+
+        Before calling `purge_repository` all other instances of the Senzing API
+        MUST be destroyed or shutdown.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/g2diagnostic/purge_repository.py
                 :linenos:
                 :language: python
         """

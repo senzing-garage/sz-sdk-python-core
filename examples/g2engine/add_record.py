@@ -3,20 +3,18 @@
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-INI_PARAMS_DICT = {
+DATA_SOURCE_CODE = "TEST"
+SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-MODULE_NAME = "Example"
-
-DATA_SOURCE_CODE = "TEST"
-RECORD_ID = "Example-1"
-RECORD = {
-    "RECORD_TYPE": "PERSON",
+INSTANCE_NAME = "Example1"
+RECORD_DEFINITION = {
+    "RECORD_DEFINITION_TYPE": "PERSON",
     "PRIMARY_NAME_LAST": "Smith",
     "PRIMARY_NAME_FIRST": "Robert",
     "DATE_OF_BIRTH": "12/11/1978",
@@ -29,9 +27,10 @@ RECORD = {
     "STATUS": "Active",
     "AMOUNT": "100",
 }
+RECORD_ID = "Example-1"
 
 try:
-    g2_engine = g2engine.G2Engine(MODULE_NAME, INI_PARAMS_DICT)
-    g2_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD)
+    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION)
 except G2Exception as err:
     print(err)

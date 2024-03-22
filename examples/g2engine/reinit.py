@@ -4,20 +4,20 @@
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-INI_PARAMS_DICT = {
+INSTANCE_NAME = "Example"
+SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-MODULE_NAME = "Example"
 
 try:
-    g2_engine = g2engine.G2Engine(MODULE_NAME, INI_PARAMS_DICT)
+    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
     # Using get_active_config_id for demonstrations purposes
     active_config_id = g2_engine.get_active_config_id()
-    g2_engine.reinit(active_config_id)
+    g2_engine.reinitialize(active_config_id)
 except G2Exception as err:
     print(err)
