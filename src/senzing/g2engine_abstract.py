@@ -174,7 +174,7 @@ class G2EngineAbstract(ABC):
         4054: PREFIX + "G2_processWithInfo({0}, {1}) failed. Return code: {2}",
         4055: PREFIX + "G2_processWithResponse({0}) failed. Return code: {1}",
         4056: PREFIX + "G2_processWithResponseResize({0}) failed. Return code: {1}",
-        4057: PREFIX + "G2_purgeRepository() failed. Return code: {0}",
+        # 4057: PREFIX + "G2_purgeRepository() failed. Return code: {0}",
         4058: PREFIX + "G2_reevaluateEntity({0}, {1}) failed. Return code: {2}",
         4059: PREFIX + "G2_reevaluateEntityWithInfo({0}, {1}) failed. Return code: {2}",
         4060: PREFIX + "G2_reevaluateRecord({0}, {1}, {2}) failed. Return code: {3}",
@@ -689,7 +689,7 @@ class G2EngineAbstract(ABC):
         )
 
     # TODO find path calls are not currently working on V4 builds
-    # TODO https://senzing.atlassian.net/browse/GDEV-3774
+    # TODO GDEV-3774
     # @abstractmethod
     # def find_path_by_entity_id(
     #     self,
@@ -1245,7 +1245,7 @@ class G2EngineAbstract(ABC):
         """
 
     # TODO Missing from V4 go lang helpers currently
-    # TODO https://senzing.atlassian.net/jira/software/c/projects/GDEV/issues/GDEV-3771
+    # TODO GDEV-3771
     # @abstractmethod
     # def process_redo_record(self, redo_record: str, flags: int, **kwargs: Any) -> str:
     #     """
@@ -1453,7 +1453,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1486,7 +1486,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -1503,7 +1503,7 @@ class G2EngineAbstract(ABC):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1540,7 +1540,7 @@ class G2EngineAbstract(ABC):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -1558,7 +1558,7 @@ class G2EngineAbstract(ABC):
         )
 
     # TODO why_record_in_entity() - doesn't exist in go helpers
-    # TODO https://senzing.atlassian.net/jira/software/c/projects/GDEV/issues/GDEV-3772
+    # TODO GDEV-3772
     # @abstractmethod
     # def why_record_in_entity(
     #     self,

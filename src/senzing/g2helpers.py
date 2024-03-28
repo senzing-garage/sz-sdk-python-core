@@ -43,6 +43,10 @@ P = ParamSpec("P")
 
 ORJSON_AVAILABLE = True if "orjson" in dir() else False
 
+# -----------------------------------------------------------------------------
+# Classes
+# -----------------------------------------------------------------------------
+
 
 class FreeCResources:
     """Free C resources"""
@@ -144,6 +148,8 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
                         raise TypeError(basic_raise_msg) from err
 
                 raise TypeError(
+                    # TODO New exception message when done
+                    # TODO New class of Sz_exceptions for programmatic errors like this vs engine errors
                     f"wrong type for argument {bad_arg_tuple[0]}, expected {bad_arg_tuple[1]} but received {bad_arg_type.__name__} when calling {module_name}.{method_name}"
                 ) from err
             raise TypeError() from err
@@ -190,6 +196,7 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
+    # TODO ctypes_exception catch this - before and after test should be the same
     if not isinstance(candidate_value, int):
         raise TypeError(
             f"{candidate_value} is type{type(candidate_value)}. Needs to be type(int)"

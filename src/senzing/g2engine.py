@@ -46,6 +46,7 @@ from .g2helpers import (
     as_python_str,
     as_str,
     as_uintptr_t,
+    cast_ctypes_exceptions,
     find_file_in_path,
 )
 from .g2version import is_supported_senzingapi_version
@@ -64,35 +65,10 @@ SENZING_PRODUCT_ID = (  # See https://github.com/Senzing/knowledge-base/blob/mai
 # TODO Investigate the error messages not showing correct location, because of wrapped methods?
 CALLER_SKIP = 5  # Number of stack frames to skip when reporting location in Exception.
 
-# -----------------------------------------------------------------------------
-# Context Manager Classes
-# -----------------------------------------------------------------------------
-
-
-# TODO Move to helpers so everything can take advantage of
-# class FreeCResources:
-#     """Free C resources"""
-
-#     def __init__(self, handle: CDLL, resource: _Pointer[c_char]) -> None:
-#         self.handle = handle
-#         self.resource = resource
-
-#     def __enter__(self) -> None:
-#         pass
-
-#     def __exit__(
-#         self,
-#         exc_type: Optional[Type[BaseException]],
-#         exc_value: Optional[BaseException],
-#         exc_tb: Optional[TracebackType],
-#     ) -> None:
-#         self.handle.G2GoHelper_free(self.resource)
-
-
 # # -----------------------------------------------------------------------------
 # # Helper Classes
 # # -----------------------------------------------------------------------------
-# # TODO Should this go in helpers, probably not abstract as it doesn't make sense for grpc
+# # TODO Should this go in helpers
 # class AsDict(str):
 #     """ """
 
@@ -414,7 +390,6 @@ class G2Engine(G2EngineAbstract):
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
-    # TODO Remove once tested
     # TODO Check all error codes
 
     def __init__(
@@ -931,23 +906,10 @@ class G2Engine(G2EngineAbstract):
             self.destroy()
 
     # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2engine(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
-
-    # -------------------------------------------------------------------------
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    # TODO Modify in g2exception and abstract module to handle flags in messages from the args
+    # TODO Modify in g2exception and abstract module to handle flags in messages from the args?
     def new_exception(self, error_id: int, *args: Any) -> Exception:
         """
         Generate a new exception based on the error_id.
@@ -973,7 +935,7 @@ class G2Engine(G2EngineAbstract):
         data_source_code: str,
         record_id: str,
         record_definition: Union[str, Dict[Any, Any]],
-        # TODO Is 0 correct for flags to be none?
+        # TODO Is 0 correct for flags to be none? This will change when have new flag bits - works for now
         flags: int = 0,
         # TODO Code smell and pylint reports it. Investigate how to improve
         # *args: Any,
@@ -1073,7 +1035,7 @@ class G2Engine(G2EngineAbstract):
 
     def export_csv_entity_report(
         self,
-        # TODO add default col list and add information to abstract docstring
+        # TODO add default col list and add information to abstract docstring?
         csv_column_list: str,
         flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
         *args: Any,
@@ -1205,7 +1167,7 @@ class G2Engine(G2EngineAbstract):
             return as_python_str(result.response)
 
     # TODO find path calls are not currently working on V4 builds
-    # TODO https://senzing.atlassian.net/browse/GDEV-3774
+    # TODO GDEV-3774
     # def find_path_by_entity_id(
     #     self,
     #     start_entity_id: int,
@@ -1553,7 +1515,7 @@ class G2Engine(G2EngineAbstract):
             raise self.new_exception(4050, result)
 
     # TODO Missing from V4 go lang helpers currently
-    # TODO https://senzing.atlassian.net/jira/software/c/projects/GDEV/issues/GDEV-3771
+    # TODO GDEV-3771
     # def process_redo_record(
     #     self, redo_record: str, flags: int = 0, **kwargs: Any
     # ) -> str: ...
@@ -1690,17 +1652,24 @@ class G2Engine(G2EngineAbstract):
                 )
             return as_python_str(result.response)
 
+    @cast_ctypes_exceptions
     def why_entities(
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
         # TODO Is as_ needed? Sending in a string int value the call still works without as_c_int?
         result = self.library_handle.G2_whyEntities_V2_helper(
-            as_c_int(entity_id_1), as_c_int(entity_id_2), as_c_int(flags)
+            as_c_int(entity_id_1),
+            as_c_int(entity_id_2),
+            as_c_int(flags),
+            # TODO Testing with ctypes_exception
+            # entity_id_1,
+            # entity_id_2,
+            # flags,
         )
 
         with FreeCResources(self.library_handle, result.response):
@@ -1716,7 +1685,7 @@ class G2Engine(G2EngineAbstract):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1743,4 +1712,4 @@ class G2Engine(G2EngineAbstract):
             return as_python_str(result.response)
 
     # TODO why_record_in_entity() - doesn't exist in go helpers
-    # TODO https://senzing.atlassian.net/jira/software/c/projects/GDEV/issues/GDEV-3772
+    # TODO GDEV-3772
