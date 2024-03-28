@@ -6,14 +6,16 @@
 # TODO value/type tests and handling ctype exceptions from g2helpers - needs thought
 import json
 from typing import Any, Dict
+
 import pytest
 from pytest_schema import Or, schema
 from senzing_truthset import (
-    TRUTHSET_DATASOURCES,
     TRUTHSET_CUSTOMER_RECORDS,
+    TRUTHSET_DATASOURCES,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
+
 from senzing import g2config, g2configmgr, g2engine, g2exception
 
 # AC - Temp disables to get changes in for move to senzing garage
@@ -92,19 +94,21 @@ export_json_entity_report_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORDS": [{
-            "DATA_SOURCE": str,
-            "RECORD_ID": str,
-            "ENTITY_TYPE": str,
-            "INTERNAL_ID": int,
-            "ENTITY_KEY": str,
-            "ENTITY_DESC": str,
-            "MATCH_KEY": str,
-            "MATCH_LEVEL": int,
-            "MATCH_LEVEL_CODE": str,
-            "ERRULE_CODE": str,
-            "LAST_SEEN_DT": str,
-        }],
+        "RECORDS": [
+            {
+                "DATA_SOURCE": str,
+                "RECORD_ID": str,
+                "ENTITY_TYPE": str,
+                "INTERNAL_ID": int,
+                "ENTITY_KEY": str,
+                "ENTITY_DESC": str,
+                "MATCH_KEY": str,
+                "MATCH_LEVEL": int,
+                "MATCH_LEVEL_CODE": str,
+                "ERRULE_CODE": str,
+                "LAST_SEEN_DT": str,
+            }
+        ],
     },
     "RELATED_ENTITIES": [{}],
 }
@@ -397,13 +401,17 @@ how_results_schema = {
         "RESOLUTION_STEPS": [{}],
         "FINAL_STATE": {
             "NEED_REEVALUATION": int,
-            "VIRTUAL_ENTITIES": [{
-                "VIRTUAL_ENTITY_ID": str,
-                "MEMBER_RECORDS": [{
-                    "INTERNAL_ID": int,
-                    "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}],
-                }],
-            }],
+            "VIRTUAL_ENTITIES": [
+                {
+                    "VIRTUAL_ENTITY_ID": str,
+                    "MEMBER_RECORDS": [
+                        {
+                            "INTERNAL_ID": int,
+                            "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}],
+                        }
+                    ],
+                }
+            ],
         },
     }
 }
@@ -414,55 +422,67 @@ interesting_entities_schema: Dict[Any, Any] = {
 
 network_schema = {
     "ENTITY_PATHS": [{"START_ENTITY_ID": int, "END_ENTITY_ID": int, "ENTITIES": []}],
-    "ENTITIES": [{
-        "RESOLVED_ENTITY": {
-            "ENTITY_ID": int,
-            "ENTITY_NAME": str,
-            "RECORD_SUMMARY": [{
-                "DATA_SOURCE": str,
-                "RECORD_COUNT": int,
-                "FIRST_SEEN_DT": str,
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "RECORD_SUMMARY": [
+                    {
+                        "DATA_SOURCE": str,
+                        "RECORD_COUNT": int,
+                        "FIRST_SEEN_DT": str,
+                        "LAST_SEEN_DT": str,
+                    }
+                ],
                 "LAST_SEEN_DT": str,
-            }],
-            "LAST_SEEN_DT": str,
-        },
-        "RELATED_ENTITIES": [{
-            "ENTITY_ID": int,
-            "MATCH_LEVEL": int,
-            "MATCH_LEVEL_CODE": str,
-            "MATCH_KEY": str,
-            "ERRULE_CODE": str,
-            "IS_DISCLOSED": int,
-            "IS_AMBIGUOUS": int,
-        }],
-    }],
+            },
+            "RELATED_ENTITIES": [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                }
+            ],
+        }
+    ],
 }
 
 
 path_schema = {
     "ENTITY_PATHS": [{"START_ENTITY_ID": int, "END_ENTITY_ID": int, "ENTITIES": [int]}],
-    "ENTITIES": [{
-        "RESOLVED_ENTITY": {
-            "ENTITY_ID": int,
-            "ENTITY_NAME": str,
-            "RECORD_SUMMARY": [{
-                "DATA_SOURCE": str,
-                "RECORD_COUNT": int,
-                "FIRST_SEEN_DT": str,
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "RECORD_SUMMARY": [
+                    {
+                        "DATA_SOURCE": str,
+                        "RECORD_COUNT": int,
+                        "FIRST_SEEN_DT": str,
+                        "LAST_SEEN_DT": str,
+                    }
+                ],
                 "LAST_SEEN_DT": str,
-            }],
-            "LAST_SEEN_DT": str,
-        },
-        "RELATED_ENTITIES": [{
-            "ENTITY_ID": int,
-            "MATCH_LEVEL": int,
-            "MATCH_LEVEL_CODE": str,
-            "MATCH_KEY": str,
-            "ERRULE_CODE": str,
-            "IS_DISCLOSED": int,
-            "IS_AMBIGUOUS": int,
-        }],
-    }],
+            },
+            "RELATED_ENTITIES": [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                }
+            ],
+        }
+    ],
 }
 
 
@@ -488,12 +508,14 @@ resolved_entity_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORD_SUMMARY": [{
-            "DATA_SOURCE": str,
-            "RECORD_COUNT": int,
-            "FIRST_SEEN_DT": str,
-            "LAST_SEEN_DT": str,
-        }],
+        "RECORD_SUMMARY": [
+            {
+                "DATA_SOURCE": str,
+                "RECORD_COUNT": int,
+                "FIRST_SEEN_DT": str,
+                "LAST_SEEN_DT": str,
+            }
+        ],
         "LAST_SEEN_DT": str,
         "RECORDS": [
             {
@@ -515,29 +537,33 @@ resolved_entity_schema = {
 }
 
 search_schema = {
-    "RESOLVED_ENTITIES": [{
-        "MATCH_INFO": {
-            "MATCH_LEVEL": int,
-            "MATCH_LEVEL_CODE": str,
-            "MATCH_KEY": str,
-            "ERRULE_CODE": str,
-            "FEATURE_SCORES": {},
-        },
-        "ENTITY": {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "FEATURES": {},
-                "RECORD_SUMMARY": [{
-                    "DATA_SOURCE": str,
-                    "RECORD_COUNT": int,
-                    "FIRST_SEEN_DT": str,
+    "RESOLVED_ENTITIES": [
+        {
+            "MATCH_INFO": {
+                "MATCH_LEVEL": int,
+                "MATCH_LEVEL_CODE": str,
+                "MATCH_KEY": str,
+                "ERRULE_CODE": str,
+                "FEATURE_SCORES": {},
+            },
+            "ENTITY": {
+                "RESOLVED_ENTITY": {
+                    "ENTITY_ID": int,
+                    "ENTITY_NAME": str,
+                    "FEATURES": {},
+                    "RECORD_SUMMARY": [
+                        {
+                            "DATA_SOURCE": str,
+                            "RECORD_COUNT": int,
+                            "FIRST_SEEN_DT": str,
+                            "LAST_SEEN_DT": str,
+                        }
+                    ],
                     "LAST_SEEN_DT": str,
-                }],
-                "LAST_SEEN_DT": str,
-            }
-        },
-    }]
+                }
+            },
+        }
+    ]
 }
 
 stats_schema = {
@@ -607,12 +633,14 @@ virtual_entity_schema = {
         "ENTITY_ID": int,
         "ENTITY_NAME": str,
         "FEATURES": {},
-        "RECORD_SUMMARY": [{
-            "DATA_SOURCE": str,
-            "RECORD_COUNT": int,
-            "FIRST_SEEN_DT": str,
-            "LAST_SEEN_DT": str,
-        }],
+        "RECORD_SUMMARY": [
+            {
+                "DATA_SOURCE": str,
+                "RECORD_COUNT": int,
+                "FIRST_SEEN_DT": str,
+                "LAST_SEEN_DT": str,
+            }
+        ],
         "LAST_SEEN_DT": str,
         "RECORDS": [
             {
@@ -630,75 +658,87 @@ virtual_entity_schema = {
 }
 
 why_entities_results_schema = {
-    "WHY_RESULTS": [{
-        "ENTITY_ID": int,
-        "ENTITY_ID_2": int,
-        "MATCH_INFO": {},
-    }],
-    "ENTITIES": [{
-        "RESOLVED_ENTITY": {
+    "WHY_RESULTS": [
+        {
             "ENTITY_ID": int,
-            "ENTITY_NAME": str,
-            "FEATURES": {},
-            "RECORD_SUMMARY": [{}],
-            "LAST_SEEN_DT": str,
-            "RECORDS": [{
-                "DATA_SOURCE": str,
-                "RECORD_ID": str,
-                "ENTITY_TYPE": str,
-                "INTERNAL_ID": int,
-                "ENTITY_KEY": str,
-                "ENTITY_DESC": str,
-                "MATCH_KEY": str,
-                "MATCH_LEVEL": int,
-                "MATCH_LEVEL_CODE": str,
-                "ERRULE_CODE": str,
+            "ENTITY_ID_2": int,
+            "MATCH_INFO": {},
+        }
+    ],
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "FEATURES": {},
+                "RECORD_SUMMARY": [{}],
                 "LAST_SEEN_DT": str,
-                "FEATURES": [{}],
-            }],
-        },
-        "RELATED_ENTITIES": [{}],
-    }],
+                "RECORDS": [
+                    {
+                        "DATA_SOURCE": str,
+                        "RECORD_ID": str,
+                        "ENTITY_TYPE": str,
+                        "INTERNAL_ID": int,
+                        "ENTITY_KEY": str,
+                        "ENTITY_DESC": str,
+                        "MATCH_KEY": str,
+                        "MATCH_LEVEL": int,
+                        "MATCH_LEVEL_CODE": str,
+                        "ERRULE_CODE": str,
+                        "LAST_SEEN_DT": str,
+                        "FEATURES": [{}],
+                    }
+                ],
+            },
+            "RELATED_ENTITIES": [{}],
+        }
+    ],
 }
 
 
 why_entity_results_schema = {
-    "WHY_RESULTS": [{
-        "INTERNAL_ID": int,
-        "ENTITY_ID": int,
-        "FOCUS_RECORDS": [{}],
-        "MATCH_INFO": {
-            "WHY_KEY": str,
-            "WHY_ERRULE_CODE": str,
-            "MATCH_LEVEL_CODE": str,
-            "CANDIDATE_KEYS": {},
-            "FEATURE_SCORES": {},
-        },
-    }],
-    "ENTITIES": [{
-        "RESOLVED_ENTITY": {
+    "WHY_RESULTS": [
+        {
+            "INTERNAL_ID": int,
             "ENTITY_ID": int,
-            "ENTITY_NAME": str,
-            "FEATURES": {},
-            "RECORD_SUMMARY": [{}],
-            "LAST_SEEN_DT": str,
-            "RECORDS": [{
-                "DATA_SOURCE": str,
-                "RECORD_ID": str,
-                "ENTITY_TYPE": str,
-                "INTERNAL_ID": int,
-                "ENTITY_KEY": str,
-                "ENTITY_DESC": str,
-                "MATCH_KEY": str,
-                "MATCH_LEVEL": int,
+            "FOCUS_RECORDS": [{}],
+            "MATCH_INFO": {
+                "WHY_KEY": str,
+                "WHY_ERRULE_CODE": str,
                 "MATCH_LEVEL_CODE": str,
-                "ERRULE_CODE": str,
+                "CANDIDATE_KEYS": {},
+                "FEATURE_SCORES": {},
+            },
+        }
+    ],
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "FEATURES": {},
+                "RECORD_SUMMARY": [{}],
                 "LAST_SEEN_DT": str,
-                "FEATURES": [{}],
-            }],
-        },
-        "RELATED_ENTITIES": [{}],
-    }],
+                "RECORDS": [
+                    {
+                        "DATA_SOURCE": str,
+                        "RECORD_ID": str,
+                        "ENTITY_TYPE": str,
+                        "INTERNAL_ID": int,
+                        "ENTITY_KEY": str,
+                        "ENTITY_DESC": str,
+                        "MATCH_KEY": str,
+                        "MATCH_LEVEL": int,
+                        "MATCH_LEVEL_CODE": str,
+                        "ERRULE_CODE": str,
+                        "LAST_SEEN_DT": str,
+                        "FEATURES": [{}],
+                    }
+                ],
+            },
+            "RELATED_ENTITIES": [{}],
+        }
+    ],
 }
 
 # -----------------------------------------------------------------------------
@@ -729,7 +769,7 @@ def test_add_truthset_datasources(engine_vars) -> None:
     json_config = g2_config.save(config_handle)
     new_config_id = g2_configmgr.add_config(json_config, "Test")
     g2_configmgr.set_default_config_id(new_config_id)
-    g2_engine.reinit(new_config_id)
+    g2_engine.reinitialize(new_config_id)
 
 
 def test_add_truthset_data(engine_vars):
@@ -1976,21 +2016,21 @@ def test_init_and_destroy(engine_vars) -> None:
     module_name = "Test"
     ini_params = engine_vars["INI_PARAMS"]
     g2_engine_init_destroy = g2engine.G2Engine()
-    g2_engine_init_destroy.init(module_name, ini_params)
+    g2_engine_init_destroy.initialize(module_name, ini_params)
     g2_engine_init_destroy.destroy()
 
 
 # TODO Add test for constructor to take init_config_id when modified g2engine.py
-def test_init_with_config_id(engine_vars) -> None:
-    """Test init_with_config_id."""
-    module_name = "Test"
-    ini_params = engine_vars["INI_PARAMS"]
-    g2_engine_2 = g2engine.G2Engine()
-    g2_engine_2.init(module_name, ini_params)
-    init_config_id = g2_engine_2.get_active_config_id()
-    g2_engine_2.destroy()
-    g2_engine_2 = g2engine.G2Engine()
-    g2_engine_2.init_with_config_id(module_name, ini_params, init_config_id)
+# def test_init_with_config_id(engine_vars) -> None:
+#     """Test init_with_config_id."""
+#     module_name = "Test"
+#     ini_params = engine_vars["INI_PARAMS"]
+#     g2_engine_2 = g2engine.G2Engine()
+#     g2_engine_2.initialize(module_name, ini_params)
+#     init_config_id = g2_engine_2.get_active_config_id()
+#     g2_engine_2.destroy()
+#     g2_engine_2 = g2engine.G2Engine()
+#     g2_engine_2.init_with_config_id(module_name, ini_params, init_config_id)
 
 
 # NOTE Having issues with this, coming back to...

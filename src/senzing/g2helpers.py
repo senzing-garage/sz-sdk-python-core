@@ -26,7 +26,7 @@ from ctypes import (
 )
 from functools import wraps
 from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Type, TypeVar
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -97,23 +97,8 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
-# def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
-#     """Modify a ctypes.ArgumentError to a TypeError."""
-
-#     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
-#         try:
-#             result = function_to_decorate(*args, **kwargs)
-#         except ArgumentError as err:
-#             raise TypeError() from err
-#         except Exception as err:
-#             raise err
-#         return result
-
-#     return inner_function
-
-
-def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
-    """Modify a ctypes.ArgumentError to a TypeError."""
+def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
+    """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs."""
 
     @wraps(function_to_decorate)
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -127,9 +112,9 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
             basic_raise_msg = (
                 f"wrong type for an argument when calling {module_name}.{method_name}"
             )
-            # NOTE Checking can find the information from ctypes.Argument error, works today but could change in future?
+            # NOTE Checking can find the information from ctypes.Argument error, works currently but could change in future?
             # NOTE If can locate what we are looking for from ctypes.ArgumentError can give a more detailed and useful exception message
-            # NOTE ctypes.ArgumentError: argument 2: TypeError: wrong type
+            # NOTE Current message from ctypes: ctypes.ArgumentError: argument 2: TypeError: wrong type
             if len(err.args) >= 1:
                 bad_arg_match = re.match(r"argument (\d+):", err.args[0])
             if bad_arg_match:
@@ -153,6 +138,7 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
                     f"wrong type for argument {bad_arg_tuple[0]}, expected {bad_arg_tuple[1]} but received {bad_arg_type.__name__} when calling {module_name}.{method_name}"
                 ) from err
             raise TypeError() from err
+        # NOTE Do we need to catch anything else? Has a code smell about it
         except Exception as err:
             raise err
         return result
@@ -165,16 +151,17 @@ def cast_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, 
 # -----------------------------------------------------------------------------
 
 
-def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
+def as_str(candidate_value: str | Dict[Any, Any]) -> str:
     """
     Given a string or dict, return a str.
 
     Args:
-        candidate_value (Union[str, Dict[Any, Any]]): _description_
+        candidate_value str | Dict[Any, Any]: _description_
 
     Returns:
         str: The string representation of the candidate_value
     """
+    # NOTE Testing
     if isinstance(candidate_value, dict):
         if ORJSON_AVAILABLE:
             return orjson.dumps(candidate_value).decode()  # type: ignore[reportUnboundVariable]
@@ -205,6 +192,8 @@ def as_uintptr_t(candidate_value: int) -> Any:
     return result
 
 
+# NOTE Believe not needed with catch_ctypes_exceptions decorator and this code would
+# NOTE would return ValueErrors if a str with any non digit characters was passed in
 def as_c_int(candidate_value: Any) -> int:
     """
     Internal processing function.
@@ -269,6 +258,9 @@ def as_python_int(candidate_value: Any) -> int:
     """
 
     result = cast(candidate_value, c_void_p).value
+    # TODO For methods using this could we get a non zero return code and return None?
+    # TODO Would never reach the return as_python_int(result.response) is non zero return code
+    # TODO Consequences of returning a 0 which wouldn't be a valid handle?
     if result is None:
         result = 0
     return result

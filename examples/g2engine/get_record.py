@@ -3,7 +3,7 @@
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-DATA_SOURCE_CODE = "TEST"
+DATA_SOURCE_CODE = "TEST1"
 INSTANCE_NAME = "Example"
 RECORD_ID = "Example-1"
 SETTINGS = {
@@ -17,7 +17,7 @@ SETTINGS = {
 
 try:
     g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
-    result = g2_engine.get_record(DATA_SOURCE_CODE, RECORD_ID)
+    result = g2_engine.get_record(DATA_SOURCE_CODE, RECORD_ID, 1)
     print(result)
 except G2Exception as err:
     print(err)

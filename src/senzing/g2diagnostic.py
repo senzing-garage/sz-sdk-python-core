@@ -36,7 +36,7 @@ from .g2helpers import (
     as_c_char_p,
     as_c_int,
     as_str,
-    cast_ctypes_exceptions,
+    catch_ctypes_exceptions,
     find_file_in_path,
 )
 from .g2version import is_supported_senzingapi_version
@@ -281,7 +281,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    @cast_ctypes_exceptions
+    @catch_ctypes_exceptions
     def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
         try:
@@ -374,7 +374,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
         if result < 0:
             raise self.new_exception(4057, result)
 
-    @cast_ctypes_exceptions
+    @catch_ctypes_exceptions
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(init_config_id)
         if result < 0:

@@ -207,7 +207,7 @@ class G2EngineAbstract(ABC):
             PREFIX
             + "G2_whyRecords_V2({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
         ),
-        # TODO why_record_in_entity
+        # TODO why_record_in_entity when it's been added
         # TODO This text doesn't make sense without specifying there are 2 ways to init if keeping both
         4077: (
             PREFIX
@@ -1038,9 +1038,6 @@ class G2EngineAbstract(ABC):
         )
         """ """
 
-    # TODO make a return_dict method? If you get as a dict and send to processRedoRecord it then has to be converted from dict to str again - pointless
-    # TODO take into consideration those pesky REPAIR_ENTITY records! Do they still exist in V4?
-    # TODO {'UMF_PROC': {'NAME': 'REPAIR_ENTITY', 'PARAMS': [{'PARAM': {'NAME': 'ENTITY_ID', 'VALUE': '21898660'}}]}}
     @abstractmethod
     def get_redo_record(self, **kwargs: Any) -> str:
         """
@@ -1094,7 +1091,7 @@ class G2EngineAbstract(ABC):
     def get_virtual_entity_by_record_id(
         self,
         record_list: Union[str, Dict[Any, Any]],
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1128,7 +1125,7 @@ class G2EngineAbstract(ABC):
     def get_virtual_entity_by_record_id_return_dict(
         self,
         record_list: Union[str, Dict[Any, Any]],
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document

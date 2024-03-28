@@ -12,7 +12,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-RECORD_DEFINITION_LIST = {
+RECORD_LIST = {
     "RECORDS": [
         {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
         {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
@@ -22,9 +22,7 @@ RECORD_DEFINITION_LIST = {
 # TODO Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
 try:
     g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
-    result = g2_engine.get_virtual_entity_by_record_id_return_dict(
-        RECORD_DEFINITION_LIST
-    )
+    result = g2_engine.get_virtual_entity_by_record_id_return_dict(RECORD_LIST)
     print(result)
 except G2Exception as err:
     print(err)
