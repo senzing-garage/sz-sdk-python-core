@@ -104,7 +104,8 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
 
         try:
-            result = function_to_decorate(*args, **kwargs)
+            # result = function_to_decorate(*args, **kwargs)
+            return function_to_decorate(*args, **kwargs)
         except ArgumentError as err:
             bad_arg_match = None
             method_name = function_to_decorate.__name__
@@ -141,7 +142,7 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
         # NOTE Do we need to catch anything else? Has a code smell about it
         except Exception as err:
             raise err
-        return result
+        # return result
 
     return inner_function
 

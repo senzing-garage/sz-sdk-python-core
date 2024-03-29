@@ -908,7 +908,6 @@ class G2Engine(G2EngineAbstract):
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    # TODO Modify in g2exception and abstract module to handle flags in messages from the args?
     def new_exception(self, error_id: int, *args: Any) -> Exception:
         """
         Generate a new exception based on the error_id.
@@ -989,7 +988,6 @@ class G2Engine(G2EngineAbstract):
             # TODO Check others like this that were looking for result.return_code by forcing non zero return code
             # raise self.new_exception(4007, result.return_code)
             raise self.new_exception(4007, result)
-        # return as_python_int(result)
         return result
 
     @catch_ctypes_exceptions

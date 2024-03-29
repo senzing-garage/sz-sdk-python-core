@@ -41,7 +41,7 @@ class G2EngineAbstract(ABC):
     # -------------------------------------------------------------------------
 
     # TODO Change to f-strings?
-    # TODO Change to be same as g2Product.G2Engine_<method_name()>
+    # TODO Change to be same as g2Product.G2Engine_<method_name()?
     # TODO Reorder and sort - some APIs are going away and search was added to end temporarily
     # TODO Does it make sense to have G2_, that isn't the method name
     PREFIX = "g2engine."
