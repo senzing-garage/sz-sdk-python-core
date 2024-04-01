@@ -4,6 +4,7 @@ It is a wrapper over Senzing's G2Engine C binding.
 It conforms to the interface specified in
 `g2engine_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2engine_abstract.py>`_
 
+# TODO: Also pythonpath and engine vars?
 To use g2engine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
@@ -15,6 +16,10 @@ Example:
 """
 
 # pylint: disable=R0903,C0302,R0915
+# AC - Temp disables to get changes in for move to senzing garage
+# pylint: disable=W0511,W1113,W0613
+# NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
+from __future__ import annotations
 
 import os
 from ctypes import (
@@ -24,17 +29,25 @@ from ctypes import (
     c_char_p,
     c_int,
     c_longlong,
-    c_size_t,
     c_uint,
     c_void_p,
     cdll,
 )
-from typing import Any, Tuple
+from typing import Any, Dict, Optional
 
 from .g2engine_abstract import G2EngineAbstract
 from .g2engineflags import G2EngineFlags
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import find_file_in_path
+from .g2helpers import (
+    FreeCResources,
+    as_c_char_p,
+    as_python_int,
+    as_python_str,
+    as_str,
+    as_uintptr_t,
+    catch_ctypes_exceptions,
+    find_file_in_path,
+)
 from .g2version import is_supported_senzingapi_version
 
 # Metadata
@@ -44,8 +57,26 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
 
-SENZING_PRODUCT_ID = "5043"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
+SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+
+# FIXME CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
+# TODO Investigate the error messages not showing correct location, because of wrapped methods?
+CALLER_SKIP = 5  # Number of stack frames to skip when reporting location in Exception.
+
+# # -----------------------------------------------------------------------------
+# # Helper Classes
+# # -----------------------------------------------------------------------------
+# # TODO Should this go in helpers
+# class AsDict(str):
+#     """ """
+
+#     def __init__(self, json_string: str):
+#         self.json_string = json_string
+
+#     # json.loads() is always Any
+#     def as_dict(self) -> Any:
+#         return json.loads(self.json_string)
+
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -177,13 +208,8 @@ class G2FindPathIncludingSourceByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_V2_result"""
 
 
-class G2GetActiveConfigIDResult(Structure):
+class G2GetActiveConfigIDResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getActiveConfigID_result"""
-
-    _fields_ = [
-        ("config_id", c_longlong),
-        ("return_code", c_longlong),
-    ]
 
 
 class G2GetEntityByEntityIDResult(G2ResponseReturnCodeResult):
@@ -194,7 +220,7 @@ class G2GetEntityByEntityIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getEntityByEntityID_V2_result"""
 
 
-class G2GetEntityByRecordIDResult(G2ResponseReturnCodeResult):
+class G2GetEntityByRecordIDResult(Structure):
     """In golang_helpers.h G2_getEntityByRecordID_result"""
 
 
@@ -263,6 +289,10 @@ class G2SearchByAttributesV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_searchByAttributes_V2_result"""
 
 
+class G2SearchByAttributesV3Result(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2_searchByAttributes_V2_result"""
+
+
 class G2StatsResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_stats_result"""
 
@@ -304,6 +334,9 @@ class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
 # -----------------------------------------------------------------------------
 
 
+# TODO init_config_id ?
+# TODO Optional on Parameters needs to be explained for different init methods
+# TODO Raises could be more granular
 class G2Engine(G2EngineAbstract):
     """
     The `init` method initializes the Senzing G2Engine object.
@@ -355,13 +388,14 @@ class G2Engine(G2EngineAbstract):
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
+    # TODO Check all error codes
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: str = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str | Dict[Any, Any] = "",
         verbose_logging: int = 0,
+        config_id: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -373,13 +407,10 @@ class G2Engine(G2EngineAbstract):
 
         # Verify parameters.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(9999, module_name, ini_params)
-
-        self.ini_params = ini_params
-        self.module_name = module_name
-        self.init_config_id = init_config_id
+        self.auto_init = False
+        self.settings = as_str(settings)
+        self.config_id = config_id
+        self.instance_name = instance_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
@@ -395,6 +426,7 @@ class G2Engine(G2EngineAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
+            # TODO Additional explanation e.g. is LD_LIBRARY_PATH set
             raise G2Exception("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -404,7 +436,7 @@ class G2Engine(G2EngineAbstract):
             c_char_p,
             c_char_p,
             c_char_p,
-            c_char_p,
+            # c_char_p,
         ]
         self.library_handle.G2_addRecord.restype = c_int
         # self.library_handle.G2_addRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
@@ -412,6 +444,7 @@ class G2Engine(G2EngineAbstract):
             c_char_p,
             c_char_p,
             c_char_p,
+            # c_char_p,
             c_longlong,
         ]
         self.library_handle.G2_addRecordWithInfo_helper.restype = (
@@ -421,17 +454,25 @@ class G2Engine(G2EngineAbstract):
         # self.library_handle.G2_addRecordWithInfoWithReturnedRecordID.restype = c_int
         # self.library_handle.G2_addRecordWithReturnedRecordID.argtypes = [c_char_p, c_char_p, c_char_p, c_char_p, c_size_t]
         # self.library_handle.G2_checkRecord.argtypes = [ c_char_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_clearLastException.argtypes = []
-        self.library_handle.G2_clearLastException.restype = None
+        # TODO Remove
+        # self.library_handle.G2_clearLastException.argtypes = []
+        # self.library_handle.G2_clearLastException.restype = None
         # self.library_handle.G2_closeExport.argtypes = [c_void_p]
         # self.library_handle.G2_closeExport.restype = c_int
         self.library_handle.G2_closeExport_helper.argtypes = [
             POINTER(c_uint),
-        ]  # TODO: This may not be correct.
+        ]
         self.library_handle.G2_closeExport_helper.restype = c_longlong
-        # self.library_handle.G2_deleteRecordWithInfo.argtypes = [c_char_p, c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [
+        # NOTE Added
+        self.library_handle.G2_countRedoRecords.argtypes = []
+        self.library_handle.G2_countRedoRecords.restype = c_longlong
+        self.library_handle.G2_deleteRecord.argtypes = [
             c_char_p,
+            c_char_p,
+            # c_char_p,
+        ]
+        self.library_handle.G2_deleteRecord.restype = c_int
+        self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
@@ -439,13 +480,8 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_deleteRecordWithInfo_helper.restype = (
             G2DeleteRecordWithInfoResult
         )
-        # self.library_handle.G2_exportConfig.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_exportConfig_helper.argtypes = []
-        self.library_handle.G2_exportConfig_helper.restype = G2ExportConfigResult
-        self.library_handle.G2_exportConfigAndConfigID_helper.argtypes = []
-        self.library_handle.G2_exportConfigAndConfigID_helper.restype = (
-            G2ExportConfigAndConfigIDResult
-        )
+        self.library_handle.G2_destroy.argtypes = []
+        self.library_handle.G2_destroy.restype = c_longlong
         # self.library_handle.G2_exportCSVEntityReport.argtypes = [c_char_p, c_longlong, POINTER(c_void_p)]
         # self.library_handle.G2_exportCSVEntityReport.restype = c_int
         self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [
@@ -465,27 +501,28 @@ class G2Engine(G2EngineAbstract):
         # self.library_handle.G2_fetchNext.restype = c_int
         self.library_handle.G2_fetchNext_helper.argtypes = [
             POINTER(c_uint),
-        ]  # TODO: This may not be correct.
+        ]
         self.library_handle.G2_fetchNext_helper.restype = G2FetchNextResult
         # self.library_handle.G2_findInterestingEntitiesByEntityID.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2_findInterestingEntitiesByEntityID.restype = c_int
-        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.argtypes = [
-            c_longlong,
-            c_longlong,
-        ]
-        self.library_handle.G2_findInterestingEntitiesByEntityID_helper.restype = (
-            G2FindInterestingEntitiesByEntityIDResult
-        )
-        # self.library_handle.G2_findInterestingEntitiesByRecordID.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2_findInterestingEntitiesByRecordID.restype = c_int
-        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.argtypes = [
-            c_char_p,
-            c_char_p,
-            c_longlong,
-        ]
-        self.library_handle.G2_findInterestingEntitiesByRecordID_helper.restype = (
-            G2FindInterestingEntitiesByRecordIDResult
-        )
+        # TODO Completely remove?
+        # self.library_handle.G2_findInterestingEntitiesByEntityID_helper.argtypes = [
+        #     c_longlong,
+        #     c_longlong,
+        # ]
+        # self.library_handle.G2_findInterestingEntitiesByEntityID_helper.restype = (
+        #     G2FindInterestingEntitiesByEntityIDResult
+        # )
+        # # self.library_handle.G2_findInterestingEntitiesByRecordID.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
+        # # self.library_handle.G2_findInterestingEntitiesByRecordID.restype = c_int
+        # self.library_handle.G2_findInterestingEntitiesByRecordID_helper.argtypes = [
+        #     c_char_p,
+        #     c_char_p,
+        #     c_longlong,
+        # ]
+        # self.library_handle.G2_findInterestingEntitiesByRecordID_helper.restype = (
+        #     G2FindInterestingEntitiesByRecordIDResult
+        # )
         self.library_handle.G2_findNetworkByEntityID_helper.argtypes = [
             c_char_p,
             c_longlong,
@@ -671,7 +708,10 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_getActiveConfigID_helper.restype = (
             G2GetActiveConfigIDResult
         )
-        self.library_handle.G2_getEntityByEntityID_helper.argtypes = [c_longlong]
+        self.library_handle.G2_getEntityByEntityID_helper.argtypes = [
+            c_longlong,
+            c_longlong,
+        ]
         self.library_handle.G2_getEntityByEntityID_helper.restype = (
             G2GetEntityByEntityIDResult
         )
@@ -701,13 +741,14 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_getEntityByRecordID_V2_helper.restype = (
             G2GetEntityByRecordIDV2Result
         )
-        self.library_handle.G2_getLastException.argtypes = [
-            POINTER(c_char),
-            c_size_t,
-        ]
-        self.library_handle.G2_getLastException.restype = c_longlong
-        self.library_handle.G2_getLastExceptionCode.argtypes = []
-        self.library_handle.G2_getLastExceptionCode.restype = c_int
+        # self.library_handle.G2_getLastException.argtypes = [
+        #     POINTER(c_char),
+        #     c_size_t,
+        # ]
+        # TODO Remove
+        # self.library_handle.G2_getLastException.restype = c_longlong
+        # self.library_handle.G2_getLastExceptionCode.argtypes = []
+        # self.library_handle.G2_getLastExceptionCode.restype = c_int
         self.library_handle.G2_getRecord_helper.argtypes = [c_char_p, c_char_p]
         self.library_handle.G2_getRecord_helper.restype = G2GetRecordResult
         # self.library_handle.G2_getRecord_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
@@ -760,14 +801,6 @@ class G2Engine(G2EngineAbstract):
             c_longlong,
             c_int,
         ]
-        self.library_handle.G2_process.argtypes = [c_char_p]
-        self.library_handle.G2_process.restype = c_int
-        # self.library_handle.G2_processRedoRecord.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2_processRedoRecord.restype = c_int
-        # self.library_handle.G2_processWithInfo.argtypes = [c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        self.library_handle.G2_processWithInfo_helper.argtypes = [c_char_p, c_longlong]
-        self.library_handle.G2_processWithInfo_helper.restype = G2ProcessWithInfoResult
-        # self.library_handle.G2_processWithResponseResize.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_reevaluateEntity.argtypes = [c_longlong, c_longlong]
         # self.library_handle.G2_reevaluateEntityWithInfo.argtypes = [c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_reevaluateEntityWithInfo_helper.argtypes = [
@@ -798,7 +831,6 @@ class G2Engine(G2EngineAbstract):
             c_char_p,
             c_char_p,
             c_char_p,
-            c_char_p,
             c_longlong,
         ]
         self.library_handle.G2_replaceRecordWithInfo_helper.restype = (
@@ -816,6 +848,14 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_searchByAttributes_V2_helper.restype = (
             G2SearchByAttributesV2Result
         )
+        self.library_handle.G2_searchByAttributes_V3_helper.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+        ]
+        self.library_handle.G2_searchByAttributes_V3_helper.restype = (
+            G2SearchByAttributesV3Result
+        )
         # self.library_handle.G2_searchByAttributes_V3.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2_stats.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_stats_helper.argtypes = []
@@ -830,38 +870,6 @@ class G2Engine(G2EngineAbstract):
             c_longlong,
         ]
         self.library_handle.G2_whyEntities_V2_helper.restype = G2WhyEntitiesV2Result
-        self.library_handle.G2_whyEntityByEntityID_helper.argtypes = [c_longlong]
-        self.library_handle.G2_whyEntityByEntityID_helper.restype = (
-            G2WhyEntityByEntityIDResult
-        )
-        # self.library_handle.G2_whyEntityByEntityID_V2.argtypes = [c_longlong, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2_whyEntityByEntityID_V2.restype = c_int
-        self.library_handle.G2_whyEntityByEntityID_V2_helper.argtypes = [
-            c_longlong,
-            c_longlong,
-        ]
-        self.library_handle.G2_whyEntityByEntityID_V2_helper.restype = (
-            G2WhyEntityByEntityIDV2Result
-        )
-        self.library_handle.G2_whyEntityByRecordID_helper.argtypes = [
-            c_char_p,
-            c_char_p,
-        ]
-        self.library_handle.G2_whyEntityByRecordID_helper.restype = (
-            G2WhyEntityByRecordIDResult
-        )
-        # self.library_handle.G2_whyEntityByRecordID_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2_whyEntityByRecordID_V2.restype = c_int
-        self.library_handle.G2_whyEntityByRecordID_V2_helper.argtypes = [
-            c_char_p,
-            c_char_p,
-            c_longlong,
-        ]
-        self.library_handle.G2_whyEntityByRecordID_V2_helper.restype = (
-            G2WhyEntityByRecordIDV2Result
-        )
-        # self.library_handle.G2_whyRecordInEntity_V2.argtypes = [c_char_p, c_char_p, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2_whyRecordInEntity_V2.restype = c_int
         self.library_handle.G2_whyRecords_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -881,27 +889,19 @@ class G2Engine(G2EngineAbstract):
         self.library_handle.G2_whyRecords_V2_helper.restype = G2WhyRecordsV2Result
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        # Initialize Senzing engine.
-
-        if len(module_name) > 0:
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+        # TODO Need to add in config_id
+        # Optionally, initialize Senzing engine.
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4077, self.instance_name, self.settings)
+        if len(self.instance_name) > 0:
+            self.auto_init = True
+            self.initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
-
-    # -------------------------------------------------------------------------
-    # Development methods - to be removed after initial development
-    # -------------------------------------------------------------------------
-
-    def fake_g2engine(self, *args: Any, **kwargs: Any) -> None:
-        """
-        TODO: Remove once SDK methods have been implemented.
-
-        :meta private:
-        """
-        if len(args) + len(kwargs) > 2000:
-            print(self.noop)
+        if self.auto_init:
+            self.destroy()
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -927,669 +927,790 @@ class G2Engine(G2EngineAbstract):
     # G2Engine methods
     # -------------------------------------------------------------------------
 
+    @catch_ctypes_exceptions
     def add_record(
         self,
         data_source_code: str,
         record_id: str,
-        json_data: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
+        record_definition: str | Dict[Any, Any],
+        # TODO Is 0 correct for flags to be none? This will change when have new flag bits - works for now
         flags: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
-
-    def add_record_with_info(
-        self,
-        data_source_code: str,
-        record_id: str,
-        json_data: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
-        flags: int = 0,
+        # TODO Code smell and pylint reports it. Investigate how to improve
+        # *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
-        return "string"
+        if not flags:
+            result = self.library_handle.G2_addRecord(
+                as_c_char_p(data_source_code),
+                as_c_char_p(record_id),
+                as_c_char_p(as_str(record_definition)),
+            )
+            if result != 0:
+                raise self.new_exception(
+                    4001,
+                    data_source_code,
+                    record_id,
+                    record_definition,
+                    result,
+                )
+            return "{}"
 
-    def close_export(self, response_handle: int, **kwargs: Any) -> None:
-        self.fake_g2engine(response_handle)
+        result = self.library_handle.G2_addRecordWithInfo_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            as_c_char_p(as_str(record_definition)),
+            flags,
+        )
 
-    def count_redo_records(self, **kwargs: Any) -> int:
-        self.fake_g2engine()
-        return 0
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4002,
+                    data_source_code,
+                    record_id,
+                    record_definition,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
+    # TODO Test @catch_ctypes_exceptions if int isn't sent
+    def close_export(self, export_handle: int, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2_closeExport(as_uintptr_t(export_handle))
+        if result != 0:
+            raise self.new_exception(4006, result)
+
+    def count_redo_records(self, *args: Any, **kwargs: Any) -> int:
+        result: int = self.library_handle.G2_countRedoRecords()
+        # NOTE If result >= 0 call was successful
+        if result < 0:
+            # TODO Check others like this that were looking for result.return_code by forcing non zero return code
+            # raise self.new_exception(4007, result.return_code)
+            raise self.new_exception(4007, result)
+        return result
+
+    @catch_ctypes_exceptions
     def delete_record(
         self,
         data_source_code: str,
         record_id: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
-        **kwargs: Any,
-    ) -> None:
-        self.fake_g2engine(data_source_code, record_id, load_id)
-
-    def delete_record_with_info(
-        self,
-        data_source_code: str,
-        record_id: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id, load_id, flags)
-        return "string"
+        if not flags:
+            result = self.library_handle.G2_deleteRecord(
+                as_c_char_p(data_source_code),
+                as_c_char_p(record_id),
+            )
+            if result != 0:
+                raise self.new_exception(
+                    4008,
+                    data_source_code,
+                    record_id,
+                    result,
+                )
+            return "{}"
 
-    def destroy(self, **kwargs: Any) -> None:
-        self.fake_g2engine()
+        result = self.library_handle.G2_deleteRecordWithInfo_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            flags,
+        )
 
-    def export_config(self, **kwargs: Any) -> str:
-        self.fake_g2engine()
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4009,
+                    data_source_code,
+                    record_id,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
-    def export_config_and_config_id(self, **kwargs: Any) -> Tuple[str, int]:
-        self.fake_g2engine()
-        return "string", 0
+    def destroy(self, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2_destroy()
+        if result != 0:
+            raise self.new_exception(4010, result)
 
+    @catch_ctypes_exceptions
     def export_csv_entity_report(
         self,
+        # TODO add default col list and add information to abstract docstring?
         csv_column_list: str,
         flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> int:
-        self.fake_g2engine(csv_column_list, flags)
-        return 0
+        result = self.library_handle.G2_exportCSVEntityReport_helper(
+            as_c_char_p(csv_column_list), flags
+        )
+        if result.return_code != 0:
+            raise self.new_exception(4013, csv_column_list, flags, result.return_code)
+        return as_python_int(result.export_handle)
 
     def export_json_entity_report(
-        self, flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, **kwargs: Any
+        self,
+        flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        *args: Any,
+        **kwargs: Any,
     ) -> int:
-        self.fake_g2engine(flags)
-        return 0
+        result = self.library_handle.G2_exportJSONEntityReport_helper(flags)
+        if result.return_code != 0:
+            raise self.new_exception(4014, flags, result.return_code)
+        return as_python_int(result.export_handle)
 
-    def fetch_next(self, response_handle: int, **kwargs: Any) -> str:
-        self.fake_g2engine(response_handle)
-        return "string"
+    def fetch_next(self, export_handle: int, *args: Any, **kwargs: Any) -> str:
+        result = self.library_handle.G2_fetchNext_helper(as_uintptr_t(export_handle))
+        if result.return_code != 0:
+            raise self.new_exception(4015, export_handle, result.return_code)
+        return as_python_str(result.response)
 
-    def find_interesting_entities_by_entity_id(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> str:
-        self.fake_g2engine(entity_id, flags)
-        return "string"
+    # NOTE No examples of this, early adopter function and needs manual additions to Sz config to work
+    # NOTE Commented out for now to discuss if worth leaving in uncommented if a customer does want to use
+    # def find_interesting_entities_by_entity_id(
+    #     self, entity_id: int, flags: int = 0, *args: Any, **kwargs: Any
+    # ) -> str:
+    #     result = self.library_handle.G2_findInterestingEntitiesByEntityID_helper(
+    #         entity_id, flags
+    #     )
 
-    def find_interesting_entities_by_record_id(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(data_source_code, record_id, flags)
-        return "string"
+    #     with FreeCResources(self.library_handle, result.response):
+    #         if result.return_code != 0:
+    #             raise self.new_exception(4016, entity_id, result.return_code)
+    #         return as_python_str(result.response)
 
-    def find_network_by_entity_id_v2(
-        self,
-        entity_list: str,
-        max_degree: int,
-        build_out_degree: int,
-        max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            entity_list, max_degree, build_out_degree, max_entities, flags
-        )
-        return "string"
+    # NOTE No examples of this, early adopter function and needs manual additions to Sz config to work
+    # NOTE Commented out for now to discuss if worth leaving in uncommented if a customer does want to use
+    # def find_interesting_entities_by_record_id(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = 0,
+    #     *args: Any,
+    #     **kwargs: Any,
+    # ) -> str:
+    #     result = self.library_handle.G2_findInterestingEntitiesByRecordID_helper(
+    #         as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+    #     )
 
+    #     with FreeCResources(self.library_handle, result.response):
+    #         if result.return_code != 0:
+    #             raise self.new_exception(
+    #                 4017, data_source_code, record_id, flags, result.return_code
+    #             )
+    #         return as_python_str(result.response)
+
+    # NOTE Currently not working, waiting on Jae to finish the V4 merge cleanup
+    @catch_ctypes_exceptions
     def find_network_by_entity_id(
         self,
-        entity_list: str,
-        max_degree: int,
+        # TODO Take entity_list as a comma separated string, tuple, other\? Others like this
+        entity_list: str | Dict[Any, Any],
+        max_degrees: int,
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(entity_list, max_degree, build_out_degree, max_entities)
-        return "string"
-
-    def find_network_by_record_id_v2(
-        self,
-        record_list: str,
-        max_degree: int,
-        build_out_degree: int,
-        max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            record_list, max_degree, build_out_degree, max_entities, flags
+        result = self.library_handle.G2_findNetworkByEntityID_V2_helper(
+            as_c_char_p(as_str(entity_list)),
+            max_degrees,
+            build_out_degree,
+            max_entities,
+            flags,
         )
-        return "string"
 
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4018,
+                    entity_list,
+                    max_degrees,
+                    build_out_degree,
+                    max_entities,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+    # NOTE Currently not working, waiting on Jae to finish the V4 merge cleanup
+    @catch_ctypes_exceptions
     def find_network_by_record_id(
         self,
-        record_list: str,
-        max_degree: int,
+        record_list: str | Dict[Any, Any],
+        max_degrees: int,
         build_out_degree: int,
         max_entities: int,
         flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(record_list, max_degree, build_out_degree, max_entities)
-        return "string"
-
-    def find_path_by_entity_id_v2(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id_1, entity_id_2, max_degree, flags)
-        return "string"
-
-    def find_path_by_entity_id(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id_1, entity_id_2, max_degree)
-        return "string"
-
-    def find_path_by_record_id_v2(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1,
-            record_id_1,
-            data_source_code_2,
-            record_id_2,
-            max_degree,
+        result = self.library_handle.G2_findNetworkByRecordID_V2_helper(
+            as_c_char_p(as_str(record_list)),
+            max_degrees,
+            build_out_degree,
+            max_entities,
             flags,
         )
-        return "string"
 
-    def find_path_by_record_id(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
-        )
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4020,
+                    record_list,
+                    max_degrees,
+                    build_out_degree,
+                    max_entities,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
-    def find_path_excluding_by_entity_id_v2(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        excluded_entities: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            entity_id_1, entity_id_2, max_degree, excluded_entities, flags
-        )
-        return "string"
+    # TODO find path calls are not currently working on V4 builds
+    # TODO GDEV-3774
+    # @catch_ctypes_exceptions
+    # def find_path_by_entity_id(
+    #     self,
+    #     start_entity_id: int,
+    #     end_entity_id: int,
+    #     max_degrees: int,
+    #     exclusions: str | Dict[Any, Any] = "",
+    #     required_data_sources: str | Dict[Any, Any] = "",
+    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+    #     *args: Any,
+    #     **kwargs: Any,
+    # ) -> str:
 
-    def find_path_excluding_by_entity_id(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        excluded_entities: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id_1, entity_id_2, max_degree, excluded_entities)
-        return "string"
+    #     # G2_findPathByEntityID(entityID1, entityID2, maxDegree, responseBuf, bufSize, resizeFunc)
+    #     # G2_findPathExcludingByEntityID(entityID1, entityID2, maxDegree, excludedEntities, responseBuf, bufSize, resizeFunc)
+    #     # G2_findPathIncludingSourceByEntityID(entityID1, entityID2, maxDegree, excludedEntities, requiredDsrcs, responseBuf, bufSize, resizeFunc)
 
-    def find_path_excluding_by_record_id_v2(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        excluded_records: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1,
-            record_id_1,
-            data_source_code_2,
-            record_id_2,
-            max_degree,
-            excluded_records,
-            flags,
-        )
-        return "string"
+    #     # if not exclusions and not required_data_sources:
 
-    def find_path_excluding_by_record_id(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        excluded_records: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1,
-            record_id_1,
-            data_source_code_2,
-            record_id_2,
-            max_degree,
-            excluded_records,
-        )
-        return "string"
+    #     if exclusions and not required_data_sources:
+    #         result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
+    #             start_entity_id,
+    #             end_entity_id,
+    #             max_degrees,
+    #             as_c_char_p(as_str(exclusions)),
+    #             flags,
+    #         )
 
-    def find_path_including_source_by_entity_id_v2(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        excluded_entities: str,
-        required_dsrcs: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            entity_id_1,
-            entity_id_2,
-            max_degree,
-            excluded_entities,
-            required_dsrcs,
-            flags,
-        )
-        return "string"
+    #         with FreeCResources(self.library_handle, result.response):
+    #             if result.return_code != 0:
+    #                 raise self.new_exception(
+    #                     4027,
+    #                     start_entity_id,
+    #                     end_entity_id,
+    #                     max_degrees,
+    #                     # TODO Should this and others that could be dicts use as_str?
+    #                     exclusions,
+    #                     # TODO Need to add required_data_sources
+    #                     flags,
+    #                     result.return_code,
+    #                 )
 
-    def find_path_including_source_by_entity_id(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        max_degree: int,
-        excluded_entities: str,
-        required_dsrcs: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
-        )
-        return "string"
+    #         return as_python_str(result.response)
 
-    def find_path_including_source_by_record_id_v2(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        excluded_records: str,
-        required_dsrcs: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1,
-            record_id_1,
-            data_source_code_2,
-            record_id_2,
-            max_degree,
-            excluded_records,
-            required_dsrcs,
-            flags,
-        )
-        return "string"
+    #     if required_data_sources:
+    #         result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
+    #             start_entity_id,
+    #             end_entity_id,
+    #             max_degrees,
+    #             as_c_char_p(as_str(exclusions)),
+    #             as_c_char_p(as_str(required_data_sources)),
+    #             flags,
+    #         )
 
-    def find_path_including_source_by_record_id(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        max_degree: int,
-        excluded_records: str,
-        required_dsrcs: str,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1,
-            record_id_1,
-            data_source_code_2,
-            record_id_2,
-            max_degree,
-            excluded_records,
-            required_dsrcs,
-        )
-        return "string"
+    #         with FreeCResources(self.library_handle, result.response):
+    #             if result.return_code != 0:
+    #                 raise self.new_exception(
+    #                     4031,
+    #                     start_entity_id,
+    #                     end_entity_id,
+    #                     max_degrees,
+    #                     # TODO Should this and others that could be dicts use as_str?
+    #                     exclusions,
+    #                     required_data_sources,
+    #                     flags,
+    #                     result.return_code,
+    #                 )
 
-    def get_active_config_id(self, **kwargs: Any) -> int:
-        self.fake_g2engine()
-        return 0
+    #         return as_python_str(result.response)
 
-    def get_entity_by_entity_id_v2(
-        self,
-        entity_id: int,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id, flags)
-        return "string"
+    #     result = self.library_handle.G2_findPathByEntityID_V2_helper(
+    #         start_entity_id,
+    #         end_entity_id,
+    #         max_degrees,
+    #         flags,
+    #     )
+    #     print(f"{result.response = }")
+    #     print(f"{type(result.response) = }")
+
+    #     with FreeCResources(self.library_handle, result.response):
+    #         if result.return_code != 0:
+    #             raise self.new_exception(
+    #                 4023,
+    #                 start_entity_id,
+    #                 end_entity_id,
+    #                 max_degrees,
+    #                 flags,
+    #                 result.return_code,
+    #             )
+
+    #     return as_python_str(result.response)
+
+    # @catch_ctypes_exceptions
+    # def find_path_by_record_id(
+    #     self,
+    #     start_data_source_code: str,
+    #     start_record_id: str,
+    #     end_data_source_code: str,
+    #     end_record_id: str,
+    #     max_degrees: int,
+    #     exclusions: str | Dict[Any, Any] = "",
+    #     required_data_sources: str | Dict[Any, Any] = "",
+    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+    #     *args: Any,
+    #     **kwargs: Any,
+    # ) -> str:
+
+    #     if exclusions and not required_data_sources:
+    #         result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
+    #             as_c_char_p(start_data_source_code),
+    #             as_c_char_p(start_record_id),
+    #             as_c_char_p(end_data_source_code),
+    #             as_c_char_p(end_record_id),
+    #             max_degrees,
+    #             as_c_char_p(as_str(exclusions)),
+    #             flags,
+    #         )
+
+    #         with FreeCResources(self.library_handle, result.response):
+    #             if result.return_code != 0:
+    #                 raise self.new_exception(
+    #                     4029,
+    #                     start_data_source_code,
+    #                     start_record_id,
+    #                     end_data_source_code,
+    #                     end_record_id,
+    #                     max_degrees,
+    #                     exclusions,
+    #                     flags,
+    #                     result.return_code,
+    #                 )
+    #             return as_python_str(result.response)
+
+    #     if required_data_sources:
+    #         result = self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper(
+    #             as_c_char_p(start_data_source_code),
+    #             as_c_char_p(start_record_id),
+    #             as_c_char_p(end_data_source_code),
+    #             as_c_char_p(end_record_id),
+    #             max_degrees,
+    #             as_c_char_p(as_str(exclusions)),
+    #             as_c_char_p(as_str(required_data_sources)),
+    #             flags,
+    #         )
+
+    #         with FreeCResources(self.library_handle, result.response):
+    #             if result.return_code != 0:
+    #                 raise self.new_exception(
+    #                     4031,
+    #                     start_data_source_code,
+    #                     start_record_id,
+    #                     end_data_source_code,
+    #                     end_record_id,
+    #                     max_degrees,
+    #                     exclusions,
+    #                     required_data_sources,
+    #                     flags,
+    #                     result.return_code,
+    #                 )
+    #             return as_python_str(result.response)
+
+    #     result = self.library_handle.G2_findPathByRecordID_V2_helper(
+    #         as_c_char_p(start_data_source_code),
+    #         as_c_char_p(start_record_id),
+    #         as_c_char_p(end_data_source_code),
+    #         as_c_char_p(end_record_id),
+    #         max_degrees,
+    #         flags,
+    #     )
+
+    #     with FreeCResources(self.library_handle, result.response):
+    #         if result.return_code != 0:
+    #             raise self.new_exception(
+    #                 4025,
+    #                 start_data_source_code,
+    #                 start_record_id,
+    #                 end_data_source_code,
+    #                 end_record_id,
+    #                 max_degrees,
+    #                 flags,
+    #                 result.return_code,
+    #             )
+    #     return as_python_str(result.response)
+
+    def get_active_config_id(self, *args: Any, **kwargs: Any) -> int:
+        result = self.library_handle.G2_getActiveConfigID_helper()
+        if result.return_code != 0:
+            raise self.new_exception(4034, result.return_code)
+        return as_python_int(result.response)
 
     def get_entity_by_entity_id(
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(entity_id)
-        return "string"
+        result = self.library_handle.G2_getEntityByEntityID_V2_helper(entity_id, flags)
 
-    def get_entity_by_record_id_v2(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(data_source_code, record_id, flags)
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4035, entity_id, flags, result.return_code)
+            return as_python_str(result.response)
 
+    @catch_ctypes_exceptions
     def get_entity_by_record_id(
         self,
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id)
-        return "string"
+        result = self.library_handle.G2_getEntityByRecordID_V2_helper(
+            as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+        )
 
-    def get_record_v2(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(data_source_code, record_id, flags)
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4037, data_source_code, record_id, result.return_code
+                )
+            return as_python_str(result.response)
 
+    @catch_ctypes_exceptions
     def get_record(
         self,
         data_source_code: str,
         record_id: str,
         flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id)
-        return "string"
+        result = self.library_handle.G2_getRecord_V2_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            flags,
+        )
 
-    def get_redo_record(self, **kwargs: Any) -> str:
-        self.fake_g2engine()
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4040,
+                    data_source_code,
+                    record_id,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
-    def get_repository_last_modified_time(self, **kwargs: Any) -> int:
-        self.fake_g2engine()
-        return 0
+    def get_redo_record(self, *args: Any, **kwargs: Any) -> str:
+        result = self.library_handle.G2_getRedoRecord_helper()
 
-    def get_virtual_entity_by_record_id_v2(
-        self,
-        record_list: str,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(record_list, flags)
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4042, result.return_code)
+            return as_python_str(result.response)
 
+    def get_repository_last_modified_time(self, *args: Any, **kwargs: Any) -> int:
+        result = self.library_handle.G2_getRepositoryLastModifiedTime_helper()
+        if result.return_code != 0:
+            raise self.new_exception(4043, result.return_code)
+        return int(result.time)
+
+    def get_stats(self, *args: Any, **kwargs: Any) -> str:
+        result = self.library_handle.G2_stats_helper()
+
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4067, result.return_code)
+            return as_python_str(result.response)
+
+    @catch_ctypes_exceptions
     def get_virtual_entity_by_record_id(
         self,
-        record_list: str,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        record_list: str | Dict[Any, Any],
+        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(record_list)
-        return "string"
+        result = self.library_handle.G2_getVirtualEntityByRecordID_V2_helper(
+            as_c_char_p(as_str(record_list)), flags
+        )
 
-    def how_entity_by_entity_id_v2(
-        self,
-        entity_id: int,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id, flags)
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4044, record_list, result.return_code)
+            return as_python_str(result.response)
 
     def how_entity_by_entity_id(
         self,
         entity_id: int,
         flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(entity_id)
-        return "string"
+        result = self.library_handle.G2_howEntityByEntityID_V2_helper(entity_id, flags)
 
-    def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
-    ) -> None:
-        self.fake_g2engine(module_name, ini_params, verbose_logging)
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4046, flags, result.return_code)
+            return as_python_str(result.response)
 
-    def init_with_config_id(
+    @catch_ctypes_exceptions
+    def initialize(
         self,
-        module_name: str,
-        ini_params: str,
-        init_config_id: int,
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
+        config_id: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2engine(module_name, ini_params, init_config_id, verbose_logging)
 
-    def prime_engine(self, **kwargs: Any) -> None:
-        self.fake_g2engine()
+        if not config_id:
+            result = self.library_handle.G2_init(
+                as_c_char_p(instance_name),
+                as_c_char_p(as_str(settings)),
+                verbose_logging,
+            )
+            if result < 0:
+                raise self.new_exception(
+                    4048, instance_name, settings, verbose_logging, result
+                )
+            return
 
-    def process(self, record: str, **kwargs: Any) -> None:
-        self.fake_g2engine(record)
+        result = self.library_handle.G2_initWithConfigID(
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            config_id,
+            verbose_logging,
+        )
+        if result < 0:
+            raise self.new_exception(
+                4049,
+                instance_name,
+                settings,
+                verbose_logging,
+                config_id,
+                result,
+            )
 
-    def process_with_info(self, record: str, flags: int, **kwargs: Any) -> str:
-        self.fake_g2engine(record, flags)
-        return "string"
+    def prime_engine(self, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2_primeEngine()
+        if result < 0:
+            raise self.new_exception(4050, result)
 
-    def purge_repository(self, **kwargs: Any) -> None:
-        self.fake_g2engine()
+    # TODO Missing from V4 go lang helpers currently
+    # TODO GDEV-3771
+    # def process_redo_record(
+    #     self, redo_record: str, flags: int = 0, **kwargs: Any
+    # ) -> str: ...
 
-    def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> None:
-        self.fake_g2engine(entity_id, flags)
-
-    def reevaluate_entity_with_info(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
+    def reevaluate_entity(
+        self, entity_id: int, flags: int = 0, *args: Any, **kwargs: Any
     ) -> str:
-        self.fake_g2engine(entity_id, flags)
-        return "string"
+        if not flags:
+            result = self.library_handle.G2_reevaluateEntity(entity_id, flags)
+            if result < 0:
+                raise self.new_exception(4058, result)
+            return "{}"
 
+        result = self.library_handle.G2_reevaluateEntityWithInfo_helper(
+            entity_id,
+            flags,
+        )
+
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4059,
+                    entity_id,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+    # TODO Test when get new build with_info, on unfixed merge build with_info returns nothing if the record_id
+    # TODO doesn't exist but raises error if the dsrc_code doesn't exist
+    @catch_ctypes_exceptions
     def reevaluate_record(
         self,
         data_source_code: str,
         record_id: str,
         flags: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        self.fake_g2engine(data_source_code, record_id, flags)
-
-    def reevaluate_record_with_info(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = 0,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id, flags)
-        return "string"
+        if not flags:
+            result = self.library_handle.G2_reevaluateRecord(
+                as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+            )
+            if result < 0:
+                print(f"{result = }")
+                raise self.new_exception(
+                    4060, data_source_code, record_id, flags, result
+                )
+            return "{}"
 
-    def reinit(self, init_config_id: int, **kwargs: Any) -> None:
-        self.fake_g2engine(init_config_id)
+        result = self.library_handle.G2_reevaluateRecordWithInfo_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            flags,
+        )
 
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4061,
+                    data_source_code,
+                    record_id,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+    def reinitialize(self, config_id: int, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2_reinit(config_id)
+        if result < 0:
+            raise self.new_exception(4062, config_id, result)
+
+    @catch_ctypes_exceptions
     def replace_record(
         self,
         data_source_code: str,
         record_id: str,
-        json_data: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
-        **kwargs: Any,
-    ) -> None:
-        self.fake_g2engine(data_source_code, record_id, json_data, load_id)
-
-    def replace_record_with_info(
-        self,
-        data_source_code: str,
-        record_id: str,
-        json_data: str,
-        # TODO: load_id is no longer used, being removed from V4 C api?
-        load_id: str = "",
+        record_definition: str | Dict[Any, Any],
         flags: int = 0,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(data_source_code, record_id, json_data, load_id, flags)
-        return "string"
+        if not flags:
+            result = self.library_handle.G2_replaceRecord(
+                as_c_char_p(data_source_code),
+                as_c_char_p(record_id),
+                as_c_char_p(as_str(record_definition)),
+            )
+            if result != 0:
+                raise self.new_exception(
+                    4063, data_source_code, record_id, record_definition, result
+                )
+            return "{}"
 
-    def search_by_attributes_v2(
-        self,
-        json_data: str,
-        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(json_data, flags, flags)
-        return "string"
+        result = self.library_handle.G2_replaceRecordWithInfo_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            as_c_char_p(as_str(record_definition)),
+            flags,
+        )
 
-    def search_by_attributes_v3(
-        self,
-        json_data: str,
-        search_profile: str,
-        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(json_data, search_profile, flags)
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4002,
+                    data_source_code,
+                    record_id,
+                    record_definition,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
+    @catch_ctypes_exceptions
     def search_by_attributes(
         self,
-        json_data: str,
+        attributes: str | Dict[Any, Any],
+        search_profile: str = "SEARCH",
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(json_data)
-        return "string"
+        result = self.library_handle.G2_searchByAttributes_V3_helper(
+            as_c_char_p(as_str(attributes)),
+            as_c_char_p(as_str(search_profile)),
+            flags,
+        )
 
-    def stats(self, **kwargs: Any) -> str:
-        self.fake_g2engine()
-        return "string"
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                # TODO 4077 needs to be reordered in engine_abstract
+                raise self.new_exception(
+                    4077,
+                    attributes,
+                    search_profile,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
-    def why_entities_v2(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id_1, entity_id_2, flags)
-        return "string"
-
+    @catch_ctypes_exceptions
     def why_entities(
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(entity_id_1, entity_id_2)
-        return "string"
-
-    def why_entity_by_entity_id_v2(
-        self,
-        entity_id: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id, flags)
-        return "string"
-
-    def why_entity_by_entity_id(
-        self,
-        entity_id: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(entity_id)
-        return "string"
-
-    def why_entity_by_record_id_v2(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(data_source_code, record_id, flags)
-        return "string"
-
-    def why_entity_by_record_id(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(data_source_code, record_id)
-        return "string"
-
-    def why_records_v2(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        self.fake_g2engine(
-            data_source_code_1, record_id_1, data_source_code_2, record_id_2, flags
+        result = self.library_handle.G2_whyEntities_V2_helper(
+            entity_id_1,
+            entity_id_2,
+            flags,
         )
-        return "string"
 
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4068, entity_id_1, entity_id_2, result.return_code
+                )
+            return as_python_str(result.response)
+
+    @catch_ctypes_exceptions
     def why_records(
         self,
         data_source_code_1: str,
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        *args: Any,
         **kwargs: Any,
     ) -> str:
-        self.fake_g2engine(
-            data_source_code_1, record_id_1, data_source_code_2, record_id_2
+        result = self.library_handle.G2_whyRecords_V2_helper(
+            as_c_char_p(data_source_code_1),
+            as_c_char_p(record_id_1),
+            as_c_char_p(data_source_code_2),
+            as_c_char_p(record_id_2),
+            flags,
         )
-        return "string"
+
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4074,
+                    data_source_code_1,
+                    record_id_1,
+                    data_source_code_2,
+                    record_id_2,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+    # TODO why_record_in_entity() - doesn't exist in go helpers
+    # TODO GDEV-3772
