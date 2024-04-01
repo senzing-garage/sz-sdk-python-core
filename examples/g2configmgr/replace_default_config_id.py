@@ -15,9 +15,9 @@ ini_params_dict = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 MODULE_NAME = "Example"
-config_str_dict: Dict[
-    str, Any
-] = {}  # Naturally, this would be a full Senzing configuration.
+config_str_dict: Dict[str, Any] = (
+    {}
+)  # Naturally, this would be a full Senzing configuration.
 COMMENT = "Just an empty example"
 
 try:

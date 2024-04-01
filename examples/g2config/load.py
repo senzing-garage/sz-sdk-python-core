@@ -15,9 +15,10 @@ ini_params_dict = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 MODULE_NAME = "Example"
-json_config_dict: Dict[
-    str, Any
-] = {}  # Naturally, this would be a full Senzing configuration.
+json_config_dict: Dict[str, Any] = (
+    {}
+)  # Naturally, this would be a full Senzing configuration.
+
 
 try:
     g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))

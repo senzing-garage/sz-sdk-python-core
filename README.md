@@ -1,6 +1,16 @@
 # g2-sdk-python-next
 
+If you are beginning your journey with
+[Senzing](https://senzing.com/),
+please start with
+[Senzing Quick Start guides](https://docs.senzing.com/quickstart/).
 
+You are in the
+[Senzing Garage](https://github.com/senzing-garage)
+where projects are "tinkered" on.
+Although this GitHub repository may help you understand an approach to using Senzing,
+it's not considered to be "production ready" and is not considered to be part of the Senzing product.
+Heck, it may not even be appropriate for your application of Senzing!
 
 ## :warning: WARNING: g2-sdk-go-next is still in development :warning: _
 
@@ -15,7 +25,7 @@ The Senzing g2-sdk-go-next packages provide a
 language Software Development Kit that wraps the
 Senzing C SDK APIs.
 
-[![License](https://img.shields.io/badge/License-Apache2-brightgreen.svg)](https://github.com/Senzing/g2-sdk-go-next/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache2-brightgreen.svg)](https://github.com/senzing-garage/g2-sdk-python-next/blob/main/LICENSE)
 
 ## Overview
 

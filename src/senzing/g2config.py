@@ -2,7 +2,7 @@
 The `g2config` package is used to modify the in-memory representation of a Senzing configuration.
 It is a wrapper over Senzing's G2Config C binding.
 It conforms to the interface specified in
-`g2config_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2config_abstract.py>`_
+`g2config_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2config_abstract.py>`_
 
 To use g2config,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -52,7 +52,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-SENZING_PRODUCT_ID = "5040"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 5
 
 # -----------------------------------------------------------------------------

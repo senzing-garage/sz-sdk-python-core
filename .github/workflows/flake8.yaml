@@ -1,21 +1,25 @@
-name: flake8.yaml
+name: flake8
 
 on: [push]
 
 jobs:
   flake8:
+    name: "flake8 Python ${{ matrix.python-version }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-    name: "flake8 Python ${{ matrix.python-version }}"
+
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
+
+      - name: set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - run: pwd; ls -la
+
       - name: flake8 Lint
         uses: py-actions/flake8@v2
         with:

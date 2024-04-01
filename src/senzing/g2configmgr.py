@@ -2,7 +2,7 @@
 The `g2configmgr` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's G2Configmgr C binding.
 It conforms to the interface specified in
-`g2configmgr_abstract.py <https://github.com/Senzing/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
+`g2configmgr_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
 
 To use g2configmgr,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -41,7 +41,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-SENZING_PRODUCT_ID = "5041"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+SENZING_PRODUCT_ID = "5041"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 CALLER_SKIP = 6
 
 # -----------------------------------------------------------------------------
