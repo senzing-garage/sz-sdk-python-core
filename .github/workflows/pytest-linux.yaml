@@ -7,6 +7,9 @@ env:
   PYTHONPATH: /home/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@/tmp/sqlite/G2C.db'
 
+permissions:
+  contents: read
+
 jobs:
   pytest-linux:
     name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
@@ -49,6 +52,45 @@ jobs:
 
       - name: run pytest on tests
         run: pytest tests/ --verbose --capture=no --cov=src/senzing
+      
+      - name: run coverage
+        run: coverage run -m pytest
+
+      - name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
 
       # - name: Run pytest on examples
       #   run: pytest examples/ --verbose --capture=no
+
+  # coverage:
+  #   name: coverage
+  #   runs-on: ubuntu-latest
+  #   needs: pytest-linux
+  #   permissions:
+  #     pull-requests: write
+  #     contents: write
+
+  #   steps:
+  #     - uses: actions/checkout@v4
+    
+  #     - uses: actions/download-artifact@v4
+  #       id: download
+  #       with:
+  #         pattern: coverage-*
+  #         merge-multiple: true
+    
+  #     - name: Coverage comment
+  #       id: coverage_comment
+  #       uses: py-cov-action/python-coverage-comment-action@v3
+  #       with:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         MERGE_COVERAGE_FILES: true
+    
+  #     - name: Store Pull Request comment to be posted
+  #       uses: actions/upload-artifact@v4
+  #       if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+  #       with:
+  #         name: python-coverage-comment-action
+  #         path: python-coverage-comment-action.txt

@@ -1,9 +1,9 @@
-name: python code quality
+name: black
 
 on: [push, pull_request]
 
 jobs:
-  python-code-quality:
+  black:
     name: "code-quality Python ${{ matrix.python-version }}"
     runs-on: ubuntu-latest
     strategy:
@@ -22,23 +22,9 @@ jobs:
 
       - name: pip install python packages for testing
         # run: pip install black pylint mypy
-        run: pip install black flake8 pylint mypy psutil types-psutil
+        run: pip install black
 
       - name: black testing
         run: |
           # shellcheck disable=SC2046
           black --diff --check $(git ls-files '*.py' ':!:docs/source/*')
-
-      #- name: Pylint testing
-      #  run: pylint $(git ls-files '*.py' ':!:docs/source/*')
-
-      - name: flake8 testing
-        run: |
-          # shellcheck disable=SC2046
-          flake8 $(git ls-files '*.py' ':!:docs/source/*')
-
-      - name: mypy testing
-        #run: mypy --strict $(git ls-files '*.py' ':!:docs/source/*')
-        run: |
-          # shellcheck disable=SC2046
-          mypy --strict $(git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
