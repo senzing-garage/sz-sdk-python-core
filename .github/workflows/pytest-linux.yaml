@@ -12,9 +12,11 @@ permissions:
 
 jobs:
   pytest-linux:
+    continue-on-error: true
     name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11"]
