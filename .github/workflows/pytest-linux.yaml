@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   pytest-linux:
-    continue-on-error: true
     name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -53,8 +52,9 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: run pytest on tests
+        continue-on-error: true
         run: pytest tests/ --verbose --capture=no --cov=src/senzing
-      
+
       - name: run coverage
         run: coverage run -m pytest
 
@@ -76,20 +76,20 @@ jobs:
 
   #   steps:
   #     - uses: actions/checkout@v4
-    
+
   #     - uses: actions/download-artifact@v4
   #       id: download
   #       with:
   #         pattern: coverage-*
   #         merge-multiple: true
-    
+
   #     - name: Coverage comment
   #       id: coverage_comment
   #       uses: py-cov-action/python-coverage-comment-action@v3
   #       with:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #         MERGE_COVERAGE_FILES: true
-    
+
   #     - name: Store Pull Request comment to be posted
   #       uses: actions/upload-artifact@v4
   #       if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
