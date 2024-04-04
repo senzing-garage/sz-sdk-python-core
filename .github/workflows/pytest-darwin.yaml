@@ -1,6 +1,6 @@
 name: pytest darwin
 
-on: [push]
+on: [pull_request,workflow_dispatch]
 
 env:
   PYTHONPATH: /Users/runner/work/g2-sdk-python-next/g2-sdk-python-next/src

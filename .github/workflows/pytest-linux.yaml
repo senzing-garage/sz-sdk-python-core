@@ -56,6 +56,7 @@ jobs:
         run: pytest tests/ --verbose --capture=no --cov=src/senzing
 
       - name: run coverage
+        continue-on-error: true
         run: coverage run -m pytest
 
       - name: Coverage comment

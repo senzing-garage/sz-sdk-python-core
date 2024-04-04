@@ -1,6 +1,6 @@
 name: pytest windows
 
-on: [push]
+on: [pull_request,workflow_dispatch]
 
 env:
   LD_LIBRARY_PATH: 'C:\Program Files\Senzing\g2\lib'
