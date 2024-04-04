@@ -1,6 +1,6 @@
 name: pytest linux
 
-on: [push]
+on: [push,pull_request]
 
 env:
   LD_LIBRARY_PATH: /opt/senzing/g2/lib
