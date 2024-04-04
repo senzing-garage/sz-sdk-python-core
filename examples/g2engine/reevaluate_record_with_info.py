@@ -6,7 +6,7 @@ from senzing.g2exception import G2Exception
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-1"
+RECORD_ID = "Example-12"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

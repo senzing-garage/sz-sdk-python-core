@@ -3,7 +3,7 @@
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-END_ENTITY_ID = 137
+END_ENTITY_ID = 200013
 INSTANCE_NAME = "Example"
 MAX_DEGREES = 3
 SETTINGS = {
@@ -14,7 +14,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-START_ENTITY_ID = 129
+START_ENTITY_ID = 200003
 
 
 try:

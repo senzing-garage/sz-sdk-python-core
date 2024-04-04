@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2diagnostic
+from senzing import g2configmgr, g2diagnostic
 from senzing.g2exception import G2Exception
 
 ini_params_dict = {
@@ -16,11 +16,14 @@ ini_params_dict = {
 MODULE_NAME = "Example"
 
 try:
+    # Get a configuration ID.
+    g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
+    config_id = g2_configmgr.get_default_config_id()
+
     g2_diagnostic = g2diagnostic.G2Diagnostic()
-    g2_diagnostic.init(MODULE_NAME, json.dumps(ini_params_dict))
-
-    # Do work.
-
-    g2_diagnostic.destroy()
+    # TODO Add config_id to initialize
+    g2_diagnostic.init_with_config_id(
+        MODULE_NAME, json.dumps(ini_params_dict), config_id
+    )
 except G2Exception as err:
     print(err)
