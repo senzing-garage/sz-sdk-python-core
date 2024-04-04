@@ -2,6 +2,9 @@ name: isort
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   isort:
     runs-on: ubuntu-latest

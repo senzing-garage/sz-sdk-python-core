@@ -2,6 +2,9 @@ name: flake8
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   flake8:
     name: "flake8 Python ${{ matrix.python-version }}"

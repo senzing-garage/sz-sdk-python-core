@@ -2,6 +2,9 @@ name: black
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   black:
     name: "code-quality Python ${{ matrix.python-version }}"
