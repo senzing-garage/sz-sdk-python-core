@@ -8,8 +8,7 @@ env:
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db'
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   pytest-windows:
@@ -62,7 +61,45 @@ jobs:
       # - name: Run pytest on examples
       #   run: pytest examples/ --verbose --capture=no
 
+      - name: rename coverage file 
+        env:
+          COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
+        run: |
+          mv .coverage $COVERAGE_FILE
+
+      - name: Store coverage file
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: .coverage.${{ matrix.python-version }}
+  
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    needs: pytest-windows
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+  
+      - uses: actions/download-artifact@v4
+        id: download
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+  
       - name: Coverage comment
+        id: coverage_comment
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_COVERAGE_FILES: true
+  
+      - name: Store Pull Request comment to be posted
+        uses: actions/upload-artifact@v4
+        if: steps.coverage_comment.outputs.COMMENT_FILE_WRITTEN == 'true'
+        with:
+          name: python-coverage-comment-action
+          path: python-coverage-comment-action.txt
+  
