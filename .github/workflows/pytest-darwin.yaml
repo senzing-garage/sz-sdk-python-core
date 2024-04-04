@@ -54,13 +54,18 @@ jobs:
 
       - name: run pytest on tests
         continue-on-error: true
-        env:
-          COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
           pytest tests/ --verbose --capture=no --cov=src/senzing
           cp .coverage $COVERAGE_FILE
           ls -tlc
+
+      - name: debug 
+        env:
+          COVERAGE_FILE: ".coverage.${{ matrix.python_version }}"
+        run: |
+          ls -tlc
+          cp .coverage $COVERAGE_FILE
 
       # - name: Run pytest on examples
       #  run: |
