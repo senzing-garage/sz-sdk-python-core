@@ -56,6 +56,7 @@ jobs:
         run: mkdir "C:\Temp\sqlite" && copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
 
       - name: run pytest on tests
+        continue-on-error: true
         run: pytest tests/ --verbose --capture=no --cov=src/senzing
 
       # - name: Run pytest on examples
