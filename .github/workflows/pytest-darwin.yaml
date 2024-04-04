@@ -1,10 +1,14 @@
 name: pytest darwin
 
-on: [pull_request,workflow_dispatch]
+on: [pull_request, workflow_dispatch]
 
 env:
   PYTHONPATH: /Users/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@/tmp/sqlite/G2C.db'
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   pytest-darwin:
@@ -56,3 +60,8 @@ jobs:
       #  run: |
       #    export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
       #    pytest examples/ --verbose --capture=no
+
+      - name: Coverage comment
+        uses: py-cov-action/python-coverage-comment-action@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
