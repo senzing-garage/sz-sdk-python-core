@@ -54,11 +54,7 @@ jobs:
 
       - name: run pytest on tests
         continue-on-error: true
-        run: pytest tests/ --verbose --capture=no --cov=src/senzing
-
-      - name: run coverage
-        continue-on-error: true
-        run: coverage run -m pytest
+        run: pytest tests/ --verbose --capture=no --cov=src/senzing --cov-append
 
       - name: Coverage comment
         uses: py-cov-action/python-coverage-comment-action@v3
