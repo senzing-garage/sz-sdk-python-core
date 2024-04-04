@@ -59,6 +59,8 @@ jobs:
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
           pytest tests/ --verbose --capture=no --cov=src/senzing
+          cp .coverage $COVERAGE_FILE
+          ls -tlc
 
       # - name: Run pytest on examples
       #  run: |
