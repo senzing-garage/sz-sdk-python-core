@@ -265,6 +265,10 @@ class G2HowEntityByEntityIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_howEntityByEntityID_V2_result"""
 
 
+class G2ProcessRedoRecordWithInfoResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2_processRedoRecordWithInfo_result"""
+
+
 class G2ProcessWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_processWithInfo_result"""
 
@@ -319,6 +323,10 @@ class G2WhyEntityByRecordIDResult(G2ResponseReturnCodeResult):
 
 class G2WhyEntityByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_whyEntityByRecordID_V2_result"""
+
+
+class G2WhyRecordInEntityV2Result(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2_whyRecordInEntity_V2_result"""
 
 
 class G2WhyRecordsResult(G2ResponseReturnCodeResult):
@@ -801,6 +809,17 @@ class G2Engine(G2EngineAbstract):
             c_longlong,
             c_int,
         ]
+        self.library_handle.G2_processRedoRecord.argtypes = [
+            c_char_p,
+        ]
+        self.library_handle.G2_processRedoRecord.restype = c_int
+        # TODO Broken in libG2.so currently
+        self.library_handle.G2_processRedoRecordWithInfo_helper.argtypes = [
+            c_char_p,
+        ]
+        self.library_handle.G2_processRedoRecordWithInfo_helper.restype = (
+            G2ProcessRedoRecordWithInfoResult
+        )
         self.library_handle.G2_reevaluateEntity.argtypes = [c_longlong, c_longlong]
         # self.library_handle.G2_reevaluateEntityWithInfo.argtypes = [c_int, c_longlong, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         self.library_handle.G2_reevaluateEntityWithInfo_helper.argtypes = [
@@ -870,6 +889,16 @@ class G2Engine(G2EngineAbstract):
             c_longlong,
         ]
         self.library_handle.G2_whyEntities_V2_helper.restype = G2WhyEntitiesV2Result
+
+        self.library_handle.G2_whyRecordInEntity_V2_helper.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+        ]
+        self.library_handle.G2_whyRecordInEntity_V2_helper.restype = (
+            G2WhyRecordInEntityV2Result
+        )
+
         self.library_handle.G2_whyRecords_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -1101,7 +1130,6 @@ class G2Engine(G2EngineAbstract):
     #             )
     #         return as_python_str(result.response)
 
-    # NOTE Currently not working, waiting on Jae to finish the V4 merge cleanup
     @catch_ctypes_exceptions
     def find_network_by_entity_id(
         self,
@@ -1135,7 +1163,6 @@ class G2Engine(G2EngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # NOTE Currently not working, waiting on Jae to finish the V4 merge cleanup
     @catch_ctypes_exceptions
     def find_network_by_record_id(
         self,
@@ -1168,191 +1195,185 @@ class G2Engine(G2EngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # TODO find path calls are not currently working on V4 builds
-    # TODO GDEV-3774
-    # @catch_ctypes_exceptions
-    # def find_path_by_entity_id(
-    #     self,
-    #     start_entity_id: int,
-    #     end_entity_id: int,
-    #     max_degrees: int,
-    #     exclusions: str | Dict[Any, Any] = "",
-    #     required_data_sources: str | Dict[Any, Any] = "",
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     *args: Any,
-    #     **kwargs: Any,
-    # ) -> str:
+    # TODO Test if the logic is correct from the collapse of calls
+    @catch_ctypes_exceptions
+    def find_path_by_entity_id(
+        self,
+        start_entity_id: int,
+        end_entity_id: int,
+        max_degrees: int,
+        exclusions: str | Dict[Any, Any] = "",
+        required_data_sources: str | Dict[Any, Any] = "",
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args: Any,
+        **kwargs: Any,
+    ) -> str:
 
-    #     # G2_findPathByEntityID(entityID1, entityID2, maxDegree, responseBuf, bufSize, resizeFunc)
-    #     # G2_findPathExcludingByEntityID(entityID1, entityID2, maxDegree, excludedEntities, responseBuf, bufSize, resizeFunc)
-    #     # G2_findPathIncludingSourceByEntityID(entityID1, entityID2, maxDegree, excludedEntities, requiredDsrcs, responseBuf, bufSize, resizeFunc)
+        # G2_findPathByEntityID(entityID1, entityID2, maxDegree, responseBuf, bufSize, resizeFunc)
+        # G2_findPathExcludingByEntityID(entityID1, entityID2, maxDegree, excludedEntities, responseBuf, bufSize, resizeFunc)
+        # G2_findPathIncludingSourceByEntityID(entityID1, entityID2, maxDegree, excludedEntities, requiredDsrcs, responseBuf, bufSize, resizeFunc)
 
-    #     # if not exclusions and not required_data_sources:
+        if exclusions and not required_data_sources:
+            result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
+                start_entity_id,
+                end_entity_id,
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                flags,
+            )
 
-    #     if exclusions and not required_data_sources:
-    #         result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
-    #             start_entity_id,
-    #             end_entity_id,
-    #             max_degrees,
-    #             as_c_char_p(as_str(exclusions)),
-    #             flags,
-    #         )
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4027,
+                        start_entity_id,
+                        end_entity_id,
+                        max_degrees,
+                        # TODO Should this and others that could be dicts use as_str?
+                        exclusions,
+                        # TODO Need to add required_data_sources
+                        flags,
+                        result.return_code,
+                    )
 
-    #         with FreeCResources(self.library_handle, result.response):
-    #             if result.return_code != 0:
-    #                 raise self.new_exception(
-    #                     4027,
-    #                     start_entity_id,
-    #                     end_entity_id,
-    #                     max_degrees,
-    #                     # TODO Should this and others that could be dicts use as_str?
-    #                     exclusions,
-    #                     # TODO Need to add required_data_sources
-    #                     flags,
-    #                     result.return_code,
-    #                 )
+            return as_python_str(result.response)
 
-    #         return as_python_str(result.response)
+        if required_data_sources:
+            result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
+                start_entity_id,
+                end_entity_id,
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                as_c_char_p(as_str(required_data_sources)),
+                flags,
+            )
 
-    #     if required_data_sources:
-    #         result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
-    #             start_entity_id,
-    #             end_entity_id,
-    #             max_degrees,
-    #             as_c_char_p(as_str(exclusions)),
-    #             as_c_char_p(as_str(required_data_sources)),
-    #             flags,
-    #         )
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4031,
+                        start_entity_id,
+                        end_entity_id,
+                        max_degrees,
+                        # TODO Should this and others that could be dicts use as_str?
+                        exclusions,
+                        required_data_sources,
+                        flags,
+                        result.return_code,
+                    )
 
-    #         with FreeCResources(self.library_handle, result.response):
-    #             if result.return_code != 0:
-    #                 raise self.new_exception(
-    #                     4031,
-    #                     start_entity_id,
-    #                     end_entity_id,
-    #                     max_degrees,
-    #                     # TODO Should this and others that could be dicts use as_str?
-    #                     exclusions,
-    #                     required_data_sources,
-    #                     flags,
-    #                     result.return_code,
-    #                 )
+            return as_python_str(result.response)
 
-    #         return as_python_str(result.response)
+        result = self.library_handle.G2_findPathByEntityID_V2_helper(
+            start_entity_id,
+            end_entity_id,
+            max_degrees,
+            flags,
+        )
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4023,
+                    start_entity_id,
+                    end_entity_id,
+                    max_degrees,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
-    #     result = self.library_handle.G2_findPathByEntityID_V2_helper(
-    #         start_entity_id,
-    #         end_entity_id,
-    #         max_degrees,
-    #         flags,
-    #     )
-    #     print(f"{result.response = }")
-    #     print(f"{type(result.response) = }")
+    # TODO Test if the logic is correct from the collapse of calls
+    @catch_ctypes_exceptions
+    def find_path_by_record_id(
+        self,
+        start_data_source_code: str,
+        start_record_id: str,
+        end_data_source_code: str,
+        end_record_id: str,
+        max_degrees: int,
+        exclusions: str | Dict[Any, Any] = "",
+        required_data_sources: str | Dict[Any, Any] = "",
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        *args: Any,
+        **kwargs: Any,
+    ) -> str:
 
-    #     with FreeCResources(self.library_handle, result.response):
-    #         if result.return_code != 0:
-    #             raise self.new_exception(
-    #                 4023,
-    #                 start_entity_id,
-    #                 end_entity_id,
-    #                 max_degrees,
-    #                 flags,
-    #                 result.return_code,
-    #             )
+        if exclusions and not required_data_sources:
+            result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
+                as_c_char_p(start_data_source_code),
+                as_c_char_p(start_record_id),
+                as_c_char_p(end_data_source_code),
+                as_c_char_p(end_record_id),
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                flags,
+            )
 
-    #     return as_python_str(result.response)
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4029,
+                        start_data_source_code,
+                        start_record_id,
+                        end_data_source_code,
+                        end_record_id,
+                        max_degrees,
+                        exclusions,
+                        flags,
+                        result.return_code,
+                    )
+                return as_python_str(result.response)
 
-    # @catch_ctypes_exceptions
-    # def find_path_by_record_id(
-    #     self,
-    #     start_data_source_code: str,
-    #     start_record_id: str,
-    #     end_data_source_code: str,
-    #     end_record_id: str,
-    #     max_degrees: int,
-    #     exclusions: str | Dict[Any, Any] = "",
-    #     required_data_sources: str | Dict[Any, Any] = "",
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     *args: Any,
-    #     **kwargs: Any,
-    # ) -> str:
+        if required_data_sources:
+            result = self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper(
+                as_c_char_p(start_data_source_code),
+                as_c_char_p(start_record_id),
+                as_c_char_p(end_data_source_code),
+                as_c_char_p(end_record_id),
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                as_c_char_p(as_str(required_data_sources)),
+                flags,
+            )
 
-    #     if exclusions and not required_data_sources:
-    #         result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
-    #             as_c_char_p(start_data_source_code),
-    #             as_c_char_p(start_record_id),
-    #             as_c_char_p(end_data_source_code),
-    #             as_c_char_p(end_record_id),
-    #             max_degrees,
-    #             as_c_char_p(as_str(exclusions)),
-    #             flags,
-    #         )
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4031,
+                        start_data_source_code,
+                        start_record_id,
+                        end_data_source_code,
+                        end_record_id,
+                        max_degrees,
+                        exclusions,
+                        required_data_sources,
+                        flags,
+                        result.return_code,
+                    )
+                return as_python_str(result.response)
 
-    #         with FreeCResources(self.library_handle, result.response):
-    #             if result.return_code != 0:
-    #                 raise self.new_exception(
-    #                     4029,
-    #                     start_data_source_code,
-    #                     start_record_id,
-    #                     end_data_source_code,
-    #                     end_record_id,
-    #                     max_degrees,
-    #                     exclusions,
-    #                     flags,
-    #                     result.return_code,
-    #                 )
-    #             return as_python_str(result.response)
+        result = self.library_handle.G2_findPathByRecordID_V2_helper(
+            as_c_char_p(start_data_source_code),
+            as_c_char_p(start_record_id),
+            as_c_char_p(end_data_source_code),
+            as_c_char_p(end_record_id),
+            max_degrees,
+            flags,
+        )
 
-    #     if required_data_sources:
-    #         result = self.library_handle.G2_findPathIncludingSourceByRecordID_V2_helper(
-    #             as_c_char_p(start_data_source_code),
-    #             as_c_char_p(start_record_id),
-    #             as_c_char_p(end_data_source_code),
-    #             as_c_char_p(end_record_id),
-    #             max_degrees,
-    #             as_c_char_p(as_str(exclusions)),
-    #             as_c_char_p(as_str(required_data_sources)),
-    #             flags,
-    #         )
-
-    #         with FreeCResources(self.library_handle, result.response):
-    #             if result.return_code != 0:
-    #                 raise self.new_exception(
-    #                     4031,
-    #                     start_data_source_code,
-    #                     start_record_id,
-    #                     end_data_source_code,
-    #                     end_record_id,
-    #                     max_degrees,
-    #                     exclusions,
-    #                     required_data_sources,
-    #                     flags,
-    #                     result.return_code,
-    #                 )
-    #             return as_python_str(result.response)
-
-    #     result = self.library_handle.G2_findPathByRecordID_V2_helper(
-    #         as_c_char_p(start_data_source_code),
-    #         as_c_char_p(start_record_id),
-    #         as_c_char_p(end_data_source_code),
-    #         as_c_char_p(end_record_id),
-    #         max_degrees,
-    #         flags,
-    #     )
-
-    #     with FreeCResources(self.library_handle, result.response):
-    #         if result.return_code != 0:
-    #             raise self.new_exception(
-    #                 4025,
-    #                 start_data_source_code,
-    #                 start_record_id,
-    #                 end_data_source_code,
-    #                 end_record_id,
-    #                 max_degrees,
-    #                 flags,
-    #                 result.return_code,
-    #             )
-    #     return as_python_str(result.response)
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4025,
+                    start_data_source_code,
+                    start_record_id,
+                    end_data_source_code,
+                    end_record_id,
+                    max_degrees,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
     def get_active_config_id(self, *args: Any, **kwargs: Any) -> int:
         result = self.library_handle.G2_getActiveConfigID_helper()
@@ -1518,9 +1539,33 @@ class G2Engine(G2EngineAbstract):
 
     # TODO Missing from V4 go lang helpers currently
     # TODO GDEV-3771
-    # def process_redo_record(
-    #     self, redo_record: str, flags: int = 0, **kwargs: Any
-    # ) -> str: ...
+    @catch_ctypes_exceptions
+    def process_redo_record(
+        self, redo_record: str, flags: int = 0, **kwargs: Any
+    ) -> str:
+        if not flags:
+            result = self.library_handle.G2_processRedoRecord(
+                as_c_char_p(redo_record),
+            )
+            if result != 0:
+                raise self.new_exception(
+                    4052,
+                    result,
+                )
+            return "{}"
+
+        result = self.library_handle.G2_processRedoRecordWithInfo_helper(
+            as_c_char_p(redo_record),
+        )
+
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4053,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
     def reevaluate_entity(
         self, entity_id: int, flags: int = 0, *args: Any, **kwargs: Any
@@ -1542,6 +1587,7 @@ class G2Engine(G2EngineAbstract):
                     4059,
                     entity_id,
                     flags,
+                    # 0,
                     result.return_code,
                 )
             return as_python_str(result.response)
@@ -1712,5 +1758,28 @@ class G2Engine(G2EngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # TODO why_record_in_entity() - doesn't exist in go helpers
-    # TODO GDEV-3772
+    @catch_ctypes_exceptions
+    def why_record_in_entity(
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        *args: Any,
+        **kwargs: Any,
+    ) -> str:
+        result = self.library_handle.G2_whyRecordInEntity_V2_helper(
+            as_c_char_p(data_source_code),
+            as_c_char_p(record_id),
+            flags,
+        )
+
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4078,
+                    data_source_code,
+                    record_id,
+                    flags,
+                    result.return_code,
+                )
+            return as_python_str(result.response)

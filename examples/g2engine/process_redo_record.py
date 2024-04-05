@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 
+from sys import exit
+
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -17,6 +17,12 @@ SETTINGS = {
 
 try:
     g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
-    g2_engine.delete_record(DATA_SOURCE_CODE, RECORD_ID)
+    record = g2_engine.get_redo_record()
+    if not record:
+        print("No redo records")
+        exit(0)
+
+    result = g2_engine.process_redo_record(record, 1)
+    print(result)
 except G2Exception as err:
     print(err)

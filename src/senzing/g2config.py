@@ -30,17 +30,18 @@ from ctypes import (
     c_void_p,
     cdll,
 )
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from .g2config_abstract import G2ConfigAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import (
+    FreeCResources,
     as_c_char_p,
-    as_c_int,
     as_python_int,
     as_python_str,
     as_str,
     as_uintptr_t,
+    catch_ctypes_exceptions,
     find_file_in_path,
 )
 from .g2version import is_supported_senzingapi_version
@@ -136,8 +137,6 @@ class G2Config(G2ConfigAbstract):
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -161,9 +160,8 @@ class G2Config(G2ConfigAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str | Dict[Any, Any] = "",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -175,12 +173,10 @@ class G2Config(G2ConfigAbstract):
         # pylint: disable=W0613
 
         # Verify parameters.
-        # TODO: Support init_config_id
 
         self.auto_init = False
-        self.ini_params = as_str(ini_params)
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = as_str(settings)
+        self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
@@ -262,12 +258,12 @@ class G2Config(G2ConfigAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
-            if len(self.module_name) + len(self.ini_params) != 0:
-                raise self.new_exception(4020, self.module_name, self.ini_params)
-        if len(self.module_name) > 0:
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4020, self.instance_name, self.settings)
+        if len(self.instance_name) > 0:
             self.auto_init = True
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+            self.initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -298,25 +294,29 @@ class G2Config(G2ConfigAbstract):
     # G2Config methods
     # -------------------------------------------------------------------------
 
+    @catch_ctypes_exceptions
     def add_data_source(
         self,
         config_handle: int,
-        input_json: Union[str, Dict[Any, Any]],
+        # data_source_code: str | Dict[Any, Any],
+        data_source_code: str,
         *args: Any,
         **kwargs: Any,
     ) -> str:
+
+        json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_addDataSource_helper(
-            as_uintptr_t(config_handle), as_c_char_p(as_str(input_json))
+            # as_uintptr_t(config_handle), as_c_char_p(as_str(data_source_code))
+            as_uintptr_t(config_handle),
+            as_c_char_p(json_string),
         )
-        try:
+
+        with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
-                    4001, config_handle, as_str(input_json), result.return_code
+                    4001, config_handle, as_str(data_source_code), result.return_code
                 )
-            result_response = as_python_str(result.response)
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response
+            return as_python_str(result.response)
 
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
@@ -329,19 +329,23 @@ class G2Config(G2ConfigAbstract):
             raise self.new_exception(4003, result.return_code)
         return as_python_int(result.response)
 
+    @catch_ctypes_exceptions
     def delete_data_source(
         self,
         config_handle: int,
-        input_json: Union[str, Dict[Any, Any]],
+        # input_json: Union[str, Dict[Any, Any]],
+        data_source_code: str,
         *args: Any,
         **kwargs: Any,
     ) -> None:
+
+        json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_deleteDataSource_helper(
-            as_uintptr_t(config_handle), as_c_char_p(as_str(input_json))
+            as_uintptr_t(config_handle), as_c_char_p(json_string)
         )
         if result != 0:
             raise self.new_exception(
-                4004, config_handle, as_str(input_json), result.return_code
+                4004, config_handle, json_string, result.return_code
             )
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
@@ -349,51 +353,49 @@ class G2Config(G2ConfigAbstract):
         if result != 0:
             raise self.new_exception(4006, result)
 
-    def init(
+    def export_config(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+        result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4010, config_handle, result.return_code)
+            return as_python_str(result.response)
+
+    def get_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+        result = self.library_handle.G2Config_listDataSources_helper(
+            as_uintptr_t(config_handle)
+        )
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4008, result.return_code)
+            return as_python_str(result.response)
+
+    @catch_ctypes_exceptions
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Config_init(
-            as_c_char_p(module_name),
-            as_c_char_p(as_str(ini_params)),
-            as_c_int(verbose_logging),
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            verbose_logging,
         )
         if result < 0:
             raise self.new_exception(
-                4007, module_name, as_str(ini_params), verbose_logging, result
+                4007, instance_name, as_str(settings), verbose_logging, result
             )
 
-    def list_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        result = self.library_handle.G2Config_listDataSources_helper(
-            as_uintptr_t(config_handle)
-        )
-        try:
-            if result.return_code != 0:
-                raise self.new_exception(4008, result.return_code)
-            result_response = as_python_str(result.response)
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response
-
-    def load(
-        self, json_config: Union[str, Dict[Any, Any]], *args: Any, **kwargs: Any
+    @catch_ctypes_exceptions
+    def import_config(
+        self, config_definition: str | Dict[Any, Any], *args: Any, **kwargs: Any
     ) -> int:
         result = self.library_handle.G2Config_load_helper(
-            as_c_char_p(as_str(json_config))
+            as_c_char_p(as_str(config_definition))
         )
         if result.return_code != 0:
-            raise self.new_exception(4009, as_str(json_config), result.return_code)
+            raise self.new_exception(
+                4009, as_str(config_definition), result.return_code
+            )
         return as_python_int(result.response)
-
-    def save(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
-        result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
-        try:
-            if result.return_code != 0:
-                raise self.new_exception(4010, config_handle, result.return_code)
-            result_response = as_python_str(result.response)
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response

@@ -4,14 +4,6 @@ from senzing import g2engine
 from senzing.g2exception import G2Exception
 
 DATA_SOURCE_CODE = "TEST"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
-    },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
-}
 INSTANCE_NAME = "Example1"
 RECORD_DEFINITION = {
     "RECORD_DEFINITION_TYPE": "PERSON",
@@ -28,6 +20,14 @@ RECORD_DEFINITION = {
     "AMOUNT": "100",
 }
 RECORD_ID = "Example-1"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/g2/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
+    },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+}
 
 try:
     g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)

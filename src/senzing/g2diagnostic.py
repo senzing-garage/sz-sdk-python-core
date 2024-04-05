@@ -17,24 +17,15 @@ Example:
 # pylint: disable=R0903,R0915
 
 import os
-from ctypes import (
-    POINTER,
-    Structure,
-    c_char,
-    c_char_p,
-    c_int,
-    c_longlong,
-    c_size_t,
-    cast,
-    cdll,
-)
-from typing import Any, Dict, Union
+from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
+from typing import Any, Dict
 
 from .g2diagnostic_abstract import G2DiagnosticAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import (
+    FreeCResources,
     as_c_char_p,
-    as_c_int,
+    as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
@@ -134,9 +125,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str | Dict[Any, Any] = "",
+        config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -150,9 +141,9 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = as_str(ini_params)
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = as_str(settings)
+        self.config_id = config_id
+        self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
@@ -179,8 +170,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
         self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
             G2DiagnosticCheckDBPerfResult
         )
-        self.library_handle.G2Diagnostic_clearLastException.argtypes = []
-        self.library_handle.G2Diagnostic_clearLastException.restype = None
+        # self.library_handle.G2Diagnostic_clearLastException.argtypes = []
+        # self.library_handle.G2Diagnostic_clearLastException.restype = None
         # self.library_handle.G2Diagnostic_closeEntityListBySize.argtypes = [c_void_p]
         # self.library_handle.G2Diagnostic_closeEntityListBySize.restype = c_longlong
         self.library_handle.G2Diagnostic_destroy.argtypes = []
@@ -189,16 +180,16 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # self.library_handle.G2Diagnostic_fetchNextEntityBySize.restype = c_longlong
         # self.library_handle.G2Diagnostic_findEntitiesByFeatureIDs.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_findEntitiesByFeatureIDs.restype = c_longlong
-        self.library_handle.G2Diagnostic_getAvailableMemory.argtypes = []
-        self.library_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getAvailableMemory.argtypes = []
+        # self.library_handle.G2Diagnostic_getAvailableMemory.restype = c_longlong
         # self.library_handle.G2Diagnostic_getDataSourceCounts.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getDataSourceCounts.restype = c_longlong
         # self.library_handle.G2Diagnostic_getDBInfo.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getDBInfo.restype = c_longlong
-        self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
-        self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
-            G2DiagnosticGetDBInfoResult
-        )
+        # self.library_handle.G2Diagnostic_getDBInfo_helper.argtypes = []
+        # self.library_handle.G2Diagnostic_getDBInfo_helper.restype = (
+        #     G2DiagnosticGetDBInfoResult
+        # )
         # self.library_handle.G2Diagnostic_getEntityDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getEntityDetails.restype = c_longlong
         # self.library_handle.G2Diagnostic_getEntityListBySize.argtypes = [c_ulonglong, POINTER(c_void_p)]
@@ -211,25 +202,25 @@ class G2Diagnostic(G2DiagnosticAbstract):
         # self.library_handle.G2Diagnostic_getFeature.restype = c_longlong
         # self.library_handle.G2Diagnostic_getGenericFeatures.argtypes = [c_char_p, c_size_t, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getGenericFeatures.restype = c_longlong
-        self.library_handle.G2Diagnostic_getLastException.argtypes = [
-            POINTER(c_char),
-            c_size_t,
-        ]
-        self.library_handle.G2Diagnostic_getLastException.restype = c_longlong
-        self.library_handle.G2Diagnostic_getLastExceptionCode.argtypes = []
-        self.library_handle.G2Diagnostic_getLastExceptionCode.restype = c_longlong
-        self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
-        self.library_handle.G2Diagnostic_getLogicalCores.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getLastException.argtypes = [
+        #     POINTER(c_char),
+        #     c_size_t,
+        # ]
+        # self.library_handle.G2Diagnostic_getLastException.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getLastExceptionCode.argtypes = []
+        # self.library_handle.G2Diagnostic_getLastExceptionCode.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getLogicalCores.argtypes = []
+        # self.library_handle.G2Diagnostic_getLogicalCores.restype = c_longlong
         # self.library_handle.G2Diagnostic_getMappingStatistics.argtypes = [ c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getMappingStatistics.restype = c_longlong
-        self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
-        self.library_handle.G2Diagnostic_getPhysicalCores.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getPhysicalCores.argtypes = []
+        # self.library_handle.G2Diagnostic_getPhysicalCores.restype = c_longlong
         # self.library_handle.G2Diagnostic_getRelationshipDetails.argtypes = [c_longlong, c_int, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getRelationshipDetails.restype = c_longlong
         # self.library_handle.G2Diagnostic_getResolutionStatistics.argtypes = [POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
         # self.library_handle.G2Diagnostic_getResolutionStatistics.restype = c_longlong
-        self.library_handle.G2Diagnostic_getTotalSystemMemory.argtypes = []
-        self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = c_longlong
+        # self.library_handle.G2Diagnostic_getTotalSystemMemory.argtypes = []
+        # self.library_handle.G2Diagnostic_getTotalSystemMemory.restype = c_longlong
         self.library_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2Diagnostic_init.restype = c_longlong
         self.library_handle.G2Diagnostic_initWithConfigID.argtypes = [
@@ -245,12 +236,12 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         # Initialize Senzing engine.
 
-        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
-            if len(self.module_name) + len(self.ini_params) != 0:
-                raise self.new_exception(4021, self.module_name, self.ini_params)
-        if len(self.module_name) > 0:
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4021, self.instance_name, self.settings)
+        if len(self.instance_name) > 0:
             self.auto_init = True
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+            self.initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -281,101 +272,82 @@ class G2Diagnostic(G2DiagnosticAbstract):
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    @catch_ctypes_exceptions
-    def check_db_perf(self, seconds_to_run: int, *args: Any, **kwargs: Any) -> str:
+    def check_database_performance(
+        self, seconds_to_run: int, *args: Any, **kwargs: Any
+    ) -> str:
         result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
-        try:
+        with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4001, result.return_code)
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
+                raise self.new_exception(
+                    4001,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+        # try:
+        #     if result.return_code != 0:
+        #         raise self.new_exception(4001, result.return_code)
+        #     result_response = cast(result.response, c_char_p).value
+        #     result_response_str = result_response.decode() if result_response else ""
+        # finally:
+        #     self.library_handle.G2GoHelper_free(result.response)
+        # return result_response_str
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_destroy()
         if result != 0:
             raise self.new_exception(4003, result)
 
-    # TODO: Likely going away in V4
-    def get_available_memory(self, *args: Any, **kwargs: Any) -> int:
-        result = self.library_handle.G2Diagnostic_getAvailableMemory()
-        return int(result)
-
-    def get_db_info(self, *args: Any, **kwargs: Any) -> str:
-        result = self.library_handle.G2Diagnostic_getDBInfo_helper()
-        try:
-            if result.return_code != 0:
-                raise self.new_exception(4007, result.return_code)
-            result_response = cast(result.response, c_char_p).value
-            result_response_str = result_response.decode() if result_response else ""
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response_str
-
-    # TODO: Likely going away in V4
-    def get_logical_cores(self, *args: Any, **kwargs: Any) -> int:
-        return int(self.library_handle.G2Diagnostic_getLogicalCores())
-
-    # TODO: Likely going away in V4
-    # BUG: Returns wrong value!
-    def get_physical_cores(self, *args: Any, **kwargs: Any) -> int:
-        return int(self.library_handle.G2Diagnostic_getPhysicalCores())
-
-    # TODO: Likely going away in V4
-    def get_total_system_memory(self, *args: Any, **kwargs: Any) -> int:
-        result = self.library_handle.G2Diagnostic_getTotalSystemMemory()
-        return int(result)
-
-    def init(
+    @catch_ctypes_exceptions
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Diagnostic_init(
-            as_c_char_p(module_name),
-            as_c_char_p(as_str(ini_params)),
-            as_c_int(verbose_logging),
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            verbose_logging,
         )
         if result < 0:
             raise self.new_exception(
-                4018, module_name, as_str(ini_params), verbose_logging, result
+                4018, instance_name, as_str(settings), verbose_logging, result
             )
 
-    def init_with_config_id(
-        self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
-        init_config_id: int,
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        result = self.library_handle.G2Diagnostic_initWithConfigID(
-            as_c_char_p(module_name),
-            as_c_char_p(as_str(ini_params)),
-            as_c_int(init_config_id),
-            as_c_int(verbose_logging),
-        )
-        if result < 0:
-            raise self.new_exception(
-                4019,
-                module_name,
-                as_str(ini_params),
-                init_config_id,
-                verbose_logging,
-                result,
-            )
+    # TODO Add to initialize
+    # def init_with_config_id(
+    #     self,
+    #     module_name: str,
+    #     ini_params: Union[str, Dict[Any, Any]],
+    #     init_config_id: int,
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     result = self.library_handle.G2Diagnostic_initWithConfigID(
+    #         as_c_char_p(module_name),
+    #         as_c_char_p(as_str(ini_params)),
+    #         as_c_int(init_config_id),
+    #         as_c_int(verbose_logging),
+    #     )
+    #     if result < 0:
+    #         raise self.new_exception(
+    #             4019,
+    #             module_name,
+    #             as_str(ini_params),
+    #             init_config_id,
+    #             verbose_logging,
+    #             result,
+    #         )
 
     def purge_repository(self, *args: Any, **kwargs: Any) -> None:
-        result = self.library_handle.G2_purgeRepository()
+        result = self.library_handle.G2Diagnostic_purgeRepository()
         if result < 0:
             raise self.new_exception(4057, result)
 
     @catch_ctypes_exceptions
-    def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
-        result = self.library_handle.G2Diagnostic_reinit(init_config_id)
+    def reinitialize(self, config_id: int, *args: Any, **kwargs: Any) -> None:
+        result = self.library_handle.G2Diagnostic_reinit(config_id)
         if result < 0:
-            raise self.new_exception(4020, init_config_id, result)
+            raise self.new_exception(4020, config_id, result)

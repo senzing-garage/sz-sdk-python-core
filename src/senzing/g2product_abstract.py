@@ -5,10 +5,9 @@ g2product_abstract.py is the abstract class for all implementaions of g2product.
 """
 
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
-
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union, cast
+from typing import Any, Dict, cast
 
 # Metadata
 
@@ -71,10 +70,10 @@ class G2ProductAbstract(ABC):
         """
 
     @abstractmethod
-    def init(
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
@@ -93,8 +92,8 @@ class G2ProductAbstract(ABC):
             g2_product = g2product.G2Product(module_name, ini_params)
 
         Args:
-            module_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
-            ini_params (str): A JSON string containing configuration parameters.
+            instance_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
+            settings (str): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -108,11 +107,11 @@ class G2ProductAbstract(ABC):
         """
 
     @abstractmethod
-    def license(self, *args: Any, **kwargs: Any) -> str:
+    def get_license(self, *args: Any, **kwargs: Any) -> str:
         """
         .. _license:
 
-        The `license` method retrieves information about the currently used license by the Senzing API.
+        The `get_license` method retrieves information about the currently used license by the Senzing API.
 
         Returns:
             str: A JSON document containing Senzing license metadata.
@@ -131,11 +130,11 @@ class G2ProductAbstract(ABC):
         """
 
     @abstractmethod
-    def version(self, *args: Any, **kwargs: Any) -> str:
+    def get_version(self, *args: Any, **kwargs: Any) -> str:
         """
         .. _version:
 
-        The `version` method returns the version of the Senzing API.
+        The `get_version` method returns the version of the Senzing API.
 
         Returns:
             str: A JSON document containing metadata about the Senzing Engine version being used.
@@ -168,7 +167,7 @@ class G2ProductAbstract(ABC):
         """
         return cast(
             Dict[str, Any],
-            json.loads(self.license(args, kwargs)),
+            json.loads(self.get_license(args, kwargs)),
         )
 
     def version_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
@@ -182,5 +181,5 @@ class G2ProductAbstract(ABC):
         """
         return cast(
             Dict[str, Any],
-            json.loads(self.version(args, kwargs)),
+            json.loads(self.get_version(args, kwargs)),
         )
