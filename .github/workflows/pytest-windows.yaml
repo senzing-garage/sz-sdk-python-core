@@ -1,6 +1,6 @@
 name: pytest windows
 
-on: [pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 env:
   LD_LIBRARY_PATH: 'C:\Program Files\Senzing\g2\lib'
@@ -65,7 +65,7 @@ jobs:
         env:
           COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
         run: |
-          rename .coverage $env:COVERAGE_FILE
+          Rename-Item -Path.coverage -NewName $env:COVERAGE_FILE
 
       - name: Store coverage file
         uses: actions/upload-artifact@v4
