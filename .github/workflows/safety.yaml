@@ -2,8 +2,6 @@ name: safety
 
 on:
   push:
-    branches:
-      - master
 
 env:
   DEP_PATH: requirements.txt
