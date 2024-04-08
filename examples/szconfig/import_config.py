@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szproduct
+from typing import Any, Dict
+
+from senzing import szconfig
 from szexception import SzException
 
 INSTANCE_NAME = "Example"
@@ -12,19 +14,14 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+# TODO Change to use config manager to get a default config
+json_config_dict: Dict[str, Any] = (
+    {}
+)  # Naturally, this would be a full Senzing configuration.
 
-# Example 1
-
-try:
-    sz_product1 = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
-except SzException as err:
-    print(err)
-
-# Example 2
 
 try:
-    sz_product2 = szproduct.SzProduct()
-    sz_product2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_product2.destroy()
+    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
+    config_handle = sz_config.import_config(json_config_dict)
 except SzException as err:
     print(err)

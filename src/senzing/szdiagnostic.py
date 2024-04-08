@@ -18,7 +18,7 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from .szdiagnostic_abstract import SzDiagnosticAbstract
 from .szexception import SzException, new_szexception
@@ -242,7 +242,15 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 raise self.new_exception(4021, self.instance_name, self.settings)
         if len(self.instance_name) > 0:
             self.auto_init = True
-            self.initialize(self.instance_name, self.settings, self.verbose_logging)
+            if not self.config_id:
+                self.initialize(self.instance_name, self.settings, self.verbose_logging)
+            else:
+                self.initialize(
+                    self.instance_name,
+                    self.settings,
+                    self.verbose_logging,
+                    self.config_id,
+                )
 
     def __del__(self) -> None:
         """Destructor"""
@@ -305,16 +313,35 @@ class SzDiagnostic(SzDiagnosticAbstract):
         instance_name: str,
         settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
+        config_id: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2Diagnostic_init(
+        if not config_id:
+            result = self.library_handle.G2Diagnostic_init(
+                as_c_char_p(instance_name),
+                as_c_char_p(as_str(settings)),
+                verbose_logging,
+            )
+            if result < 0:
+                raise self.new_exception(
+                    4018, instance_name, as_str(settings), verbose_logging, result
+                )
+            return
+
+        result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
+            config_id,
             verbose_logging,
         )
         if result < 0:
             raise self.new_exception(
-                4018, instance_name, as_str(settings), verbose_logging, result
+                4019,
+                instance_name,
+                settings,
+                verbose_logging,
+                config_id,
+                result,
             )
 
     # TODO Add to initialize

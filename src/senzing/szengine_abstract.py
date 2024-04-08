@@ -699,9 +699,9 @@ class SzEngineAbstract(ABC):
         end_entity_id: int,
         max_degrees: int,
         # TODO Should accept both entity and record IDs in V4, test
-        exclusions: str | Dict[Any, Any],
+        exclusions: str | Dict[Any, Any] = "",
         # TODO Take a list of data sources too?
-        required_data_sources: str | Dict[Any, Any],
+        required_data_sources: str | Dict[Any, Any] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -742,8 +742,8 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: str | Dict[Any, Any],
-        required_data_sources: str | Dict[Any, Any],
+        exclusions: str | Dict[Any, Any] = "",
+        required_data_sources: str | Dict[Any, Any] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -770,8 +770,8 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: str | Dict[Any, Any],
-        required_data_sources: str | Dict[Any, Any],
+        exclusions: str | Dict[Any, Any] = "",
+        required_data_sources: str | Dict[Any, Any] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -818,8 +818,8 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: str | Dict[Any, Any],
-        required_data_sources: str | Dict[Any, Any],
+        exclusions: str | Dict[Any, Any] = "",
+        required_data_sources: str | Dict[Any, Any] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -1197,6 +1197,7 @@ class SzEngineAbstract(ABC):
         **kwargs: Any,
     ) -> None:
         # TODO docstring plugin
+        # TODO Add in config_id to docstring
         """
         he ``initialize`` method initializes the Senzing SzEngine object.
         It must be called prior to any other calls.

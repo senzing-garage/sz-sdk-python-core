@@ -13,18 +13,12 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-# Example 1
-
 try:
-    sz_product1 = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
-except SzException as err:
-    print(err)
+    sz_product = szproduct.SzProduct()
+    sz_product.initialize(INSTANCE_NAME, SETTINGS)
 
-# Example 2
+    # Do work.
 
-try:
-    sz_product2 = szproduct.SzProduct()
-    sz_product2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_product2.destroy()
+    sz_product.destroy()
 except SzException as err:
     print(err)

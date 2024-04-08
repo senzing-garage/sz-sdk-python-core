@@ -5,7 +5,7 @@ TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 # Metadata
 
@@ -111,8 +111,10 @@ class SzDiagnosticAbstract(ABC):
         instance_name: str,
         settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
+        config_id: Optional[int] = None,
         **kwargs: Any
     ) -> None:
+        # TODO Add in config_id to docstring
         """
         The `initialize` method initializes the Senzing SzDiagnosis object.
         It must be called prior to any other calls.

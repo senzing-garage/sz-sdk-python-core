@@ -921,9 +921,18 @@ class SzEngine(SzEngineAbstract):
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
                 raise self.new_exception(4077, self.instance_name, self.settings)
+        # TODO What if "" was sent for instance_name but settings are specified?
         if len(self.instance_name) > 0:
             self.auto_init = True
-            self.initialize(self.instance_name, self.settings, self.verbose_logging)
+            if not self.config_id:
+                self.initialize(self.instance_name, self.settings, self.verbose_logging)
+            else:
+                self.initialize(
+                    self.instance_name,
+                    self.settings,
+                    self.verbose_logging,
+                    self.config_id,
+                )
 
     def __del__(self) -> None:
         """Destructor"""

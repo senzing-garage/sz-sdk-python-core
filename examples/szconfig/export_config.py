@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import szproduct
+
+from senzing import szconfig
 from szexception import SzException
 
-INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -12,19 +12,13 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-
-# Example 1
-
-try:
-    sz_product1 = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
-except SzException as err:
-    print(err)
-
-# Example 2
+MODULE_NAME = "Example"
 
 try:
-    sz_product2 = szproduct.SzProduct()
-    sz_product2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_product2.destroy()
+    sz_config = szconfig.SzConfig(MODULE_NAME, SETTINGS)
+    config_handle = sz_config.create()  # Create first in-memory.
+    json_config = sz_config.export_config(config_handle)  # Save in-memory to string.
+    sz_config.close(config_handle)
+    print(json_config)
 except SzException as err:
     print(err)
