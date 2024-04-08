@@ -7,12 +7,12 @@ permissions:
 
 jobs:
   black:
-    name: "code-quality Python ${{ matrix.python-version }}"
+    name: black Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.11"]
+        python-version: [3.8, 3.11]
 
     steps:
       - uses: actions/checkout@v4

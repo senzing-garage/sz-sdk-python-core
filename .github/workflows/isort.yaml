@@ -15,5 +15,5 @@ jobs:
       - uses: isort/isort-action@v1
         with:
           configuration:
-          requirements-files: "requirements.txt"
+          requirements-files: requirements.txt
           sort-paths: "src/senzing examples tests"
