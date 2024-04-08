@@ -1,6 +1,6 @@
 name: create sphinx documentation
 
-on: 
+on:
   push:
     paths-ignore:
       - '.github/**'

@@ -1,0 +1,22 @@
+name: safety
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DEP_PATH: requirements.txt
+
+permissions:
+  contents: read
+
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: Security vulnerabilities scan
+        uses: aufdenpunkt/python-safety-check@master

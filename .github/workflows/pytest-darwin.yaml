@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   pytest-darwin:
-    continue-on-error: true
     name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -52,23 +51,20 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: run pytest on tests
-        continue-on-error: true
         run: |
           export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
           pytest tests/ --verbose --capture=no --cov=src/senzing
-          cp .coverage $COVERAGE_FILE
-          ls -tlc
 
       # - name: Run pytest on examples
       #  run: |
       #    export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
       #    pytest examples/ --verbose --capture=no
 
-      - name: rename coverage file 
+      - name: rename coverage file
         env:
           COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
         run: |
-          mv .coverage $COVERAGE_FILE
+          mv .coverage "$COVERAGE_FILE"
 
       - name: Store coverage file
         uses: actions/upload-artifact@v4
