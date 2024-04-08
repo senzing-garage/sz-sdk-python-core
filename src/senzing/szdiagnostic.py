@@ -1,8 +1,8 @@
 """
-The `g2diagnostic` package is used to inspect the Senzing environment.
+The `szdiagnostic` package is used to inspect the Senzing environment.
 It is a wrapper over Senzing's G2Diagnostic C binding.
 It conforms to the interface specified in
-`g2diagnostic_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
+`szdiagnostic_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
 
 To use g2diagnostic,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -20,9 +20,9 @@ import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict
 
-from .g2diagnostic_abstract import G2DiagnosticAbstract
-from .g2exception import G2Exception, new_g2exception
-from .g2helpers import (
+from .szdiagnostic_abstract import SzDiagnosticAbstract
+from .szexception import SzException, new_szexception
+from .szhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
@@ -30,11 +30,11 @@ from .g2helpers import (
     catch_ctypes_exceptions,
     find_file_in_path,
 )
-from .g2version import is_supported_senzingapi_version
+from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["G2Diagnostic"]
+__all__ = ["SzDiagnostic"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-27"
@@ -69,7 +69,7 @@ class G2DiagnosticGetDBInfoResult(G2ResponseReturnCodeResult):
 # -----------------------------------------------------------------------------
 
 
-class G2Diagnostic(G2DiagnosticAbstract):
+class SzDiagnostic(SzDiagnosticAbstract):
     """
     The `init` method initializes the Senzing G2Diagnostic object.
     It must be called prior to any other calls.
@@ -159,7 +159,8 @@ class G2Diagnostic(G2DiagnosticAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            raise G2Exception("Failed to load the G2 library") from err
+            # TODO Change to Senzing library?
+            raise SzException("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
@@ -258,7 +259,7 @@ class G2Diagnostic(G2DiagnosticAbstract):
 
         :meta private:
         """
-        return new_g2exception(
+        return new_szexception(
             self.library_handle.G2Diagnostic_getLastException,
             self.library_handle.G2Diagnostic_clearLastException,
             SENZING_PRODUCT_ID,

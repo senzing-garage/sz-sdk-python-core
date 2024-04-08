@@ -8,10 +8,10 @@ import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
-from .g2exception import G2Exception, new_g2exception
-from .g2hasher_abstract import G2HasherAbstract
-from .g2helpers import find_file_in_path
-from .g2version import is_supported_senzingapi_version
+from .szexception import SzException, new_szexception
+from .szhasher_abstract import G2HasherAbstract
+from .szhelpers import find_file_in_path
+from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
@@ -82,7 +82,7 @@ class G2Hasher(G2HasherAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2Hasher.so")
         except OSError as err:
-            raise G2Exception("Failed to load the G2 library") from err
+            raise SzException("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2hasher.h
@@ -139,7 +139,7 @@ class G2Hasher(G2HasherAbstract):
 
         :meta private:
         """
-        return new_g2exception(
+        return new_szexception(
             self.library_handle.G2Hasher_getLastException,
             self.library_handle.G2Hasher_clearLastException,
             SENZING_PRODUCT_ID,

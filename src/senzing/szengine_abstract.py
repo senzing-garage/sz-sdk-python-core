@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2engine_abstract.py
+TODO: szengine_abstract.py
 """
 
 # pylint: disable=C0302
@@ -15,12 +15,12 @@ import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, cast
 
-from .g2engineflags import G2EngineFlags
+from .szengineflags import SzEngineFlags
 
 # Metadata
 
 # __all__ = ["G2EngineAbstract", "WithInfoResponsesAbstract"]
-__all__ = ["G2EngineAbstract"]
+__all__ = ["SzEngineAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
@@ -31,9 +31,9 @@ __updated__ = "2023-10-30"
 # -------------------------------------------------------------------------
 
 
-class G2EngineAbstract(ABC):
+class SzEngineAbstract(ABC):
     """
-    G2 engine module access library
+    Senzing engine module access library
     """
 
     # -------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class G2EngineAbstract(ABC):
     # TODO Change to be same as g2Product.G2Engine_<method_name()?
     # TODO Reorder and sort - some APIs are going away and search was added to end temporarily
     # TODO Does it make sense to have G2_, that isn't the method name
-    PREFIX = "g2engine."
+    PREFIX = "szengine."
     """ :meta private: """
 
     ID_MESSAGES = {
@@ -211,7 +211,7 @@ class G2EngineAbstract(ABC):
         # TODO This text doesn't make sense without specifying there are 2 ways to init if keeping both
         4077: (
             PREFIX
-            + "G2Engine{0}, {1}) failed. module_name and ini_params must both be set or"
+            + "G2Engine{0}, {1}) failed. instance_name and settings must both be set or"
             " both be empty"
         ),
         # TODO Reorder
@@ -254,7 +254,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/add_record.py
+            .. literalinclude:: ../../examples/szengine/add_record.py
                 :linenos:
                 :language: python
         """
@@ -292,13 +292,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt
                 :linenos:
                 :language: json
         """
@@ -315,7 +315,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/count_redo_records.py
+            .. literalinclude:: ../../examples/szengine/count_redo_records.py
                 :linenos:
                 :language: python
         """
@@ -345,7 +345,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/delete_record.py
+            .. literalinclude:: ../../examples/szengine/delete_record.py
                 :linenos:
                 :language: python
         """
@@ -365,10 +365,10 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def destroy(self, **kwargs: Any) -> None:
         """
-        The `destroy` method releases resources and performs cleanup for the G2Engine object and any in-memory configurations.
+        The `destroy` method releases resources and performs cleanup for the SzEngine object and any in-memory configurations.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2Engine` constructor was called with parameters,
+        **Note:** If the `SzEngine` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -376,14 +376,14 @@ class G2EngineAbstract(ABC):
 
         .. code-block:: python
 
-            g2_engine = g2engine.G2Engine(module_name, ini_params)
+            sz_engine = szengine.SzEngine(instance_name, settings)
 
         Raises:
-            g2exception.G2Exception:
+            szexception.SzException:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/g2engine_init_and_destroy.py
+            .. literalinclude:: ../../examples/szengine/szengine_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -392,7 +392,7 @@ class G2EngineAbstract(ABC):
     def export_csv_entity_report(
         self,
         csv_column_list: str,
-        flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
         # TODO Add into docstring a good default csv_column_list example
@@ -406,7 +406,7 @@ class G2EngineAbstract(ABC):
 
         Args:
             csv_column_list (str): A comma-separated list of column names for the CSV export.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS.
 
         Returns:
             int: A handle that identifies the document to be scrolled through using `fetch_next`.
@@ -415,20 +415,20 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/export_csv_fetch_close.py
+            .. literalinclude:: ../../examples/szengine/export_csv_fetch_close.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/export_csv_fetch_close.txt
+            .. literalinclude:: ../../examples/szengine/export_csv_fetch_close.txt
                 :linenos:
                 :language: json
         """
 
     @abstractmethod
     def export_json_entity_report(
-        self, flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS, **kwargs: Any
+        self, flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS, **kwargs: Any
     ) -> int:
         """
         **Warning:** `export_json_entity_report` is not recommended for large systems as it does not scale.
@@ -439,7 +439,7 @@ class G2EngineAbstract(ABC):
         lifecycle of a list of entities to export.
 
         Args:
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS.
 
         Returns:
             int: A handle that identifies the document to be scrolled through using `fetch_next`.
@@ -448,13 +448,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt
                 :linenos:
                 :language: json
         """
@@ -477,13 +477,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.py
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/export_json_fetch_close.txt
+            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt
                 :linenos:
                 :language: json
         """
@@ -506,13 +506,13 @@ class G2EngineAbstract(ABC):
 
     #     .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_entity_id.py
+    #         .. literalinclude:: ../../examples/szengine/find_interesting_entities_by_entity_id.py
     #             :linenos:
     #             :language: python
 
     #         **Output:**
 
-    #         .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_entity_id.txt
+    #         .. literalinclude:: ../../examples/szengine/find_interesting_entities_by_entity_id.txt
     #             :linenos:
     #             :language: json
     #     """
@@ -546,13 +546,13 @@ class G2EngineAbstract(ABC):
 
     #     .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_record_id.py
+    #         .. literalinclude:: ../../examples/szengine/find_interesting_entities_by_record_id.py
     #             :linenos:
     #             :language: python
 
     #         **Output:**
 
-    #         .. literalinclude:: ../../examples/g2engine/find_interesting_entities_by_record_id.txt
+    #         .. literalinclude:: ../../examples/szengine/find_interesting_entities_by_record_id.txt
     #             :linenos:
     #             :language: json
     #     """
@@ -579,7 +579,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -593,7 +593,7 @@ class G2EngineAbstract(ABC):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             build_out_degree (int): The number of degrees of relationships to show around each search entity.
             max_entities (int): The maximum number of entities to return in the discovered network.
-            flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+            flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -602,13 +602,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id.py
+            .. literalinclude:: ../../examples/szengine/find_network_by_entity_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/find_network_by_entity_id.txt
+            .. literalinclude:: ../../examples/szengine/find_network_by_entity_id.txt
                 :linenos:
                 :language: json
         """
@@ -619,7 +619,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -639,7 +639,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -653,7 +653,7 @@ class G2EngineAbstract(ABC):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             build_out_degree (int): The number of degrees of relationships to show around each search entity.
             max_entities (int): The maximum number of entities to return in the discovered network.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -662,13 +662,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id.py
+            .. literalinclude:: ../../examples/szengine/find_network_by_record_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/find_network_by_record_id.txt
+            .. literalinclude:: ../../examples/szengine/find_network_by_record_id.txt
                 :linenos:
                 :language: json
         """
@@ -679,7 +679,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -702,7 +702,7 @@ class G2EngineAbstract(ABC):
         exclusions: str | Dict[Any, Any],
         # TODO Take a list of data sources too?
         required_data_sources: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -717,7 +717,7 @@ class G2EngineAbstract(ABC):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             exclusions (str): TODO
             required_data_sources (str): TODO
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document with an ENTITY_PATHS section that details the path between the entities.
@@ -726,13 +726,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.py
+            .. literalinclude:: ../../examples/szengine/find_path_by_entity_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.txt
+            .. literalinclude:: ../../examples/szengine/find_path_by_entity_id.txt
                 :linenos:
                 :language: json
         """
@@ -744,7 +744,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         exclusions: str | Dict[Any, Any],
         required_data_sources: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -772,7 +772,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         exclusions: str | Dict[Any, Any],
         required_data_sources: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -791,7 +791,7 @@ class G2EngineAbstract(ABC):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             exclusions (str): TODO
             required_data_sources (str): TODO
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -800,13 +800,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.py
+            .. literalinclude:: ../../examples/szengine/find_path_by_record_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.txt
+            .. literalinclude:: ../../examples/szengine/find_path_by_record_id.txt
                 :linenos:
                 :language: json
         """
@@ -820,7 +820,7 @@ class G2EngineAbstract(ABC):
         max_degrees: int,
         exclusions: str | Dict[Any, Any],
         required_data_sources: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -852,13 +852,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_active_config_id.py
+            .. literalinclude:: ../../examples/szengine/get_active_config_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_active_config_id.txt
+            .. literalinclude:: ../../examples/szengine/get_active_config_id.txt
                 :linenos:
                 :language: json
         """
@@ -867,7 +867,7 @@ class G2EngineAbstract(ABC):
     def get_entity_by_entity_id(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -875,7 +875,7 @@ class G2EngineAbstract(ABC):
 
         Args:
             entity_id (int): The unique identifier of an entity.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -884,13 +884,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id.py
+            .. literalinclude:: ../../examples/szengine/get_entity_by_entity_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_entity_by_entity_id.txt
+            .. literalinclude:: ../../examples/szengine/get_entity_by_entity_id.txt
                 :linenos:
                 :language: json
         """
@@ -898,7 +898,7 @@ class G2EngineAbstract(ABC):
     def get_entity_by_entity_id_return_dict(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -913,7 +913,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -922,7 +922,7 @@ class G2EngineAbstract(ABC):
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -931,13 +931,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id.py
+            .. literalinclude:: ../../examples/szengine/get_entity_by_record_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_entity_by_record_id.txt
+            .. literalinclude:: ../../examples/szengine/get_entity_by_record_id.txt
                 :linenos:
                 :language: json
         """
@@ -946,7 +946,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -971,13 +971,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/stats.py
+            .. literalinclude:: ../../examples/szengine/stats.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/stats.txt
+            .. literalinclude:: ../../examples/szengine/stats.txt
                 :linenos:
                 :language: json
         """
@@ -995,7 +995,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1005,7 +1005,7 @@ class G2EngineAbstract(ABC):
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_RECORD_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document of a single record.
@@ -1014,13 +1014,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_record.py
+            .. literalinclude:: ../../examples/szengine/get_record.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_record.txt
+            .. literalinclude:: ../../examples/szengine/get_record.txt
                 :linenos:
                 :language: json
         """
@@ -1029,7 +1029,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -1054,13 +1054,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_redo_record.py
+            .. literalinclude:: ../../examples/szengine/get_redo_record.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_redo_record.txt
+            .. literalinclude:: ../../examples/szengine/get_redo_record.txt
                 :linenos:
                 :language: json
         """
@@ -1078,13 +1078,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_repository_last_modified_time.py
+            .. literalinclude:: ../../examples/szengine/get_repository_last_modified_time.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_repository_last_modified_time.txt
+            .. literalinclude:: ../../examples/szengine/get_repository_last_modified_time.txt
                 :linenos:
                 :language: json
         """
@@ -1093,7 +1093,7 @@ class G2EngineAbstract(ABC):
     def get_virtual_entity_by_record_id(
         self,
         record_list: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1104,7 +1104,7 @@ class G2EngineAbstract(ABC):
 
         Args:
             record_list (str): A JSON document of one or more records by DATA_SOURCE and RECORD_ID pairs, formatted as `{"RECORDS":[{"DATA_SOURCE":"DS1","RECORD_ID":"R1"},{"DATA_SOURCE":"DS2","RECORD_ID":"R2"}]}`.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str:  A JSON document.
@@ -1113,13 +1113,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id.py
+            .. literalinclude:: ../../examples/szengine/get_virtual_entity_by_record_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/get_virtual_entity_by_record_id.txt
+            .. literalinclude:: ../../examples/szengine/get_virtual_entity_by_record_id.txt
                 :linenos:
                 :language: json
         """
@@ -1127,7 +1127,7 @@ class G2EngineAbstract(ABC):
     def get_virtual_entity_by_record_id_return_dict(
         self,
         record_list: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -1141,7 +1141,7 @@ class G2EngineAbstract(ABC):
     def how_entity_by_entity_id(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1151,7 +1151,7 @@ class G2EngineAbstract(ABC):
 
         Args:
             entity_id (int): The unique identifier of an entity.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -1160,13 +1160,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id.py
+            .. literalinclude:: ../../examples/szengine/how_entity_by_entity_id.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/how_entity_by_entity_id.txt
+            .. literalinclude:: ../../examples/szengine/how_entity_by_entity_id.txt
                 :linenos:
                 :language: json
         """
@@ -1174,7 +1174,7 @@ class G2EngineAbstract(ABC):
     def how_entity_by_entity_id_return_dict(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -1198,30 +1198,30 @@ class G2EngineAbstract(ABC):
     ) -> None:
         # TODO docstring plugin
         """
-        he ``init`` method initializes the Senzing G2Engine object.
+        he ``initialize`` method initializes the Senzing SzEngine object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2Engine constructor is called with parameters,
-        the constructor will automatically call the ``init()`` method.
-        In this case, a separate call to ``init()`` is not needed.
+        **Note:** If the SzEngine constructor is called with parameters,
+        the constructor will automatically call the ``initialize()`` method.
+        In this case, a separate call to ``initialize()`` is not needed.
 
         Example:
 
         .. code-block:: python
 
-            g2_engine = g2engine.G2Engine(module_name, ini_params)
+            sz_engine = szengine.SzEngine(instance_name, settings)
 
         Args:
-            instance_name (str): A short name given to this instance of the G2Engine object, to help identify it within system logs.
+            instance_name (str): A short name given to this instance of the SzEngine object, to help identify it within system logs.
             settings (str): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/g2engine_init_and_destroy.py
+            .. literalinclude:: ../../examples/szengine/szengine_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -1229,7 +1229,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def prime_engine(self, **kwargs: Any) -> None:
         """
-        The `prime_engine` method Initializes high resource consumption components of Senzing
+        The `prime_engine` method initializes high resource consumption components of Senzing
         used in some functions. If this call is not made, these resources are initialized the
         first time they are needed and can cause unusually long processing times the first time
         a function is called that requires these resources.
@@ -1238,7 +1238,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/prime_engine.py
+            .. literalinclude:: ../../examples/szengine/prime_engine.py
                 :linenos:
                 :language: python
         """
@@ -1254,7 +1254,7 @@ class G2EngineAbstract(ABC):
 
     #     .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/g2engine/prime_engine.py
+    #         .. literalinclude:: ../../examples/szengine/prime_engine.py
     #             :linenos:
     #             :language: python
     #     """
@@ -1272,7 +1272,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/reevaluate_entity.py
+            .. literalinclude:: ../../examples/szengine/reevaluate_entity.py
                 :linenos:
                 :language: python
         """
@@ -1309,7 +1309,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/reevaluate_entity.py
+            .. literalinclude:: ../../examples/szengine/reevaluate_entity.py
                 :linenos:
                 :language: python
         """
@@ -1331,20 +1331,20 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         """
-        The `reinit` method re-initializes the Senzing G2Engine object using a specific configuration
+        The `reinitialize` method reinitializes the Senzing SzEngine object using a specific configuration
         identifier. A list of available configuration identifiers can be retrieved using
-        `g2configmgr.get_config_list`.
+        `szconfigmgr.get_config_list`.
 
         Args:
-            init_config_id (int): The configuration ID used for the initialization
+            config_id (int): The configuration ID used for the initialization
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception: init_config_id does not exist.
+            szexception.SzException: config_id does not exist.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/g2engine_reinit.py
+            .. literalinclude:: ../../examples/szengine/szengine_reinit.py
                 :linenos:
                 :language: python
         """
@@ -1375,7 +1375,7 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/replace_record.py
+            .. literalinclude:: ../../examples/szengine/replace_record.py
                 :linenos:
                 :language: python
         """
@@ -1404,7 +1404,7 @@ class G2EngineAbstract(ABC):
         self,
         attributes: str | Dict[Any, Any],
         search_profile: str = "SEARCH",
-        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1413,7 +1413,7 @@ class G2EngineAbstract(ABC):
         Args:
             attributes (str):  A JSON document with the attribute data to search for.
             search_profile (str): The name of a configured search profile. Defaults to SEARCH.
-            flags (int, optional): _description_. Defaults to G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
+            flags (int, optional): _description_. Defaults to SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -1422,13 +1422,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/search_by_attributes.py
+            .. literalinclude:: ../../examples/szengine/search_by_attributes.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/search_by_attributes.txt
+            .. literalinclude:: ../../examples/szengine/search_by_attributes.txt
                 :linenos:
                 :language: json
         """
@@ -1437,7 +1437,7 @@ class G2EngineAbstract(ABC):
         self,
         attributes: str | Dict[Any, Any],
         search_profile: str = "SEARCH",
-        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO: Document
@@ -1452,7 +1452,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1461,7 +1461,7 @@ class G2EngineAbstract(ABC):
         Args:
             entity_id_1 (int): The entity ID for the starting entity of the search path.
             entity_id_2 (int): The entity ID for the ending entity of the search path.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -1470,13 +1470,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/why_entities.py
+            .. literalinclude:: ../../examples/szengine/why_entities.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2engine/why_entities.txt
+            .. literalinclude:: ../../examples/szengine/why_entities.txt
                 :linenos:
                 :language: json
         """
@@ -1485,7 +1485,7 @@ class G2EngineAbstract(ABC):
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -1502,7 +1502,7 @@ class G2EngineAbstract(ABC):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -1513,7 +1513,7 @@ class G2EngineAbstract(ABC):
             record_id_1 (str): The unique identifier within the records of the same data source.
             data_source_code_2 (str): Identifies the provenance of the data.
             record_id_2 (str): The unique identifier within the records of the same data source.
-            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_ENTITY_DEFAULT_FLAGS.
 
         Returns:
             str: A JSON document.
@@ -1522,13 +1522,13 @@ class G2EngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2engine/why_records.py
+            .. literalinclude:: ../../examples/szengine/why_records.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-        .. literalinclude:: ../../examples/g2engine/why_records.txt
+        .. literalinclude:: ../../examples/szengine/why_records.txt
                 :linenos:
                 :language: json
         """
@@ -1539,7 +1539,7 @@ class G2EngineAbstract(ABC):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: document"""
@@ -1561,7 +1561,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """ """
@@ -1570,7 +1570,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO document
@@ -1597,7 +1597,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         # TODO document

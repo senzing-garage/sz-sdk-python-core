@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,7 +15,7 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     export_handle = g2_engine.export_json_entity_report()
 
     with open("exportJSONEntityReport.json", "w") as export_out:
@@ -26,5 +27,5 @@ try:
 
     g2_engine.close_export(export_handle)
 
-except G2Exception as err:
+except SzException as err:
     print(err)

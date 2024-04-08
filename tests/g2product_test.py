@@ -3,7 +3,7 @@ import json
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import g2exception, g2product
+from . import szexception, szproduct
 
 # -----------------------------------------------------------------------------
 # G2Product fixtures
@@ -16,7 +16,7 @@ def g2product_fixture(engine_vars):
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = g2product.G2Product(
+    result = szproduct.G2Product(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -71,33 +71,33 @@ def test_exception(g2_product):
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = g2product.G2Product(
+    actual = szproduct.G2Product(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
-    assert isinstance(actual, g2product.G2Product)
+    assert isinstance(actual, szproduct.G2Product)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2product.G2Product(
+    with pytest.raises(szexception.G2Exception):
+        actual = szproduct.G2Product(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
-        assert isinstance(actual, g2product.G2Product)
+        assert isinstance(actual, szproduct.G2Product)
 
 
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2product.G2Product(
+    with pytest.raises(szexception.G2Exception):
+        actual = szproduct.G2Product(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
-        assert isinstance(actual, g2product.G2Product)
+        assert isinstance(actual, szproduct.G2Product)
 
 
 def test_license(g2_product):

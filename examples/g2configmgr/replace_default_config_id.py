@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2config, g2configmgr
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szconfig, szconfigmgr
 
 CONFIG_COMMENTS = "Just an example"
 DATA_SOURCE_CODE = "TEST4"
@@ -17,8 +18,8 @@ SETTINGS = {
 
 # TODO Test this
 try:
-    g2_config = g2config.G2Config(INSTANCE_NAME, SETTINGS)
-    g2_configmgr = g2configmgr.G2ConfigMgr(INSTANCE_NAME, SETTINGS)
+    g2_config = szconfig.G2Config(INSTANCE_NAME, SETTINGS)
+    g2_configmgr = szconfigmgr.G2ConfigMgr(INSTANCE_NAME, SETTINGS)
 
     # Create a new config for the replacement.
     current_config_id = g2_configmgr.get_default_config_id()
@@ -34,5 +35,5 @@ try:
     print(
         f"Config with ID {current_config_id} was replaced by config with ID {new_current_config_id}"
     )
-except G2Exception as err:
+except SzException as err:
     print(err)

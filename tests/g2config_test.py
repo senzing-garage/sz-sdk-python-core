@@ -3,7 +3,7 @@ import json
 import pytest
 from pytest_schema import Or, schema
 
-from senzing import g2config, g2exception
+from . import szconfig, szexception
 
 # -----------------------------------------------------------------------------
 # G2Config fixtures
@@ -17,7 +17,7 @@ def g2config_fixture(engine_vars):
     engine_vars is returned from conftest.py.
     """
 
-    result = g2config.G2Config(
+    result = szconfig.G2Config(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -368,42 +368,42 @@ def test_exception(g2_config):
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = g2config.G2Config(
+    actual = szconfig.G2Config(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
-    assert isinstance(actual, g2config.G2Config)
+    assert isinstance(actual, szconfig.G2Config)
 
 
 def test_constructor_dict(engine_vars):
     """Test constructor."""
-    actual = g2config.G2Config(
+    actual = szconfig.G2Config(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS_DICT"],
     )
-    assert isinstance(actual, g2config.G2Config)
+    assert isinstance(actual, szconfig.G2Config)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2config.G2Config(
+    with pytest.raises(szexception.G2Exception):
+        actual = szconfig.G2Config(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
-        assert isinstance(actual, g2config.G2Config)
+        assert isinstance(actual, szconfig.G2Config)
 
 
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2config.G2Config(
+    with pytest.raises(szexception.G2Exception):
+        actual = szconfig.G2Config(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
-        assert isinstance(actual, g2config.G2Config)
+        assert isinstance(actual, szconfig.G2Config)
 
 
 def test_add_data_source(g2_config):
@@ -461,7 +461,7 @@ def test_add_data_source_bad_input_json_value(g2_config):
     config_handle = g2_config.create()
     bad_input_dict = {"XXXX": "YYYY"}
     try:
-        with pytest.raises(g2exception.G2BadInputError):
+        with pytest.raises(szexception.G2BadInputError):
             g2_config.add_data_source(config_handle, bad_input_dict)
     finally:
         g2_config.close(config_handle)
@@ -598,7 +598,7 @@ def test_load_bad_json_config_type(g2_config):
 def test_load_bad_json_config_value(g2_config):
     """Test G2Config().load()."""
     bad_json_config = {"Just": "Junk"}
-    with pytest.raises(g2exception.G2ConfigurationError):
+    with pytest.raises(szexception.G2ConfigurationError):
         g2_config.load(bad_json_config)
 
 

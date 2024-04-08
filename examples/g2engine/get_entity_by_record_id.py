@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from . import szengine
 
 SETTINGS = {
     "PIPELINE": {
@@ -18,7 +17,7 @@ DATA_SOURCE_CODE = "TEST"
 RECORD_ID = "Example-1"
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.get_entity_by_record_id(DATA_SOURCE_CODE, RECORD_ID = {)
     print(result)
 except G2Exception as err:

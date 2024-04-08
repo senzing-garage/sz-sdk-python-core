@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 END_ENTITY_ID = 200013
 INSTANCE_NAME = "Example"
@@ -18,10 +19,10 @@ START_ENTITY_ID = 200003
 
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.find_path_by_entity_id(
         START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
     )
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 INSTANCE_NAME = "Example"
 RECORD_LIST = {
@@ -20,8 +21,8 @@ SETTINGS = {
 }
 # TODO Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.get_virtual_entity_by_record_id(RECORD_LIST)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

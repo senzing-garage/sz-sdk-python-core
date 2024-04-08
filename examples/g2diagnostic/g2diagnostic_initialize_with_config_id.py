@@ -2,8 +2,9 @@
 
 import json
 
-from senzing import g2configmgr, g2diagnostic
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szconfigmgr, szdiagnostic
 
 ini_params_dict = {
     "PIPELINE": {
@@ -17,13 +18,13 @@ MODULE_NAME = "Example"
 
 try:
     # Get a configuration ID.
-    g2_configmgr = g2configmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
+    g2_configmgr = szconfigmgr.G2ConfigMgr(MODULE_NAME, json.dumps(ini_params_dict))
     config_id = g2_configmgr.get_default_config_id()
 
-    g2_diagnostic = g2diagnostic.G2Diagnostic()
+    g2_diagnostic = szdiagnostic.G2Diagnostic()
     # TODO Add config_id to initialize
     g2_diagnostic.init_with_config_id(
         MODULE_NAME, json.dumps(ini_params_dict), config_id
     )
-except G2Exception as err:
+except SzException as err:
     print(err)

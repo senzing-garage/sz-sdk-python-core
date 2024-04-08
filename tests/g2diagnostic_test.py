@@ -4,7 +4,7 @@ import psutil
 import pytest
 from pytest_schema import schema
 
-from senzing import g2configmgr, g2diagnostic, g2exception
+from . import szconfigmgr, szdiagnostic, szexception
 
 # -----------------------------------------------------------------------------
 # G2Diagnostic fixtures
@@ -15,7 +15,7 @@ from senzing import g2configmgr, g2diagnostic, g2exception
 def g2configmgr_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    result = g2configmgr.G2ConfigMgr(
+    result = szconfigmgr.G2ConfigMgr(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -26,7 +26,7 @@ def g2configmgr_fixture(engine_vars):
 def g2diagnostic_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    result = g2diagnostic.G2Diagnostic(
+    result = szdiagnostic.G2Diagnostic(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -63,42 +63,42 @@ def test_exception(g2_diagnostic):
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = g2diagnostic.G2Diagnostic(
+    actual = szdiagnostic.G2Diagnostic(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
-    assert isinstance(actual, g2diagnostic.G2Diagnostic)
+    assert isinstance(actual, szdiagnostic.G2Diagnostic)
 
 
 def test_constructor_dict(engine_vars):
     """Test constructor."""
-    actual = g2diagnostic.G2Diagnostic(
+    actual = szdiagnostic.G2Diagnostic(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS_DICT"],
     )
-    assert isinstance(actual, g2diagnostic.G2Diagnostic)
+    assert isinstance(actual, szdiagnostic.G2Diagnostic)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2diagnostic.G2Diagnostic(
+    with pytest.raises(szexception.G2Exception):
+        actual = szdiagnostic.G2Diagnostic(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
-        assert isinstance(actual, g2diagnostic.G2Diagnostic)
+        assert isinstance(actual, szdiagnostic.G2Diagnostic)
 
 
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2diagnostic.G2Diagnostic(
+    with pytest.raises(szexception.G2Exception):
+        actual = szdiagnostic.G2Diagnostic(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
-        assert isinstance(actual, g2diagnostic.G2Diagnostic)
+        assert isinstance(actual, szdiagnostic.G2Diagnostic)
 
 
 def test_check_db_perf(g2_diagnostic):
@@ -159,7 +159,7 @@ def test_reinit(g2_diagnostic, g2_configmgr):
     default_config_id = g2_configmgr.get_default_config_id()
     try:
         g2_diagnostic.reinit(default_config_id)
-    except g2exception.G2Exception:
+    except szexception.G2Exception:
         assert False
 
 
@@ -172,7 +172,7 @@ def test_reinit_bad_config_id(g2_diagnostic):
 
 def test_reinit_missing_config_id(g2_diagnostic):
     """Test G2Diagnostic().reinit() raising error."""
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_diagnostic.reinit(999)
 
 

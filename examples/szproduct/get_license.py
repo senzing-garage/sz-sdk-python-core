@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import g2product
-from senzing.g2exception import G2Exception
+from senzing import szproduct
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,8 +14,8 @@ SETTINGS = {
 }
 
 try:
-    g2_product = g2product.G2Product(INSTANCE_NAME, SETTINGS)
-    result = g2_product.get_license()
+    sz_product = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
+    result = sz_product.get_license()
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

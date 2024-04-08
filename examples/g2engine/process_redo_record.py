@@ -2,8 +2,9 @@
 
 from sys import exit
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -16,7 +17,7 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     record = g2_engine.get_redo_record()
     if not record:
         print("No redo records")
@@ -24,5 +25,5 @@ try:
 
     result = g2_engine.process_redo_record(record, 1)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

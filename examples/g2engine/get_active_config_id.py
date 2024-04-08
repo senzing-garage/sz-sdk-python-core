@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,8 +15,8 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.get_active_config_id()
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

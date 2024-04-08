@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 END_DATA_SOURCE_CODE = "REFERENCE"
 END_RECORD_ID = "2132"
@@ -19,7 +20,7 @@ START_DATA_SOURCE_CODE = "REFERENCE"
 START_RECORD_ID = "2081"
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.find_path_by_record_id(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,
@@ -28,5 +29,5 @@ try:
         MAX_DEGREES,
     )
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

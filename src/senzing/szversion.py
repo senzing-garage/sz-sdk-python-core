@@ -1,12 +1,13 @@
+# TODO Move in szhelpers?
 """
-TODO: g2version.py
+TODO: szversion.py
 """
 
 import datetime
 import json
 
-from .g2exception import G2Exception, get_location
-from .g2product import G2Product
+from .szexception import SzException, get_location
+from .szproduct import SzProduct
 
 SENZING_VERSION_MINIMUM = "3.8.0"
 SENZING_VERSION_MAXIMUM = "5.0.0"
@@ -18,7 +19,7 @@ def normalize_semantic_version(semantic_version: str) -> int:
     create an integer for comparison.
 
     Note:  The current implementation supports up to 2 digit
-    Major, Minor, and Patch intgers. (see 10**4, 10**2)
+    Major, Minor, and Patch integers. (see 10**4, 10**2)
 
     Args:
         semantic_version (str): A string in the form 'M.m.P'
@@ -50,7 +51,7 @@ def supports_senzingapi_version(
         current_semantic_version (str): String in form 'M.m.P' representing current version.
 
     Raises:
-        G2Exception: Current Senzing API is not supported.
+        SzException: Current Senzing API is not supported.
 
     Returns:
         bool: Returns True if current Senzing API version is supported.
@@ -69,7 +70,7 @@ def supports_senzingapi_version(
             "id": "senzing-50475001",
             "location": get_location(5),
         }
-        raise G2Exception(json.dumps(message))
+        raise SzException(json.dumps(message))
     return True
 
 
@@ -79,7 +80,7 @@ def is_supported_senzingapi_version() -> bool:
     version of the Senzing Python SDK.
 
     Raises:
-        G2Exception: Current Senzing API is not supported.
+        SzException: Current Senzing API is not supported.
 
     Returns:
         bool: Returns True if current Senzing API version is supported.
@@ -87,8 +88,8 @@ def is_supported_senzingapi_version() -> bool:
     :meta private:
     """
 
-    g2_product = G2Product()
-    version_dict = g2_product.version_as_dict()
+    sz_product = SzProduct()
+    version_dict = sz_product.version_as_dict()
     senzing_version_current = version_dict.get("VERSION", "0.0.0")
 
     result = supports_senzingapi_version(

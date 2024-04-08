@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import g2diagnostic
-from senzing.g2exception import G2Exception
+from senzing import szdiagnostic
+from szexception import SzException
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,10 +14,10 @@ SETTINGS = {
 }
 
 try:
-    g2_diagnostic = g2diagnostic.G2Diagnostic(INSTANCE_NAME, SETTINGS)
+    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
     # WARNING
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING
-    g2_diagnostic.purge_repository()
-except G2Exception as err:
+    sz_diagnostic.purge_repository()
+except SzException as err:
     print(err)

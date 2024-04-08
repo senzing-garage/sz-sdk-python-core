@@ -5,8 +5,9 @@ import time
 from contextlib import suppress
 from datetime import timedelta
 
-from senzing import g2engine, g2engineflags
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine, szengineflags
 
 with suppress(ModuleNotFoundError):
     import orjson
@@ -23,12 +24,12 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
-except G2Exception as err:
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
+except SzException as err:
     print(err)
     sys.exit()
 
-flags = g2engineflags.G2EngineFlags.G2_ENTITY_BRIEF_DEFAULT_FLAGS
+flags = szengineflags.G2EngineFlags.G2_ENTITY_BRIEF_DEFAULT_FLAGS
 iterations = 5
 
 

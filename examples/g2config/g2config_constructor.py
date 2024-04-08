@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2config
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szconfig
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -16,14 +17,14 @@ SETTINGS = {
 # Example 1
 
 try:
-    g2_config = g2config.G2Config(INSTANCE_NAME, SETTINGS)
-except G2Exception as err:
+    g2_config = szconfig.G2Config(INSTANCE_NAME, SETTINGS)
+except SzException as err:
     print(err)
 
 # Example 2
 
 try:
-    g2_config = g2config.G2Config()
+    g2_config = szconfig.G2Config()
     g2_config.initialize(INSTANCE_NAME, SETTINGS)
-except G2Exception as err:
+except SzException as err:
     print(err)

@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2configmgr_abstract.py is the abstract class for all implementaions of g2configmgr.
+szconfigmgr_abstract.py is the abstract class for all implementations of szconfigmgr.
 """
 
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 # Metadata
 
-__all__ = ["G2ConfigMgrAbstract"]
+__all__ = ["SzConfigMgrAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-08"
@@ -21,17 +21,17 @@ __updated__ = "2023-11-08"
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgrAbstract(ABC):
+class SzConfigMgrAbstract(ABC):
     """
-    G2ConfigMgrAbstract is the definition of the Senzing Python API that is
-    implemented by packages such as g2configmgr.py.
+    SzConfigMgrAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as szconfigmgr.py.
     """
 
     # -------------------------------------------------------------------------
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "g2configmgr."
+    PREFIX = "szconfigmgr."
     # TODO: remove + concats for f-strings
     ID_MESSAGES = {
         4001: PREFIX + "G2ConfigMgr_addConfig({0}, {1}) failed. Return code: {2}",
@@ -75,7 +75,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/add_config.py
+            .. literalinclude:: ../../examples/szconfigmgr/add_config.py
                 :linenos:
                 :language: python
         """
@@ -83,10 +83,10 @@ class G2ConfigMgrAbstract(ABC):
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2ConfigMgr object.
+        The `destroy` method will destroy and perform cleanup for the Senzing SzConfigMgr object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2ConfigMgr` constructor was called with parameters,
+        **Note:** If the `SzConfigMgr` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -94,14 +94,14 @@ class G2ConfigMgrAbstract(ABC):
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
+            sz_configmgr = szconfigmgr.SzConfigMgr(module_name, ini_params)
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -122,13 +122,13 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/get_config.py
+            .. literalinclude:: ../../examples/szconfigmgr/get_config.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr/get_config.txt
+            .. literalinclude:: ../../examples/szconfigmgr/get_config.txt
                 :linenos:
                 :language: json
         """
@@ -146,13 +146,13 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/get_config_list.py
+            .. literalinclude:: ../../examples/szconfigmgr/get_config_list.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2configmgr/get_config_list.txt
+            .. literalinclude:: ../../examples/szconfigmgr/get_config_list.txt
                 :linenos:
                 :language: json
         """
@@ -170,7 +170,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/get_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmgr/get_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -184,30 +184,30 @@ class G2ConfigMgrAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `init` method initializes the Senzing G2ConfigMgr object.
+        The `initialize` method initializes the Senzing SzConfigMgr object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2ConfigMgr constructor is called with parameters,
-        the constructor will automatically call the `init()` method.
-        In this case, a separate call to `init()` is not needed.
+        **Note:** If the SzConfigMgr constructor is called with parameters,
+        the constructor will automatically call the `initialize()` method.
+        In this case, a separate call to `initialize()` is not needed.
 
         Example:
 
         .. code-block:: python
 
-            g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
+            sz_configmgr = szconfigmgr.SzConfigMgr(module_name, ini_params)
 
         Args:
-            instance_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
+            instance_name (str): A short name given to this instance of the SzProduct object, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/g2configmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -223,7 +223,7 @@ class G2ConfigMgrAbstract(ABC):
         """
         The `replace_default_config_id` method replaces the old configuration identifier with a new configuration identifier in the Senzing database.
         It is like a "compare-and-swap" instruction to serialize concurrent editing of configuration.
-        If `old_config_id` is no longer the "old configuration identifier", the operation will fail.
+        If `current_default_config_id` is no longer the "current configuration identifier", the operation will fail.
         To simply set the default configuration ID, use `set_default_config_id`.
 
         Args:
@@ -235,7 +235,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/replace_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmgr/replace_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -254,7 +254,7 @@ class G2ConfigMgrAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2configmgr/set_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmgr/set_default_config_id.py
                 :linenos:
                 :language: python
         """

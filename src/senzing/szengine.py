@@ -35,10 +35,10 @@ from ctypes import (
 )
 from typing import Any, Dict, Optional
 
-from .g2engine_abstract import G2EngineAbstract
-from .g2engineflags import G2EngineFlags
-from .g2exception import G2Exception, new_g2exception
-from .g2helpers import (
+from .szengine_abstract import SzEngineAbstract
+from .szengineflags import SzEngineFlags
+from .szexception import SzException, new_szexception
+from .szhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_int,
@@ -48,11 +48,11 @@ from .g2helpers import (
     catch_ctypes_exceptions,
     find_file_in_path,
 )
-from .g2version import is_supported_senzingapi_version
+from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["G2Engine"]
+__all__ = ["SzEngine"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
@@ -66,7 +66,6 @@ CALLER_SKIP = 5  # Number of stack frames to skip when reporting location in Exc
 # # -----------------------------------------------------------------------------
 # # Helper Classes
 # # -----------------------------------------------------------------------------
-# # TODO Should this go in helpers
 # class AsDict(str):
 #     """ """
 
@@ -345,7 +344,7 @@ class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
 # TODO init_config_id ?
 # TODO Optional on Parameters needs to be explained for different init methods
 # TODO Raises could be more granular
-class G2Engine(G2EngineAbstract):
+class SzEngine(SzEngineAbstract):
     """
     The `init` method initializes the Senzing G2Engine object.
     It must be called prior to any other calls.
@@ -435,7 +434,7 @@ class G2Engine(G2EngineAbstract):
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             # TODO Additional explanation e.g. is LD_LIBRARY_PATH set
-            raise G2Exception("Failed to load the G2 library") from err
+            raise SzException("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2engine.h
@@ -813,7 +812,6 @@ class G2Engine(G2EngineAbstract):
             c_char_p,
         ]
         self.library_handle.G2_processRedoRecord.restype = c_int
-        # TODO Broken in libG2.so currently
         self.library_handle.G2_processRedoRecordWithInfo_helper.argtypes = [
             c_char_p,
         ]
@@ -942,7 +940,7 @@ class G2Engine(G2EngineAbstract):
 
         :meta private:
         """
-        return new_g2exception(
+        return new_szexception(
             self.library_handle.G2_getLastException,
             self.library_handle.G2_clearLastException,
             SENZING_PRODUCT_ID,
@@ -1013,8 +1011,6 @@ class G2Engine(G2EngineAbstract):
         result: int = self.library_handle.G2_countRedoRecords()
         # NOTE If result >= 0 call was successful
         if result < 0:
-            # TODO Check others like this that were looking for result.return_code by forcing non zero return code
-            # raise self.new_exception(4007, result.return_code)
             raise self.new_exception(4007, result)
         return result
 
@@ -1067,7 +1063,7 @@ class G2Engine(G2EngineAbstract):
         self,
         # TODO add default col list and add information to abstract docstring?
         csv_column_list: str,
-        flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> int:
@@ -1080,7 +1076,7 @@ class G2Engine(G2EngineAbstract):
 
     def export_json_entity_report(
         self,
-        flags: int = G2EngineFlags.G2_EXPORT_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> int:
@@ -1138,7 +1134,7 @@ class G2Engine(G2EngineAbstract):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1170,7 +1166,7 @@ class G2Engine(G2EngineAbstract):
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1202,9 +1198,11 @@ class G2Engine(G2EngineAbstract):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
+        # TODO Could be list of entity ids or dsrc code + record id
         exclusions: str | Dict[Any, Any] = "",
+        # TODO Could be a list of codes
         required_data_sources: str | Dict[Any, Any] = "",
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1231,7 +1229,6 @@ class G2Engine(G2EngineAbstract):
                         max_degrees,
                         # TODO Should this and others that could be dicts use as_str?
                         exclusions,
-                        # TODO Need to add required_data_sources
                         flags,
                         result.return_code,
                     )
@@ -1293,7 +1290,7 @@ class G2Engine(G2EngineAbstract):
         max_degrees: int,
         exclusions: str | Dict[Any, Any] = "",
         required_data_sources: str | Dict[Any, Any] = "",
-        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1384,7 +1381,7 @@ class G2Engine(G2EngineAbstract):
     def get_entity_by_entity_id(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1400,7 +1397,7 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1420,7 +1417,7 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_RECORD_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1467,7 +1464,7 @@ class G2Engine(G2EngineAbstract):
     def get_virtual_entity_by_record_id(
         self,
         record_list: str | Dict[Any, Any],
-        flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1483,7 +1480,7 @@ class G2Engine(G2EngineAbstract):
     def how_entity_by_entity_id(
         self,
         entity_id: int,
-        flags: int = G2EngineFlags.G2_HOW_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1537,8 +1534,6 @@ class G2Engine(G2EngineAbstract):
         if result < 0:
             raise self.new_exception(4050, result)
 
-    # TODO Missing from V4 go lang helpers currently
-    # TODO GDEV-3771
     @catch_ctypes_exceptions
     def process_redo_record(
         self, redo_record: str, flags: int = 0, **kwargs: Any
@@ -1594,6 +1589,7 @@ class G2Engine(G2EngineAbstract):
 
     # TODO Test when get new build with_info, on unfixed merge build with_info returns nothing if the record_id
     # TODO doesn't exist but raises error if the dsrc_code doesn't exist
+    # TODO GDEV-3790
     @catch_ctypes_exceptions
     def reevaluate_record(
         self,
@@ -1682,7 +1678,7 @@ class G2Engine(G2EngineAbstract):
         self,
         attributes: str | Dict[Any, Any],
         search_profile: str = "SEARCH",
-        flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1709,7 +1705,7 @@ class G2Engine(G2EngineAbstract):
         self,
         entity_id_1: int,
         entity_id_2: int,
-        flags: int = G2EngineFlags.G2_WHY_ENTITIES_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1733,7 +1729,7 @@ class G2Engine(G2EngineAbstract):
         record_id_1: str,
         data_source_code_2: str,
         record_id_2: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:
@@ -1763,7 +1759,7 @@ class G2Engine(G2EngineAbstract):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         *args: Any,
         **kwargs: Any,
     ) -> str:

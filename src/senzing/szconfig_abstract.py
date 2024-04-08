@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2config_abstract.py is the abstract class for all implementaions of g2config.
+szconfig_abstract.py is the abstract class for all implementations of szconfig.
 """
 
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 # Metadata
 
-__all__ = ["G2ConfigAbstract"]
+__all__ = ["SzConfigAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-08"
@@ -21,17 +21,17 @@ __updated__ = "2023-11-08"
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigAbstract(ABC):
+class SzConfigAbstract(ABC):
     """
-    G2ConfigAbstract is the definition of the Senzing Python API that is
-    implemented by packages such as g2config.py.
+    SzConfigAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as szconfig.py.
     """
 
     # -------------------------------------------------------------------------
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "g2config."
+    PREFIX = "szconfig."
     ID_MESSAGES = {
         4001: PREFIX + "G2Config_addDataSource({0}, {1}) failed. Return code: {2}",
         4002: PREFIX + "G2Config_close({0}) failed. Return code: {1}",
@@ -75,13 +75,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/add_data_source.py
+            .. literalinclude:: ../../examples/szconfig/add_data_source.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config/add_data_source.txt
+            .. literalinclude:: ../../examples/szconfig/add_data_source.txt
                 :linenos:
                 :language: json
         """
@@ -89,7 +89,7 @@ class G2ConfigAbstract(ABC):
     @abstractmethod
     def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
         """
-        The `close` method cleans up the Senzing G2Config object pointed to by the `config_handle`.
+        The `close` method cleans up the Senzing SzConfig object pointed to by the `config_handle`.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
@@ -99,7 +99,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/create_and_close.py
+            .. literalinclude:: ../../examples/szconfig/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -123,7 +123,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/create_and_close.py
+            .. literalinclude:: ../../examples/szconfig/create_and_close.py
                 :linenos:
                 :language: python
         """
@@ -149,7 +149,7 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/delete_data_source.py
+            .. literalinclude:: ../../examples/szconfig/delete_data_source.py
                 :linenos:
                 :language: python
         """
@@ -157,10 +157,10 @@ class G2ConfigAbstract(ABC):
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2Config object.
+        The `destroy` method will destroy and perform cleanup for the Senzing SzConfig object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2Config` constructor was called with parameters,
+        **Note:** If the `SzConfig` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -168,14 +168,14 @@ class G2ConfigAbstract(ABC):
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(module_name, ini_params)
+            sz_config = szconfig.SzConfig(module_name, ini_params)
 
         Raises:
             g2exception.G2Exception:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfig/szconfig_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -183,32 +183,32 @@ class G2ConfigAbstract(ABC):
     @abstractmethod
     def export_config(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
         """
-        The `export_config` method creates a JSON string representation of the Senzing G2Config object.
+        The `export_config` method creates a JSON string representation of the Senzing SzConfig object.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
 
         Returns:
-            str: A string containing a JSON Document representation of the Senzing G2Config object.
+            str: A string containing a JSON Document representation of the Senzing SzConfig object.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/save.py
+            .. literalinclude:: ../../examples/szconfig/save.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config/save.txt
+            .. literalinclude:: ../../examples/szconfig/save.txt
                 :linenos:
                 :language: json
 
             **Create, save, load, and close example**
 
-            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
+            .. literalinclude:: ../../examples/szconfig/create_save_load_close.py
                 :linenos:
                 :language: python
         """
@@ -230,13 +230,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/list_data_sources.py
+            .. literalinclude:: ../../examples/szconfig/list_data_sources.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2config/list_data_sources.txt
+            .. literalinclude:: ../../examples/szconfig/list_data_sources.txt
                 :linenos:
                 :language: json
         """
@@ -250,30 +250,30 @@ class G2ConfigAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `init` method initializes the Senzing G2Config object.
+        The `initialize` method initializes the Senzing SzConfig object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2Config constructor is called with parameters,
-        the constructor will automatically call the `init()` method.
-        In this case, a separate call to `init()` is not needed.
+        **Note:** If the SzConfig constructor is called with parameters,
+        the constructor will automatically call the `initialize()` method.
+        In this case, a separate call to `initialize()` is not needed.
 
         Example:
 
         .. code-block:: python
 
-            g2_config = g2config.G2Config(module_name, ini_params)
+            sz_config = szconfig.SzConfig(instance_name, settings)
 
         Args:
-            instance_name (str): A short name given to this instance of the G2Config object, to help identify it within system logs.
+            instance_name (str): A short name given to this instance of the SzConfig object, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/g2config_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfig/szconfig_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -283,7 +283,7 @@ class G2ConfigAbstract(ABC):
         self, config_definition: str | Dict[Any, Any], *args: Any, **kwargs: Any
     ) -> int:
         """
-        The `import_config` method initializes an in-memory Senzing G2Config object from a JSON string.
+        The `import_config` method initializes an in-memory Senzing SzConfig object from a JSON string.
         A handle is returned to identify the in-memory configuration.
         The handle is used by the `add_data_source`, `get_data_sources`,
         `delete_data_source`, and `save` methods.
@@ -300,13 +300,13 @@ class G2ConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2config/load.py
+            .. literalinclude:: ../../examples/szconfig/load.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/g2config/create_save_load_close.py
+            .. literalinclude:: ../../examples/szconfig/create_save_load_close.py
                 :linenos:
                 :language: python
         """

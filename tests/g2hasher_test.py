@@ -1,6 +1,6 @@
 import pytest
 
-from senzing import g2hasher
+from . import szhasher
 
 # -----------------------------------------------------------------------------
 # G2Hasher fixtures
@@ -13,7 +13,7 @@ def g2hasher_instance_fixture(engine_vars):
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = g2hasher.G2Hasher(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"])
+    result = szhasher.G2Hasher(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"])
     return result
 
 

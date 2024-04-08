@@ -2,8 +2,9 @@
 
 # TODO Fix when observer is in place
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 INSTANCE_NAME = "Example"
 ENTITY_ID = 1
@@ -17,8 +18,8 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.reevaluate_entity_return_dict(ENTITY_ID, 1)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

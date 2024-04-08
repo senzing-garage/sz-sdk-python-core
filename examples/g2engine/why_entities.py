@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 ENTITY_ID_1 = 1
 ENTITY_ID_2 = 6
@@ -16,8 +17,8 @@ SETTINGS = {
 }
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.why_entities(ENTITY_ID_1, ENTITY_ID_2)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

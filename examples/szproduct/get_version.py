@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from szexception import SzException
+from senzing import szproduct
+from senzing.szexception import SzException
 
-from . import szconfig
-
+INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -12,14 +12,10 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-INSTANCE_NAME = "Example"
 
 try:
-    g2_config = szconfig.G2Config()
-    g2_config.initialize(INSTANCE_NAME, SETTINGS)
-
-    # Do work.
-
-    g2_config.destroy()
+    sz_product = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
+    result = sz_product.get_version()
+    print(result)
 except SzException as err:
     print(err)

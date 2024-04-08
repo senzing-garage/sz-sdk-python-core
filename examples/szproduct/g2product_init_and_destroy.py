@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2product
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szproduct
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,11 +15,11 @@ SETTINGS = {
 }
 
 try:
-    g2_product = g2product.G2Product()
+    g2_product = szproduct.G2Product()
     g2_product.initialize(INSTANCE_NAME, SETTINGS)
 
     # Do work.
 
     g2_product.destroy()
-except G2Exception as err:
+except SzException as err:
     print(err)

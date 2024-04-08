@@ -16,7 +16,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import g2config, g2configmgr, g2engine, g2exception
+from . import szconfig, szconfigmgr, szengine, szexception
 
 # AC - Temp disables to get changes in for move to senzing garage
 # pylint: disable=C0302
@@ -32,7 +32,7 @@ def g2engine_fixture(engine_vars):
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return g2engine.G2Engine(
+    return szengine.G2Engine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -748,17 +748,17 @@ why_entity_results_schema = {
 
 def test_add_truthset_datasources(engine_vars) -> None:
     """Add needed datasources for tests."""
-    g2_config = g2config.G2Config(
+    g2_config = szconfig.G2Config(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    g2_configmgr = g2configmgr.G2ConfigMgr(
+    g2_configmgr = szconfigmgr.G2ConfigMgr(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    g2_engine = g2engine.G2Engine(
+    g2_engine = szengine.G2Engine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
@@ -774,7 +774,7 @@ def test_add_truthset_datasources(engine_vars) -> None:
 
 def test_add_truthset_data(engine_vars):
     """Add truthset data for tests"""
-    g2_engine = g2engine.G2Engine(
+    g2_engine = szengine.G2Engine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
@@ -795,19 +795,19 @@ def test_exception(g2_engine):
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = g2engine.G2Engine(
+    actual = szengine.G2Engine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    assert isinstance(actual, g2engine.G2Engine)
+    assert isinstance(actual, szengine.G2Engine)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(g2exception.G2Exception):
-        g2engine.G2Engine(
+    with pytest.raises(szexception.G2Exception):
+        szengine.G2Engine(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
@@ -816,8 +816,8 @@ def test_constructor_bad_module_name(engine_vars):
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(g2exception.G2Exception):
-        g2engine.G2Engine(
+    with pytest.raises(szexception.G2Exception):
+        szengine.G2Engine(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
@@ -859,7 +859,7 @@ def test_add_record_bad_data_source_code_value(g2_engine):
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
@@ -868,7 +868,7 @@ def test_add_record_bad_record(g2_engine):
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR_BAD
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
@@ -886,7 +886,7 @@ def test_add_record_data_source_code_empty(g2_engine):
     data_source_code = ""
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
@@ -895,7 +895,7 @@ def test_add_record_record_str_empty(g2_engine):
     data_source_code = "TEST"
     record_id = "1"
     json_data = ""
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
@@ -941,7 +941,7 @@ def test_add_record_with_info_bad_data_source_code_value(g2_engine):
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record_with_info(data_source_code, record_id, json_data)
 
 
@@ -950,7 +950,7 @@ def test_add_record_with_info_bad_record(g2_engine):
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR_BAD
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record_with_info(data_source_code, record_id, json_data)
 
 
@@ -968,7 +968,7 @@ def test_add_record_with_info_data_source_code_empty(g2_engine):
     data_source_code = ""
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record_with_info(data_source_code, record_id, json_data)
 
 
@@ -977,7 +977,7 @@ def test_add_record_with_info_record_str_empty(g2_engine):
     data_source_code = "TEST"
     record_id = "1"
     json_data = ""
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.add_record(data_source_code, record_id, json_data)
 
 
@@ -1020,7 +1020,7 @@ def test_delete_record_bad_data_source_code_value(g2_engine):
     """Test delete_record with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.delete_record(data_source_code, record_id)
 
 
@@ -1028,7 +1028,7 @@ def test_delete_record_data_source_code_empty(g2_engine):
     """Test delete_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.delete_record_with_info(data_source_code, record_id)
 
 
@@ -1055,7 +1055,7 @@ def test_delete_record_with_info_bad_data_source_code_value(g2_engine):
     """Test delete_record_with_info with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.delete_record_with_info(data_source_code, record_id)
 
 
@@ -1063,7 +1063,7 @@ def test_delete_record_with_info_data_source_code_empty(g2_engine):
     """Test delete_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.delete_record_with_info(data_source_code, record_id)
 
 
@@ -1102,7 +1102,7 @@ def test_export_csv_entity_report(g2_engine) -> None:
 def test_export_csv_entity_report_bad_header(g2_engine) -> None:
     """Test export_csv_entity_report with incorrect header value."""
     csv_headers = "RESOLVED_ENTITY_,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA,LAST_SEEN_DT,NAME_DATA,ATTRIBUTE_DATA,IDENTIFIER_DATA,ADDRESS_DATA,PHONE_DATA,RELATIONSHIP_DATA,ENTITY_DATA,OTHER_DATA"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.export_csv_entity_report(csv_headers)
 
 
@@ -1169,7 +1169,7 @@ def test_find_network_by_entity_id_bad_entity_ids(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_network_by_entity_id(
             entity_list, max_degree, build_out_degree, max_entities
         )
@@ -1252,7 +1252,7 @@ def test_find_network_by_record_id_bad_data_source_code(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_network_by_record_id(
             record_list, max_degree, build_out_degree, max_entities
         )
@@ -1269,7 +1269,7 @@ def test_find_network_by_record_id_bad_record_ids(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_network_by_record_id(
             record_list, max_degree, build_out_degree, max_entities
         )
@@ -1320,7 +1320,7 @@ def test_find_path_by_entity_id_bad_entity_ids(g2_engine) -> None:
     entity_id_1 = 99999999999998
     entity_id_2 = 99999999999999
     max_degree = 5
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
 
 
@@ -1356,7 +1356,7 @@ def test_find_path_by_record_id_bad_data_source_code(g2_engine) -> None:
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_by_record_id(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
         )
@@ -1369,7 +1369,7 @@ def test_find_path_by_record_id_bad_record_ids(g2_engine) -> None:
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_by_record_id(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
         )
@@ -1423,7 +1423,7 @@ def test_find_path_excluding_by_entity_id_bad_entity_ids(g2_engine) -> None:
     entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
     max_degree = 5
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_excluding_by_entity_id(
             entity_id_1, entity_id_2, max_degree, excluded_entities
         )
@@ -1493,7 +1493,7 @@ def test_find_path_excluding_by_record_id_bad_data_source_code(g2_engine) -> Non
     record_id_2 = "1020"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_excluding_by_record_id(
             data_source_code_1,
             record_id_1,
@@ -1512,7 +1512,7 @@ def test_find_path_excluding_by_record_id_bad_record_ids(g2_engine) -> None:
     record_id_2 = "2132"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_excluding_by_record_id(
             data_source_code_1,
             record_id_1,
@@ -1601,7 +1601,7 @@ def test_find_path_including_source_by_entity_id_bad_entity_ids(g2_engine) -> No
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_including_source_by_entity_id(
             entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
         )
@@ -1710,7 +1710,7 @@ def test_find_path_including_source_by_record_id_bad_data_source_code(
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_including_source_by_record_id(
             data_source_code_1,
             record_id_1,
@@ -1731,7 +1731,7 @@ def test_find_path_including_source_by_record_id_bad_record_ids(g2_engine) -> No
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.find_path_including_source_by_record_id(
             data_source_code_1,
             record_id_1,
@@ -1831,7 +1831,7 @@ def test_get_entity_by_entity_id(
 def test_get_entity_by_entity_id_bad_entity_ids(g2_engine) -> None:
     """Test get_entity_by_entity_id with non-existent entities."""
     entity_id = 9999999999999999
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_entity_by_entity_id(entity_id)
 
 
@@ -1855,7 +1855,7 @@ def test_get_entity_by_record_id_bad_data_source_code(g2_engine) -> None:
     """Test get_entity_by_record_id with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_entity_by_record_id(data_source_code, record_id)
 
 
@@ -1863,7 +1863,7 @@ def test_get_entity_by_record_id_bad_record_id(g2_engine) -> None:
     """Test get_entity_by_record_id with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_entity_by_record_id(data_source_code, record_id)
 
 
@@ -1880,7 +1880,7 @@ def test_get_record_bad_data_source_code(g2_engine) -> None:
     """Test get_record with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_record(data_source_code, record_id)
 
 
@@ -1888,7 +1888,7 @@ def test_get_record_bad_record_id(g2_engine) -> None:
     """Test get_record with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_record(data_source_code, record_id)
 
 
@@ -1954,7 +1954,7 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_virtual_entity_by_record_id(record_list)
 
 
@@ -1968,7 +1968,7 @@ def test_get_virtual_entity_by_record_id_bad_record_id(
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.get_virtual_entity_by_record_id(record_list)
 
 
@@ -1997,7 +1997,7 @@ def test_how_entity_by_entity_id(g2_engine) -> None:
 def test_how_entity_by_entity_id_bad_entity_id(g2_engine) -> None:
     """Test how_entity_by_entity_id with non-existent entity."""
     entity_id = "9999999999999999"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.how_entity_by_entity_id(entity_id)
 
 
@@ -2015,7 +2015,7 @@ def test_init_and_destroy(engine_vars) -> None:
     """Test init and destroy."""
     module_name = "Test"
     ini_params = engine_vars["INI_PARAMS"]
-    g2_engine_init_destroy = g2engine.G2Engine()
+    g2_engine_init_destroy = szengine.G2Engine()
     g2_engine_init_destroy.initialize(module_name, ini_params)
     g2_engine_init_destroy.destroy()
 
@@ -2092,7 +2092,7 @@ def test_reevaluate_record_bad_data_source_code(g2_engine) -> None:
     """Test reevaluate_record with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.reevaluate_record(data_source_code, record_id)
 
 
@@ -2100,7 +2100,7 @@ def test_reevaluate_record_bad_record_id(g2_engine) -> None:
     """Test reevaluate_record with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.reevaluate_record(data_source_code, record_id)
 
 
@@ -2117,7 +2117,7 @@ def test_reevaluate_record_with_info_bad_data_source_code(g2_engine) -> None:
     """Test reevaluate_record_with_info with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.reevaluate_record_with_info(data_source_code, record_id)
 
 
@@ -2125,7 +2125,7 @@ def test_reevaluate_record_with_info_bad_record_id(g2_engine) -> None:
     """Test reevaluate_record_with_info with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.reevaluate_record_with_info(data_source_code, record_id)
 
 
@@ -2150,7 +2150,7 @@ def test_reinit_bad_config_id(g2_engine) -> None:
     active_config_id = g2_engine.get_active_config_id()
     config_id = 0
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.reinit(config_id)
     finally:
         g2_engine.reinit(active_config_id)
@@ -2177,7 +2177,7 @@ def test_replace_record_bad_data_source_code(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record(data_source_code, record_id, current_json_data)
     finally:
         g2_engine.replace_record("CUSTOMERS", record_id, current_json_data)
@@ -2191,7 +2191,7 @@ def test_replace_record_bad_record_id(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record(data_source_code, record_id, current_json_data)
     finally:
         g2_engine.replace_record(data_source_code, "1001", current_json_data)
@@ -2205,7 +2205,7 @@ def test_replace_record_bad_record(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record(data_source_code, record_id, RECORD_STR_BAD)
     finally:
         g2_engine.replace_record(data_source_code, record_id, current_json_data)
@@ -2236,7 +2236,7 @@ def test_replace_record_with_info_bad_data_source_code(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record_with_info(
                 data_source_code, record_id, current_json_data
             )
@@ -2252,7 +2252,7 @@ def test_replace_record_with_info_bad_record_id(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record_with_info(
                 data_source_code, record_id, current_json_data
             )
@@ -2268,7 +2268,7 @@ def test_replace_record_with_info_bad_record(g2_engine) -> None:
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(g2exception.G2Exception):
+        with pytest.raises(szexception.G2Exception):
             g2_engine.replace_record_with_info(
                 data_source_code, record_id, RECORD_STR_BAD
             )
@@ -2302,7 +2302,7 @@ def test_search_by_attributes(g2_engine) -> None:
 def test_search_by_attributes_bad_json_data(g2_engine) -> None:
     """Test search_by_attributes with bad JSON string."""
     json_data = '{"NAME_FULL" "robert smith", "DATE_OF_BIRTH": "12/11/1978"}'
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.search_by_attributes(json_data)
 
 
@@ -2343,7 +2343,7 @@ def test_why_entities_bad_entity_id(g2_engine) -> None:
     """Test why_entities with non-existent entity."""
     entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
     entity_id_2 = 9999999999999999
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.why_entities(entity_id_1, entity_id_2)
 
 
@@ -2374,7 +2374,7 @@ def test_why_records_bad_data_source_code(g2_engine) -> None:
     record_id_1 = "1001"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.why_records(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2
         )
@@ -2386,7 +2386,7 @@ def test_why_records_bad_record_id(g2_engine) -> None:
     record_id_1 = "9999999999999999"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    with pytest.raises(g2exception.G2Exception):
+    with pytest.raises(szexception.G2Exception):
         g2_engine.why_records(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2
         )
@@ -2424,7 +2424,7 @@ def add_records_truthset(g2_engine, do_redo=True) -> None:
 
 # TODO add type for other g2_engines
 def get_entity_id_from_record_id(
-    g2_engine: g2engine.G2Engine, data_source_code: str, record_id: str
+    g2_engine: szengine.G2Engine, data_source_code: str, record_id: str
 ) -> int:
     """Given a datasource and record_id return the entity ID."""
     entity_json = g2_engine.get_entity_by_record_id(

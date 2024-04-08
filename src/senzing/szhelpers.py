@@ -1,5 +1,5 @@
 """
-TODO: g2helpers.py
+TODO: szhelpers.py
 """
 
 # NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable

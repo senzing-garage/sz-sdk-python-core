@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2config, g2configmgr
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szconfig, szconfigmgr
 
 CONFIG_COMMENT = "Added new datasource"
 DATA_SOURCE_CODE = "TEST12"
@@ -16,8 +17,8 @@ SETTINGS = {
 }
 
 try:
-    g2_config = g2config.G2Config(INSTANCE_NAME, SETTINGS)
-    g2_configmgr = g2configmgr.G2ConfigMgr(INSTANCE_NAME, SETTINGS)
+    g2_config = szconfig.G2Config(INSTANCE_NAME, SETTINGS)
+    g2_configmgr = szconfigmgr.G2ConfigMgr(INSTANCE_NAME, SETTINGS)
 
     current_config_id = g2_configmgr.get_default_config_id()
     current_config = g2_configmgr.get_config(current_config_id)
@@ -31,5 +32,5 @@ try:
     g2_configmgr.set_default_config_id(new_config_id)
 
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

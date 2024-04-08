@@ -13,15 +13,14 @@ import textwrap
 import time
 from datetime import datetime
 
-from senzing import g2configmgr, g2diagnostic, g2engine, g2product
-from senzing.g2exception import G2BadInputError, G2Exception, G2RetryableError
+from senzing import szconfigmgr, szdiagnostic, szengine, szproduct
+from szexception import SzBadInputError, SzException, SzRetryableError
 
 try:
     import orjson as json
 except ModuleNotFoundError:
     import json
 
-__all__ = []
 __version__ = "1.3.0"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2022-11-29"
 __updated__ = "2023-12-19"
@@ -67,7 +66,7 @@ def startup_info(engine, diag, product, configmgr):
         config_list = json.loads(response)
 
         active_cfg_id = engine.get_active_config_id()
-    except G2Exception as ex:
+    except SzException as ex:
         logger.error(f"Failed to get startup information: {ex}")
         sys.exit(-1)
 
@@ -123,7 +122,7 @@ def get_redo_record(engine):
     """Get a redo record for processing"""
     try:
         redo_record = engine.get_redo_record()
-    except G2Exception as ex:
+    except SzException as ex:
         logger.critical(f"Exception: {ex} - Operation: getRedoRecord")
         global do_shutdown
         do_shutdown = True
@@ -170,7 +169,7 @@ def workload_stats(engine):
         logger.info("")
         logger.info(stats)
         logger.info("")
-    except G2Exception as ex:
+    except SzException as ex:
         logger.critical(f"Exception: {ex} - Operation: stats")
         global do_shutdown
         do_shutdown = True
@@ -311,8 +310,8 @@ def load_and_redo(
                         try:
                             result = f.result()
                         except (
-                            G2BadInputError,
-                            G2RetryableError,
+                            SzBadInputError,
+                            SzRetryableError,
                             json.JSONDecodeError,
                         ) as ex:
                             logger.error(
@@ -321,7 +320,7 @@ def load_and_redo(
                                 f" Record: {futures[f][PAYLOAD_RECORD]}"
                             )
                             error_recs += 1
-                        except G2Exception as ex:
+                        except SzException as ex:
                             logger.critical(
                                 f"Exception: {ex} - Operation:"
                                 f" {mode_text[mode.__name__]['except_msg']} -"
@@ -618,13 +617,15 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     try:
-        sz_engine = g2engine.G2Engine("G2Engine", engine_config, debug_trace)
-        sz_diag = g2diagnostic.G2Diagnostic("G2Diagnostic", engine_config, debug_trace)
-        sz_product = g2product.G2Product("G2Product", engine_config, debug_trace)
-        sz_configmgr = g2configmgr.G2ConfigMgr(
-            "pyG2ConfigMgr", engine_config, debug_trace
+        sz_engine = szengine.SzEngine("pySzEngine", engine_config, debug_trace)
+        sz_diag = szdiagnostic.SzDiagnostic(
+            "pySzDiagnostic", engine_config, debug_trace
         )
-    except G2Exception as ex:
+        sz_product = szproduct.SzProduct("pySzProduct", engine_config, debug_trace)
+        sz_configmgr = szconfigmgr.SzConfigMgr(
+            "pySzConfigMgr", engine_config, debug_trace
+        )
+    except SzException as ex:
         logger.error(ex)
         sys.exit(-1)
 

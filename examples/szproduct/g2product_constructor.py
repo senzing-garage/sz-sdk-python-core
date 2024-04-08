@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2product
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szproduct
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,9 +14,17 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
+# Example 1
+
 try:
-    g2_product = g2product.G2Product(INSTANCE_NAME, SETTINGS)
-    result = g2_product.get_version()
-    print(result)
-except G2Exception as err:
+    g2_product = szproduct.G2Product(INSTANCE_NAME, SETTINGS)
+except SzException as err:
+    print(err)
+
+# Example 2
+
+try:
+    g2_product = szproduct.G2Product()
+    g2_product.initialize(INSTANCE_NAME, SETTINGS)
+except SzException as err:
     print(err)

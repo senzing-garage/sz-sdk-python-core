@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2diagnostic
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szdiagnostic
 
 INSTANCE_NAME = "Example"
 SECONDS_TO_RUN = 3
@@ -15,8 +16,8 @@ SETTINGS = {
 }
 
 try:
-    g2_diagnostic = g2diagnostic.G2Diagnostic(INSTANCE_NAME, SETTINGS)
+    g2_diagnostic = szdiagnostic.G2Diagnostic(INSTANCE_NAME, SETTINGS)
     result = g2_diagnostic.check_database_performance(SECONDS_TO_RUN)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

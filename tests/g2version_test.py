@@ -1,6 +1,6 @@
 import pytest
 
-from senzing import g2exception, g2version
+from . import szexception, szversion
 
 # -----------------------------------------------------------------------------
 # g2version testcases
@@ -17,7 +17,7 @@ def test_normalize_semantic_version():
         "99.99.99": 999999,
     }
     for sem_ver, number in tests.items():
-        actual = g2version.normalize_semantic_version(sem_ver)
+        actual = szversion.normalize_semantic_version(sem_ver)
         assert actual == number
 
 
@@ -29,7 +29,7 @@ def test_supports_senzingapi_version():
         ["10.10.10", "10.10.12", "10.10.11"],
     ]
     for test in tests:
-        actual = g2version.supports_senzingapi_version(test[0], test[1], test[2])
+        actual = szversion.supports_senzingapi_version(test[0], test[1], test[2])
         assert actual
 
 
@@ -42,5 +42,5 @@ def test_supports_senzingapi_version_exceptions():
     ]
 
     for test in tests:
-        with pytest.raises(g2exception.G2Exception):
-            g2version.supports_senzingapi_version(test[0], test[1], test[2])
+        with pytest.raises(szexception.G2Exception):
+            szversion.supports_senzingapi_version(test[0], test[1], test[2])

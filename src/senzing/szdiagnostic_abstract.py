@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2diagnostic_abstract.py
+TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
@@ -9,7 +9,7 @@ from typing import Any, Dict
 
 # Metadata
 
-__all__ = ["G2DiagnosticAbstract"]
+__all__ = ["SzDiagnosticAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
@@ -19,16 +19,16 @@ __updated__ = "2023-10-30"
 # -----------------------------------------------------------------------------
 
 
-class G2DiagnosticAbstract(ABC):
+class SzDiagnosticAbstract(ABC):
     """
-    G2 diagnostic module access library
+    Senzing diagnostic module access library
     """
 
     # -------------------------------------------------------------------------
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "g2diagnostic."
+    PREFIX = "szdiagnostic."
     ID_MESSAGES = {
         # TODO: remove + concats for f-strings?
         4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
@@ -64,17 +64,17 @@ class G2DiagnosticAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            szexception.SzException:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/check_db_perf.py
+            .. literalinclude:: ../../examples/szdiagnostic/check_db_perf.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2diagnostic/check_db_perf.txt
+            .. literalinclude:: ../../examples/szdiagnostic/check_db_perf.txt
                 :linenos:
                 :language: json
         """
@@ -82,10 +82,10 @@ class G2DiagnosticAbstract(ABC):
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2Diagnostic object.
+        The `destroy` method will destroy and perform cleanup for the Senzing SzDiagnostic object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2Diagnostic` constructor was called with parameters,
+        **Note:** If the `SzDiagnostic` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -93,14 +93,14 @@ class G2DiagnosticAbstract(ABC):
 
         .. code-block:: python
 
-            g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
+            sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
 
         Raises:
-            g2exception.G2Exception:
+            szexception.SzException:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -114,10 +114,10 @@ class G2DiagnosticAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `initialize` method initializes the Senzing G2Diagnosis object.
+        The `initialize` method initializes the Senzing SzDiagnosis object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2Diagnosis constructor is called with parameters,
+        **Note:** If the Sz Diagnosis constructor is called with parameters,
         the constructor will automatically call the `initialize()` method.
         In this case, a separate call to `initialize()` is not needed.
 
@@ -125,20 +125,20 @@ class G2DiagnosticAbstract(ABC):
 
         .. code-block:: python
 
-            g2_diagnosis = g2diagnosis.G2Diagnosis(module_name, ini_params)
+            sz_diagnosis = szdiagnosis.SzDiagnosis(instance_name, settings)
 
         Args:
             instance_name (str): A name for the auditing node, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception:
+            szexception.SzException:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -196,7 +196,7 @@ class G2DiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/purge_repository.py
+            .. literalinclude:: ../../examples/szdiagnostic/purge_repository.py
                 :linenos:
                 :language: python
         """
@@ -204,18 +204,18 @@ class G2DiagnosticAbstract(ABC):
     @abstractmethod
     def reinitialize(self, config_id: int, *args: Any, **kwargs: Any) -> None:
         """
-        The `reinitialize` method re-initializes the Senzing G2Diagnosis object.
+        The `reinitialize` method re-initializes the Senzing SzDiagnostic object.
 
         Args:
             config_id (int): The configuration ID used for the initialization
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            g2exception.G2Exception: init_config_id does not exist.
+            szexception.SzException: config_id does not exist.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_reinit.py
+            .. literalinclude:: ../../examples/sziagnostic/szdiagnostic_reinit.py
                 :linenos:
                 :language: python
         """

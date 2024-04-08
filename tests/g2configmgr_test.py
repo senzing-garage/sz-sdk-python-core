@@ -3,7 +3,7 @@ import json
 import pytest
 from pytest_schema import Or, schema
 
-from senzing import g2config, g2configmgr, g2exception
+from . import szconfig, szconfigmgr, szexception
 
 # -----------------------------------------------------------------------------
 # G2ConfigMgr fixtures
@@ -17,7 +17,7 @@ def g2config_fixture(engine_vars):
     engine_vars is returned from conftest.py.
     """
 
-    result = g2config.G2Config(
+    result = szconfig.G2Config(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -29,7 +29,7 @@ def g2configmgr_instance_fixture(engine_vars):
     """Single engine object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    result = g2configmgr.G2ConfigMgr(
+    result = szconfigmgr.G2ConfigMgr(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -373,42 +373,42 @@ def test_exception(g2_configmgr):
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = g2configmgr.G2ConfigMgr(
+    actual = szconfigmgr.G2ConfigMgr(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
-    assert isinstance(actual, g2configmgr.G2ConfigMgr)
+    assert isinstance(actual, szconfigmgr.G2ConfigMgr)
 
 
 def test_constructor_dict(engine_vars):
     """Test constructor."""
-    actual = g2configmgr.G2ConfigMgr(
+    actual = szconfigmgr.G2ConfigMgr(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS_DICT"],
     )
-    assert isinstance(actual, g2configmgr.G2ConfigMgr)
+    assert isinstance(actual, szconfigmgr.G2ConfigMgr)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2configmgr.G2ConfigMgr(
+    with pytest.raises(szexception.G2Exception):
+        actual = szconfigmgr.G2ConfigMgr(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
-        assert isinstance(actual, g2configmgr.G2ConfigMgr)
+        assert isinstance(actual, szconfigmgr.G2ConfigMgr)
 
 
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(g2exception.G2Exception):
-        actual = g2configmgr.G2ConfigMgr(
+    with pytest.raises(szexception.G2Exception):
+        actual = szconfigmgr.G2ConfigMgr(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
-        assert isinstance(actual, g2configmgr.G2ConfigMgr)
+        assert isinstance(actual, szconfigmgr.G2ConfigMgr)
 
 
 def test_add_config(g2_configmgr, g2_config):
@@ -476,7 +476,7 @@ def test_get_config_bad_config_id_type(g2_configmgr):
 def test_get_config_bad_config_id_value(g2_configmgr):
     """Test G2ConfigMgr().get_default_config_id()."""
     bad_config_id = 1234
-    with pytest.raises(g2exception.G2ConfigurationError):
+    with pytest.raises(szexception.G2ConfigurationError):
         g2_configmgr.get_config(bad_config_id)
 
 
@@ -519,7 +519,7 @@ def test_replace_default_config_id_bad_new_id_value(g2_configmgr):
     """Test G2ConfigMgr().get_default_config_id()."""
     old_config_id = g2_configmgr.get_default_config_id()
     bad_new_config_id = 1234
-    with pytest.raises(g2exception.G2ConfigurationError):
+    with pytest.raises(szexception.G2ConfigurationError):
         g2_configmgr.replace_default_config_id(old_config_id, bad_new_config_id)
 
 
@@ -543,7 +543,7 @@ def test_replace_default_config_id_bad_old_id_value(g2_configmgr, g2_config):
     g2_config.add_data_source(config_handle, json.dumps(input_json_dict))
     json_config = g2_config.save(config_handle)
     new_config_id = g2_configmgr.add_config(json_config, "Test")
-    with pytest.raises(g2exception.G2ConfigurationError):
+    with pytest.raises(szexception.G2ConfigurationError):
         g2_configmgr.replace_default_config_id(bad_old_config_id, new_config_id)
 
 
@@ -571,7 +571,7 @@ def test_set_default_config_id_bad_config_id_type(g2_configmgr):
 def test_set_default_config_id_bad_config_id_value(g2_configmgr):
     """Test G2ConfigMgr().set_default_config_id()."""
     bad_config_id = 1
-    with pytest.raises(g2exception.G2ConfigurationError):
+    with pytest.raises(szexception.G2ConfigurationError):
         g2_configmgr.set_default_config_id(bad_config_id)
 
 

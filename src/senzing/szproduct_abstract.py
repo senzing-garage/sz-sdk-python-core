@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-g2product_abstract.py is the abstract class for all implementaions of g2product.
+szproduct_abstract.py is the abstract class for all implementations of szproduct.
 """
 
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
@@ -11,27 +11,27 @@ from typing import Any, Dict, cast
 
 # Metadata
 
-__all__ = ["G2ProductAbstract"]
+__all__ = ["SzProductAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-27"
 
 # -----------------------------------------------------------------------------
-# G2ProductAbstract
+# SzProductAbstract
 # -----------------------------------------------------------------------------
 
 
-class G2ProductAbstract(ABC):
+class SzProductAbstract(ABC):
     """
-    G2ProductAbstract is the definition of the Senzing Python API that is
-    implemented by packages such as g2product.py.
+    SzProductAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as szproduct.py.
     """
 
     # -------------------------------------------------------------------------
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "g2product."
+    PREFIX = "szproduct."
     ID_MESSAGES = {
         4001: PREFIX + "G2Product_destroy() failed. Return code: {0}",
         4002: PREFIX + "G2Product_init({0}, {1}, {2}) failed. Return code: {3}",
@@ -46,10 +46,10 @@ class G2ProductAbstract(ABC):
     @abstractmethod
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing G2Product object.
+        The `destroy` method will destroy and perform cleanup for the Senzing SzProduct object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `G2Product` constructor was called with parameters,
+        **Note:** If the `SzProduct` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -57,14 +57,14 @@ class G2ProductAbstract(ABC):
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(module_name, ini_params)
+            sz_product = szproduct.SzProduct(instance_name, settings)
 
         Raises:
-            g2exception.G2Exception:
+            szexception.SzException:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/szproduct/szproduct_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -78,30 +78,30 @@ class G2ProductAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `init` method initializes the Senzing G2Product object.
+        The `initialize` method initializes the Senzing SzProduct object.
         It must be called prior to any other calls.
 
-        **Note:** If the G2Product constructor is called with parameters,
-        the constructor will automatically call the `init()` method.
-        In this case, a separate call to `init()` is not needed.
+        **Note:** If the SzProduct constructor is called with parameters,
+        the constructor will automatically call the `initialize()` method.
+        In this case, a separate call to `initialize()` is not needed.
 
         Example:
 
         .. code-block:: python
 
-            g2_product = g2product.G2Product(module_name, ini_params)
+            sz_product = szproduct.SzProduct(instance_name, settings)
 
         Args:
-            instance_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
+            instance_name (str): A short name given to this instance of the SzProduct object, to help identify it within system logs.
             settings (str): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/g2product_init_and_destroy.py
+            .. literalinclude:: ../../examples/szproduct/szproduct_init_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -118,13 +118,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/license.py
+            .. literalinclude:: ../../examples/szproduct/license.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product/license.txt
+            .. literalinclude:: ../../examples/szproduct/license.txt
                 :linenos:
                 :language: json
         """
@@ -141,13 +141,13 @@ class G2ProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/g2product/version.py
+            .. literalinclude:: ../../examples/szproduct/version.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/g2product/version.txt
+            .. literalinclude:: ../../examples/szproduct/version.txt
                 :linenos:
                 :language: json
         """

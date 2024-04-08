@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import g2engine
-from senzing.g2exception import G2Exception
+from szexception import SzException
+
+from . import szengine
 
 SETTINGS = {
     "PIPELINE": {
@@ -16,8 +17,8 @@ INSTANCE_NAME = "Example"
 ENTITY_ID = 1
 
 try:
-    g2_engine = g2engine.G2Engine(INSTANCE_NAME, SETTINGS)
+    g2_engine = szengine.G2Engine(INSTANCE_NAME, SETTINGS)
     result = g2_engine.find_interesting_entities_by_entity_id_return_dict(ENTITY_ID)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

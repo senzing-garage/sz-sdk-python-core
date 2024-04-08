@@ -1,5 +1,5 @@
 """
-The `g2configmgr` package is used to modify Senzing configurations in the Senzing database.
+The `szconfigmgr` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's G2Configmgr C binding.
 It conforms to the interface specified in
 `g2configmgr_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
@@ -21,9 +21,9 @@ import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_size_t, cdll
 from typing import Any, Dict
 
-from .g2configmgr_abstract import G2ConfigMgrAbstract
-from .g2exception import G2Exception, new_g2exception
-from .g2helpers import (
+from .szconfigmgr_abstract import SzConfigMgrAbstract
+from .szexception import SzException, new_szexception
+from .szhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
@@ -31,11 +31,11 @@ from .g2helpers import (
     catch_ctypes_exceptions,
     find_file_in_path,
 )
-from .g2version import is_supported_senzingapi_version
+from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["G2ConfigMgr"]
+__all__ = ["SzConfigMgr"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
@@ -87,38 +87,38 @@ class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
 # -----------------------------------------------------------------------------
 
 
-class G2ConfigMgr(G2ConfigMgrAbstract):
+class SzConfigMgr(SzConfigMgrAbstract):
     """
-    The `init` method initializes the Senzing G2ConfigMgr object.
+    The `initialize` method initializes the Senzing SzConfigMgr object.
     It must be called prior to any other calls.
 
-    **Note:** If the G2ConfigMr constructor is called with parameters,
-    the constructor will automatically call the `init()` method.
+    **Note:** If the SzConfigMr constructor is called with parameters,
+    the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
+        sz_configmgr = szconfigmgr.SzConfigMgr(instance_name, settings)
 
 
-    If the G2ConfigMgr constructor is called without parameters,
-    the `init()` method must be called to initialize the use of G2Product.
+    If the SzConfigMgr constructor is called without parameters,
+    the `initialize()` method must be called to initialize the use of SzConfigMgr.
 
     Example:
 
     .. code-block:: python
 
-        g2_configmgr = g2configmgr.G2ConfigMgr()
-        g2_configmgr.init(module_name, ini_params)
+        sz_configmgr = szconfigmgr.SzConfigMgr()
+        sz_configmgr.initialize(instance_name, settings)
 
-    Either `module_name` and `ini_params` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **G2Exception**.
+    Either `instance_name` and `settings` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **SzException**.
 
     Parameters:
-        module_name:
+        instance_name:
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        ini_params:
+        settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
         init_config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
@@ -127,11 +127,11 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        g2exception.G2Exception: Failed to load the G2 library or incorrect `module_name`, `ini_params` combination.
+        szexception.SzException: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2configmgr/g2configmgr_constructor.py
+        .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_constructor.py
             :linenos:
             :language: python
     """
@@ -178,7 +178,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            raise G2Exception("Failed to load the G2 library") from err
+            raise SzException("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2configmgr.h
@@ -253,7 +253,7 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         :meta private:
         """
-        return new_g2exception(
+        return new_szexception(
             self.library_handle.G2ConfigMgr_getLastException,
             self.library_handle.G2ConfigMgr_clearLastException,
             SENZING_PRODUCT_ID,
