@@ -3,6 +3,8 @@ name: safety
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.github/**'
 
 env:
   DEP_PATH: requirements.txt

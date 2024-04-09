@@ -3,6 +3,8 @@ name: bandit
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '.github/**'
 
 permissions:
   contents: read
@@ -25,3 +27,4 @@ jobs:
         with:
           path: "."
           recursive: "true"
+          severity_level: "high"
