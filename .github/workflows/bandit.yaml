@@ -1,0 +1,21 @@
+name: bandit
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.11]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run bandit
+        uses: tj-actions/bandit@v5.5

@@ -52,7 +52,6 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: run pytest on tests
-        continue-on-error: true
         run: pytest tests/ --verbose --capture=no --cov=src/senzing --cov-append
 
       # - name: Run pytest on examples
