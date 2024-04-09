@@ -18,11 +18,17 @@ Example:
 
 
 import os
-from ctypes import POINTER, c_char, c_char_p, c_int, c_longlong, c_size_t, cdll
+from ctypes import c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict, Union
 
 from .g2exception import G2Exception, new_g2exception
-from .g2helpers import as_c_char_p, as_c_int, as_str, find_file_in_path
+from .g2helpers import (
+    as_c_char_p,
+    as_python_str,
+    as_str,
+    catch_ctypes_exceptions,
+    find_file_in_path,
+)
 from .g2product_abstract import G2ProductAbstract
 
 # Metadata
@@ -73,8 +79,6 @@ class G2Product(G2ProductAbstract):
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
         ini_params:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
@@ -98,9 +102,8 @@ class G2Product(G2ProductAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str | Dict[Any, Any] = "",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -114,9 +117,8 @@ class G2Product(G2ProductAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = as_str(ini_params)
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = as_str(settings)
+        self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Load binary library.
@@ -133,17 +135,17 @@ class G2Product(G2ProductAbstract):
         # Must be synchronized with g2/sdk/c/libg2product.h
 
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2Product_clearLastException.argtypes = []
-        self.library_handle.G2Product_clearLastException.restype = None
+        # self.library_handle.G2Product_clearLastException.argtypes = []
+        # self.library_handle.G2Product_clearLastException.restype = None
         self.library_handle.G2Product_destroy.argtypes = []
         self.library_handle.G2Product_destroy.restype = c_longlong
-        self.library_handle.G2Product_getLastException.argtypes = [
-            POINTER(c_char),
-            c_size_t,
-        ]
-        self.library_handle.G2Product_getLastException.restype = c_longlong
-        self.library_handle.G2Product_getLastExceptionCode.argtypes = []
-        self.library_handle.G2Product_getLastExceptionCode.restype = c_longlong
+        # self.library_handle.G2Product_getLastException.argtypes = [
+        #     POINTER(c_char),
+        #     c_size_t,
+        # ]
+        # self.library_handle.G2Product_getLastException.restype = c_longlong
+        # self.library_handle.G2Product_getLastExceptionCode.argtypes = []
+        # self.library_handle.G2Product_getLastExceptionCode.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
@@ -157,12 +159,12 @@ class G2Product(G2ProductAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
-            if len(self.module_name) + len(self.ini_params) != 0:
-                raise self.new_exception(4003, self.module_name, self.ini_params)
-        if len(module_name) > 0:
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4003, self.instance_name, self.settings)
+        if len(instance_name) > 0:
             self.auto_init = True
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+            self.initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -198,25 +200,28 @@ class G2Product(G2ProductAbstract):
         if result != 0:
             raise self.new_exception(4001, result)
 
-    def init(
+    @catch_ctypes_exceptions
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
-            as_c_char_p(module_name),
-            as_c_char_p(as_str(ini_params)),
-            as_c_int(verbose_logging),
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            verbose_logging,
         )
         if result < 0:
             raise self.new_exception(
-                4002, module_name, ini_params, verbose_logging, result
+                4002, instance_name, settings, verbose_logging, result
             )
 
-    def license(self, *args: Any, **kwargs: Any) -> str:
-        return str(self.library_handle.G2Product_license().decode())
+    def get_license(self, *args: Any, **kwargs: Any) -> str:
+        # return str(self.library_handle.G2Product_license().decode())
+        return as_python_str(self.library_handle.G2Product_license())
 
-    def version(self, *args: Any, **kwargs: Any) -> str:
-        return str(self.library_handle.G2Product_version().decode())
+    def get_version(self, *args: Any, **kwargs: Any) -> str:
+        # return str(self.library_handle.G2Product_version().decode())
+        return as_python_str(self.library_handle.G2Product_version())

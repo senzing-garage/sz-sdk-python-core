@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import g2diagnostic
+from senzing import g2config
 from senzing.g2exception import G2Exception
 
 ini_params_dict = {
@@ -16,8 +16,10 @@ ini_params_dict = {
 MODULE_NAME = "Example"
 
 try:
-    g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, json.dumps(ini_params_dict))
-    result = g2_diagnostic.get_physical_cores()
-    print(result)
+    g2_config = g2config.G2Config(MODULE_NAME, json.dumps(ini_params_dict))
+    config_handle = g2_config.create()  # Create first in-memory.
+    json_config = g2_config.export_config(config_handle)  # Save in-memory to string.
+    g2_config.close(config_handle)
+    print(json_config)
 except G2Exception as err:
     print(err)

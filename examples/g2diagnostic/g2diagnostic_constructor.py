@@ -1,24 +1,22 @@
 #! /usr/bin/env python3
 
-import json
-
 from senzing import g2diagnostic
 from senzing.g2exception import G2Exception
 
-ini_params_dict = {
+INSTANCE_NAME = "Example"
+SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-MODULE_NAME = "Example"
 
 # Example 1
 
 try:
-    g2_diagnostic = g2diagnostic.G2Diagnostic(MODULE_NAME, json.dumps(ini_params_dict))
+    g2_diagnostic = g2diagnostic.G2Diagnostic(INSTANCE_NAME, SETTINGS)
 except G2Exception as err:
     print(err)
 
@@ -26,6 +24,6 @@ except G2Exception as err:
 
 try:
     g2_diagnostic = g2diagnostic.G2Diagnostic()
-    g2_diagnostic.init(MODULE_NAME, json.dumps(ini_params_dict))
+    g2_diagnostic.initialize(INSTANCE_NAME, SETTINGS)
 except G2Exception as err:
     print(err)

@@ -19,14 +19,13 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_size_t, cdll
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from .g2configmgr_abstract import G2ConfigMgrAbstract
 from .g2exception import G2Exception, new_g2exception
 from .g2helpers import (
+    FreeCResources,
     as_c_char_p,
-    as_c_int,
-    as_python_int,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
@@ -146,9 +145,9 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        ini_params: str | Dict[Any, Any] = "",
+        # init_config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -162,9 +161,9 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.ini_params = as_str(ini_params)
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = as_str(ini_params)
+        # self.init_config_id = init_config_id
+        self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
@@ -232,12 +231,12 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(self.module_name) == 0) or (len(self.ini_params) == 0):
-            if len(self.module_name) + len(self.ini_params) != 0:
-                raise self.new_exception(4020, self.module_name, self.ini_params)
-        if len(self.module_name) > 0:
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4020, self.instance_name, self.settings)
+        if len(self.instance_name) > 0:
             self.auto_init = True
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+            self.initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -268,82 +267,89 @@ class G2ConfigMgr(G2ConfigMgrAbstract):
     # G2ConfigMgr methods
     # -------------------------------------------------------------------------
 
+    @catch_ctypes_exceptions
     def add_config(
         self,
-        config_str: Union[str, Dict[Any, Any]],
-        config_comments: str,
+        config_definition: str | Dict[Any, Any],
+        config_comment: str,
         *args: Any,
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(as_str(config_str)), as_c_char_p(config_comments)
+            as_c_char_p(as_str(config_definition)), as_c_char_p(config_comment)
         )
         if result.return_code != 0:
             raise self.new_exception(
-                4001, as_str(config_str), config_comments, result.return_code
+                4001, as_str(config_definition), config_comment, result.return_code
             )
-        return as_python_int(result.response)
+        # TODO Is as_python_int needed? Other modules too
+        return int(result.response)
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_destroy()
         if result != 0:
             raise self.new_exception(4002, result)
 
-    @catch_ctypes_exceptions
     def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
-        try:
+
+        with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4003, config_id, result.return_code)
-            result_response = as_python_str(result.response)
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response
+                raise self.new_exception(
+                    4003,
+                    config_id,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
     def get_config_list(self, *args: Any, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
-        try:
-            if result.return_code != 0:
-                raise self.new_exception(4004, result.return_code)
-            result_response = as_python_str(result.response)
-        finally:
-            self.library_handle.G2GoHelper_free(result.response)
-        return result_response
 
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(4004, result.return_codes)
+            return as_python_str(result.response)
+
+    # TODO What if no config created yet, need to use as_python_int()?
     def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4005, result.return_code)
         return int(result.response)
 
-    def init(
+    @catch_ctypes_exceptions
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_init(
-            as_c_char_p(module_name),
-            as_c_char_p(as_str(ini_params)),
-            as_c_int(verbose_logging),
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            verbose_logging,
         )
         if result < 0:
             raise self.new_exception(
-                4007, module_name, as_str(ini_params), verbose_logging, result
+                4007, instance_name, as_str(settings), verbose_logging, result
             )
 
-    @catch_ctypes_exceptions
     def replace_default_config_id(
-        self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
+        self,
+        current_default_config_id: int,
+        new_default_config_id: int,
+        *args: Any,
+        **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
-            old_config_id, new_config_id
+            current_default_config_id, new_default_config_id
         )
         if result < 0:
-            raise self.new_exception(4008, old_config_id, new_config_id, result)
+            raise self.new_exception(
+                4008, current_default_config_id, new_default_config_id, result
+            )
 
-    @catch_ctypes_exceptions
     def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
         if result < 0:

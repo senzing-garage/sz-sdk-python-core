@@ -7,7 +7,7 @@ g2configmgr_abstract.py is the abstract class for all implementaions of g2config
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 # Metadata
 
@@ -55,8 +55,8 @@ class G2ConfigMgrAbstract(ABC):
     @abstractmethod
     def add_config(
         self,
-        config_str: Union[str, Dict[Any, Any]],
-        config_comments: str,
+        config_definition: str | Dict[Any, Any],
+        config_comment: str,
         *args: Any,
         **kwargs: Any
     ) -> int:
@@ -64,8 +64,8 @@ class G2ConfigMgrAbstract(ABC):
         The `add_config` method adds a Senzing configuration JSON document to the Senzing database.
 
         Args:
-            config_str (Union[str, Dict[Any, Any]]): The Senzing configuration JSON document.
-            config_comments (str):  free-form string of comments describing the configuration document.
+            config_definition (Union[str, Dict[Any, Any]]): The Senzing configuration JSON document.
+            config_comment (str):  free-form string of comments describing the configuration document.
 
         Returns:
             int: A configuration identifier.
@@ -176,10 +176,10 @@ class G2ConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def init(
+    def initialize(
         self,
-        module_name: str,
-        ini_params: Union[str, Dict[Any, Any]],
+        instance_name: str,
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
@@ -198,8 +198,8 @@ class G2ConfigMgrAbstract(ABC):
             g2_configmgr = g2configmgr.G2ConfigMgr(module_name, ini_params)
 
         Args:
-            module_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
-            ini_params (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
+            instance_name (str): A short name given to this instance of the G2Product object, to help identify it within system logs.
+            settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -214,7 +214,11 @@ class G2ConfigMgrAbstract(ABC):
 
     @abstractmethod
     def replace_default_config_id(
-        self, old_config_id: int, new_config_id: int, *args: Any, **kwargs: Any
+        self,
+        current_default_config_id: int,
+        new_default_config_id: int,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         """
         The `replace_default_config_id` method replaces the old configuration identifier with a new configuration identifier in the Senzing database.
@@ -223,8 +227,8 @@ class G2ConfigMgrAbstract(ABC):
         To simply set the default configuration ID, use `set_default_config_id`.
 
         Args:
-            old_config_id (int): The configuration identifier to replace.
-            new_config_id (int): The configuration identifier to use as the default.
+            current_default_config_id (int): The configuration identifier to replace.
+            new_default_config_id (int): The configuration identifier to use as the default.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.

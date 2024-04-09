@@ -1,11 +1,9 @@
 #! /usr/bin/env python3
 
-# TODO Fix when observer is in place
-
 from senzing import g2engine
 from senzing.g2exception import G2Exception
 
-ENTITY_ID = 1
+ENTITY_ID = 1111111111
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {

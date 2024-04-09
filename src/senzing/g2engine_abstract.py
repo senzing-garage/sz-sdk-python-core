@@ -13,7 +13,7 @@ TODO: g2engine_abstract.py
 
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, Optional, cast
 
 from .g2engineflags import G2EngineFlags
 
@@ -170,7 +170,7 @@ class G2EngineAbstract(ABC):
         4050: PREFIX + "G2_primeEngine() failed. Return code: {0}",
         4051: PREFIX + "G2_process({0}) failed. Return code {1}",
         4052: PREFIX + "G2_processRedoRecord() failed. Return code: {0}",
-        4053: PREFIX + "G2_processRedoRecordWithInfo({0}) failed. Return code: {0}",
+        4053: PREFIX + "G2_processRedoRecordWithInfo({0}) failed. Return code: {1}",
         4054: PREFIX + "G2_processWithInfo({0}, {1}) failed. Return code: {2}",
         4055: PREFIX + "G2_processWithResponse({0}) failed. Return code: {1}",
         4056: PREFIX + "G2_processWithResponseResize({0}) failed. Return code: {1}",
@@ -214,6 +214,10 @@ class G2EngineAbstract(ABC):
             + "G2Engine{0}, {1}) failed. module_name and ini_params must both be set or"
             " both be empty"
         ),
+        # TODO Reorder
+        4078: (
+            PREFIX + "G2_whyRecordInEntity_V2({0}, {1}, {2}) failed. Return code: {5}"
+        ),
     }
     """ :meta private: """
 
@@ -226,7 +230,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
+        record_definition: str | Dict[Any, Any],
         # TODO When these flags are working is 0 correct for a default value of not returning with_info?
         flags: int = 0,
         # TODO Are args also needed? Is there a better way to do this?
@@ -260,7 +264,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
+        record_definition: str | Dict[Any, Any],
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -571,7 +575,7 @@ class G2EngineAbstract(ABC):
         self,
         # TODO Improve upon Any, Any?
         # TODO Should this and similar functions take a list of entity IDs instead of the JSON?
-        entity_list: Union[str, Dict[Any, Any]],
+        entity_list: str | Dict[Any, Any],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -611,7 +615,7 @@ class G2EngineAbstract(ABC):
 
     def find_network_by_entity_id_return_dict(
         self,
-        entity_list: Union[str, Dict[Any, Any]],
+        entity_list: str | Dict[Any, Any],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -631,7 +635,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def find_network_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: str | Dict[Any, Any],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -671,7 +675,7 @@ class G2EngineAbstract(ABC):
 
     def find_network_by_record_id_return_dict(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: str | Dict[Any, Any],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -688,155 +692,153 @@ class G2EngineAbstract(ABC):
             ),
         )
 
-    # TODO find path calls are not currently working on V4 builds
-    # TODO GDEV-3774
-    # @abstractmethod
-    # def find_path_by_entity_id(
-    #     self,
-    #     start_entity_id: int,
-    #     end_entity_id: int,
-    #     max_degrees: int,
-    #     # TODO Should accept both entity and record IDs in V4, test
-    #     exclusions: Union[str, Dict[Any, Any]],
-    #     # TODO Take a list of data sources too?
-    #     required_data_sources: Union[str, Dict[Any, Any]],
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> str:
-    #     """
-    #     The `find_path_by_entity_id` method finds the most efficient relationship between two entities path based on the parameters
-    #     and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
-    #     The ENTITIES sections details information on the entities. Paths are found using known relationships with other entities.
-    #     Paths are found using known relationships with other entities.
+    @abstractmethod
+    def find_path_by_entity_id(
+        self,
+        start_entity_id: int,
+        end_entity_id: int,
+        max_degrees: int,
+        # TODO Should accept both entity and record IDs in V4, test
+        exclusions: str | Dict[Any, Any],
+        # TODO Take a list of data sources too?
+        required_data_sources: str | Dict[Any, Any],
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
+        """
+        The `find_path_by_entity_id` method finds the most efficient relationship between two entities path based on the parameters
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities. Paths are found using known relationships with other entities.
+        Paths are found using known relationships with other entities.
 
-    #     Args:
-    #         start_entity_id (int): The entity ID for the starting entity of the search path.
-    #         end_entity_id (int): The entity ID for the ending entity of the search path.
-    #         max_degrees (int): The maximum number of degrees in paths between search entities.
-    #         exclusions (str): TODO
-    #         required_data_sources (str): TODO
-    #         flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+        Args:
+            start_entity_id (int): The entity ID for the starting entity of the search path.
+            end_entity_id (int): The entity ID for the ending entity of the search path.
+            max_degrees (int): The maximum number of degrees in paths between search entities.
+            exclusions (str): TODO
+            required_data_sources (str): TODO
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
 
-    #     Returns:
-    #         str: A JSON document with an ENTITY_PATHS section that details the path between the entities.
+        Returns:
+            str: A JSON document with an ENTITY_PATHS section that details the path between the entities.
 
-    #     Raises:
+        Raises:
 
-    #     .. collapse:: Example:
+        .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.py
-    #             :linenos:
-    #             :language: python
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.py
+                :linenos:
+                :language: python
 
-    #         **Output:**
+            **Output:**
 
-    #         .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.txt
-    #             :linenos:
-    #             :language: json
-    #     """
+            .. literalinclude:: ../../examples/g2engine/find_path_by_entity_id.txt
+                :linenos:
+                :language: json
+        """
 
-    # def find_path_by_entity_id_return_dict(
-    #     self,
-    #     start_entity_id: int,
-    #     end_entity_id: int,
-    #     max_degrees: int,
-    #     exclusions: Union[str, Dict[Any, Any]],
-    #     required_data_sources: Union[str, Dict[Any, Any]],
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> Dict[str, Any]:
-    #     """TODO: document"""
-    #     return cast(
-    #         Dict[str, Any],
-    #         json.loads(
-    #             self.find_path_by_entity_id(
-    #                 start_entity_id,
-    #                 end_entity_id,
-    #                 max_degrees,
-    #                 exclusions,
-    #                 required_data_sources,
-    #                 flags,
-    #             )
-    #         ),
-    #     )
+    def find_path_by_entity_id_return_dict(
+        self,
+        start_entity_id: int,
+        end_entity_id: int,
+        max_degrees: int,
+        exclusions: str | Dict[Any, Any],
+        required_data_sources: str | Dict[Any, Any],
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """TODO: document"""
+        return cast(
+            Dict[str, Any],
+            json.loads(
+                self.find_path_by_entity_id(
+                    start_entity_id,
+                    end_entity_id,
+                    max_degrees,
+                    exclusions,
+                    required_data_sources,
+                    flags,
+                )
+            ),
+        )
 
-    # @abstractmethod
-    # def find_path_by_record_id(
-    #     self,
-    #     start_data_source_code: str,
-    #     start_record_id: str,
-    #     end_data_source_code: str,
-    #     end_record_id: str,
-    #     max_degrees: int,
-    #     exclusions: Union[str, Dict[Any, Any]],
-    #     required_data_sources: Union[str, Dict[Any, Any]],
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> str:
-    #     """
-    #     The `find_path_by_record_id` method finds the most efficient relationship between
-    #     two entities path based on the parameters by RECORD_ID values
-    #     and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
-    #     The ENTITIES sections details information on the entities.
-    #     Paths are found using known relationships with other entities.
-    #     The entities are identified by starting and ending records.
+    @abstractmethod
+    def find_path_by_record_id(
+        self,
+        start_data_source_code: str,
+        start_record_id: str,
+        end_data_source_code: str,
+        end_record_id: str,
+        max_degrees: int,
+        exclusions: str | Dict[Any, Any],
+        required_data_sources: str | Dict[Any, Any],
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
+        """
+        The `find_path_by_record_id` method finds the most efficient relationship between
+        two entities path based on the parameters by RECORD_ID values
+        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.
+        The ENTITIES sections details information on the entities.
+        Paths are found using known relationships with other entities.
+        The entities are identified by starting and ending records.
 
-    #     Args:
-    #         start_data_source_code (str): Identifies the provenance of the record for the starting entity of the search path.
-    #         start_record_id (str): The unique identifier within the records of the same data source for the starting entity of the search path.
-    #         end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.
-    #         end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.
-    #         max_degrees (int): The maximum number of degrees in paths between search entities.
-    #         exclusions (str): TODO
-    #         required_data_sources (str): TODO
-    #         flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
+        Args:
+            start_data_source_code (str): Identifies the provenance of the record for the starting entity of the search path.
+            start_record_id (str): The unique identifier within the records of the same data source for the starting entity of the search path.
+            end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.
+            end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.
+            max_degrees (int): The maximum number of degrees in paths between search entities.
+            exclusions (str): TODO
+            required_data_sources (str): TODO
+            flags (int, optional): Flags used to control information returned. Defaults to G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS.
 
-    #     Returns:
-    #         str: A JSON document.
+        Returns:
+            str: A JSON document.
 
-    #     Raises:
+        Raises:
 
-    #     .. collapse:: Example:
+        .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.py
-    #             :linenos:
-    #             :language: python
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.py
+                :linenos:
+                :language: python
 
-    #         **Output:**
+            **Output:**
 
-    #         .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.txt
-    #             :linenos:
-    #             :language: json
-    #     """
+            .. literalinclude:: ../../examples/g2engine/find_path_by_record_id.txt
+                :linenos:
+                :language: json
+        """
 
-    # def find_path_by_record_id_return_dict(
-    #     self,
-    #     start_data_source_code: str,
-    #     start_record_id: str,
-    #     end_data_source_code: str,
-    #     end_record_id: str,
-    #     max_degrees: int,
-    #     exclusions: Union[str, Dict[Any, Any]],
-    #     required_data_sources: Union[str, Dict[Any, Any]],
-    #     flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> Dict[str, Any]:
-    #     """TODO: document"""
-    #     return cast(
-    #         Dict[str, Any],
-    #         json.loads(
-    #             self.find_path_by_record_id(
-    #                 start_data_source_code,
-    #                 start_record_id,
-    #                 end_data_source_code,
-    #                 end_record_id,
-    #                 max_degrees,
-    #                 exclusions,
-    #                 required_data_sources,
-    #                 flags,
-    #             )
-    #         ),
-    #     )
+    def find_path_by_record_id_return_dict(
+        self,
+        start_data_source_code: str,
+        start_record_id: str,
+        end_data_source_code: str,
+        end_record_id: str,
+        max_degrees: int,
+        exclusions: str | Dict[Any, Any],
+        required_data_sources: str | Dict[Any, Any],
+        flags: int = G2EngineFlags.G2_FIND_PATH_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """TODO: document"""
+        return cast(
+            Dict[str, Any],
+            json.loads(
+                self.find_path_by_record_id(
+                    start_data_source_code,
+                    start_record_id,
+                    end_data_source_code,
+                    end_record_id,
+                    max_degrees,
+                    exclusions,
+                    required_data_sources,
+                    flags,
+                )
+            ),
+        )
 
     @abstractmethod
     def get_active_config_id(self, **kwargs: Any) -> int:
@@ -1090,7 +1092,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def get_virtual_entity_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: str | Dict[Any, Any],
         flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -1124,7 +1126,7 @@ class G2EngineAbstract(ABC):
 
     def get_virtual_entity_by_record_id_return_dict(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: str | Dict[Any, Any],
         flags: int = G2EngineFlags.G2_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -1186,7 +1188,7 @@ class G2EngineAbstract(ABC):
     def initialize(
         self,
         instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
+        settings: str | Dict[Any, Any],
         verbose_logging: int = 0,
         # TODO Need to test this, Optional doesn't mean it really is optional, it means it can be an int or None; and the default in this case happens to be None.
         # TODO This also could be written as Optional[int] and it would still accept an int or None but it's not as clear.
@@ -1352,7 +1354,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
+        record_definition: str | Dict[Any, Any],
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
@@ -1382,7 +1384,7 @@ class G2EngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
+        record_definition: str | Dict[Any, Any],
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -1400,7 +1402,7 @@ class G2EngineAbstract(ABC):
     @abstractmethod
     def search_by_attributes(
         self,
-        attributes: Union[str, Dict[Any, Any]],
+        attributes: str | Dict[Any, Any],
         search_profile: str = "SEARCH",
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -1433,7 +1435,7 @@ class G2EngineAbstract(ABC):
 
     def search_by_attributes_return_dict(
         self,
-        attributes: Union[str, Dict[Any, Any]],
+        attributes: str | Dict[Any, Any],
         search_profile: str = "SEARCH",
         flags: int = G2EngineFlags.G2_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -1554,38 +1556,36 @@ class G2EngineAbstract(ABC):
             ),
         )
 
-    # TODO why_record_in_entity() - doesn't exist in go helpers
-    # TODO GDEV-3772
-    # @abstractmethod
-    # def why_record_in_entity(
-    #     self,
-    #     data_source_code: str,
-    #     record_id: str,
-    #     flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> str:
-    #     """ """
+    @abstractmethod
+    def why_record_in_entity(
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
+        """ """
 
-    # def why_record_in_entity_return_dict(
-    #     self,
-    #     data_source_code: str,
-    #     record_id: str,
-    #     flags: int = G2EngineFlags.G2_WHY_ENTITY_DEFAULT_FLAGS,
-    #     **kwargs: Any,
-    # ) -> Dict[str, Any]:
-    #     # TODO document
-    #     """ """
-    #     # TODO Is the cast needed?
-    #     return cast(
-    #         Dict[str, Any],
-    #         json.loads(
-    #             self.why_record_in_entity(
-    #                 data_source_code,
-    #                 record_id,
-    #                 flags,
-    #             )
-    #         ),
-    #     )
+    def why_record_in_entity_return_dict(
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = G2EngineFlags.G2_WHY_RECORDS_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        # TODO document
+        """ """
+        # TODO Is the cast needed?
+        return cast(
+            Dict[str, Any],
+            json.loads(
+                self.why_record_in_entity(
+                    data_source_code,
+                    record_id,
+                    flags,
+                )
+            ),
+        )
 
     # -------------------------------------------------------------------------
     # Convenience methods

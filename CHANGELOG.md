@@ -8,10 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
--
 
+## [0.0.2] - 2024-04-05
+
+### Added to 0.0.2
+
+- Before change from G2 to Sz
+  
 ## [0.0.1] - 2024-04-01
 
 ### Added to 0.0.1
 
-- Before change from G2 to Sz
+- Initial work
