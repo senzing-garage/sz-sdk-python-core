@@ -19,8 +19,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Bandit Scan
         uses: lukehinds/bandit-action@new-action
-        #env:
-        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           path: "."
           exit_zero: "true"
