@@ -26,10 +26,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: update pup
-        run: |
-          pip3 install --upgrade pip
-          pip3 --version
-
       - name: Security vulnerabilities scan
         uses: aufdenpunkt/python-safety-check@v1.0.5
+        with:
+          safety_args: '-i 62044'
