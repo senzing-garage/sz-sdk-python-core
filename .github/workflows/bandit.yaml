@@ -5,9 +5,10 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
-  safety:
+  bandit:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -16,6 +17,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Run bandit
-        uses: tj-actions/bandit@v5.5
+      - name: Run Bandit Scan
+        uses: ./
+        #env:
+        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: "."
+          exit_zero: "true"
+          recursive: "true"
