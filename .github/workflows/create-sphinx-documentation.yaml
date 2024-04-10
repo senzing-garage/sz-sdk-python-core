@@ -1,6 +1,12 @@
 name: create sphinx documentation
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src'
+      - 'examples'
+  workflow_dispatch:
 
 permissions:
   contents: write
