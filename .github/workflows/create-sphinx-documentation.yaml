@@ -2,11 +2,10 @@ name: create sphinx documentation
 
 on:
   push:
-    paths-ignore:
-      - '.github/**'
-  pull_request:
-    paths-ignore:
-      - '.github/**'
+    branches: [main]
+    paths:
+      - 'src'
+      - 'examples'
   workflow_dispatch:
 
 permissions:
