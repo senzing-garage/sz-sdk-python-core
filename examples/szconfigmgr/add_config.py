@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig, szconfigmgr
-from szexception import SzException
+from senzing import szconfig, szconfigmanager
+from senzing.szexception import SzException
 
 CONFIG_COMMENT = "Just an empty example"
 INSTANCE_NAME = "Example"
@@ -16,11 +16,12 @@ SETTINGS = {
 
 try:
     sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmgr = szconfigmgr.SzConfigMgr(INSTANCE_NAME, SETTINGS)
-    config_handle = sz_config.create()
+    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    config_handle = sz_config.create_config()
     config_str = sz_config.export_config(config_handle)
     config_id = sz_configmgr.add_config(config_str, CONFIG_COMMENT)
-    sz_configmgr.set_default_config_id(config_id)
+    # TODO Might not want the set_default_config_id
+    # sz_configmgr.set_default_config_id(config_id)
     print(config_id)
 except SzException as err:
     print(err)

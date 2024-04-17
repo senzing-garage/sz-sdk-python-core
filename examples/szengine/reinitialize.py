@@ -2,7 +2,7 @@
 
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 SETTINGS = {

@@ -597,14 +597,17 @@ ERROR_BUFFER_TYPE = c_char * 65535
 # -----------------------------------------------------------------------------
 
 
-def get_location(caller_skip: int) -> str:
+# def get_location(caller_skip: int) -> str:
+def get_location() -> str:
     """
     Determine caller.
 
     :meta private:
     """
     stack = traceback.format_stack()
-    return stack[len(stack) - caller_skip].strip()
+    # return stack[len(stack) - caller_skip].strip()
+    location = stack[0].replace("\n   ", "", 1).rstrip()
+    return location
 
 
 def get_message_level(error_id: int) -> str:
@@ -680,7 +683,7 @@ def new_szexception(
     product_id: str,
     error_id: int,
     id_messages: Dict[int, str],
-    caller_skip: int,
+    # caller_skip: int,
     *args: Any,
 ) -> Exception:
     """
@@ -698,7 +701,8 @@ def new_szexception(
         "text": get_message_text(error_id, id_messages, *args),
         "level": get_message_level(error_id),
         "id": f"senzing-{product_id}{error_id:4d}",
-        "location": get_location(caller_skip),
+        # "location": get_location(caller_skip),
+        "location": get_location(),
         "errorCode": senzing_error_code,
         "errorText": senzing_error_text,
         "details": args,

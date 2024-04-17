@@ -13,8 +13,8 @@ import textwrap
 import time
 from datetime import datetime
 
-from senzing import szconfigmgr, szdiagnostic, szengine, szproduct
-from szexception import SzBadInputError, SzException, SzRetryableError
+from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
+from senzing.szexception import SzBadInputError, SzException, SzRetryableError
 
 try:
     import orjson as json
@@ -204,6 +204,7 @@ def signal_int(signum, frame):
     do_shutdown = True
 
 
+# TODO Check file size and drop to single thread if small
 def load_and_redo(
     engine,
     file_input,
@@ -264,8 +265,10 @@ def load_and_redo(
 
     overall_start_time = time.time()
 
+    # TODO Add a no-redo mode, make it a hidden arg?
     with open(file_output, "w") as out_file:
-        for mode in [add_record, process_redo_record]:
+        # for mode in [add_record, process_redo_record]:
+        for mode in [add_record]:
             success_recs = error_recs = 0
             start_time = long_check_time = work_stats_time = prev_time = time.time()
             add_future = True
@@ -622,7 +625,7 @@ if __name__ == "__main__":
             "pySzDiagnostic", engine_config, debug_trace
         )
         sz_product = szproduct.SzProduct("pySzProduct", engine_config, debug_trace)
-        sz_configmgr = szconfigmgr.SzConfigMgr(
+        sz_configmgr = szconfigmanager.SzConfigManager(
             "pySzConfigMgr", engine_config, debug_trace
         )
     except SzException as ex:

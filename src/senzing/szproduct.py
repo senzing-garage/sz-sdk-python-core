@@ -39,7 +39,7 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5046"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
+# CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
 
 # -----------------------------------------------------------------------------
 # SzProduct class
@@ -103,7 +103,7 @@ class SzProduct(SzProductAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        settings: str | Dict[Any, Any] = "",
+        settings: Union[str, Dict[Any, Any]] = "",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -134,28 +134,17 @@ class SzProduct(SzProductAbstract):
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
-        # self.library_handle.G2Product_clearLastException.argtypes = []
-        # self.library_handle.G2Product_clearLastException.restype = None
         self.library_handle.G2Product_destroy.argtypes = []
+        # TODO Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_destroy.restype = c_longlong
-        # self.library_handle.G2Product_getLastException.argtypes = [
-        #     POINTER(c_char),
-        #     c_size_t,
-        # ]
-        # self.library_handle.G2Product_getLastException.restype = c_longlong
-        # self.library_handle.G2Product_getLastExceptionCode.argtypes = []
-        # self.library_handle.G2Product_getLastExceptionCode.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
+        # TODO Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
         self.library_handle.G2Product_license.restype = c_char_p
-        # self.library_handle.G2Product_validateLicenseFile.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2Product_validateLicenseFile.restype = c_longlong
-        # self.library_handle.G2Product_validateLicenseStringBase64.argtypes = [c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2Product_validateLicenseStringBase64.restype = c_longlong
         self.library_handle.G2Product_version.argtypes = []
         self.library_handle.G2Product_version.restype = c_char_p
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # Optionally, initialize Senzing engine.
 
@@ -187,7 +176,7 @@ class SzProduct(SzProductAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            CALLER_SKIP,
+            # CALLER_SKIP,
             *args,
         )
 
@@ -195,7 +184,7 @@ class SzProduct(SzProductAbstract):
     # G2Product methods
     # -------------------------------------------------------------------------
 
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Product_destroy()
         if result != 0:
             raise self.new_exception(4001, result)
@@ -218,8 +207,8 @@ class SzProduct(SzProductAbstract):
                 4002, instance_name, settings, verbose_logging, result
             )
 
-    def get_license(self, *args: Any, **kwargs: Any) -> str:
+    def get_license(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_license())
 
-    def get_version(self, *args: Any, **kwargs: Any) -> str:
+    def get_version(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_version())

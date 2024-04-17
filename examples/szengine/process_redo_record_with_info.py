@@ -1,7 +1,12 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
+from sys import exit
 
+from senzing import szengine
+from szengineflags import SzEngineFlags
+from senzing.szexception import SzException
+
+INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -10,17 +15,15 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
 }
-INSTANCE_NAME = "Example"
-
-# TODO Use a truth set entity id - in all examples
-DATA_SOURCE_CODE = "TEST"
-RECORD_ID = "Example-1"
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_interesting_entities_by_record_id(
-        DATA_SOURCE_CODE, RECORD_ID = {
-    )
+    record = sz_engine.get_redo_record()
+    if not record:
+        print("No redo records")
+        exit(0)
+
+    result = sz_engine.process_redo_record(record, SzEngineFlags.SZ_WITH_INFO)
     print(result)
-except G2Exception as err:
+except SzException as err:
     print(err)

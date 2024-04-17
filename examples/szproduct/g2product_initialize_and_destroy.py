@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szproduct
-from szexception import SzException
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 SETTINGS = {

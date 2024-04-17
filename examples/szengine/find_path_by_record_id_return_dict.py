@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 END_DATA_SOURCE_CODE = "REFERENCE"
 INSTANCE_NAME = "Example"

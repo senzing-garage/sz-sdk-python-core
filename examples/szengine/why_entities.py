@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 ENTITY_ID_1 = 1
 ENTITY_ID_2 = 6

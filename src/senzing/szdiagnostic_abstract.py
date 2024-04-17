@@ -5,7 +5,7 @@ TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 # Metadata
 
@@ -30,19 +30,13 @@ class SzDiagnosticAbstract(ABC):
 
     PREFIX = "szdiagnostic."
     ID_MESSAGES = {
-        # TODO: remove + concats for f-strings?
-        4001: PREFIX + "G2Diagnostic_checkDBPerf({0}) failed. Return code: {1}",
-        4003: PREFIX + "G2Diagnostic_destroy() failed.  Return code: {0}",
-        4007: PREFIX + "G2Diagnostic_getDBInfo() failed. Return code: {0}",
-        4018: PREFIX + "G2Diagnostic_init({0}, {1}, {2}) failed. Return code: {3}",
-        4019: PREFIX
-        + "G2Diagnostic_initWithConfigID({0}, {1}, {2}, {3}) failed. Return code: {4}",
-        4020: PREFIX + "G2Diagnostic_reinit({0}) failed. Return Code: {1}",
-        4021: PREFIX
-        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
-        # TODO What style for the API name?
-        # TODO Reorder
-        4023: PREFIX + "G2_purgeRepository() failed. Return code: {0}",
+        4001: PREFIX + "check_database_performance({0}) failed. Return code: {1}",
+        4002: PREFIX + "destroy() failed. Return code: {0}",
+        4003: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4004: PREFIX + "purge_repository() failed. Return code: {0}",
+        4005: PREFIX + "reinitialize({0}) failed. Return Code: {1}",
+        4006: PREFIX
+        + "SzDiagnostic({0}, {1}) must have both instance_name and ini_settings nor neither.",
     }
 
     # -------------------------------------------------------------------------
@@ -50,9 +44,7 @@ class SzDiagnosticAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def check_database_performance(
-        self, seconds_to_run: int, *args: Any, **kwargs: Any
-    ) -> str:
+    def check_database_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
         """
         The `check_database_performance` method performs inserts to determine rate of insertion.
 
@@ -80,7 +72,7 @@ class SzDiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         """
         The `destroy` method will destroy and perform cleanup for the Senzing SzDiagnostic object.
         It should be called after all other calls are complete.
@@ -105,13 +97,19 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
+    # TODO Complete when added to Go helpers - GDEV-3801
+    # NOTE This is included but not to be documented
+    # @abstractmethod
+    # def get_feature(self, feature_id: int, **kwargs: Any) -> str:
+    #     """"""
+
     @abstractmethod
     def initialize(
         self,
         instance_name: str,
-        settings: str | Dict[Any, Any],
-        verbose_logging: int = 0,
+        settings: Union[str, Dict[Any, Any]],
         config_id: Optional[int] = None,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         # TODO Add in config_id to docstring
@@ -132,6 +130,7 @@ class SzDiagnosticAbstract(ABC):
         Args:
             instance_name (str): A name for the auditing node, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
+            config_id (int):
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
@@ -144,46 +143,6 @@ class SzDiagnosticAbstract(ABC):
                 :linenos:
                 :language: python
         """
-
-    # @abstractmethod
-    # def init_with_config_id(
-    #     self,
-    #     module_name: str,
-    #     ini_params: Union[str, Dict[Any, Any]],
-    #     init_config_id: int,
-    #     verbose_logging: int = 0,
-    #     **kwargs: Any
-    # ) -> None:
-    #     """
-    #     The `init_with_config_id` method initializes the Senzing G2Diagnosis object with a non-default configuration ID.
-    #     It must be called prior to any other calls.
-
-    #     **Note:** If the G2Diagnosis constructor is called with parameters,
-    #     the constructor will automatically call the `init()` method.
-    #     In this case, a separate call to `init()` is not needed.
-
-    #     Example:
-
-    #     .. code-block:: python
-
-    #         g2_diagnosis = g2diagnosis.G2Diagnosis(module_name, ini_params, init_config_id)
-
-    #     Args:
-    #         module_name (str): A name for the auditing node, to help identify it within system logs.
-    #         ini_params Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-    #         init_config_id (int): The configuration ID used for the initialization.
-    #         verbose_logging (int): `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
-
-    #     Raises:
-    #         TypeError: Incorrect datatype of input parameter.
-    #         g2exception.G2Exception:
-
-    #     .. collapse:: Example:
-
-    #         .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_init_with_config_id.py
-    #             :linenos:
-    #             :language: python
-    #     """
 
     @abstractmethod
     def purge_repository(self, **kwargs: Any) -> None:
@@ -204,7 +163,7 @@ class SzDiagnosticAbstract(ABC):
         """
 
     @abstractmethod
-    def reinitialize(self, config_id: int, *args: Any, **kwargs: Any) -> None:
+    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         """
         The `reinitialize` method re-initializes the Senzing SzDiagnostic object.
 

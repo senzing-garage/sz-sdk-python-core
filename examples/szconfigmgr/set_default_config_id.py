@@ -1,10 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szconfigmgr
-from szexception import SzException
+from senzing import szconfigmanager
+from senzing.szexception import SzException
 
-CONFIG_COMMENT = "Just an example"
-DATA_SOURCE_CODE = "TEST20"
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
@@ -16,7 +14,7 @@ SETTINGS = {
 }
 
 try:
-    sz_configmgr = szconfigmgr.SzConfigMgr(INSTANCE_NAME, SETTINGS)
+    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
 
     # Getting and setting the same for demonstration purposes
     config_id = sz_configmgr.get_default_config_id()

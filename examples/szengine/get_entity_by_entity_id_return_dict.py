@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 ENTITY_ID = 1
 INSTANCE_NAME = "Example"

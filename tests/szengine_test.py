@@ -16,23 +16,25 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from . import szconfig, szconfigmgr, szengine, szexception
+from senzing import szconfig, szconfigmanager, szengine
+from senzing.szengineflags import SzEngineFlags
+from senzing.szexception import SzException
 
 # AC - Temp disables to get changes in for move to senzing garage
 # pylint: disable=C0302
 
 # -----------------------------------------------------------------------------
-# G2Engine fixtures
+# SzEngine fixtures
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2_engine", scope="module")
-def g2engine_fixture(engine_vars):
+@pytest.fixture(name="sz_engine", scope="module")
+def szengine_fixture(engine_vars):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return szengine.G2Engine(
+    return szengine.SzEngine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
     )
@@ -79,7 +81,7 @@ RECORD_STR_BAD = (
 )
 
 # -----------------------------------------------------------------------------
-# G2Engine schemas
+# SzEngine schemas
 # -----------------------------------------------------------------------------
 
 with_info_schema = {
@@ -742,72 +744,73 @@ why_entity_results_schema = {
 }
 
 # -----------------------------------------------------------------------------
-# G2Engine pre tests & setup
+# SzEngine pre tests & setup
 # -----------------------------------------------------------------------------
 
 
 def test_add_truthset_datasources(engine_vars) -> None:
     """Add needed datasources for tests."""
-    g2_config = szconfig.G2Config(
+    sz_config = szconfig.SzConfig(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    g2_configmgr = szconfigmgr.G2ConfigMgr(
+    sz_configmgr = szconfigmanager.SzConfigManager(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    g2_engine = szengine.G2Engine(
+    sz_engine = szengine.SzEngine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    config_handle = g2_config.create()
-    for _, value in TRUTHSET_DATASOURCES.items():
-        g2_config.add_data_source(config_handle, value.get("Json", ""))
-    json_config = g2_config.save(config_handle)
-    new_config_id = g2_configmgr.add_config(json_config, "Test")
-    g2_configmgr.set_default_config_id(new_config_id)
-    g2_engine.reinitialize(new_config_id)
+    config_handle = sz_config.create_config()
+    for data_source in TRUTHSET_DATASOURCES.keys():
+        sz_config.add_data_source(config_handle, data_source)
+    json_config = sz_config.export_config(config_handle)
+    new_config_id = sz_configmgr.add_config(json_config, "Test")
+    sz_configmgr.set_default_config_id(new_config_id)
+    sz_engine.reinitialize(new_config_id)
 
 
+# TODO Doesn't appear to be working, pointing at wrong G2C I think
 def test_add_truthset_data(engine_vars):
     """Add truthset data for tests"""
-    g2_engine = szengine.G2Engine(
+    sz_engine = szengine.SzEngine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    add_records_truthset(g2_engine)
+    add_records_truthset(sz_engine)
 
 
 # -----------------------------------------------------------------------------
-# G2Engine testcases
+# SzEngine testcases
 # -----------------------------------------------------------------------------
 
 
-def test_exception(g2_engine):
+def test_exception(sz_engine):
     """Test exceptions."""
-    actual = g2_engine.new_exception(0)
+    actual = sz_engine.new_exception(0)
     assert isinstance(actual, Exception)
 
 
 def test_constructor(engine_vars):
     """Test constructor."""
-    actual = szengine.G2Engine(
+    actual = szengine.SzEngine(
         engine_vars["MODULE_NAME"],
         engine_vars["INI_PARAMS"],
         engine_vars["VERBOSE_LOGGING"],
     )
-    assert isinstance(actual, szengine.G2Engine)
+    assert isinstance(actual, szengine.SzEngine)
 
 
 def test_constructor_bad_module_name(engine_vars):
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(szexception.G2Exception):
-        szengine.G2Engine(
+    with pytest.raises(SzException):
+        szengine.SzEngine(
             bad_module_name,
             engine_vars["INI_PARAMS"],
         )
@@ -816,8 +819,8 @@ def test_constructor_bad_module_name(engine_vars):
 def test_constructor_bad_ini_params(engine_vars):
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(szexception.G2Exception):
-        szengine.G2Engine(
+    with pytest.raises(SzException):
+        szengine.SzEngine(
             engine_vars["MODULE_NAME"],
             bad_ini_params,
         )
@@ -828,165 +831,178 @@ def test_constructor_bad_ini_params(engine_vars):
 #     """Test constructor."""
 
 
-def test_add_record_dict(g2_engine):
+def test_add_record_dict(sz_engine):
     """Test add_record where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_DICT
-    g2_engine.add_record(data_source_code, record_id, json_data)
+    sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_str(g2_engine):
+def test_add_record_str(sz_engine):
     """Test add_record where the record is a JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR
-    g2_engine.add_record(data_source_code, record_id, json_data)
+    sz_engine.add_record(data_source_code, record_id, json_data)
 
 
 # TODO Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
-def test_add_record_bad_data_source_code_type(g2_engine):
+def test_add_record_bad_data_source_code_type(sz_engine):
     """Test add_record with incorrect data source code type."""
     data_source_code = 1
     record_id = "1"
     json_data = RECORD_DICT
     with pytest.raises(TypeError):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_bad_data_source_code_value(g2_engine):
+def test_add_record_bad_data_source_code_value(sz_engine):
     """Test add_record with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_bad_record(g2_engine):
+def test_add_record_bad_record(sz_engine):
     """Test add_record with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR_BAD
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_bad_record_id_type(g2_engine):
+def test_add_record_bad_record_id_type(sz_engine):
     """Test add_record with incorrect record id type."""
     data_source_code = "TEST"
     record_id = 1
     json_data = RECORD_DICT
     with pytest.raises(TypeError):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_data_source_code_empty(g2_engine):
+def test_add_record_data_source_code_empty(sz_engine):
     """Test add_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_record_str_empty(g2_engine):
+def test_add_record_record_str_empty(sz_engine):
     """Test add_record with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
     json_data = ""
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
 # NOTE This doesn't throw an exception because json dumps results in a valid json str '{}'
-# def test_add_record_record_dict_empty(g2_engine):
+# def test_add_record_record_dict_empty(sz_engine):
 #     """Test add_record with empty record as a dictionary"""
-#     with pytest.raises(g2exception.G2Exception):
-#         g2_engine.add_record(data_source_code, record_id, {})
+#     with pytest.raises(g2exception.SzException):
+#         sz_engine.add_record(data_source_code, record_id, {})
 
 
-def test_add_record_with_info_dict(g2_engine):
-    """Test add_record_with_info where the record is a dict."""
+def test_add_record_with_info_dict(sz_engine):
+    """Test add_record with flag to return with_info where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_DICT
-    actual = g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+    actual = sz_engine.add_record(
+        data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+    )
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
 
 
-def test_add_record_with_info_str(g2_engine):
-    """Test add_record_with_info where the record is a JSON string."""
+def test_add_record_with_info_str(sz_engine):
+    """Test add_record with flag to return with_info where the record is a JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR
-    actual = g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+    actual = sz_engine.add_record(
+        data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+    )
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
 
 
 # TODO Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
-def test_add_record_with_info_bad_data_source_code_type(g2_engine):
-    """Test add_record_with_info with incorrect data source code type."""
+def test_add_record_with_info_bad_data_source_code_type(sz_engine):
+    """Test add_record with flag to return with_info with incorrect data source code type."""
     data_source_code = 1
     record_id = "1"
     json_data = RECORD_DICT
     with pytest.raises(TypeError):
-        g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+        sz_engine.add_record(
+            data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+        )
 
 
-def test_add_record_with_info_bad_data_source_code_value(g2_engine):
-    """Test add_record_with_info with non-existent data source code."""
+def test_add_record_with_info_bad_data_source_code_value(sz_engine):
+    """Test add_record with flag to return with_info with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(
+            data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+        )
 
 
-def test_add_record_with_info_bad_record(g2_engine):
-    """Test add_record with bad JSON string."""
+def test_add_record_with_info_bad_record(sz_engine):
+    """Test add_record with flag to return with_info with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_STR_BAD
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(
+            data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+        )
 
 
-def test_add_record_with_info_bad_record_id_type(g2_engine):
-    """Test add_record with incorrect record id type."""
+# NOTE Ant got to here
+def test_add_record_with_info_bad_record_id_type(sz_engine):
+    """Test add_record with flag to return with_info with incorrect record id type."""
     data_source_code = "TEST"
     record_id = 1
     json_data = RECORD_DICT
     with pytest.raises(TypeError):
-        g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+        sz_engine.add_record(
+            data_source_code, record_id, json_data, SzEngineFlags.SZ_WITH_INFO
+        )
 
 
-def test_add_record_with_info_data_source_code_empty(g2_engine):
+def test_add_record_with_info_data_source_code_empty(sz_engine):
     """Test add_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
     json_data = RECORD_DICT
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record_with_info(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record_with_info(data_source_code, record_id, json_data)
 
 
-def test_add_record_with_info_record_str_empty(g2_engine):
+def test_add_record_with_info_record_str_empty(sz_engine):
     """Test add_record_with_info with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
     json_data = ""
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.add_record(data_source_code, record_id, json_data)
+    with pytest.raises(SzException):
+        sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-def test_add_record_with_info_return_dict_type(g2_engine):
+def test_add_record_with_info_return_dict_type(sz_engine):
     """Test add_record_with_info_return_dict returns a dict"""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_DICT
-    actual = g2_engine.add_record_with_info_return_dict(
+    actual = sz_engine.add_record_with_info_return_dict(
         data_source_code, record_id, json_data
     )
     assert isinstance(actual, dict)
@@ -995,122 +1011,122 @@ def test_add_record_with_info_return_dict_type(g2_engine):
 # TODO Close export
 
 
-def test_count_redo_records(g2_engine):
+def test_count_redo_records(sz_engine):
     """Test count_redo_records"""
-    actual = g2_engine.count_redo_records()
+    actual = sz_engine.count_redo_records()
     assert actual == 0
 
 
-def test_delete_record(g2_engine):
+def test_delete_record(sz_engine):
     """Test delete_record."""
     data_source_code = "TEST"
     record_id = "1"
-    g2_engine.delete_record(data_source_code, record_id)
+    sz_engine.delete_record(data_source_code, record_id)
 
 
-def test_delete_record_bad_data_source_code_type(g2_engine):
+def test_delete_record_bad_data_source_code_type(sz_engine):
     """Test delete_record with incorrect data source code type."""
     data_source_code = 1
     record_id = "1"
     with pytest.raises(TypeError):
-        g2_engine.add_record(data_source_code, record_id)
+        sz_engine.add_record(data_source_code, record_id)
 
 
-def test_delete_record_bad_data_source_code_value(g2_engine):
+def test_delete_record_bad_data_source_code_value(sz_engine):
     """Test delete_record with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.delete_record(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.delete_record(data_source_code, record_id)
 
 
-def test_delete_record_data_source_code_empty(g2_engine):
+def test_delete_record_data_source_code_empty(sz_engine):
     """Test delete_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.delete_record_with_info(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.delete_record_with_info(data_source_code, record_id)
 
 
-def test_delete_record_with_info(g2_engine):
+def test_delete_record_with_info(sz_engine):
     """Test delete_record_with_info."""
     data_source_code = "TEST"
     record_id = "1"
     json_data = RECORD_DICT
-    g2_engine.add_record(data_source_code, record_id, json_data)
-    actual = g2_engine.delete_record_with_info(data_source_code, record_id)
+    sz_engine.add_record(data_source_code, record_id, json_data)
+    actual = sz_engine.delete_record_with_info(data_source_code, record_id)
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
 
 
-def test_delete_record_with_info_bad_data_source_code_type(g2_engine):
+def test_delete_record_with_info_bad_data_source_code_type(sz_engine):
     """Test delete_record_with_info with incorrect data source code type."""
     data_source_code = 1
     record_id = "1"
     with pytest.raises(TypeError):
-        g2_engine.delete_record_with_info(data_source_code, record_id)
+        sz_engine.delete_record_with_info(data_source_code, record_id)
 
 
-def test_delete_record_with_info_bad_data_source_code_value(g2_engine):
+def test_delete_record_with_info_bad_data_source_code_value(sz_engine):
     """Test delete_record_with_info with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.delete_record_with_info(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.delete_record_with_info(data_source_code, record_id)
 
 
-def test_delete_record_with_info_data_source_code_empty(g2_engine):
+def test_delete_record_with_info_data_source_code_empty(sz_engine):
     """Test delete_record with empty data source code."""
     data_source_code = ""
     record_id = "1"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.delete_record_with_info(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.delete_record_with_info(data_source_code, record_id)
 
 
-def test_delete_record_with_info_return_dict_type(g2_engine):
+def test_delete_record_with_info_return_dict_type(sz_engine):
     """Test delete_record_with_info_return_dict returns a dict"""
     data_source_code = "TEST"
     record_id = "1"
-    actual = g2_engine.delete_record_with_info_return_dict(data_source_code, record_id)
+    actual = sz_engine.delete_record_with_info_return_dict(data_source_code, record_id)
     assert isinstance(actual, dict)
 
 
 # TODO Do destroy if using constructor?
 
 
-def test_export_config(g2_engine) -> None:
+def test_export_config(sz_engine) -> None:
     """Test export_config."""
-    actual = g2_engine.export_config()
+    actual = sz_engine.export_config()
     actual_dict = json.loads(actual)
     assert schema(g2_config_schema) == actual_dict
 
 
-def test_export_csv_entity_report(g2_engine) -> None:
+def test_export_csv_entity_report(sz_engine) -> None:
     """Test export_csv_entity_report."""
     csv_headers = "RESOLVED_ENTITY_ID,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA,LAST_SEEN_DT,NAME_DATA,ATTRIBUTE_DATA,IDENTIFIER_DATA,ADDRESS_DATA,PHONE_DATA,RELATIONSHIP_DATA,ENTITY_DATA,OTHER_DATA"
-    handle = g2_engine.export_csv_entity_report(csv_headers)
+    handle = sz_engine.export_csv_entity_report(csv_headers)
     actual = ""
     while True:
-        fragment = g2_engine.fetch_next(handle)
+        fragment = sz_engine.fetch_next(handle)
         if not fragment:
             break
         actual += fragment
-    g2_engine.close_export(handle)
+    sz_engine.close_export(handle)
     assert len(actual) > 0
 
 
-def test_export_csv_entity_report_bad_header(g2_engine) -> None:
+def test_export_csv_entity_report_bad_header(sz_engine) -> None:
     """Test export_csv_entity_report with incorrect header value."""
     csv_headers = "RESOLVED_ENTITY_,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA,LAST_SEEN_DT,NAME_DATA,ATTRIBUTE_DATA,IDENTIFIER_DATA,ADDRESS_DATA,PHONE_DATA,RELATIONSHIP_DATA,ENTITY_DATA,OTHER_DATA"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.export_csv_entity_report(csv_headers)
+    with pytest.raises(SzException):
+        sz_engine.export_csv_entity_report(csv_headers)
 
 
-def test_export_json_entity_report(g2_engine) -> None:
+def test_export_json_entity_report(sz_engine) -> None:
     """Test export_json_entity_report."""
-    handle = g2_engine.export_json_entity_report()
-    actual = g2_engine.fetch_next(handle)
-    g2_engine.close_export(handle)
+    handle = sz_engine.export_json_entity_report()
+    actual = sz_engine.fetch_next(handle)
+    sz_engine.close_export(handle)
     actual_dict = json.loads(actual)
     assert schema(export_json_entity_report_schema) == actual_dict
 
@@ -1120,10 +1136,10 @@ def test_export_json_entity_report(g2_engine) -> None:
 # TODO find_interesting_entities? It needs a config and is early adopter only
 
 
-def test_find_network_by_entity_id_list_as_dict(g2_engine) -> None:
+def test_find_network_by_entity_id_list_as_dict(sz_engine) -> None:
     """Test find_network_by_entity_id with entity_list as a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1027")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1069")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1027")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1069")
     entity_list = {
         "ENTITIES": [
             {"ENTITY_ID": entity_id_1},
@@ -1133,17 +1149,17 @@ def test_find_network_by_entity_id_list_as_dict(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_entity_id(
+    actual = sz_engine.find_network_by_entity_id(
         entity_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_entity_id_list_as_str(g2_engine) -> None:
+def test_find_network_by_entity_id_list_as_str(sz_engine) -> None:
     """Test find_network_by_entity_id with entity_list as a string."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1027")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1069")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1027")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1069")
     entity_list = (
         f'{{"ENTITIES": [{{"ENTITY_ID": {entity_id_1}}}, {{"ENTITY_ID":'
         f" {entity_id_2}}}]}}"
@@ -1151,14 +1167,14 @@ def test_find_network_by_entity_id_list_as_str(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_entity_id(
+    actual = sz_engine.find_network_by_entity_id(
         entity_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_entity_id_bad_entity_ids(g2_engine) -> None:
+def test_find_network_by_entity_id_bad_entity_ids(sz_engine) -> None:
     """Test find_network_by_entity_id with non-existent entities."""
     entity_list = {
         "ENTITIES": [
@@ -1169,29 +1185,29 @@ def test_find_network_by_entity_id_bad_entity_ids(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_network_by_entity_id(
+    with pytest.raises(SzException):
+        sz_engine.find_network_by_entity_id(
             entity_list, max_degree, build_out_degree, max_entities
         )
 
 
-def test_find_network_by_entity_id_empty_entity_list(g2_engine) -> None:
+def test_find_network_by_entity_id_empty_entity_list(sz_engine) -> None:
     """Test find_network_by_entity_id with empty list."""
     entity_list = {}
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_entity_id(
+    actual = sz_engine.find_network_by_entity_id(
         entity_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_entity_id_return_dict_type(g2_engine):
+def test_find_network_by_entity_id_return_dict_type(sz_engine):
     """Test find_network_by_entity_id_return_dict returns a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1027")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1069")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1027")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1069")
     entity_list = {
         "ENTITIES": [
             {"ENTITY_ID": entity_id_1},
@@ -1201,13 +1217,13 @@ def test_find_network_by_entity_id_return_dict_type(g2_engine):
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_entity_id_return_dict(
+    actual = sz_engine.find_network_by_entity_id_return_dict(
         entity_list, max_degree, build_out_degree, max_entities
     )
     assert isinstance(actual, dict)
 
 
-def test_find_network_by_record_id_list_as_dict(g2_engine) -> None:
+def test_find_network_by_record_id_list_as_dict(sz_engine) -> None:
     """Test find_network_by_record_id with record_list as a dict."""
     record_list = {
         "RECORDS": [
@@ -1218,14 +1234,14 @@ def test_find_network_by_record_id_list_as_dict(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_record_id(
+    actual = sz_engine.find_network_by_record_id(
         record_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_record_id_list_as_str(g2_engine) -> None:
+def test_find_network_by_record_id_list_as_str(sz_engine) -> None:
     """Test find_network_by_record_id with record_list as a string."""
     record_list = (
         '{"RECORDS": [{"DATA_SOURCE": "WATCHLIST", "RECORD_ID": "1027"},'
@@ -1234,14 +1250,14 @@ def test_find_network_by_record_id_list_as_str(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_record_id(
+    actual = sz_engine.find_network_by_record_id(
         record_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_record_id_bad_data_source_code(g2_engine) -> None:
+def test_find_network_by_record_id_bad_data_source_code(sz_engine) -> None:
     """Test find_network_by_record_id with non-existent data source."""
     record_list = {
         "RECORDS": [
@@ -1252,13 +1268,13 @@ def test_find_network_by_record_id_bad_data_source_code(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_network_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_network_by_record_id(
             record_list, max_degree, build_out_degree, max_entities
         )
 
 
-def test_find_network_by_record_id_bad_record_ids(g2_engine) -> None:
+def test_find_network_by_record_id_bad_record_ids(sz_engine) -> None:
     """Test find_network_by_record_id with non-existent record id."""
     record_list = {
         "RECORDS": [
@@ -1269,26 +1285,26 @@ def test_find_network_by_record_id_bad_record_ids(g2_engine) -> None:
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_network_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_network_by_record_id(
             record_list, max_degree, build_out_degree, max_entities
         )
 
 
-def test_find_network_by_record_id_empty_record_list(g2_engine) -> None:
+def test_find_network_by_record_id_empty_record_list(sz_engine) -> None:
     """Test find_network_by_record_id with empty list."""
     record_list = {}
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_record_id(
+    actual = sz_engine.find_network_by_record_id(
         record_list, max_degree, build_out_degree, max_entities
     )
     actual_dict = json.loads(actual)
     assert schema(network_schema) == actual_dict
 
 
-def test_find_network_by_record_id_return_dict_type(g2_engine):
+def test_find_network_by_record_id_return_dict_type(sz_engine):
     """Test find_network_by_record_id_return_dict returns a dict"""
     record_list = {
         "RECORDS": [
@@ -1299,144 +1315,144 @@ def test_find_network_by_record_id_return_dict_type(g2_engine):
     max_degree = 5
     build_out_degree = 2
     max_entities = 10
-    actual = g2_engine.find_network_by_record_id_return_dict(
+    actual = sz_engine.find_network_by_record_id_return_dict(
         record_list, max_degree, build_out_degree, max_entities
     )
     assert isinstance(actual, dict)
 
 
-def test_find_path_by_entity_id(g2_engine) -> None:
+def test_find_path_by_entity_id(sz_engine) -> None:
     """Test find_path_by_entity_id."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "2082")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "REFERENCE", "2131")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "2082")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "REFERENCE", "2131")
     max_degree = 5
-    actual = g2_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
+    actual = sz_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_by_entity_id_bad_entity_ids(g2_engine) -> None:
+def test_find_path_by_entity_id_bad_entity_ids(sz_engine) -> None:
     """Test find_path_by_entity_id with non-existent entities."""
     entity_id_1 = 99999999999998
     entity_id_2 = 99999999999999
     max_degree = 5
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
+    with pytest.raises(SzException):
+        sz_engine.find_path_by_entity_id(entity_id_1, entity_id_2, max_degree)
 
 
-def test_find_path_by_entity_id_return_dict_type(g2_engine):
+def test_find_path_by_entity_id_return_dict_type(sz_engine):
     """Test find_path_by_entity_id_return_dict returns a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "2082")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "REFERENCE", "2131")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "2082")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "REFERENCE", "2131")
     max_degree = 5
-    actual = g2_engine.find_path_by_entity_id_return_dict(
+    actual = sz_engine.find_path_by_entity_id_return_dict(
         entity_id_1, entity_id_2, max_degree
     )
     assert isinstance(actual, dict)
 
 
-def test_find_path_by_record_id(g2_engine) -> None:
+def test_find_path_by_record_id(sz_engine) -> None:
     """Test find_path_by_record_id."""
     data_source_code_1 = "REFERENCE"
     record_id_1 = "2081"
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    actual = g2_engine.find_path_by_record_id(
+    actual = sz_engine.find_path_by_record_id(
         data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_by_record_id_bad_data_source_code(g2_engine) -> None:
+def test_find_path_by_record_id_bad_data_source_code(sz_engine) -> None:
     """Test find_path_by_record_id with non-existent data source."""
     data_source_code_1 = "DOESN'T EXIST"
     record_id_1 = "2081"
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_by_record_id(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
         )
 
 
-def test_find_path_by_record_id_bad_record_ids(g2_engine) -> None:
+def test_find_path_by_record_id_bad_record_ids(sz_engine) -> None:
     """Test find_path_by_record_id with non-existent record id."""
     data_source_code_1 = "REFERENCE"
     record_id_1 = "9999999999999999"
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_by_record_id(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
         )
 
 
-def test_find_path_by_record_id_return_dict_type(g2_engine):
+def test_find_path_by_record_id_return_dict_type(sz_engine):
     """Test find_path_by_record_id_return_dict returns a dict"""
     data_source_code_1 = "REFERENCE"
     record_id_1 = "2081"
     data_source_code_2 = "REFERENCE"
     record_id_2 = "2132"
     max_degree = 5
-    actual = g2_engine.find_path_by_record_id_return_dict(
+    actual = sz_engine.find_path_by_record_id_return_dict(
         data_source_code_1, record_id_1, data_source_code_2, record_id_2, max_degree
     )
     assert isinstance(actual, dict)
 
 
-def test_find_path_excluding_by_entity_id_dict(g2_engine) -> None:
+def test_find_path_excluding_by_entity_id_dict(sz_engine) -> None:
     """Test find_path_excluding_by_entity_id where excluded entities is a dict."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1019")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1021")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1019")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1021")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1009")
     max_degree = 5
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
-    actual = g2_engine.find_path_excluding_by_entity_id(
+    actual = sz_engine.find_path_excluding_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_excluding_by_entity_id_str(g2_engine) -> None:
+def test_find_path_excluding_by_entity_id_str(sz_engine) -> None:
     """Test find_path_excluding_by_entity_id where excluded entities is a str."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1019")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1021")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1019")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1021")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1009")
     max_degree = 5
     excluded_entities = f'{{"ENTITIES": [{{"ENTITY_ID": {entity_id_3}}}]}}'
-    actual = g2_engine.find_path_excluding_by_entity_id(
+    actual = sz_engine.find_path_excluding_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_excluding_by_entity_id_bad_entity_ids(g2_engine) -> None:
+def test_find_path_excluding_by_entity_id_bad_entity_ids(sz_engine) -> None:
     """Test find_path_excluding_by_entity_id with non-existent entities."""
     entity_id_1 = 9999999999999999
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1021")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1021")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1009")
     max_degree = 5
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_excluding_by_entity_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_excluding_by_entity_id(
             entity_id_1, entity_id_2, max_degree, excluded_entities
         )
 
 
-def test_find_path_excluding_by_entity_id_return_dict_type(g2_engine):
+def test_find_path_excluding_by_entity_id_return_dict_type(sz_engine):
     """Test find_path_by_entity_id_return_dict returns a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1019")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1021")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1009")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1019")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1021")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1009")
     max_degree = 5
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
-    actual = g2_engine.find_path_excluding_by_entity_id_return_dict(
+    actual = sz_engine.find_path_excluding_by_entity_id_return_dict(
         entity_id_1, entity_id_2, max_degree, excluded_entities
     )
     assert isinstance(actual, dict)
@@ -1444,7 +1460,7 @@ def test_find_path_excluding_by_entity_id_return_dict_type(g2_engine):
 
 # TODO excluded_records_dict = {"RECORDS": [{"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"}]}
 # TODO Jira to look into / improve this in the engine
-def test_find_path_excluding_by_record_id_dict(g2_engine) -> None:
+def test_find_path_excluding_by_record_id_dict(sz_engine) -> None:
     """Test find_path_excluding_by_record_id where the excluded entities is a dict."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1019"
@@ -1452,7 +1468,7 @@ def test_find_path_excluding_by_record_id_dict(g2_engine) -> None:
     record_id_2 = "1020"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    actual = g2_engine.find_path_excluding_by_record_id(
+    actual = sz_engine.find_path_excluding_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1464,7 +1480,7 @@ def test_find_path_excluding_by_record_id_dict(g2_engine) -> None:
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_excluding_by_record_id_str(g2_engine) -> None:
+def test_find_path_excluding_by_record_id_str(sz_engine) -> None:
     """Test find_path_excluding_by_record_id where the excluded entities is a string."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1019"
@@ -1473,7 +1489,7 @@ def test_find_path_excluding_by_record_id_str(g2_engine) -> None:
     max_degree = 3
     # TODO Change to get the entity by record id?
     excluded_entities = '{"ENTITIES": [{"ENTITY_ID": 6}]}'
-    actual = g2_engine.find_path_excluding_by_record_id(
+    actual = sz_engine.find_path_excluding_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1485,7 +1501,7 @@ def test_find_path_excluding_by_record_id_str(g2_engine) -> None:
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_excluding_by_record_id_bad_data_source_code(g2_engine) -> None:
+def test_find_path_excluding_by_record_id_bad_data_source_code(sz_engine) -> None:
     """Test find_path_excluding_by_record_id with non-existent data source."""
     data_source_code_1 = "DOESN'T EXIST"
     record_id_1 = "1019"
@@ -1493,8 +1509,8 @@ def test_find_path_excluding_by_record_id_bad_data_source_code(g2_engine) -> Non
     record_id_2 = "1020"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_excluding_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_excluding_by_record_id(
             data_source_code_1,
             record_id_1,
             data_source_code_2,
@@ -1504,7 +1520,7 @@ def test_find_path_excluding_by_record_id_bad_data_source_code(g2_engine) -> Non
         )
 
 
-def test_find_path_excluding_by_record_id_bad_record_ids(g2_engine) -> None:
+def test_find_path_excluding_by_record_id_bad_record_ids(sz_engine) -> None:
     """Test find_path_excluding_by_record_id with non-existent record id."""
     data_source_code_1 = "REFERENCE"
     record_id_1 = "9999999999999999"
@@ -1512,8 +1528,8 @@ def test_find_path_excluding_by_record_id_bad_record_ids(g2_engine) -> None:
     record_id_2 = "2132"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_excluding_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_excluding_by_record_id(
             data_source_code_1,
             record_id_1,
             data_source_code_2,
@@ -1523,7 +1539,7 @@ def test_find_path_excluding_by_record_id_bad_record_ids(g2_engine) -> None:
         )
 
 
-def test_find_path_excluding_by_record_id_excluded_entities_empty(g2_engine) -> None:
+def test_find_path_excluding_by_record_id_excluded_entities_empty(sz_engine) -> None:
     """Test find_path_excluding_by_record_id where the excluded entities is empty."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1019"
@@ -1531,7 +1547,7 @@ def test_find_path_excluding_by_record_id_excluded_entities_empty(g2_engine) -> 
     record_id_2 = "1020"
     max_degree = 3
     excluded_entities = {}
-    actual = g2_engine.find_path_excluding_by_record_id(
+    actual = sz_engine.find_path_excluding_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1543,7 +1559,7 @@ def test_find_path_excluding_by_record_id_excluded_entities_empty(g2_engine) -> 
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_excluding_by_record_id_return_dict_type(g2_engine):
+def test_find_path_excluding_by_record_id_return_dict_type(sz_engine):
     """Test find_path_excluding_by_record_id_return_dict returns a dict"""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1019"
@@ -1551,7 +1567,7 @@ def test_find_path_excluding_by_record_id_return_dict_type(g2_engine):
     record_id_2 = "1020"
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
-    actual = g2_engine.find_path_excluding_by_record_id_return_dict(
+    actual = sz_engine.find_path_excluding_by_record_id_return_dict(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1563,60 +1579,60 @@ def test_find_path_excluding_by_record_id_return_dict_type(g2_engine):
 
 
 # TODO Can excluded use records like find path? Jira to discuss and recommend
-def test_find_path_including_source_by_entity_id_dict(g2_engine) -> None:
+def test_find_path_including_source_by_entity_id_dict(sz_engine) -> None:
     """Test find_path_including_source_by_entity_id where excluded/required args are dicts."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1005")
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    actual = g2_engine.find_path_including_source_by_entity_id(
+    actual = sz_engine.find_path_including_source_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_including_source_by_entity_id_str(g2_engine) -> None:
+def test_find_path_including_source_by_entity_id_str(sz_engine) -> None:
     """Test find_path_including_source_by_entity_id where excluded/required args are strings."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1005")
     max_degree = 3
     excluded_entities = f'{{"ENTITIES": [{{"ENTITY_ID": {entity_id_3}}}]}}'
     required_dsrcs = '{"DATA_SOURCES": ["WATCHLIST"]}'
-    actual = g2_engine.find_path_including_source_by_entity_id(
+    actual = sz_engine.find_path_including_source_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_including_source_by_entity_id_bad_entity_ids(g2_engine) -> None:
+def test_find_path_including_source_by_entity_id_bad_entity_ids(sz_engine) -> None:
     """Test find_path_including_source_by_entity_id with non-existent entities."""
     entity_id_1 = 9999999999999999
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1005")
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_including_source_by_entity_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_including_source_by_entity_id(
             entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
         )
 
 
 def test_find_path_including_source_by_entity_id_excluded_entities_empty(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test find_path_including_source_by_entity_id where the excluded entities is empty."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
     max_degree = 3
     excluded_entities = {}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    actual = g2_engine.find_path_including_source_by_entity_id(
+    actual = sz_engine.find_path_including_source_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
     )
     actual_dict = json.loads(actual)
@@ -1624,37 +1640,37 @@ def test_find_path_including_source_by_entity_id_excluded_entities_empty(
 
 
 def test_find_path_including_source_by_entity_id_required_dsrcs_empty(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test find_path_including_source_by_entity_id where the required data sources is empty."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1005")
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
     required_dsrcs = {}
-    actual = g2_engine.find_path_including_source_by_entity_id(
+    actual = sz_engine.find_path_including_source_by_entity_id(
         entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
     )
     actual_dict = json.loads(actual)
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_including_source_by_entity_id_return_dict_type(g2_engine):
+def test_find_path_including_source_by_entity_id_return_dict_type(sz_engine):
     """Test find_path_including_source_by_entity_id_return_dict returns a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1004")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "WATCHLIST", "1007")
-    entity_id_3 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1005")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1004")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "WATCHLIST", "1007")
+    entity_id_3 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1005")
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": entity_id_3}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    actual = g2_engine.find_path_including_source_by_entity_id_return_dict(
+    actual = sz_engine.find_path_including_source_by_entity_id_return_dict(
         entity_id_1, entity_id_2, max_degree, excluded_entities, required_dsrcs
     )
     assert isinstance(actual, dict)
 
 
-def test_find_path_including_source_by_record_id_dict(g2_engine) -> None:
+def test_find_path_including_source_by_record_id_dict(sz_engine) -> None:
     """Test find_path_including_source_by_record_id excluded/required args are dicts."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
@@ -1663,7 +1679,7 @@ def test_find_path_including_source_by_record_id_dict(g2_engine) -> None:
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 5}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    actual = g2_engine.find_path_including_source_by_record_id(
+    actual = sz_engine.find_path_including_source_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1676,7 +1692,7 @@ def test_find_path_including_source_by_record_id_dict(g2_engine) -> None:
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_including_source_by_record_id_str(g2_engine) -> None:
+def test_find_path_including_source_by_record_id_str(sz_engine) -> None:
     """Test find_path_including_source_by_record_id excluded/required args are strings."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
@@ -1686,7 +1702,7 @@ def test_find_path_including_source_by_record_id_str(g2_engine) -> None:
     # TODO Change these in all methods to get by record id
     excluded_entities = '{"ENTITIES": [{"ENTITY_ID": 5}]}'
     required_dsrcs = '{"DATA_SOURCES": ["WATCHLIST"]}'
-    actual = g2_engine.find_path_including_source_by_record_id(
+    actual = sz_engine.find_path_including_source_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1700,7 +1716,7 @@ def test_find_path_including_source_by_record_id_str(g2_engine) -> None:
 
 
 def test_find_path_including_source_by_record_id_bad_data_source_code(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test find_path_including_source_by_record_id with non-existent data source."""
     data_source_code_1 = "DOESN'T EXIST"
@@ -1710,8 +1726,8 @@ def test_find_path_including_source_by_record_id_bad_data_source_code(
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_including_source_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_including_source_by_record_id(
             data_source_code_1,
             record_id_1,
             data_source_code_2,
@@ -1722,7 +1738,7 @@ def test_find_path_including_source_by_record_id_bad_data_source_code(
         )
 
 
-def test_find_path_including_source_by_record_id_bad_record_ids(g2_engine) -> None:
+def test_find_path_including_source_by_record_id_bad_record_ids(sz_engine) -> None:
     """Test find_path_including_source_by_record_id with non-existent record id."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "9999999999999999"
@@ -1731,8 +1747,8 @@ def test_find_path_including_source_by_record_id_bad_record_ids(g2_engine) -> No
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.find_path_including_source_by_record_id(
+    with pytest.raises(SzException):
+        sz_engine.find_path_including_source_by_record_id(
             data_source_code_1,
             record_id_1,
             data_source_code_2,
@@ -1744,7 +1760,7 @@ def test_find_path_including_source_by_record_id_bad_record_ids(g2_engine) -> No
 
 
 def test_find_path_including_source_by_record_id_excluded_entities_empty(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test find_path_including_source_by_record_id where the excluded entities is empty."""
     data_source_code_1 = "CUSTOMERS"
@@ -1754,7 +1770,7 @@ def test_find_path_including_source_by_record_id_excluded_entities_empty(
     max_degree = 3
     excluded_entities = {}
     required_dsrcs = '{"DATA_SOURCES": ["WATCHLIST"]}'
-    actual = g2_engine.find_path_including_source_by_record_id(
+    actual = sz_engine.find_path_including_source_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1768,7 +1784,7 @@ def test_find_path_including_source_by_record_id_excluded_entities_empty(
 
 
 def test_find_path_including_source_by_record_id_required_dsrcs_empty(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test find_path_including_source_by_record_id where the required data sources is empty."""
     data_source_code_1 = "CUSTOMERS"
@@ -1778,7 +1794,7 @@ def test_find_path_including_source_by_record_id_required_dsrcs_empty(
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 6}]}
     required_dsrcs = {}
-    actual = g2_engine.find_path_including_source_by_record_id(
+    actual = sz_engine.find_path_including_source_by_record_id(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1791,7 +1807,7 @@ def test_find_path_including_source_by_record_id_required_dsrcs_empty(
     assert schema(path_schema) == actual_dict
 
 
-def test_find_path_including_source_by_record_id_return_dict_type(g2_engine):
+def test_find_path_including_source_by_record_id_return_dict_type(sz_engine):
     """Test find_path_including_source_by_record_id_return_dict returns a dict"""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
@@ -1800,7 +1816,7 @@ def test_find_path_including_source_by_record_id_return_dict_type(g2_engine):
     max_degree = 3
     excluded_entities = {"ENTITIES": [{"ENTITY_ID": 5}]}
     required_dsrcs = {"DATA_SOURCES": ["WATCHLIST"]}
-    actual = g2_engine.find_path_including_source_by_record_id_return_dict(
+    actual = sz_engine.find_path_including_source_by_record_id_return_dict(
         data_source_code_1,
         record_id_1,
         data_source_code_2,
@@ -1812,112 +1828,112 @@ def test_find_path_including_source_by_record_id_return_dict_type(g2_engine):
     assert isinstance(actual, dict)
 
 
-def test_get_active_config_id(g2_engine):
+def test_get_active_config_id(sz_engine):
     """Test get_active_config_id"""
-    actual = g2_engine.get_active_config_id()
+    actual = sz_engine.get_active_config_id()
     assert actual >= 0
 
 
 def test_get_entity_by_entity_id(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test get_entity_by_entity_id."""
-    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    actual = g2_engine.get_entity_by_entity_id(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    actual = sz_engine.get_entity_by_entity_id(entity_id)
     actual_dict = json.loads(actual)
     assert schema(resolved_entity_schema) == actual_dict
 
 
-def test_get_entity_by_entity_id_bad_entity_ids(g2_engine) -> None:
+def test_get_entity_by_entity_id_bad_entity_ids(sz_engine) -> None:
     """Test get_entity_by_entity_id with non-existent entities."""
     entity_id = 9999999999999999
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_entity_by_entity_id(entity_id)
+    with pytest.raises(SzException):
+        sz_engine.get_entity_by_entity_id(entity_id)
 
 
-def test_get_entity_by_entity_id_return_dict_type(g2_engine):
+def test_get_entity_by_entity_id_return_dict_type(sz_engine):
     """Test find_get_entity_by_entity_id_return_dict returns a dict"""
-    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    actual = g2_engine.get_entity_by_entity_id_return_dict(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    actual = sz_engine.get_entity_by_entity_id_return_dict(entity_id)
     assert isinstance(actual, dict)
 
 
-def test_get_entity_by_record_id(g2_engine) -> None:
+def test_get_entity_by_record_id(sz_engine) -> None:
     """Test get_entity_by_record_id."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    actual = g2_engine.get_entity_by_record_id(data_source_code, record_id)
+    actual = sz_engine.get_entity_by_record_id(data_source_code, record_id)
     actual_dict = json.loads(actual)
     assert schema(resolved_entity_schema) == actual_dict
 
 
-def test_get_entity_by_record_id_bad_data_source_code(g2_engine) -> None:
+def test_get_entity_by_record_id_bad_data_source_code(sz_engine) -> None:
     """Test get_entity_by_record_id with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_entity_by_record_id(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.get_entity_by_record_id(data_source_code, record_id)
 
 
-def test_get_entity_by_record_id_bad_record_id(g2_engine) -> None:
+def test_get_entity_by_record_id_bad_record_id(sz_engine) -> None:
     """Test get_entity_by_record_id with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_entity_by_record_id(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.get_entity_by_record_id(data_source_code, record_id)
 
 
-def test_get_record(g2_engine) -> None:
+def test_get_record(sz_engine) -> None:
     """Test get_record."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    actual = g2_engine.get_record(data_source_code, record_id)
+    actual = sz_engine.get_record(data_source_code, record_id)
     actual_dict = json.loads(actual)
     assert schema(record_schema) == actual_dict
 
 
-def test_get_record_bad_data_source_code(g2_engine) -> None:
+def test_get_record_bad_data_source_code(sz_engine) -> None:
     """Test get_record with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_record(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.get_record(data_source_code, record_id)
 
 
-def test_get_record_bad_record_id(g2_engine) -> None:
+def test_get_record_bad_record_id(sz_engine) -> None:
     """Test get_record with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_record(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.get_record(data_source_code, record_id)
 
 
-def test_get_record_return_dict_type(g2_engine):
+def test_get_record_return_dict_type(sz_engine):
     """Test get_record_return_dict returns a dict"""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    actual = g2_engine.get_record_return_dict(data_source_code, record_id)
+    actual = sz_engine.get_record_return_dict(data_source_code, record_id)
     assert isinstance(actual, dict)
 
 
-def test_get_redo_record(g2_engine):
+def test_get_redo_record(sz_engine):
     """Test get_redo_record."""
-    g2_engine.purge_repository()
-    add_records_truthset(g2_engine, do_redo=False)
-    actual = g2_engine.get_redo_record()
+    sz_engine.purge_repository()
+    add_records_truthset(sz_engine, do_redo=False)
+    actual = sz_engine.get_redo_record()
     actual_dict = json.loads(actual)
-    add_records_truthset(g2_engine)
+    add_records_truthset(sz_engine)
     assert schema(redo_record_schema) == actual_dict
 
 
-def test_get_repository_last_modified_time(g2_engine):
+def test_get_repository_last_modified_time(sz_engine):
     """Test get_repository_last_modified_time"""
-    actual = g2_engine.get_repository_last_modified_time()
+    actual = sz_engine.get_repository_last_modified_time()
     assert actual >= 0
 
 
 def test_get_virtual_entity_by_record_id_as_dict(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test get_virtual_entity_by_record_id with record_list as a dict."""
     record_list = {
@@ -1926,26 +1942,26 @@ def test_get_virtual_entity_by_record_id_as_dict(
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    actual = g2_engine.get_virtual_entity_by_record_id(record_list)
+    actual = sz_engine.get_virtual_entity_by_record_id(record_list)
     actual_dict = json.loads(actual)
     assert schema(virtual_entity_schema) == actual_dict
 
 
 def test_get_virtual_entity_by_record_id_as_str(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test get_virtual_entity_by_record_id with record_list as a string."""
     record_list = (
         '{"RECORDS": [{"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
         ' {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"}]}'
     )
-    actual = g2_engine.get_virtual_entity_by_record_id(record_list)
+    actual = sz_engine.get_virtual_entity_by_record_id(record_list)
     actual_dict = json.loads(actual)
     assert schema(virtual_entity_schema) == actual_dict
 
 
 def test_get_virtual_entity_by_record_id_bad_data_source_code(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test get_virtual_entity_by_record_id with non-existent data source."""
     record_list = {
@@ -1954,12 +1970,12 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_virtual_entity_by_record_id(record_list)
+    with pytest.raises(SzException):
+        sz_engine.get_virtual_entity_by_record_id(record_list)
 
 
 def test_get_virtual_entity_by_record_id_bad_record_id(
-    g2_engine,
+    sz_engine,
 ) -> None:
     """Test get_virtual_entity_by_record_id with non-existent record id."""
     record_list = {
@@ -1968,11 +1984,11 @@ def test_get_virtual_entity_by_record_id_bad_record_id(
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.get_virtual_entity_by_record_id(record_list)
+    with pytest.raises(SzException):
+        sz_engine.get_virtual_entity_by_record_id(record_list)
 
 
-def test_get_virtual_entity_by_record_id_return_dict_type(g2_engine):
+def test_get_virtual_entity_by_record_id_return_dict_type(sz_engine):
     """Test get_virtual_entity_by_record_id_return_dict returns a dict"""
     record_list = {
         "RECORDS": [
@@ -1980,33 +1996,33 @@ def test_get_virtual_entity_by_record_id_return_dict_type(g2_engine):
             {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
         ]
     }
-    actual = g2_engine.get_virtual_entity_by_record_id_return_dict(record_list)
+    actual = sz_engine.get_virtual_entity_by_record_id_return_dict(record_list)
     assert isinstance(actual, dict)
 
 
-def test_how_entity_by_entity_id(g2_engine) -> None:
+def test_how_entity_by_entity_id(sz_engine) -> None:
     """Test how_entity_by_entity_id."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    entity_id = get_entity_id_from_record_id(g2_engine, data_source_code, record_id)
-    actual = g2_engine.how_entity_by_entity_id(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, data_source_code, record_id)
+    actual = sz_engine.how_entity_by_entity_id(entity_id)
     actual_dict = json.loads(actual)
     assert schema(how_results_schema) == actual_dict
 
 
-def test_how_entity_by_entity_id_bad_entity_id(g2_engine) -> None:
+def test_how_entity_by_entity_id_bad_entity_id(sz_engine) -> None:
     """Test how_entity_by_entity_id with non-existent entity."""
     entity_id = "9999999999999999"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.how_entity_by_entity_id(entity_id)
+    with pytest.raises(SzException):
+        sz_engine.how_entity_by_entity_id(entity_id)
 
 
-def test_how_entity_by_entity_id_return_dict_type(g2_engine):
+def test_how_entity_by_entity_id_return_dict_type(sz_engine):
     """Test how_entity_by_entity_id_return_dict returns a dict"""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    entity_id = get_entity_id_from_record_id(g2_engine, data_source_code, record_id)
-    actual = g2_engine.how_entity_by_entity_id_return_dict(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, data_source_code, record_id)
+    actual = sz_engine.how_entity_by_entity_id_return_dict(entity_id)
     assert isinstance(actual, dict)
 
 
@@ -2015,9 +2031,9 @@ def test_init_and_destroy(engine_vars) -> None:
     """Test init and destroy."""
     module_name = "Test"
     ini_params = engine_vars["INI_PARAMS"]
-    g2_engine_init_destroy = szengine.G2Engine()
-    g2_engine_init_destroy.initialize(module_name, ini_params)
-    g2_engine_init_destroy.destroy()
+    sz_engine_init_destroy = szengine.SzEngine()
+    sz_engine_init_destroy.initialize(module_name, ini_params)
+    sz_engine_init_destroy.destroy()
 
 
 # TODO Add test for constructor to take init_config_id when modified g2engine.py
@@ -2025,12 +2041,12 @@ def test_init_and_destroy(engine_vars) -> None:
 #     """Test init_with_config_id."""
 #     module_name = "Test"
 #     ini_params = engine_vars["INI_PARAMS"]
-#     g2_engine_2 = g2engine.G2Engine()
-#     g2_engine_2.initialize(module_name, ini_params)
-#     init_config_id = g2_engine_2.get_active_config_id()
-#     g2_engine_2.destroy()
-#     g2_engine_2 = g2engine.G2Engine()
-#     g2_engine_2.init_with_config_id(module_name, ini_params, init_config_id)
+#     sz_engine_2 = g2engine.G2Engine()
+#     sz_engine_2.initialize(module_name, ini_params)
+#     init_config_id = sz_engine_2.get_active_config_id()
+#     sz_engine_2.destroy()
+#     sz_engine_2 = g2engine.G2Engine()
+#     sz_engine_2.init_with_config_id(module_name, ini_params, init_config_id)
 
 
 # NOTE Having issues with this, coming back to...
@@ -2039,277 +2055,277 @@ def test_init_and_destroy(engine_vars) -> None:
 #     module_name = "Test"
 #     ini_params = engine_vars["INI_PARAMS"]
 #     init_config_id = 0
-#     g2_engine_with_id = g2engine.G2Engine()
-#     with pytest.raises(g2exception.G2Exception):
-#         g2_engine_with_id.init_with_config_id(module_name, ini_params, init_config_id)
+#     sz_engine_with_id = g2engine.G2Engine()
+#     with pytest.raises(g2exception.SzException):
+#         sz_engine_with_id.init_with_config_id(module_name, ini_params, init_config_id)
 
 
-def test_prime_engine(g2_engine) -> None:
+def test_prime_engine(sz_engine) -> None:
     """Test prime_engine."""
-    g2_engine.prime_engine()
+    sz_engine.prime_engine()
 
 
 # NOTE process and process_with_info are going away in V4, not adding tests for them
 # TODO Add tests for process_redo_record / _with_info when available in V4
 
 
-def test_purge_repository(g2_engine) -> None:
+def test_purge_repository(sz_engine) -> None:
     """Test purge_repository."""
-    g2_engine.purge_repository()
-    add_records_truthset(g2_engine)
+    sz_engine.purge_repository()
+    add_records_truthset(sz_engine)
 
 
 # NOTE Don't need to test a non-existent entity, if not found it is ignored by the engine similar to delete_record
-def test_reevaluate_entity(g2_engine) -> None:
+def test_reevaluate_entity(sz_engine) -> None:
     """Test reevaluate_entity."""
-    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    g2_engine.reevaluate_entity(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    sz_engine.reevaluate_entity(entity_id)
 
 
-def test_reevaluate_entity_with_info(g2_engine) -> None:
+def test_reevaluate_entity_with_info(sz_engine) -> None:
     """Test reevaluate_entity_with_info."""
-    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    actual = g2_engine.reevaluate_entity_with_info(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    actual = sz_engine.reevaluate_entity_with_info(entity_id)
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
 
 
-def test_reevaluate_entity_with_info_return_dict_type(g2_engine):
+def test_reevaluate_entity_with_info_return_dict_type(sz_engine):
     """Test reevaluate_entity_with_info_return_dict returns a dict"""
-    entity_id = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    actual = g2_engine.reevaluate_entity_with_info_return_dict(entity_id)
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    actual = sz_engine.reevaluate_entity_with_info_return_dict(entity_id)
     assert isinstance(actual, dict)
 
 
-def test_reevaluate_record(g2_engine) -> None:
+def test_reevaluate_record(sz_engine) -> None:
     """Test reevaluate_record."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    g2_engine.reevaluate_record(data_source_code, record_id)
+    sz_engine.reevaluate_record(data_source_code, record_id)
 
 
-def test_reevaluate_record_bad_data_source_code(g2_engine) -> None:
+def test_reevaluate_record_bad_data_source_code(sz_engine) -> None:
     """Test reevaluate_record with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.reevaluate_record(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.reevaluate_record(data_source_code, record_id)
 
 
-def test_reevaluate_record_bad_record_id(g2_engine) -> None:
+def test_reevaluate_record_bad_record_id(sz_engine) -> None:
     """Test reevaluate_record with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.reevaluate_record(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.reevaluate_record(data_source_code, record_id)
 
 
-def test_reevaluate_record_with_info(g2_engine) -> None:
+def test_reevaluate_record_with_info(sz_engine) -> None:
     """Test reevaluate_record_with_info."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    actual = g2_engine.reevaluate_record_with_info(data_source_code, record_id)
+    actual = sz_engine.reevaluate_record_with_info(data_source_code, record_id)
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
 
 
-def test_reevaluate_record_with_info_bad_data_source_code(g2_engine) -> None:
+def test_reevaluate_record_with_info_bad_data_source_code(sz_engine) -> None:
     """Test reevaluate_record_with_info with non-existent data source code."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.reevaluate_record_with_info(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.reevaluate_record_with_info(data_source_code, record_id)
 
 
-def test_reevaluate_record_with_info_bad_record_id(g2_engine) -> None:
+def test_reevaluate_record_with_info_bad_record_id(sz_engine) -> None:
     """Test reevaluate_record_with_info with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.reevaluate_record_with_info(data_source_code, record_id)
+    with pytest.raises(SzException):
+        sz_engine.reevaluate_record_with_info(data_source_code, record_id)
 
 
-def test_reevaluate_record_with_info_return_dict_type(g2_engine):
+def test_reevaluate_record_with_info_return_dict_type(sz_engine):
     """Test reevaluate_record_with_info_return_dict returns a dict"""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    actual = g2_engine.reevaluate_record_with_info_return_dict(
+    actual = sz_engine.reevaluate_record_with_info_return_dict(
         data_source_code, record_id
     )
     assert isinstance(actual, dict)
 
 
-def test_reinit(g2_engine) -> None:
+def test_reinit(sz_engine) -> None:
     """Test reinit."""
-    config_id = g2_engine.get_active_config_id()
-    g2_engine.reinit(config_id)
+    config_id = sz_engine.get_active_config_id()
+    sz_engine.reinit(config_id)
 
 
-def test_reinit_bad_config_id(g2_engine) -> None:
+def test_reinit_bad_config_id(sz_engine) -> None:
     """Test reinit with bad config id."""
-    active_config_id = g2_engine.get_active_config_id()
+    active_config_id = sz_engine.get_active_config_id()
     config_id = 0
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.reinit(config_id)
+        with pytest.raises(SzException):
+            sz_engine.reinit(config_id)
     finally:
-        g2_engine.reinit(active_config_id)
+        sz_engine.reinit(active_config_id)
 
 
-def test_replace_record(g2_engine) -> None:
+def test_replace_record(sz_engine) -> None:
     """Test replace_record."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    current_record = g2_engine.get_record(data_source_code, record_id)
+    current_record = sz_engine.get_record(data_source_code, record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     new_json_record = current_json_data
     new_json_record["ADDR_LINE1"] = "123 Main Street, Las Vegas NV 99999"
-    g2_engine.replace_record(data_source_code, record_id, new_json_record)
-    g2_engine.replace_record(data_source_code, record_id, current_json_data)
+    sz_engine.replace_record(data_source_code, record_id, new_json_record)
+    sz_engine.replace_record(data_source_code, record_id, current_json_data)
 
 
-def test_replace_record_bad_data_source_code(g2_engine) -> None:
+def test_replace_record_bad_data_source_code(sz_engine) -> None:
     """Test replace_record with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    current_record = g2_engine.get_record("CUSTOMERS", record_id)
+    current_record = sz_engine.get_record("CUSTOMERS", record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record(data_source_code, record_id, current_json_data)
+        with pytest.raises(SzException):
+            sz_engine.replace_record(data_source_code, record_id, current_json_data)
     finally:
-        g2_engine.replace_record("CUSTOMERS", record_id, current_json_data)
+        sz_engine.replace_record("CUSTOMERS", record_id, current_json_data)
 
 
-def test_replace_record_bad_record_id(g2_engine) -> None:
+def test_replace_record_bad_record_id(sz_engine) -> None:
     """Test replace_record with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    current_record = g2_engine.get_record(data_source_code, "1001")
+    current_record = sz_engine.get_record(data_source_code, "1001")
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record(data_source_code, record_id, current_json_data)
+        with pytest.raises(SzException):
+            sz_engine.replace_record(data_source_code, record_id, current_json_data)
     finally:
-        g2_engine.replace_record(data_source_code, "1001", current_json_data)
+        sz_engine.replace_record(data_source_code, "1001", current_json_data)
 
 
-def test_replace_record_bad_record(g2_engine) -> None:
+def test_replace_record_bad_record(sz_engine) -> None:
     """Test replace_record with bad JSON string."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    current_record = g2_engine.get_record(data_source_code, record_id)
+    current_record = sz_engine.get_record(data_source_code, record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record(data_source_code, record_id, RECORD_STR_BAD)
+        with pytest.raises(SzException):
+            sz_engine.replace_record(data_source_code, record_id, RECORD_STR_BAD)
     finally:
-        g2_engine.replace_record(data_source_code, record_id, current_json_data)
+        sz_engine.replace_record(data_source_code, record_id, current_json_data)
 
 
-def test_replace_record_with_info(g2_engine) -> None:
+def test_replace_record_with_info(sz_engine) -> None:
     """Test replace_record_with_info."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    current_record = g2_engine.get_record(data_source_code, record_id)
+    current_record = sz_engine.get_record(data_source_code, record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     new_json_record = current_json_data
     new_json_record["ADDR_LINE1"] = "123 Main Street, Las Vegas NV 99999"
-    actual = g2_engine.replace_record_with_info(
+    actual = sz_engine.replace_record_with_info(
         data_source_code, record_id, new_json_record
     )
     actual_dict = json.loads(actual)
     assert schema(with_info_schema) == actual_dict
-    g2_engine.replace_record(data_source_code, record_id, current_json_data)
+    sz_engine.replace_record(data_source_code, record_id, current_json_data)
 
 
-def test_replace_record_with_info_bad_data_source_code(g2_engine) -> None:
+def test_replace_record_with_info_bad_data_source_code(sz_engine) -> None:
     """Test replace_record_with_info with non-existent data source."""
     data_source_code = "DOESN'T EXIST"
     record_id = "1001"
-    current_record = g2_engine.get_record("CUSTOMERS", record_id)
+    current_record = sz_engine.get_record("CUSTOMERS", record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record_with_info(
+        with pytest.raises(SzException):
+            sz_engine.replace_record_with_info(
                 data_source_code, record_id, current_json_data
             )
     finally:
-        g2_engine.replace_record("CUSTOMERS", record_id, current_json_data)
+        sz_engine.replace_record("CUSTOMERS", record_id, current_json_data)
 
 
-def test_replace_record_with_info_bad_record_id(g2_engine) -> None:
+def test_replace_record_with_info_bad_record_id(sz_engine) -> None:
     """Test replace_record_with_info with non-existent record id."""
     data_source_code = "CUSTOMERS"
     record_id = "9999999999999999"
-    current_record = g2_engine.get_record(data_source_code, "1001")
+    current_record = sz_engine.get_record(data_source_code, "1001")
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record_with_info(
+        with pytest.raises(SzException):
+            sz_engine.replace_record_with_info(
                 data_source_code, record_id, current_json_data
             )
     finally:
-        g2_engine.replace_record(data_source_code, "1001", current_json_data)
+        sz_engine.replace_record(data_source_code, "1001", current_json_data)
 
 
-def test_replace_record_with_info_bad_record(g2_engine) -> None:
+def test_replace_record_with_info_bad_record(sz_engine) -> None:
     """Test replace_record_with_info with bad JSON string."""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    current_record = g2_engine.get_record(data_source_code, record_id)
+    current_record = sz_engine.get_record(data_source_code, record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     try:
-        with pytest.raises(szexception.G2Exception):
-            g2_engine.replace_record_with_info(
+        with pytest.raises(SzException):
+            sz_engine.replace_record_with_info(
                 data_source_code, record_id, RECORD_STR_BAD
             )
     finally:
-        g2_engine.replace_record(data_source_code, record_id, current_json_data)
+        sz_engine.replace_record(data_source_code, record_id, current_json_data)
 
 
-def test_replace_record_with_info_return_dict_type(g2_engine):
+def test_replace_record_with_info_return_dict_type(sz_engine):
     """Test find_path_including_source_by_record_id_return_dict returns a dict"""
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    current_record = g2_engine.get_record(data_source_code, record_id)
+    current_record = sz_engine.get_record(data_source_code, record_id)
     data = json.loads(current_record)
     current_json_data = data["JSON_DATA"]
     new_json_record = current_json_data
     new_json_record["ADDR_LINE1"] = "123 Main Street, Las Vegas NV 99999"
-    actual = g2_engine.replace_record_with_info_return_dict(
+    actual = sz_engine.replace_record_with_info_return_dict(
         data_source_code, record_id, new_json_record
     )
     assert isinstance(actual, dict)
 
 
-def test_search_by_attributes(g2_engine) -> None:
+def test_search_by_attributes(sz_engine) -> None:
     """Test search_by_attributes."""
     json_data = {"NAME_FULL": "robert smith", "DATE_OF_BIRTH": "12/11/1978"}
-    actual = g2_engine.search_by_attributes(json_data)
+    actual = sz_engine.search_by_attributes(json_data)
     actual_dict = json.loads(actual)
     assert schema(search_schema) == actual_dict
 
 
-def test_search_by_attributes_bad_json_data(g2_engine) -> None:
+def test_search_by_attributes_bad_json_data(sz_engine) -> None:
     """Test search_by_attributes with bad JSON string."""
     json_data = '{"NAME_FULL" "robert smith", "DATE_OF_BIRTH": "12/11/1978"}'
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.search_by_attributes(json_data)
+    with pytest.raises(SzException):
+        sz_engine.search_by_attributes(json_data)
 
 
-def test_search_by_attributes_return_dict_type(g2_engine):
+def test_search_by_attributes_return_dict_type(sz_engine):
     """Test search_by_attributes_return_dict returns a dict"""
     json_data = {"NAME_FULL": "robert smith", "DATE_OF_BIRTH": "12/11/1978"}
-    actual = g2_engine.search_by_attributes_return_dict(json_data)
+    actual = sz_engine.search_by_attributes_return_dict(json_data)
     assert isinstance(actual, dict)
 
 
@@ -2317,10 +2333,10 @@ def test_search_by_attributes_return_dict_type(g2_engine):
 # def test_stats(engine_vars) -> None:
 #     """Test stats."""
 #     # Use a fresh engine so stats are mostly blank to align to stats_schema
-#     g2_engine_stats = g2engine.G2Engine(
+#     sz_engine_stats = g2engine.G2Engine(
 #         engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"]
 #     )
-#     actual = g2_engine_stats.stats()
+#     actual = sz_engine_stats.stats()
 #     actual_dict = json.loads(actual)
 #     assert schema(stats_schema) == actual_dict
 
@@ -2330,75 +2346,75 @@ def test_search_by_attributes_return_dict_type(g2_engine):
 # why_entity_by_record_id
 
 
-def test_why_entities(g2_engine) -> None:
+def test_why_entities(sz_engine) -> None:
     """Test why_entities."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1002")
-    actual = g2_engine.why_entities(entity_id_1, entity_id_2)
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1002")
+    actual = sz_engine.why_entities(entity_id_1, entity_id_2)
     actual_dict = json.loads(actual)
     assert schema(why_entities_results_schema) == actual_dict
 
 
-def test_why_entities_bad_entity_id(g2_engine) -> None:
+def test_why_entities_bad_entity_id(sz_engine) -> None:
     """Test why_entities with non-existent entity."""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
     entity_id_2 = 9999999999999999
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.why_entities(entity_id_1, entity_id_2)
+    with pytest.raises(SzException):
+        sz_engine.why_entities(entity_id_1, entity_id_2)
 
 
-def test_why_entities_return_dict_type(g2_engine):
+def test_why_entities_return_dict_type(sz_engine):
     """Test why_entities_return_dict returns a dict"""
-    entity_id_1 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1001")
-    entity_id_2 = get_entity_id_from_record_id(g2_engine, "CUSTOMERS", "1002")
-    actual = g2_engine.why_entities_return_dict(entity_id_1, entity_id_2)
+    entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1002")
+    actual = sz_engine.why_entities_return_dict(entity_id_1, entity_id_2)
     assert isinstance(actual, dict)
 
 
-def test_why_records(g2_engine) -> None:
+def test_why_records(sz_engine) -> None:
     """Test why_records."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    actual = g2_engine.why_records(
+    actual = sz_engine.why_records(
         data_source_code_1, record_id_1, data_source_code_2, record_id_2
     )
     actual_dict = json.loads(actual)
     assert schema(why_entity_results_schema) == actual_dict
 
 
-def test_why_records_bad_data_source_code(g2_engine) -> None:
+def test_why_records_bad_data_source_code(sz_engine) -> None:
     """Test why_records with non-existent data source."""
     data_source_code_1 = "DOESN'T EXIST"
     record_id_1 = "1001"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.why_records(
+    with pytest.raises(SzException):
+        sz_engine.why_records(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2
         )
 
 
-def test_why_records_bad_record_id(g2_engine) -> None:
+def test_why_records_bad_record_id(sz_engine) -> None:
     """Test why_records with non-existent record id."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "9999999999999999"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    with pytest.raises(szexception.G2Exception):
-        g2_engine.why_records(
+    with pytest.raises(SzException):
+        sz_engine.why_records(
             data_source_code_1, record_id_1, data_source_code_2, record_id_2
         )
 
 
-def test_why_records_return_dict_type(g2_engine):
+def test_why_records_return_dict_type(sz_engine):
     """Test why_records_return_dict returns a dict"""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
     data_source_code_2 = "CUSTOMERS"
     record_id_2 = "1002"
-    actual = g2_engine.why_records_return_dict(
+    actual = sz_engine.why_records_return_dict(
         data_source_code_1, record_id_1, data_source_code_2, record_id_2
     )
     assert isinstance(actual, dict)
@@ -2409,25 +2425,25 @@ def test_why_records_return_dict_type(g2_engine):
 # -----------------------------------------------------------------------------
 
 
-def add_records_truthset(g2_engine, do_redo=True) -> None:
+def add_records_truthset(sz_engine, do_redo=True) -> None:
     """Add all truth-set the records."""
     for record_set in DATA_SOURCES.values():
         for record in record_set.values():
-            g2_engine.add_record(
+            sz_engine.add_record(
                 record.get("DataSource"), record.get("Id"), record.get("Json")
             )
     if do_redo:
-        while g2_engine.count_redo_records() > 0:
-            record = g2_engine.get_redo_record()
-            g2_engine.process(record)
+        while sz_engine.count_redo_records() > 0:
+            record = sz_engine.get_redo_record()
+            sz_engine.process_redo_record(record)
 
 
-# TODO add type for other g2_engines
+# TODO add type for other sz_engines
 def get_entity_id_from_record_id(
-    g2_engine: szengine.G2Engine, data_source_code: str, record_id: str
+    sz_engine: szengine.SzEngine, data_source_code: str, record_id: str
 ) -> int:
     """Given a datasource and record_id return the entity ID."""
-    entity_json = g2_engine.get_entity_by_record_id(
+    entity_json = sz_engine.get_entity_by_record_id(
         data_source_code,
         record_id,
     )

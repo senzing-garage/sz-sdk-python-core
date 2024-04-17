@@ -7,7 +7,7 @@ szproduct_abstract.py is the abstract class for all implementations of szproduct
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, cast
+from typing import Any, Dict, Union, cast
 
 # Metadata
 
@@ -33,10 +33,10 @@ class SzProductAbstract(ABC):
 
     PREFIX = "szproduct."
     ID_MESSAGES = {
-        4001: PREFIX + "G2Product_destroy() failed. Return code: {0}",
-        4002: PREFIX + "G2Product_init({0}, {1}, {2}) failed. Return code: {3}",
+        4001: PREFIX + "destroy() failed. Return code: {0}",
+        4002: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
         4003: PREFIX
-        + "G2Product({0}, {1}) failed. module_name and ini_params must both be set or both be empty",
+        + "SzProduct({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------
@@ -44,7 +44,7 @@ class SzProductAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         """
         The `destroy` method will destroy and perform cleanup for the Senzing SzProduct object.
         It should be called after all other calls are complete.
@@ -73,7 +73,7 @@ class SzProductAbstract(ABC):
     def initialize(
         self,
         instance_name: str,
-        settings: str | Dict[Any, Any],
+        settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
@@ -107,7 +107,7 @@ class SzProductAbstract(ABC):
         """
 
     @abstractmethod
-    def get_license(self, *args: Any, **kwargs: Any) -> str:
+    def get_license(self, **kwargs: Any) -> str:
         """
         .. _license:
 
@@ -130,7 +130,7 @@ class SzProductAbstract(ABC):
         """
 
     @abstractmethod
-    def get_version(self, *args: Any, **kwargs: Any) -> str:
+    def get_version(self, **kwargs: Any) -> str:
         """
         .. _version:
 
@@ -156,7 +156,7 @@ class SzProductAbstract(ABC):
     # Convenience methods
     # -------------------------------------------------------------------------
 
-    def license_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def license_as_dict(self, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
         :ref:`license<license>`.
@@ -167,10 +167,10 @@ class SzProductAbstract(ABC):
         """
         return cast(
             Dict[str, Any],
-            json.loads(self.get_license(args, kwargs)),
+            json.loads(self.get_license(**kwargs)),
         )
 
-    def version_as_dict(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+    def version_as_dict(self, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
         :ref:`version<version>`.
@@ -181,5 +181,5 @@ class SzProductAbstract(ABC):
         """
         return cast(
             Dict[str, Any],
-            json.loads(self.get_version(args, kwargs)),
+            json.loads(self.get_version(**kwargs)),
         )

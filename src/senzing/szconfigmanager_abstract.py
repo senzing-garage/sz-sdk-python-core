@@ -7,11 +7,11 @@ szconfigmgr_abstract.py is the abstract class for all implementations of szconfi
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Metadata
 
-__all__ = ["SzConfigMgrAbstract"]
+__all__ = ["SzConfigManagerAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-08"
@@ -21,7 +21,7 @@ __updated__ = "2023-11-08"
 # -----------------------------------------------------------------------------
 
 
-class SzConfigMgrAbstract(ABC):
+class SzConfigManagerAbstract(ABC):
     """
     SzConfigMgrAbstract is the definition of the Senzing Python API that is
     implemented by packages such as szconfigmgr.py.
@@ -31,21 +31,19 @@ class SzConfigMgrAbstract(ABC):
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "szconfigmgr."
+    PREFIX = "szconfigmanager."
     # TODO: remove + concats for f-strings
     ID_MESSAGES = {
-        4001: PREFIX + "G2ConfigMgr_addConfig({0}, {1}) failed. Return code: {2}",
-        4002: PREFIX + "G2ConfigMgr_destroy() failed. Return code: {0}",
-        4003: PREFIX + "G2ConfigMgr_getConfig({0}) failed. Return code: {1}",
-        4004: PREFIX + "G2ConfigMgr_getConfigList() failed. Return code: {0}",
-        4005: PREFIX + "G2ConfigMgr_getDefaultConfigID() failed. Return code: {0}",
-        4006: PREFIX + "G2ConfigMgr_getLastException() failed. Return code: {0}",
-        4007: PREFIX + "G2ConfigMgr_init({0}, {1}, {2}) failed. Return code: {3}",
-        4008: PREFIX
-        + "G2ConfigMgr_replaceDefaultConfigID({0}, {1}) failed. Return code: {2}",
-        4009: PREFIX + "G2ConfigMgr_setDefaultConfigID({0}) failed. Return code: {1}",
-        4020: PREFIX
-        + "G2ConfigMgr({0}, {1}) must have both module_name and ini_params nor neither.",
+        4001: PREFIX + "add_config({0}, {1}) failed. Return code: {2}",
+        4002: PREFIX + "destroy() failed. Return code: {0}",
+        4003: PREFIX + "get_config({0}) failed. Return code: {1}",
+        4004: PREFIX + "get_config_list() failed. Return code: {0}",
+        4005: PREFIX + "get_default_config_id() failed. Return code: {0}",
+        4006: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
+        4007: PREFIX + "replace_default_config_id({0}, {1}) failed. Return code: {2}",
+        4008: PREFIX + "set_default_config_id({0}) failed. Return code: {1}",
+        4009: PREFIX
+        + "SzConfigManager({0}, {1}) must have both module_name and ini_params nor neither.",
     }
 
     # -------------------------------------------------------------------------
@@ -55,9 +53,8 @@ class SzConfigMgrAbstract(ABC):
     @abstractmethod
     def add_config(
         self,
-        config_definition: str | Dict[Any, Any],
+        config_definition: Union[str, Dict[Any, Any]],
         config_comment: str,
-        *args: Any,
         **kwargs: Any
     ) -> int:
         """
@@ -81,12 +78,12 @@ class SzConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         """
         The `destroy` method will destroy and perform cleanup for the Senzing SzConfigMgr object.
         It should be called after all other calls are complete.
 
-        **Note:** If the `SzConfigMgr` constructor was called with parameters,
+        **Note:** If the `SzConfigManager` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
@@ -107,7 +104,7 @@ class SzConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def get_config(self, config_id: int, *args: Any, **kwargs: Any) -> str:
+    def get_config(self, config_id: int, **kwargs: Any) -> str:
         """
         The `get_config` method retrieves a specific Senzing configuration JSON document from the Senzing database.
 
@@ -134,7 +131,7 @@ class SzConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def get_config_list(self, *args: Any, **kwargs: Any) -> str:
+    def get_config_list(self, **kwargs: Any) -> str:
         """
         The `get_config_list` method retrieves a list of Senzing configurations from the Senzing database.
 
@@ -158,7 +155,7 @@ class SzConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def get_default_config_id(self, *args: Any, **kwargs: Any) -> int:
+    def get_default_config_id(self, **kwargs: Any) -> int:
         """
         The `get_default_config_id` method retrieves from the Senzing database the configuration identifier of the default Senzing configuration.
 
@@ -179,7 +176,7 @@ class SzConfigMgrAbstract(ABC):
     def initialize(
         self,
         instance_name: str,
-        settings: str | Dict[Any, Any],
+        settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
@@ -214,11 +211,7 @@ class SzConfigMgrAbstract(ABC):
 
     @abstractmethod
     def replace_default_config_id(
-        self,
-        current_default_config_id: int,
-        new_default_config_id: int,
-        *args: Any,
-        **kwargs: Any
+        self, current_default_config_id: int, new_default_config_id: int, **kwargs: Any
     ) -> None:
         """
         The `replace_default_config_id` method replaces the old configuration identifier with a new configuration identifier in the Senzing database.
@@ -241,7 +234,7 @@ class SzConfigMgrAbstract(ABC):
         """
 
     @abstractmethod
-    def set_default_config_id(self, config_id: int, *args: Any, **kwargs: Any) -> None:
+    def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
         """
         The `set_default_config_id` method replaces the sets a new configuration identifier in the Senzing database.
         To serialize modifying of the configuration identifier, see `replace_default_config_id`.

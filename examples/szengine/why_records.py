@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
 DATA_SOURCE_CODE_2 = "WATCHLIST"

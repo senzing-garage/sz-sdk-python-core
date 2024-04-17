@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 SEARCH_DATA = {"NAME_FULL": "robert smith", "DATE_OF_BIRTH": "12/11/1978"}

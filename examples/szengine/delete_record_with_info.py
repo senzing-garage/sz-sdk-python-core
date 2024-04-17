@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from szengineflags import SzEngineFlags
+from senzing.szexception import SzException
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -17,7 +18,9 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.delete_record(DATA_SOURCE_CODE, RECORD_ID, 1)
+    result = sz_engine.delete_record(
+        DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
+    )
     print(result)
 except SzException as err:
     print(err)

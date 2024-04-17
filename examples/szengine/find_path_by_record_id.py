@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 END_DATA_SOURCE_CODE = "REFERENCE"
 END_RECORD_ID = "2132"
@@ -26,6 +26,11 @@ try:
         END_DATA_SOURCE_CODE,
         END_RECORD_ID,
         MAX_DEGREES,
+        # TODO Move these into new example files for find_path
+        # NOTE Testing exclusions
+        # {"ENTITIES": [{"ENTITY_ID": 800148}]},
+        # NOTE Testing required dsrc
+        # required_data_sources={"DATA_SOURCES": ["CUSTOMERS"]},
     )
     print(result)
 except SzException as err:

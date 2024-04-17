@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from szengineflags import SzEngineFlags
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 ENTITY_ID = 1
@@ -16,7 +17,9 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.reevaluate_entity_return_dict(ENTITY_ID, 1)
+    result = sz_engine.reevaluate_entity_return_dict(
+        ENTITY_ID, SzEngineFlags.SZ_WITH_INFO
+    )
     print(result)
 except SzException as err:
     print(err)

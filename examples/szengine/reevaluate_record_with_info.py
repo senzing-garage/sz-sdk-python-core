@@ -2,11 +2,12 @@
 
 
 from senzing import szengine
-from szexception import SzException
+from szengineflags import SzEngineFlags
+from senzing.szexception import SzException
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-12"
+RECORD_ID = "Example-1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -18,7 +19,9 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.reevaluate_record(DATA_SOURCE_CODE, RECORD_ID, 1)
+    result = sz_engine.reevaluate_record(
+        DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
+    )
     print(result)
 except SzException as err:
     print(err)

@@ -11,7 +11,7 @@ from typing import List
 
 from . import (
     szconfig,
-    szconfigmgr,
+    szconfigmanager,
     szdiagnostic,
     szengine,
     szengineflags,
@@ -22,7 +22,7 @@ from . import (
 
 import_lists = [
     szconfig.__all__,
-    szconfigmgr.__all__,
+    szconfigmanager.__all__,
     szdiagnostic.__all__,
     szengine.__all__,
     szengineflags.__all__,

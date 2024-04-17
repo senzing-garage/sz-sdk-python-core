@@ -2,7 +2,7 @@
 
 
 from senzing import szconfig
-from szexception import SzException
+from senzing.szexception import SzException
 
 SETTINGS = {
     "PIPELINE": {
@@ -16,9 +16,9 @@ MODULE_NAME = "Example"
 
 try:
     sz_config = szconfig.SzConfig(MODULE_NAME, SETTINGS)
-    config_handle = sz_config.create()  # Create first in-memory.
+    config_handle = sz_config.create_config()  # Create first in-memory.
     json_config = sz_config.export_config(config_handle)  # Save in-memory to string.
-    sz_config.close(config_handle)
+    sz_config.close_config(config_handle)
     print(json_config)
 except SzException as err:
     print(err)

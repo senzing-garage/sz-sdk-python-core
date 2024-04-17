@@ -7,7 +7,7 @@ szconfig_abstract.py is the abstract class for all implementations of szconfig.
 # TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -33,17 +33,17 @@ class SzConfigAbstract(ABC):
 
     PREFIX = "szconfig."
     ID_MESSAGES = {
-        4001: PREFIX + "G2Config_addDataSource({0}, {1}) failed. Return code: {2}",
-        4002: PREFIX + "G2Config_close({0}) failed. Return code: {1}",
-        4003: PREFIX + "G2Config_create() failed. Return code: {0}",
-        4004: PREFIX + "G2Config_deleteDataSource({0}, {1}) failed. Return code: {2}",
-        4006: PREFIX + "G2Config_destroy() failed. Return code: {0}",
-        4007: PREFIX + "G2Config_init({0}, {1}, {2}) failed. Return code: {3}",
-        4008: PREFIX + "G2Config_listDataSources() failed. Return code: {0}",
-        4009: PREFIX + "G2Config_load({0}) failed. Return code: {1}",
-        4010: PREFIX + "G2Config_save({0}) failed. Return code: {1}",
-        4020: PREFIX
-        + "G2Config({0}, {1}) must have both module_name and ini_params nor neither.",
+        4001: PREFIX + "add_data_source({0}) failed. Return code: {1}",
+        4002: PREFIX + "close_config() failed. Return code: {0}",
+        4003: PREFIX + "create_config() failed. Return code: {0}",
+        4004: PREFIX + "delete_data_source({0}) failed. Return code: {1}",
+        4005: PREFIX + "destroy() failed. Return code: {0}",
+        4006: PREFIX + "export_config() failed. Return code: {0}",
+        4007: PREFIX + "get_data_sources() failed. Return code: {0}",
+        4008: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
+        4009: PREFIX + "import_config({0}) failed. Return code: {1}",
+        4010: PREFIX
+        + "SzConfig({0}, {1}) must have both instance_name and settings nor neither.",
     }
 
     # -------------------------------------------------------------------------
@@ -54,18 +54,16 @@ class SzConfigAbstract(ABC):
     def add_data_source(
         self,
         config_handle: int,
-        # data_source_code: str | Dict[Any, Any],
+        # data_source_code: Union[str, Dict[Any, Any]],
         data_source_code: str,
-        *args: Any,
         **kwargs: Any
     ) -> str:
-        # TODO Change all doc strings for Union syntax
         """
         The `add_data_source` method adds a data source to an existing in-memory configuration.
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
-            data_source_code (Union[str, Dict[Any, Any]]):  A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            data_source_code (str): Name of data source code to add.
 
         Returns:
             str: A string containing a JSON document listing the newly created data source.
@@ -87,12 +85,12 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
+    def close_config(self, config_handle: int, **kwargs: Any) -> None:
         """
-        The `close` method cleans up the Senzing SzConfig object pointed to by the `config_handle`.
+        The `close_config` method cleans up the Senzing SzConfig object pointed to by the `config_handle`.
 
         Args:
-            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods.
+            config_handle (int): An identifier of an in-memory configuration. Usually created by the `create_config` or `import_config` methods.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
@@ -105,15 +103,15 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def create(self, *args: Any, **kwargs: Any) -> int:
+    def create_config(self, **kwargs: Any) -> int:
         """
-        The `create` method creates an in-memory Senzing configuration
+        The `create_config` method creates an in-memory Senzing configuration
         from the `g2config.json` template configuration file located
         in the PIPELINE.RESOURCEPATH path.
         A handle is returned to identify the in-memory configuration.
         The handle is used by the `add_data_source`, `list_data_sources`,
-        `delete_data_source`, and `save` methods.
-        The handle is terminated by the `close` method.
+        `delete_data_source`, and `export_config` methods.
+        The handle is terminated by the `close_config` method.
 
         Returns:
             int: A pointer to an in-memory Senzing configuration.
@@ -134,7 +132,6 @@ class SzConfigAbstract(ABC):
         config_handle: int,
         # input_json: Union[str, Dict[Any, Any]],
         data_source_code: str,
-        *args: Any,
         **kwargs: Any
     ) -> None:
         """
@@ -142,7 +139,7 @@ class SzConfigAbstract(ABC):
 
         Args:
             config_handle (int): An identifier of an in-memory configuration. Usually created by the `create` or `load` methods
-            data_source_code (Union[str, Dict[Any, Any]]): A JSON document in the format `{"DSRC_CODE": "NAME_OF_DATASOURCE"}`.
+            data_source_code (str): Name of data source code to delete.
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
@@ -155,7 +152,7 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         """
         The `destroy` method will destroy and perform cleanup for the Senzing SzConfig object.
         It should be called after all other calls are complete.
@@ -181,7 +178,7 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def export_config(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+    def export_config(self, config_handle: int, **kwargs: Any) -> str:
         """
         The `export_config` method creates a JSON string representation of the Senzing SzConfig object.
 
@@ -214,7 +211,7 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def get_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+    def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
         """
         The `get_data_sources` method returns a JSON document of data sources
         contained in an in-memory configuration.
@@ -245,7 +242,7 @@ class SzConfigAbstract(ABC):
     def initialize(
         self,
         instance_name: str,
-        settings: str | Dict[Any, Any],
+        settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
@@ -280,7 +277,7 @@ class SzConfigAbstract(ABC):
 
     @abstractmethod
     def import_config(
-        self, config_definition: str | Dict[Any, Any], *args: Any, **kwargs: Any
+        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
     ) -> int:
         """
         The `import_config` method initializes an in-memory Senzing SzConfig object from a JSON string.

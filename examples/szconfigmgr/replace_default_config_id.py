@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig, szconfigmgr
-from szexception import SzException
+from senzing import szconfig, szconfigmanager
+from senzing.szexception import SzException
 
 CONFIG_COMMENTS = "Just an example"
 DATA_SOURCE_CODE = "TEST4"
@@ -18,7 +18,7 @@ SETTINGS = {
 # TODO Test this
 try:
     sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmgr = szconfigmgr.SzConfigMgr(INSTANCE_NAME, SETTINGS)
+    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
 
     # Create a new config for the replacement.
     current_config_id = sz_configmgr.get_default_config_id()
@@ -26,7 +26,7 @@ try:
     config_handle = sz_config.import_config(current_config)
     sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
     new_config = sz_config.export_config(config_handle)
-    sz_config.close(config_handle)
+    sz_config.close_config(config_handle)
     new_config_id = sz_configmgr.add_config(new_config, CONFIG_COMMENTS)
 
     sz_configmgr.replace_default_config_id(current_config_id, new_config_id)

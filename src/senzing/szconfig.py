@@ -25,12 +25,11 @@ from ctypes import (
     c_char_p,
     c_int,
     c_longlong,
-    c_size_t,
     c_uint,
     c_void_p,
     cdll,
 )
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from .szconfig_abstract import SzConfigAbstract
 from .szexception import SzException, new_szexception
@@ -54,7 +53,7 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-CALLER_SKIP = 5
+# CALLER_SKIP = 5
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -161,7 +160,7 @@ class SzConfig(SzConfigAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        settings: str | Dict[Any, Any] = "",
+        settings: Union[str, Dict[Any, Any]] = "",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -202,57 +201,30 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.G2Config_addDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
-        ]  # TODO: This may not be correct
+        ]
         self.library_handle.G2Config_addDataSource_helper.restype = (
             G2ConfigAddDataSourceResult
         )
-        self.library_handle.G2Config_clearLastException.argtypes = []
-        self.library_handle.G2Config_clearLastException.restype = None
-        # self.library_handle.G2Config_close.argtypes = [c_void_p]
-        # self.library_handle.G2Config_close.restype = c_longlong
-        self.library_handle.G2Config_close_helper.argtypes = [
-            POINTER(c_uint)
-        ]  # TODO: This may not be correct
+        self.library_handle.G2Config_close_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.G2Config_close_helper.restype = c_longlong
-        # self.library_handle.G2Config_create.argtypes = [POINTER(c_void_p)]
-        # self.library_handle.G2Config_create.restype = c_longlong
         self.library_handle.G2Config_create_helper.argtypes = []
         self.library_handle.G2Config_create_helper.restype = G2ConfigCreateResult
-        # self.library_handle.G2Config_deleteDataSource.argtypes = [c_void_p, c_char_p]
-        # self.library_handle.G2Config_deleteDataSource.restype = c_longlong
         self.library_handle.G2Config_deleteDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
-        ]  # TODO: This may not be correct
+        ]
         self.library_handle.G2Config_deleteDataSource_helper.restype = c_longlong
         self.library_handle.G2Config_destroy.argtypes = []
         self.library_handle.G2Config_destroy.restype = c_longlong
-        self.library_handle.G2Config_getLastException.argtypes = [
-            POINTER(c_char),
-            c_size_t,
-        ]
-        self.library_handle.G2Config_getLastException.restype = c_longlong
-        self.library_handle.G2Config_getLastExceptionCode.argtypes = []
-        self.library_handle.G2Config_getLastExceptionCode.restype = c_longlong
         self.library_handle.G2Config_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2Config_init.restype = c_longlong
-        # self.library_handle.G2Config_listDataSources.argtypes = [c_void_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2Config_listDataSources.restype = c_longlong
-        self.library_handle.G2Config_listDataSources_helper.argtypes = [
-            POINTER(c_uint)
-        ]  # TODO: This may not be correct
+        self.library_handle.G2Config_listDataSources_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.G2Config_listDataSources_helper.restype = (
             G2ConfigListDataSourcesResult
         )
-        # self.library_handle.G2Config_load.argtypes = [c_char_p, POINTER(c_void_p)]
-        # self.library_handle.G2Config_load.restype = c_longlong
         self.library_handle.G2Config_load_helper.argtypes = [c_char_p]
         self.library_handle.G2Config_load_helper.restype = G2ConfigLoadResult
-        # self.library_handle.G2Config_save.argtypes = [c_void_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2Config_save.restype = c_longlong
-        self.library_handle.G2Config_save_helper.argtypes = [
-            POINTER(c_uint)
-        ]  # TODO: This may not be correct
+        self.library_handle.G2Config_save_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.G2Config_save_helper.restype = G2ConfigSaveResult
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
@@ -260,7 +232,7 @@ class SzConfig(SzConfigAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4020, self.instance_name, self.settings)
+                raise self.new_exception(4010, self.instance_name, self.settings)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -286,7 +258,7 @@ class SzConfig(SzConfigAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            CALLER_SKIP,
+            # CALLER_SKIP,
             *args,
         )
 
@@ -298,9 +270,8 @@ class SzConfig(SzConfigAbstract):
     def add_data_source(
         self,
         config_handle: int,
-        # data_source_code: str | Dict[Any, Any],
+        # data_source_code: Union[str, Dict[Any, Any]],
         data_source_code: str,
-        *args: Any,
         **kwargs: Any,
     ) -> str:
 
@@ -313,17 +284,15 @@ class SzConfig(SzConfigAbstract):
 
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(
-                    4001, config_handle, as_str(data_source_code), result.return_code
-                )
+                raise self.new_exception(4001, data_source_code, result.return_code)
             return as_python_str(result.response)
 
-    def close(self, config_handle: int, *args: Any, **kwargs: Any) -> None:
+    def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
         if result != 0:
-            raise self.new_exception(4002, config_handle, result)
+            raise self.new_exception(4002, result)
 
-    def create(self, *args: Any, **kwargs: Any) -> int:
+    def create_config(self, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_create_helper()
         if result.return_code != 0:
             raise self.new_exception(4003, result.return_code)
@@ -335,7 +304,6 @@ class SzConfig(SzConfigAbstract):
         config_handle: int,
         # input_json: Union[str, Dict[Any, Any]],
         data_source_code: str,
-        *args: Any,
         **kwargs: Any,
     ) -> None:
 
@@ -344,36 +312,34 @@ class SzConfig(SzConfigAbstract):
             as_uintptr_t(config_handle), as_c_char_p(json_string)
         )
         if result != 0:
-            raise self.new_exception(
-                4004, config_handle, json_string, result.return_code
-            )
+            raise self.new_exception(4004, data_source_code, result.return_code)
 
-    def destroy(self, *args: Any, **kwargs: Any) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_destroy()
         if result != 0:
-            raise self.new_exception(4006, result)
+            raise self.new_exception(4005, result)
 
-    def export_config(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+    def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4010, config_handle, result.return_code)
+                raise self.new_exception(4006, result.return_code)
             return as_python_str(result.response)
 
-    def get_data_sources(self, config_handle: int, *args: Any, **kwargs: Any) -> str:
+    def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_listDataSources_helper(
             as_uintptr_t(config_handle)
         )
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4008, result.return_code)
+                raise self.new_exception(4007, result.return_code)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def initialize(
         self,
         instance_name: str,
-        settings: str | Dict[Any, Any],
+        settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -384,12 +350,12 @@ class SzConfig(SzConfigAbstract):
         )
         if result < 0:
             raise self.new_exception(
-                4007, instance_name, as_str(settings), verbose_logging, result
+                4008, instance_name, as_str(settings), verbose_logging, result
             )
 
     @catch_ctypes_exceptions
     def import_config(
-        self, config_definition: str | Dict[Any, Any], *args: Any, **kwargs: Any
+        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
     ) -> int:
         result = self.library_handle.G2Config_load_helper(
             as_c_char_p(as_str(config_definition))

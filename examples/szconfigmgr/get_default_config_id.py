@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import szconfigmgr
-from szexception import SzException
+from senzing import szconfigmanager
+from senzing.szexception import SzException
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,7 +14,7 @@ SETTINGS = {
 }
 
 try:
-    sz_configmgr = szconfigmgr.SzConfigMgr(INSTANCE_NAME, SETTINGS)
+    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
     config_id = sz_configmgr.get_default_config_id()
     print(config_id)
 except SzException as err:

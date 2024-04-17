@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from szexception import SzException
+from senzing.szexception import SzException
 
 BUILD_OUT_DEGREE = 2
 ENTITY_LIST = {"ENTITIES": [{"ENTITY_ID": 100008}, {"ENTITY_ID": 55}]}

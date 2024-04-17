@@ -26,7 +26,7 @@ from ctypes import (
 )
 from functools import wraps
 from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Type, TypeVar
+from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -104,7 +104,6 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
 
         try:
-            # result = function_to_decorate(*args, **kwargs)
             return function_to_decorate(*args, **kwargs)
         except ArgumentError as err:
             bad_arg_match = None
@@ -134,15 +133,14 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                         raise TypeError(basic_raise_msg) from err
 
                 raise TypeError(
-                    # TODO New exception message when done
-                    # TODO New class of Sz_exceptions for programmatic errors like this vs engine errors
                     f"wrong type for argument {bad_arg_tuple[0]}, expected {bad_arg_tuple[1]} but received {bad_arg_type.__name__} when calling {module_name}.{method_name}"
                 ) from err
             raise TypeError() from err
-        # NOTE Do we need to catch anything else? Has a code smell about it
-        except Exception as err:
-            raise err
-        # return result
+        # # NOTE Do we need to catch anything else? Has a code smell about it
+        # TODO Is this generic catch needed?
+        # except Exception as err:
+        #     # print(f"In szhelpers last exception: {err}")
+        #     raise err
 
     return inner_function
 
@@ -152,12 +150,12 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
 # -----------------------------------------------------------------------------
 
 
-def as_str(candidate_value: str | Dict[Any, Any]) -> str:
+def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     """
     Given a string or dict, return a str.
 
     Args:
-        candidate_value str | Dict[Any, Any]: _description_
+        candidate_value Union[str, Dict[Any, Any]]: _description_
 
     Returns:
         str: The string representation of the candidate_value
@@ -279,6 +277,7 @@ def as_python_str(candidate_value: Any) -> str:
 
     :meta private:
     """
+    # TODO Do these functions need try/except?
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result

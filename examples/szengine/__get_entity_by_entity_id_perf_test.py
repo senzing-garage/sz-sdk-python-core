@@ -5,7 +5,7 @@ import time
 from contextlib import suppress
 from datetime import timedelta
 
-from szexception import SzException
+from senzing.szexception import SzException
 
 from senzing import szengine, szengineflags
 

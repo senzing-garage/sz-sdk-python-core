@@ -68,7 +68,8 @@ def supports_senzingapi_version(
             "text": f"Current Senzing API version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}.",
             "level": "FATAL",
             "id": "senzing-50475001",
-            "location": get_location(5),
+            # "location": get_location(5),
+            "location": get_location(),
         }
         raise SzException(json.dumps(message))
     return True
