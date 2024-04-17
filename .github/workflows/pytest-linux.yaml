@@ -1,21 +1,25 @@
 name: pytest linux
 
-on: [push]
+on: [push, pull_request]
 
 env:
   LD_LIBRARY_PATH: /opt/senzing/g2/lib
   PYTHONPATH: /home/runner/work/g2-sdk-python-next/g2-sdk-python-next/src
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@/tmp/sqlite/G2C.db'
 
+permissions:
+  contents: read
+
 jobs:
   pytest-linux:
-    name: 'pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}'
+    name: "pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11"]
-        python-version: ['3.8', '3.11']
+        python-version: ["3.8", "3.11"]
         senzingapi-version: [production-v3]
 
     steps:
@@ -48,7 +52,27 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: run pytest on tests
-        run: pytest tests/ --verbose --capture=no --cov=src/senzing
+        run: pytest tests/ --verbose --capture=no --cov=src/senzing --cov-append
 
       # - name: Run pytest on examples
       #   run: pytest examples/ --verbose --capture=no
+
+      - name: rename coverage file
+        env:
+          COVERAGE_FILE: ".coverage.${{ matrix.python-version }}"
+        run: |
+          mv .coverage "$COVERAGE_FILE"
+
+      - name: Store coverage file
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: .coverage.${{ matrix.python-version }}
+
+  coverage:
+    name: coverage
+    needs: pytest-linux
+    permissions:
+      pull-requests: write
+      contents: write
+    uses: senzing-factory/build-resources/.github/workflows/python-coverage-comment.yaml@v1
