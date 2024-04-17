@@ -1,0 +1,308 @@
+"""
+The `szdiagnostic` package is used to inspect the Senzing environment.
+It is a wrapper over Senzing's G2Diagnostic C binding.
+It conforms to the interface specified in
+`szdiagnostic_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
+
+To use g2diagnostic,
+the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
+
+Example:
+
+.. code-block:: bash
+
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
+"""
+
+# pylint: disable=R0903,R0915
+
+import os
+from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
+from typing import Any, Dict, Optional, Union
+
+from .szdiagnostic_abstract import SzDiagnosticAbstract
+from .szexception import SzException, new_szexception
+from .szhelpers import (
+    FreeCResources,
+    as_c_char_p,
+    as_python_str,
+    as_str,
+    catch_ctypes_exceptions,
+    find_file_in_path,
+)
+from .szversion import is_supported_senzingapi_version
+
+# Metadata
+
+__all__ = ["SzDiagnostic"]
+__version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
+__date__ = "2023-10-30"
+__updated__ = "2023-11-27"
+
+SENZING_PRODUCT_ID = "5042"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
+# CALLER_SKIP = 6
+
+# -----------------------------------------------------------------------------
+# Classes that are result structures from calls to Senzing
+# -----------------------------------------------------------------------------
+
+
+class G2ResponseReturnCodeResult(Structure):
+    """Simple response, return_code structure"""
+
+    _fields_ = [
+        ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
+    ]
+
+
+class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
+
+
+# -----------------------------------------------------------------------------
+# G2Diagnostic class
+# -----------------------------------------------------------------------------
+
+
+class SzDiagnostic(SzDiagnosticAbstract):
+    """
+    The `init` method initializes the Senzing G2Diagnostic object.
+    It must be called prior to any other calls.
+
+    **Note:** If the G2Diagnostic constructor is called with parameters,
+    the constructor will automatically call the `init()` method.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
+
+
+    If the G2Diagnostic constructor is called without parameters,
+    the `init()` method must be called to initialize the use of G2Product.
+
+    Example:
+
+    .. code-block:: python
+
+        g2_diagnostic = g2diagnostic.G2Diagnostic()
+        g2_diagnostic.init(module_name, ini_params)
+
+    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **G2Exception**.
+
+    Parameters:
+        module_name:
+            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
+        ini_params:
+            `Optional:` A JSON string containing configuration parameters. Default: ""
+        init_config_id:
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
+        verbose_logging:
+            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+    Raises:
+        TypeError: Incorrect datatype detected on input parameter.
+        g2exception.G2Exception: Failed to load the G2 library or incorrect `module_name`, `ini_params` combination.
+
+
+    .. collapse:: Example:
+
+        .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_constructor.py
+            :linenos:
+            :language: python
+    """
+
+    # -------------------------------------------------------------------------
+    # Python dunder/magic methods
+    # -------------------------------------------------------------------------
+
+    def __init__(
+        self,
+        instance_name: str = "",
+        settings: Union[str, Dict[Any, Any]] = "",
+        config_id: int = 0,
+        verbose_logging: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Constructor
+
+        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
+        """
+        # pylint: disable=W0613
+
+        # Verify parameters.
+
+        self.auto_init = False
+        self.settings = as_str(settings)
+        self.config_id = config_id
+        self.instance_name = instance_name
+        self.verbose_logging = verbose_logging
+
+        # Determine if Senzing API version is acceptable.
+
+        is_supported_senzingapi_version()
+
+        # Load binary library.
+
+        try:
+            if os.name == "nt":
+                # TODO: See if find_file_in_path can be factored out.
+                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
+            else:
+                self.library_handle = cdll.LoadLibrary("libG2.so")
+        except OSError as err:
+            # TODO Change to Senzing library?
+            raise SzException("Failed to load the G2 library") from err
+
+        # Initialize C function input parameters and results.
+        # Must be synchronized with g2/sdk/c/libg2diagnostic.h
+
+        self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = [c_longlong]
+        self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
+            G2DiagnosticCheckDBPerfResult
+        )
+        self.library_handle.G2Diagnostic_destroy.argtypes = []
+        self.library_handle.G2Diagnostic_destroy.restype = c_longlong
+        self.library_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.G2Diagnostic_init.restype = c_longlong
+        self.library_handle.G2Diagnostic_initWithConfigID.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+            c_int,
+        ]
+        self.library_handle.G2Diagnostic_initWithConfigID.restype = c_longlong
+        self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
+        self.library_handle.G2Diagnostic_reinit.restype = c_longlong
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+
+        # Initialize Senzing engine.
+
+        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+            if len(self.instance_name) + len(self.settings) != 0:
+                raise self.new_exception(4021, self.instance_name, self.settings)
+        if len(self.instance_name) > 0:
+            self.auto_init = True
+            if not self.config_id:
+                self.initialize(self.instance_name, self.settings, self.verbose_logging)
+            else:
+                self.initialize(
+                    self.instance_name,
+                    self.settings,
+                    self.verbose_logging,
+                    self.config_id,
+                )
+
+    def __del__(self) -> None:
+        """Destructor"""
+        if self.auto_init:
+            self.destroy()
+
+    # -------------------------------------------------------------------------
+    # Exception helpers
+    # -------------------------------------------------------------------------
+
+    def new_exception(self, error_id: int, *args: Any) -> Exception:
+        """
+        Generate a new exception based on the error_id.
+
+        :meta private:
+        """
+        return new_szexception(
+            self.library_handle.G2Diagnostic_getLastException,
+            self.library_handle.G2Diagnostic_clearLastException,
+            SENZING_PRODUCT_ID,
+            error_id,
+            self.ID_MESSAGES,
+            # CALLER_SKIP,
+            *args,
+        )
+
+    # -------------------------------------------------------------------------
+    # G2Diagnostic methods
+    # -------------------------------------------------------------------------
+
+    def check_database_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
+        result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4001,
+                    seconds_to_run,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
+        # try:
+        #     if result.return_code != 0:
+        #         raise self.new_exception(4001, result.return_code)
+        #     result_response = cast(result.response, c_char_p).value
+        #     result_response_str = result_response.decode() if result_response else ""
+        # finally:
+        #     self.library_handle.G2GoHelper_free(result.response)
+        # return result_response_str
+
+    def destroy(self, **kwargs: Any) -> None:
+        result = self.library_handle.G2Diagnostic_destroy()
+        if result != 0:
+            raise self.new_exception(4002, result)
+
+    # TODO Complete when added to Go helpers - GDEV-3801
+    # NOTE This is included but not to be documented
+    # def get_feature(self, feature_id: int, **kwargs: Any) -> str: ...
+
+    @catch_ctypes_exceptions
+    def initialize(
+        self,
+        instance_name: str,
+        settings: Union[str, Dict[Any, Any]],
+        config_id: Optional[int] = None,
+        verbose_logging: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        if not config_id:
+            result = self.library_handle.G2Diagnostic_init(
+                as_c_char_p(instance_name),
+                as_c_char_p(as_str(settings)),
+                verbose_logging,
+            )
+            if result < 0:
+                raise self.new_exception(
+                    4003,
+                    instance_name,
+                    as_str(settings),
+                    verbose_logging,
+                    config_id,
+                    result,
+                )
+            return
+
+        result = self.library_handle.G2Diagnostic_initWithConfigID(
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            config_id,
+            verbose_logging,
+        )
+        if result < 0:
+            raise self.new_exception(
+                4003,
+                instance_name,
+                settings,
+                verbose_logging,
+                config_id,
+                result,
+            )
+
+    def purge_repository(self, **kwargs: Any) -> None:
+        result = self.library_handle.G2Diagnostic_purgeRepository()
+        if result < 0:
+            raise self.new_exception(4004, result)
+
+    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        result = self.library_handle.G2Diagnostic_reinit(config_id)
+        if result < 0:
+            raise self.new_exception(4005, config_id, result)
