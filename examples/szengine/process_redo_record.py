@@ -3,7 +3,7 @@
 from sys import exit
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -24,5 +24,5 @@ try:
 
     result = sz_engine.process_redo_record(record)
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

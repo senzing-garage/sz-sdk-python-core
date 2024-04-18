@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szconfig, szconfigmanager
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 CONFIG_COMMENT = "Just an empty example"
 INSTANCE_NAME = "Example"
@@ -23,5 +23,5 @@ try:
     # TODO Might not want the set_default_config_id
     # sz_configmgr.set_default_config_id(config_id)
     print(config_id)
-except SzException as err:
+except SzError as err:
     print(err)

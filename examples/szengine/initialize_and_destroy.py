@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -18,5 +18,5 @@ try:
     sz_engine.initialize(INSTANCE_NAME, SETTINGS)
     # Do Work
     sz_engine.destroy()
-except SzException as err:
+except SzError as err:
     print(err)

@@ -5,7 +5,7 @@ import time
 from contextlib import suppress
 from datetime import timedelta
 
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 from senzing import szengine, szengineflags
 
@@ -25,7 +25,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-except SzException as err:
+except SzError as err:
     print(err)
     sys.exit()
 

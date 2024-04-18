@@ -2,7 +2,7 @@
 
 from senzing import szengine
 from szengineflags import SzEngineFlags
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -37,5 +37,5 @@ try:
         DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, SzEngineFlags.SZ_WITH_INFO
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

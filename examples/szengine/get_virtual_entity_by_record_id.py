@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 RECORD_LIST = {
@@ -23,5 +23,5 @@ try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
     result = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST)
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

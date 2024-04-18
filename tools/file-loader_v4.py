@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 
 from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szexception import SzBadInputError, SzException, SzRetryableError
+from senzing.szexception import SzBadInputError, SzError, SzRetryableError
 
 try:
     import orjson as json
@@ -66,7 +66,7 @@ def startup_info(engine, diag, product, configmgr):
         config_list = json.loads(response)
 
         active_cfg_id = engine.get_active_config_id()
-    except SzException as ex:
+    except SzError as ex:
         logger.error(f"Failed to get startup information: {ex}")
         sys.exit(-1)
 
@@ -122,7 +122,7 @@ def get_redo_record(engine):
     """Get a redo record for processing"""
     try:
         redo_record = engine.get_redo_record()
-    except SzException as ex:
+    except SzError as ex:
         logger.critical(f"Exception: {ex} - Operation: getRedoRecord")
         global do_shutdown
         do_shutdown = True
@@ -169,7 +169,7 @@ def workload_stats(engine):
         logger.info("")
         logger.info(stats)
         logger.info("")
-    except SzException as ex:
+    except SzError as ex:
         logger.critical(f"Exception: {ex} - Operation: stats")
         global do_shutdown
         do_shutdown = True
@@ -267,8 +267,8 @@ def load_and_redo(
 
     # TODO Add a no-redo mode, make it a hidden arg?
     with open(file_output, "w") as out_file:
-        # for mode in [add_record, process_redo_record]:
-        for mode in [add_record]:
+        for mode in [add_record, process_redo_record]:
+            # for mode in [add_record]:
             success_recs = error_recs = 0
             start_time = long_check_time = work_stats_time = prev_time = time.time()
             add_future = True
@@ -323,7 +323,7 @@ def load_and_redo(
                                 f" Record: {futures[f][PAYLOAD_RECORD]}"
                             )
                             error_recs += 1
-                        except SzException as ex:
+                        except SzError as ex:
                             logger.critical(
                                 f"Exception: {ex} - Operation:"
                                 f" {mode_text[mode.__name__]['except_msg']} -"
@@ -628,7 +628,7 @@ if __name__ == "__main__":
         sz_configmgr = szconfigmanager.SzConfigManager(
             "pySzConfigMgr", engine_config, debug_trace
         )
-    except SzException as ex:
+    except SzError as ex:
         logger.error(ex)
         sys.exit(-1)
 

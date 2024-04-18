@@ -2,7 +2,7 @@
 
 
 from senzing import szconfigmanager, szdiagnostic
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -22,5 +22,5 @@ try:
     sz_diagnostic = szdiagnostic.SzDiagnostic(
         INSTANCE_NAME, SETTINGS, config_id=config_id
     )
-except SzException as err:
+except SzError as err:
     print(err)

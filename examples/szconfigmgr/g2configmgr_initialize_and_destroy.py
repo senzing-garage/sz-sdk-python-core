@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szconfigmanager
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -20,5 +20,5 @@ try:
     # Do work.
 
     sz_configmgr.destroy()
-except SzException as err:
+except SzError as err:
     print(err)

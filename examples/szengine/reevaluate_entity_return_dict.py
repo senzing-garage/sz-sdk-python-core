@@ -2,7 +2,7 @@
 
 from senzing import szengine
 from szengineflags import SzEngineFlags
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 ENTITY_ID = 1
@@ -21,5 +21,5 @@ try:
         ENTITY_ID, SzEngineFlags.SZ_WITH_INFO
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

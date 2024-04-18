@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szconfig, szconfigmanager
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 CONFIG_COMMENT = "Added new datasource"
 DATA_SOURCE_CODE = "TEST12"
@@ -31,5 +31,5 @@ try:
     sz_configmgr.set_default_config_id(new_config_id)
 
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

@@ -4,7 +4,7 @@ It is a wrapper over Senzing's G2Engine C binding.
 It conforms to the interface specified in
 `g2engine_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2engine_abstract.py>`_
 
-# TODO: Also pythonpath and engine vars?
+# TODO: Also pythonpath?
 To use g2engine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
@@ -33,11 +33,11 @@ from ctypes import (
     c_void_p,
     cdll,
 )
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from .szengine_abstract import SzEngineAbstract
 from .szengineflags import SzEngineFlags
-from .szexception import SzException, new_szexception
+from .szexception import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -58,10 +58,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
 
 SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
-
-# FIXME CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
-# TODO Investigate the error messages not showing correct location, because of wrapped methods?
-# CALLER_SKIP = 5  # Number of stack frames to skip when reporting location in Exception.
 
 # # -----------------------------------------------------------------------------
 # # Helper Classes
@@ -292,7 +288,6 @@ class SzEngine(SzEngineAbstract):
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
-    # TODO Check all error codes
 
     def __init__(
         self,
@@ -330,8 +325,8 @@ class SzEngine(SzEngineAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Additional explanation e.g. is LD_LIBRARY_PATH set
-            raise SzException("Failed to load the G2 library") from err
+            # TODO Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
+            raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2engine.h
@@ -631,6 +626,7 @@ class SzEngine(SzEngineAbstract):
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
                 raise self.new_exception(4035, self.instance_name, self.settings)
+
         # TODO What if "" was sent for instance_name but settings are specified?
         if len(self.instance_name) > 0:
             self.auto_init = True
@@ -878,7 +874,8 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def find_network_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        # record_list: Union[str, Dict[Any, Any]],
+        record_list: Union[str, Dict[str, List[Dict[str, str]]]],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -1356,55 +1353,10 @@ class SzEngine(SzEngineAbstract):
             raise self.new_exception(4029, config_id, result)
 
     @catch_ctypes_exceptions
-    def replace_record(
-        self,
-        data_source_code: str,
-        record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> str:
-        if (flags & SzEngineFlags.SZ_WITH_INFO) > 0:
-            final_flags = flags ^ SzEngineFlags.SZ_WITH_INFO
-            result = self.library_handle.G2_replaceRecordWithInfo_helper(
-                as_c_char_p(data_source_code),
-                as_c_char_p(record_id),
-                as_c_char_p(as_str(record_definition)),
-                final_flags,
-            )
-
-            with FreeCResources(self.library_handle, result.response):
-                if result.return_code != 0:
-                    raise self.new_exception(
-                        4030,
-                        data_source_code,
-                        record_id,
-                        record_definition,
-                        flags,
-                        result.return_code,
-                    )
-                return as_python_str(result.response)
-
-        result = self.library_handle.G2_replaceRecord(
-            as_c_char_p(data_source_code),
-            as_c_char_p(record_id),
-            as_c_char_p(as_str(record_definition)),
-        )
-        if result != 0:
-            raise self.new_exception(
-                4030,
-                data_source_code,
-                record_id,
-                record_definition,
-                flags,
-                result.return_code,
-            )
-        return "{}"
-
-    @catch_ctypes_exceptions
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],
+        # TODO Specify here or blank string and the engine will use the default SEARCH plan?
         search_profile: str = "SEARCH",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,

@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szconfig, szconfigmanager
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 CONFIG_COMMENTS = "Just an example"
 DATA_SOURCE_CODE = "TEST4"
@@ -34,5 +34,5 @@ try:
     print(
         f"Config with ID {current_config_id} was replaced by config with ID {new_current_config_id}"
     )
-except SzException as err:
+except SzError as err:
     print(err)

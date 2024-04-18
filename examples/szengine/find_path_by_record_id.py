@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 END_DATA_SOURCE_CODE = "REFERENCE"
 END_RECORD_ID = "2132"
@@ -33,5 +33,5 @@ try:
         # required_data_sources={"DATA_SOURCES": ["CUSTOMERS"]},
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

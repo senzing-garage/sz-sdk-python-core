@@ -8,7 +8,7 @@ import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
-from .szexception import SzException, new_szexception
+from .szexception import SzError, new_szexception
 from .szhasher_abstract import G2HasherAbstract
 from .szhelpers import find_file_in_path
 from .szversion import is_supported_senzingapi_version
@@ -82,7 +82,7 @@ class G2Hasher(G2HasherAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2Hasher.so")
         except OSError as err:
-            raise SzException("Failed to load the G2 library") from err
+            raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2hasher.h

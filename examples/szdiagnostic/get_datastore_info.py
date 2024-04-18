@@ -1,11 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
+from senzing import szdiagnostic
 from senzing.szexception import SzError
 
-DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -16,8 +14,8 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.get_record(DATA_SOURCE_CODE, RECORD_ID)
+    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
+    result = sz_diagnostic.get_data_store_info()
     print(result)
 except SzError as err:
     print(err)

@@ -3,7 +3,7 @@
 from typing import Any, Dict
 
 from senzing import szconfig
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -23,5 +23,5 @@ json_config_dict: Dict[str, Any] = (
 try:
     sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
     config_handle = sz_config.import_config(json_config_dict)
-except SzException as err:
+except SzError as err:
     print(err)

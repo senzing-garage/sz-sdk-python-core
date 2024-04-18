@@ -43,7 +43,7 @@ class SzConfigAbstract(ABC):
         4008: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
         4009: PREFIX + "import_config({0}) failed. Return code: {1}",
         4010: PREFIX
-        + "SzConfig({0}, {1}) must have both instance_name and settings nor neither.",
+        + "SzConfig({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------

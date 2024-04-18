@@ -21,7 +21,9 @@ def engine_vars_fixture():
             "RESOURCEPATH": "/opt/senzing/g2/resources",
             "SUPPORTPATH": "/opt/senzing/data",
         },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+        # "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+        # NOTE Ant
+        "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
     }
 
     darwin_config = {

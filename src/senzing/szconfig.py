@@ -32,7 +32,7 @@ from ctypes import (
 from typing import Any, Dict, Union
 
 from .szconfig_abstract import SzConfigAbstract
-from .szexception import SzException, new_szexception
+from .szexception import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -129,7 +129,7 @@ class SzConfig(SzConfigAbstract):
         sz_config.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzException**.
+    Just specifying one or the other results in a **SzError**.
 
     Parameters:
         instance_name:
@@ -141,7 +141,7 @@ class SzConfig(SzConfigAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzException: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -191,7 +191,7 @@ class SzConfig(SzConfigAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            raise SzException("Failed to load the G2 library") from err
+            raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2config.h

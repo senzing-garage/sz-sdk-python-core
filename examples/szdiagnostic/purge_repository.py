@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szdiagnostic
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -19,5 +19,5 @@ try:
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING
     sz_diagnostic.purge_repository()
-except SzException as err:
+except SzError as err:
     print(err)

@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szdiagnostic
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -17,7 +17,7 @@ SETTINGS = {
 
 try:
     sz_diagnostic1 = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
-except SzException as err:
+except SzError as err:
     print(err)
 
 # Example 2
@@ -26,5 +26,5 @@ try:
     sz_diagnostic2 = szdiagnostic.SzDiagnostic()
     sz_diagnostic2.initialize(INSTANCE_NAME, SETTINGS)
     sz_diagnostic2.destroy()
-except SzException as err:
+except SzError as err:
     print(err)

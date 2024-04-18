@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 BUILD_OUT_DEGREE = 2
 ENTITY_LIST = {"ENTITIES": [{"ENTITY_ID": 100008}, {"ENTITY_ID": 55}]}
@@ -23,5 +23,5 @@ try:
         ENTITY_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

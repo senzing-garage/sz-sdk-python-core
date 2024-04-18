@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
 DATA_SOURCE_CODE_2 = "WATCHLIST"
@@ -24,5 +24,5 @@ try:
         DATA_SOURCE_CODE_1, RECORD_ID_1, DATA_SOURCE_CODE_2, RECORD_ID_2, 1
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

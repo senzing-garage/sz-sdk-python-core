@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 END_ENTITY_ID = 137
@@ -22,5 +22,5 @@ try:
         START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

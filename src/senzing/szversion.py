@@ -6,7 +6,7 @@ TODO: szversion.py
 import datetime
 import json
 
-from .szexception import SzException, get_location
+from .szexception import SzError, get_location
 from .szproduct import SzProduct
 
 SENZING_VERSION_MINIMUM = "3.8.0"
@@ -51,7 +51,7 @@ def supports_senzingapi_version(
         current_semantic_version (str): String in form 'M.m.P' representing current version.
 
     Raises:
-        SzException: Current Senzing API is not supported.
+        SzError: Current Senzing API is not supported.
 
     Returns:
         bool: Returns True if current Senzing API version is supported.
@@ -71,7 +71,7 @@ def supports_senzingapi_version(
             # "location": get_location(5),
             "location": get_location(),
         }
-        raise SzException(json.dumps(message))
+        raise SzError(json.dumps(message))
     return True
 
 
@@ -81,7 +81,7 @@ def is_supported_senzingapi_version() -> bool:
     version of the Senzing Python SDK.
 
     Raises:
-        SzException: Current Senzing API is not supported.
+        SzError: Current Senzing API is not supported.
 
     Returns:
         bool: Returns True if current Senzing API version is supported.

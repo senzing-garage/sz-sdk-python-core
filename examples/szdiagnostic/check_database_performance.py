@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szdiagnostic
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SECONDS_TO_RUN = 3
@@ -18,5 +18,5 @@ try:
     sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
     result = sz_diagnostic.check_database_performance(SECONDS_TO_RUN)
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

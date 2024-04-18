@@ -60,7 +60,7 @@ class SzProductAbstract(ABC):
             sz_product = szproduct.SzProduct(instance_name, settings)
 
         Raises:
-            szexception.SzException:
+            szexception.SzError:
 
         .. collapse:: Example:
 

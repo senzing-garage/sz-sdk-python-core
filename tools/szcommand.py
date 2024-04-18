@@ -20,7 +20,7 @@ from functools import wraps
 # from G2IniParams import G2IniParams
 from senzing import szconfig, szconfigmanager, szdiagnostic, szengine, szproduct
 from senzing.szengineflags import SzEngineFlags
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 try:
     import atexit
@@ -188,7 +188,7 @@ def cmd_decorator(cmd_has_args=True):
                             "info",
                         )
                     )
-            except (SzException, IOError) as err:
+            except (SzError, IOError) as err:
                 self.printError(err)
 
         return wrapper
@@ -216,7 +216,7 @@ class SzCmdShell(cmd.Cmd, object):
             self.sz_configmgr = szconfigmanager.SzConfigManager(
                 "pySzConfigmgr", engine_settings, debug_trace
             )
-        except SzException as ex:
+        except SzError as ex:
             self.print_error(ex)
             self.postloop()
             sys.exit(1)
@@ -339,6 +339,11 @@ class SzCmdShell(cmd.Cmd, object):
         checkDatabasePerformance_parser.add_argument(
             "secondsToRun", default=3, nargs="?", type=int
         )
+
+        getFeature_parser = self.subparsers.add_parser(
+            "getFeature", usage=argparse.SUPPRESS
+        )
+        getFeature_parser.add_argument("featureID", nargs="?", type=int)
 
         purgeRepository_parser = self.subparsers.add_parser(
             "purgeRepository", usage=argparse.SUPPRESS
@@ -1004,6 +1009,35 @@ class SzCmdShell(cmd.Cmd, object):
         )
         self.print_response(response)
 
+    @cmd_decorator(cmd_has_args=False)
+    def do_getDataStoreInfo(self, **kwargs):
+        """
+        Get data store information
+
+        Syntax:
+            getDataStoreInfo"""
+
+        response = self.sz_diagnostic.get_data_store_info()
+        self.print_response(response)
+
+    # TODO This should be hidden
+    @cmd_decorator()
+    def do_getFeature(self, **kwargs):
+        """
+        Get feature information
+
+        Syntax:
+            getFeature FEATURE_ID
+
+        Examples:
+            getFeature 1
+
+        Arguments:
+            FEATURE_ID = Identifier of feature"""
+
+        response = self.sz_diagnostic.get_feature(kwargs["parsed_args"].featureID)
+        self.print_response(response)
+
     @cmd_decorator()
     def do_purgeRepository(self, **kwargs):
         """
@@ -1180,7 +1214,7 @@ class SzCmdShell(cmd.Cmd, object):
                         print(f"Exported {rec_cnt} records...", flush=True)
 
                 self.sz_engine.close_export(export_handle)
-        except (SzException, IOError) as err:
+        except (SzError, IOError) as err:
             self.print_error(err)
         else:
             self.print_response(f"Total exported records: {rec_cnt}", "success")
@@ -1229,7 +1263,7 @@ class SzCmdShell(cmd.Cmd, object):
                         print(f"Exported {rec_cnt} records...", flush=True)
 
                 self.sz_engine.close_export(export_handle)
-        except (SzException, IOError) as err:
+        except (SzError, IOError) as err:
             self.print_error(err)
         else:
             self.print_response(f"Total exported records: {rec_cnt}", "success")
@@ -1974,7 +2008,7 @@ class SzCmdShell(cmd.Cmd, object):
 
                 try:
                     self.sz_engine.process(json_str)
-                except SzException as err:
+                except SzError as err:
                     self.print_error(err, f"At record {cnt + 1}")
                 cnt += 1
                 if cnt % 1000 == 0:

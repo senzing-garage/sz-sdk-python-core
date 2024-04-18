@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szexception import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -18,5 +18,5 @@ try:
     result = sz_engine.get_redo_record()
     # TODO If result should process it
     print(f'{result if result else "No redo records"}')
-except SzException as err:
+except SzError as err:
     print(err)
