@@ -2,7 +2,7 @@
 
 
 from senzing import szconfig
-from senzing.szexception import SzError
+from senzing.szerror import SzError
 
 SETTINGS = {
     "PIPELINE": {

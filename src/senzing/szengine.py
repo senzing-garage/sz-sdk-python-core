@@ -37,7 +37,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from .szengine_abstract import SzEngineAbstract
 from .szengineflags import SzEngineFlags
-from .szexception import SzError, new_szexception
+from .szerror import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -206,10 +206,6 @@ class G2ReevaluateRecordWithInfoResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_reevaluateRecordWithInfo_result"""
 
 
-class G2ReplaceRecordWithInfoResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2_replaceRecordWithInfo_result"""
-
-
 class G2SearchByAttributesV3Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_searchByAttributes_V2_result"""
 
@@ -326,6 +322,7 @@ class SzEngine(SzEngineAbstract):
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
             # TODO Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
+            # TODO Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -573,21 +570,6 @@ class SzEngine(SzEngineAbstract):
         )
         self.library_handle.G2_reinit.argtypes = [c_longlong]
         self.library_handle.G2_reinit.restype = c_int
-        self.library_handle.G2_replaceRecord.argtypes = [
-            c_char_p,
-            c_char_p,
-            c_char_p,
-        ]
-        self.library_handle.G2_replaceRecord.restype = c_int
-        self.library_handle.G2_replaceRecordWithInfo_helper.argtypes = [
-            c_char_p,
-            c_char_p,
-            c_char_p,
-            c_longlong,
-        ]
-        self.library_handle.G2_replaceRecordWithInfo_helper.restype = (
-            G2ReplaceRecordWithInfoResult
-        )
         self.library_handle.G2_searchByAttributes_V3_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -661,7 +643,6 @@ class SzEngine(SzEngineAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            # CALLER_SKIP,
             *args,
         )
 
@@ -725,7 +706,6 @@ class SzEngine(SzEngineAbstract):
 
     def count_redo_records(self, **kwargs: Any) -> int:
         result: int = self.library_handle.G2_countRedoRecords()
-        # NOTE If result >= 0 call was successful
         if result < 0:
             raise self.new_exception(4003, result)
         return result
@@ -842,7 +822,6 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def find_network_by_entity_id(
         self,
-        # TODO Take entity_list as a comma separated string, tuple, other\? Others like this
         entity_list: Union[str, Dict[Any, Any]],
         max_degrees: int,
         build_out_degree: int,
@@ -904,11 +883,8 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     # NOTE G2_findPathExcludingByEntityID_V2 & findPathIncludingSourceByEntityID_V2 returning spurious data
-    # NOTE setting to return message until fixed
     # NOTE https://senzing.atlassian.net/browse/GDEV-3808
     # TODO Do more testing
-    # TODO exclusions when entity_id take a list of IDs without the JSON version
-    # TODO required_data_sources take a list of dsrc codes too
     @catch_ctypes_exceptions
     def find_path_by_entity_id(
         self,
@@ -917,64 +893,65 @@ class SzEngine(SzEngineAbstract):
         max_degrees: int,
         # TODO Could be list of entity ids or dsrc code + record id
         exclusions: Union[str, Dict[Any, Any]] = "",
-        # TODO Could be a list of codes
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
 
+        # TODO GDEV-3808
         if exclusions and not required_data_sources:
-            # result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
-            #     start_entity_id,
-            #     end_entity_id,
-            #     max_degrees,
-            #     as_c_char_p(as_str(exclusions)),
-            #     flags,
-            # )
+            result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
+                start_entity_id,
+                end_entity_id,
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                flags,
+            )
 
-            # with FreeCResources(self.library_handle, result.response):
-            #     if result.return_code != 0:
-            #         raise self.new_exception(
-            #             4013,
-            #             start_entity_id,
-            #             end_entity_id,
-            #             max_degrees,
-            #             # TODO Should this and others that could be dicts use as_str?
-            #             exclusions,
-            #             required_data_sources,
-            #             flags,
-            #             result.return_code,
-            #         )
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4013,
+                        start_entity_id,
+                        end_entity_id,
+                        max_degrees,
+                        # TODO Should this and others that could be dicts use as_str?
+                        exclusions,
+                        required_data_sources,
+                        flags,
+                        result.return_code,
+                    )
 
-            # return as_python_str(result.response)
-            return "Currently broken - GDEV-3808"
+            return as_python_str(result.response)
+            # return "Currently broken - GDEV-3808"
 
+        # TODO GDEV-3808
         if required_data_sources:
-            # result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
-            #     start_entity_id,
-            #     end_entity_id,
-            #     max_degrees,
-            #     as_c_char_p(as_str(exclusions)),
-            #     as_c_char_p(as_str(required_data_sources)),
-            #     flags,
-            # )
+            result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
+                start_entity_id,
+                end_entity_id,
+                max_degrees,
+                as_c_char_p(as_str(exclusions)),
+                as_c_char_p(as_str(required_data_sources)),
+                flags,
+            )
 
-            # with FreeCResources(self.library_handle, result.response):
-            #     if result.return_code != 0:
-            #         raise self.new_exception(
-            #             4013,
-            #             start_entity_id,
-            #             end_entity_id,
-            #             max_degrees,
-            #             # TODO This and others that could be dicts use as_str?
-            #             exclusions,
-            #             required_data_sources,
-            #             flags,
-            #             result.return_code,
-            #         )
+            with FreeCResources(self.library_handle, result.response):
+                if result.return_code != 0:
+                    raise self.new_exception(
+                        4013,
+                        start_entity_id,
+                        end_entity_id,
+                        max_degrees,
+                        # TODO This and others that could be dicts use as_str?
+                        exclusions,
+                        required_data_sources,
+                        flags,
+                        result.return_code,
+                    )
 
-            # return as_python_str(result.response)
-            return "Currently broken - GDEV-3808"
+            return as_python_str(result.response)
+            # return "Currently broken - GDEV-3808"
 
         result = self.library_handle.G2_findPathByEntityID_V2_helper(
             start_entity_id,
@@ -998,8 +975,6 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     # TODO Do more testing
-    # TODO exclusions when entity_id take a list of IDs without the JSON version
-    # TODO required_data_sources take a list of dsrc codes too
     @catch_ctypes_exceptions
     def find_path_by_record_id(
         self,
@@ -1010,7 +985,6 @@ class SzEngine(SzEngineAbstract):
         max_degrees: int,
         # TODO Could be list of entity ids or dsrc code + record id
         exclusions: Union[str, Dict[Any, Any]] = "",
-        # TODO Could be a list of codes
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -1356,8 +1330,7 @@ class SzEngine(SzEngineAbstract):
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],
-        # TODO Specify here or blank string and the engine will use the default SEARCH plan?
-        search_profile: str = "SEARCH",
+        search_profile: str = "",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -1370,7 +1343,7 @@ class SzEngine(SzEngineAbstract):
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
-                    4031,
+                    4030,
                     attributes,
                     search_profile,
                     flags,
@@ -1395,7 +1368,7 @@ class SzEngine(SzEngineAbstract):
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
-                    4032, entity_id_1, entity_id_2, result.return_code
+                    4031, entity_id_1, entity_id_2, result.return_code
                 )
             return as_python_str(result.response)
 
@@ -1420,7 +1393,7 @@ class SzEngine(SzEngineAbstract):
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
-                    4033,
+                    4032,
                     data_source_code_1,
                     record_id_1,
                     data_source_code_2,
@@ -1447,7 +1420,7 @@ class SzEngine(SzEngineAbstract):
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
-                    4034,
+                    4033,
                     data_source_code,
                     record_id,
                     flags,

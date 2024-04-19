@@ -20,7 +20,7 @@ from functools import wraps
 # from G2IniParams import G2IniParams
 from senzing import szconfig, szconfigmanager, szdiagnostic, szengine, szproduct
 from senzing.szengineflags import SzEngineFlags
-from senzing.szexception import SzError
+from senzing.szerror import SzError
 
 try:
     import atexit
@@ -171,7 +171,7 @@ def cmd_decorator(cmd_has_args=True):
                 except ValueError:
                     return
                 except KeyError as err:
-                    self.printError(err)
+                    self.print_error(err)
                     return
 
             # Run the decorated function passing back args
@@ -189,7 +189,7 @@ def cmd_decorator(cmd_has_args=True):
                         )
                     )
             except (SzError, IOError) as err:
-                self.printError(err)
+                self.print_error(err)
 
         return wrapper
 
@@ -333,10 +333,10 @@ class SzCmdShell(cmd.Cmd, object):
 
         # szdiagnostic parsers
 
-        checkDatabasePerformance_parser = self.subparsers.add_parser(
-            "checkDatabasePerformance", usage=argparse.SUPPRESS
+        checkDatastorePerformance_parser = self.subparsers.add_parser(
+            "checkDatastorePerformance", usage=argparse.SUPPRESS
         )
-        checkDatabasePerformance_parser.add_argument(
+        checkDatastorePerformance_parser.add_argument(
             "secondsToRun", default=3, nargs="?", type=int
         )
 
@@ -991,33 +991,31 @@ class SzCmdShell(cmd.Cmd, object):
     # szdiagnostic commands
 
     @cmd_decorator()
-    def do_checkDatabasePerformance(self, **kwargs):
+    def do_checkDatastorePerformance(self, **kwargs):
         """
         Run a performance check on the database
 
         Syntax:
-            checkDatabasePerformance [SECONDS]
-
-        Example:
-            check_database_performance
+            checkDatastorePerformance [SECONDS]
+            checkDatastorePerformance
 
         Arguments:
             SECONDS = Time in seconds to run check, default is 3"""
 
-        response = self.sz_diagnostic.check_database_performance(
+        response = self.sz_diagnostic.check_datastore_performance(
             kwargs["parsed_args"].secondsToRun
         )
         self.print_response(response)
 
     @cmd_decorator(cmd_has_args=False)
-    def do_getDataStoreInfo(self, **kwargs):
+    def do_getDatastoreInfo(self, **kwargs):
         """
         Get data store information
 
         Syntax:
-            getDataStoreInfo"""
+            getDatastoreInfo"""
 
-        response = self.sz_diagnostic.get_data_store_info()
+        response = self.sz_diagnostic.get_datastore_info()
         self.print_response(response)
 
     # TODO This should be hidden

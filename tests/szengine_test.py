@@ -18,7 +18,7 @@ from senzing_truthset import (
 
 from senzing import szconfig, szconfigmanager, szengine
 from senzing.szengineflags import SzEngineFlags
-from senzing.szexception import SzError
+from senzing.szerror import SzError
 
 # AC - Temp disables to get changes in for move to senzing garage
 # pylint: disable=C0302

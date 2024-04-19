@@ -30,7 +30,7 @@ class SzDiagnosticAbstract(ABC):
 
     PREFIX = "szdiagnostic."
     ID_MESSAGES = {
-        4001: PREFIX + "check_database_performance({0}) failed. Return code: {1}",
+        4001: PREFIX + "check_datastore_performance({0}) failed. Return code: {1}",
         4002: PREFIX + "destroy() failed. Return code: {0}",
         4003: PREFIX + "get_datastore_info() failed. Return code: {0}",
         4004: PREFIX + "get_feature({0}) failed. Return code: {1}",
@@ -46,9 +46,9 @@ class SzDiagnosticAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def check_database_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
+    def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
         """
-        The `check_database_performance` method performs inserts to determine rate of insertion.
+        The `check_datastore_performance` method performs inserts to determine rate of insertion.
 
         Args:
             seconds_to_run (int): Duration of the test in seconds.
@@ -101,9 +101,9 @@ class SzDiagnosticAbstract(ABC):
 
     # TODO docstring
     @abstractmethod
-    def get_data_store_info(self, **kwargs: Any) -> str:
+    def get_datastore_info(self, **kwargs: Any) -> str:
         """
-        The `get_data_store_info` method will...
+        The `get_datastore_info` method will...
 
         Example:
 
@@ -121,28 +121,10 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
-    # TODO docstring
     # NOTE This is included but not to be documented
     @abstractmethod
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
-        """
-        The `get_feature` method will...
-
-        Example:
-
-        .. code-block:: python
-
-            sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
-
-        Raises:
-            szexception.SzError:
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szdiagnostic/
-                :linenos:
-                :language: python
-        """
+        """"""
 
     @abstractmethod
     def initialize(

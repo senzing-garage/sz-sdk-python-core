@@ -5,9 +5,8 @@ import time
 from contextlib import suppress
 from datetime import timedelta
 
-from senzing.szexception import SzError
-
 from senzing import szengine, szengineflags
+from senzing.szerror import SzError
 
 with suppress(ModuleNotFoundError):
     import orjson
@@ -20,7 +19,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:

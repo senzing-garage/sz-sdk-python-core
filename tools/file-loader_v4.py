@@ -14,7 +14,7 @@ import time
 from datetime import datetime
 
 from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szexception import SzBadInputError, SzError, SzRetryableError
+from senzing.szerror import SzBadInputError, SzError, SzRetryableError
 
 try:
     import orjson as json
@@ -550,6 +550,24 @@ if __name__ == "__main__":
              """
         ),
     )
+    # TODO
+    # arg_parser.add_argument(
+    #     "-n",
+    #     "--debugTrace",
+    #     action=CustomArgActionStoreTrue,
+    #     default=False,
+    #     nargs=0,
+    #     help=textwrap.dedent(
+    #         """\
+    #            Output debug trace information.
+
+    #            Default: False
+    #            Env Var: SENZING_DEBUG
+
+    #          """
+    #     ),
+    # )
+
     cli_args = arg_parser.parse_args()
 
     # If a CLI arg was specified use it, else try the env var, if no env var use the default for the CLI arg

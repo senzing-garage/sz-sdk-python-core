@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
+from senzing.szerror import SzError
 from szengineflags import SzEngineFlags
-from senzing.szexception import SzError
 
 ENTITY_ID = 1
 INSTANCE_NAME = "Example"
@@ -12,7 +12,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:

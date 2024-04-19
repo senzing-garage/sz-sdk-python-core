@@ -6,7 +6,7 @@ TODO: szversion.py
 import datetime
 import json
 
-from .szexception import SzError, get_location
+from .szerror import SzError, get_location
 from .szproduct import SzProduct
 
 SENZING_VERSION_MINIMUM = "3.8.0"

@@ -3,7 +3,7 @@
 from typing import Any, Dict
 
 from senzing import szconfig
-from senzing.szexception import SzError
+from senzing.szerror import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {

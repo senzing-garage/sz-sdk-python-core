@@ -8,7 +8,7 @@ import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
-from .szexception import SzError, new_szexception
+from .szerror import SzError, new_szexception
 from .szhasher_abstract import G2HasherAbstract
 from .szhelpers import find_file_in_path
 from .szversion import is_supported_senzingapi_version

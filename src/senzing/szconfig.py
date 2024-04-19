@@ -32,7 +32,7 @@ from ctypes import (
 from typing import Any, Dict, Union
 
 from .szconfig_abstract import SzConfigAbstract
-from .szexception import SzError, new_szexception
+from .szerror import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -53,7 +53,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-# CALLER_SKIP = 5
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -191,13 +190,12 @@ class SzConfig(SzConfigAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
+            # TODO Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2config.h
 
-        # self.library_handle.G2Config_addDataSource.argtypes = [c_void_p, c_char_p, POINTER(c_char_p), POINTER(c_size_t), self._resize_func_def]
-        # self.library_handle.G2Config_addDataSource.restype = c_longlong
         self.library_handle.G2Config_addDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
@@ -258,7 +256,6 @@ class SzConfig(SzConfigAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            # CALLER_SKIP,
             *args,
         )
 

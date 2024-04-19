@@ -40,7 +40,6 @@ class SzEngineAbstract(ABC):
     # Messages
     # -------------------------------------------------------------------------
 
-    # TODO Reorder again and in szengine, replace_record was removed
     PREFIX = "szengine."
     """ :meta private: """
 
@@ -90,11 +89,11 @@ class SzEngineAbstract(ABC):
         4027: PREFIX + "reevaluate_entity({0}, {1}) failed. Return code: {2}",
         4028: PREFIX + "reevaluate_record({0}, {1}, {2}) failed. Return code: {3}",
         4029: PREFIX + "reinitialize({0}) failed. Return code: {1}",
-        4031: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
-        4032: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
-        4033: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
-        4034: PREFIX + "why_record_in_entity{0}, {1}, {2}) failed. Return code: {3}",
-        4035: (
+        4030: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
+        4031: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
+        4032: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4033: PREFIX + "why_record_in_entity{0}, {1}, {2}) failed. Return code: {3}",
+        4034: (
             PREFIX
             + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or"
             " both be empty"
@@ -334,14 +333,14 @@ class SzEngineAbstract(ABC):
                 :language: json
         """
 
-    # TODO Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
     @abstractmethod
     def find_interesting_entities_by_entity_id(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
         """"""
 
-    # TODO Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
     @abstractmethod
     def find_interesting_entities_by_record_id(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
@@ -927,7 +926,7 @@ class SzEngineAbstract(ABC):
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],
-        search_profile: str = "SEARCH",
+        search_profile: str = "",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -1052,7 +1051,6 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1188,7 +1186,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
+        """ """
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1212,7 +1210,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1226,7 +1223,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1244,7 +1240,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1252,7 +1247,6 @@ class SzEngineAbstract(ABC):
         )
 
     def get_stats_return_dict(self, **kwargs: Any) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(self.get_stats(**kwargs)),
@@ -1278,7 +1272,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1291,7 +1284,6 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1305,7 +1297,6 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1321,7 +1312,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1337,7 +1327,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(self.why_entities(entity_id_1, entity_id_2, flags, **kwargs)),
@@ -1352,7 +1341,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1374,7 +1362,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO document
         """ """
         # TODO Is the cast needed?
         return cast(

@@ -21,7 +21,7 @@ import os
 from ctypes import c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict, Union
 
-from .szexception import SzError, new_szexception
+from .szerror import SzError, new_szexception
 from .szhelpers import (
     as_c_char_p,
     as_python_str,
@@ -39,7 +39,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5046"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-# CALLER_SKIP = 6  # Number of stack frames to skip when reporting location in Exception.
 
 # -----------------------------------------------------------------------------
 # SzProduct class
@@ -129,6 +128,7 @@ class SzProduct(SzProductAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
+            # TODO Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results
@@ -176,7 +176,6 @@ class SzProduct(SzProductAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            # CALLER_SKIP,
             *args,
         )
 
