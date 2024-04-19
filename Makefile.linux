@@ -41,11 +41,11 @@ test-osarch-specific:
 #	@echo "--- Test examples ----------------------------------------------------"
 #	@pytest examples/ --verbose --capture=no --cov=src/senzing
 	@echo "--- Test examples using unittest -------------------------------------"
-	python3 -m unittest examples/g2config/*.py
-	python3 -m unittest examples/g2configmgr/*.py
-	python3 -m unittest examples/g2diagnostic/*.py
-	python3 -m unittest examples/g2engine/*.py
-	python3 -m unittest examples/g2product/*.py
+	python3 -m unittest examples/szconfig/*.py
+	python3 -m unittest examples/szconfigmgr/*.py
+	python3 -m unittest examples/szdiagnostic/*.py
+	python3 -m unittest examples/szengine/*.py
+	python3 -m unittest examples/szproduct/*.py
 
 
 

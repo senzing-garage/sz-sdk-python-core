@@ -5,30 +5,30 @@
 #   1) Use the "names" as filenames to access the "__all__" attribute.
 #   2) Use the "names" as class names.
 
-# Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. g2config, g2configmgr)
+# Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. szconfig, szconfigmgr)
 
 from typing import List
 
 from . import (
-    g2config,
-    g2configmgr,
-    g2diagnostic,
-    g2engine,
-    g2engineflags,
-    g2exception,
-    g2hasher,
-    g2product,
+    szconfig,
+    szconfigmanager,
+    szdiagnostic,
+    szengine,
+    szengineflags,
+    szerror,
+    szhasher,
+    szproduct,
 )
 
 import_lists = [
-    g2config.__all__,
-    g2configmgr.__all__,
-    g2diagnostic.__all__,
-    g2engine.__all__,
-    g2engineflags.__all__,
-    g2exception.__all__,
-    g2hasher.__all__,
-    g2product.__all__,
+    szconfig.__all__,
+    szconfigmanager.__all__,
+    szdiagnostic.__all__,
+    szengine.__all__,
+    szengineflags.__all__,
+    szerror.__all__,
+    szhasher.__all__,
+    szproduct.__all__,
 ]
 
 __all__: List[str] = []
