@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szproduct
-from senzing.szexception import SzException
+from senzing.szerror import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -17,5 +17,5 @@ try:
     sz_product = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
     result = sz_product.get_version()
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

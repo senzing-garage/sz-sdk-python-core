@@ -21,7 +21,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict, Optional, Union
 
 from .szdiagnostic_abstract import SzDiagnosticAbstract
-from .szexception import SzException, new_szexception
+from .szerror import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -40,7 +40,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-27"
 
 SENZING_PRODUCT_ID = "5042"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-# CALLER_SKIP = 6
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -56,8 +55,16 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
+class G2DiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_checkDatastorePerformance_result"""
+
+
+class G2DiagnosticGetDatastoreInfoResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_getDatastoreInfo_result"""
+
+
+class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_getFeature_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -155,18 +162,28 @@ class SzDiagnostic(SzDiagnosticAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Senzing library?
-            raise SzException("Failed to load the G2 library") from err
+            # TODO Change to Sz library when the libG2.so is changed in a build
+            raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2diagnostic.h
 
-        self.library_handle.G2Diagnostic_checkDBPerf_helper.argtypes = [c_longlong]
-        self.library_handle.G2Diagnostic_checkDBPerf_helper.restype = (
-            G2DiagnosticCheckDBPerfResult
+        self.library_handle.G2Diagnostic_checkDatastorePerformance_helper.argtypes = [
+            c_longlong
+        ]
+        self.library_handle.G2Diagnostic_checkDatastorePerformance_helper.restype = (
+            G2DiagnosticCheckDatastorePerformanceResult
         )
         self.library_handle.G2Diagnostic_destroy.argtypes = []
         self.library_handle.G2Diagnostic_destroy.restype = c_longlong
+        self.library_handle.G2Diagnostic_getDatastoreInfo_helper.argtypes = []
+        self.library_handle.G2Diagnostic_getDatastoreInfo_helper.restype = (
+            G2DiagnosticGetDatastoreInfoResult
+        )
+        self.library_handle.G2Diagnostic_getFeature_helper.argtypes = [c_longlong]
+        self.library_handle.G2Diagnostic_getFeature_helper.restype = (
+            G2DiagnosticGetFeatureResult
+        )
         self.library_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.G2Diagnostic_init.restype = c_longlong
         self.library_handle.G2Diagnostic_initWithConfigID.argtypes = [
@@ -184,7 +201,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4021, self.instance_name, self.settings)
+                raise self.new_exception(4007, self.instance_name, self.settings)
         if len(self.instance_name) > 0:
             self.auto_init = True
             if not self.config_id:
@@ -218,7 +235,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            # CALLER_SKIP,
             *args,
         )
 
@@ -226,8 +242,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # G2Diagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_database_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2Diagnostic_checkDBPerf_helper(seconds_to_run)
+    def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
+        result = self.library_handle.G2Diagnostic_checkDatastorePerformance_helper(
+            seconds_to_run
+        )
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(
@@ -237,23 +255,32 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 )
             return as_python_str(result.response)
 
-        # try:
-        #     if result.return_code != 0:
-        #         raise self.new_exception(4001, result.return_code)
-        #     result_response = cast(result.response, c_char_p).value
-        #     result_response_str = result_response.decode() if result_response else ""
-        # finally:
-        #     self.library_handle.G2GoHelper_free(result.response)
-        # return result_response_str
-
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_destroy()
         if result != 0:
             raise self.new_exception(4002, result)
 
-    # TODO Complete when added to Go helpers - GDEV-3801
+    def get_datastore_info(self, **kwargs: Any) -> str:
+        result = self.library_handle.G2Diagnostic_getDatastoreInfo_helper()
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4003,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
+
     # NOTE This is included but not to be documented
-    # def get_feature(self, feature_id: int, **kwargs: Any) -> str: ...
+    def get_feature(self, feature_id: int, **kwargs: Any) -> str:
+        result = self.library_handle.G2Diagnostic_getFeature_helper(feature_id)
+        with FreeCResources(self.library_handle, result.response):
+            if result.return_code != 0:
+                raise self.new_exception(
+                    4003,
+                    feature_id,
+                    result.return_code,
+                )
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def initialize(
@@ -272,7 +299,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             )
             if result < 0:
                 raise self.new_exception(
-                    4003,
+                    4004,
                     instance_name,
                     as_str(settings),
                     verbose_logging,
@@ -300,9 +327,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
     def purge_repository(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_purgeRepository()
         if result < 0:
-            raise self.new_exception(4004, result)
+            raise self.new_exception(4005, result)
 
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(config_id)
         if result < 0:
-            raise self.new_exception(4005, config_id, result)
+            raise self.new_exception(4006, config_id, result)

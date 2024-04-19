@@ -13,7 +13,7 @@ TODO: szengine_abstract.py
 
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 from .szengineflags import SzEngineFlags
 
@@ -40,7 +40,6 @@ class SzEngineAbstract(ABC):
     # Messages
     # -------------------------------------------------------------------------
 
-    # TODO Change to f-strings?
     PREFIX = "szengine."
     """ :meta private: """
 
@@ -54,10 +53,8 @@ class SzEngineAbstract(ABC):
         4007: PREFIX + "export_json_entity_report({0}) failed. Return code: {1}",
         4008: PREFIX + "fetch_next({0}) failed. Return code: {1}",
         # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-        4009: (
-            PREFIX
-            + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}"
-        ),
+        4009: PREFIX
+        + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}",
         # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
         4010: (
             PREFIX
@@ -74,10 +71,8 @@ class SzEngineAbstract(ABC):
         ),
         4013: PREFIX
         + "find_path_by_entity_id({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
-        4014: (
-            PREFIX
-            + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}"
-        ),
+        4014: PREFIX
+        + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}",
         4015: PREFIX + "get_active_config_id() failed. Return code: {0}",
         4016: PREFIX + "get_entity_by_entity_id({0}, {1}) failed. Return code: {2}",
         4017: PREFIX
@@ -94,16 +89,13 @@ class SzEngineAbstract(ABC):
         4027: PREFIX + "reevaluate_entity({0}, {1}) failed. Return code: {2}",
         4028: PREFIX + "reevaluate_record({0}, {1}, {2}) failed. Return code: {3}",
         4029: PREFIX + "reinitialize({0}) failed. Return code: {1}",
-        4030: PREFIX + "replace_record({0}, {1}, {2}, {3}) failed. Return code: {4}",
-        4031: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
-        4032: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
-        4033: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
-        4034: PREFIX + "why_record_in_entity{0}, {1}, {2}) failed. Return code: {3}",
-        # TODO This text doesn't make sense without specifying there are 2 ways to init if keeping both
-        # TODO This text isn't consistent across modules
-        4035: (
+        4030: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
+        4031: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
+        4032: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4033: PREFIX + "why_record_in_entity{0}, {1}, {2}) failed. Return code: {3}",
+        4034: (
             PREFIX
-            + "SzEngine{0}, {1}) failed. instance_name and settings must both be set or"
+            + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or"
             " both be empty"
         ),
     }
@@ -119,7 +111,6 @@ class SzEngineAbstract(ABC):
         data_source_code: str,
         record_id: str,
         record_definition: Union[str, Dict[Any, Any]],
-        # TODO Is 0 correct for a default value of not returning with_info?
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
@@ -233,7 +224,7 @@ class SzEngineAbstract(ABC):
             sz_engine = szengine.SzEngine(instance_name, settings)
 
         Raises:
-            szexception.SzException:
+            szexception.SzError:
 
         .. collapse:: Example:
 
@@ -342,15 +333,14 @@ class SzEngineAbstract(ABC):
                 :language: json
         """
 
-    # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
     @abstractmethod
     def find_interesting_entities_by_entity_id(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> str:
-        # TODO
         """"""
 
-    # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
     @abstractmethod
     def find_interesting_entities_by_record_id(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
@@ -360,9 +350,7 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_entity_id(
         self,
-        # TODO Improve upon Any, Any?
-        # TODO Should this and similar functions take a list of entity IDs instead of the JSON?
-        entity_list: Union[str, Dict[Any, Any]],
+        entity_list: Union[str, Dict[str, List[Dict[str, int]]]],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -403,7 +391,7 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: Union[str, Dict[str, List[Dict[str, str]]]],
         max_degrees: int,
         build_out_degree: int,
         max_entities: int,
@@ -449,7 +437,6 @@ class SzEngineAbstract(ABC):
         max_degrees: int,
         # TODO Should accept both entity and record IDs in V4, test
         exclusions: Union[str, Dict[Any, Any]] = "",
-        # TODO Take a list of data sources too?
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -775,7 +762,7 @@ class SzEngineAbstract(ABC):
         **kwargs: Any,
     ) -> str:
         """
-        TODO: The `how_entity_by_entity_id` method determines and details steps-by-step *how* records resolved to an ENTITY_ID.
+        The `how_entity_by_entity_id` method determines and details steps-by-step *how* records resolved to an ENTITY_ID.
 
         In most cases, *how* provides more detailed information than *why* as the resolution is detailed step-by-step.
 
@@ -806,15 +793,11 @@ class SzEngineAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        # TODO Need to test this, Optional doesn't mean it really is optional, it means it can be an int or None; and the default in this case happens to be None.
-        # TODO This also could be written as Optional[int] and it would still accept an int or None but it's not as clear.
-        # TODO Use on other methods such as find_network & find_path for exclusions and required_dsrc?
         config_id: Optional[int] = None,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         # TODO docstring plugin
-        # TODO Add in config_id to docstring
         """
         he ``initialize`` method initializes the Senzing SzEngine object.
         It must be called prior to any other calls.
@@ -862,21 +845,19 @@ class SzEngineAbstract(ABC):
                 :language: python
         """
 
-    # TODO Missing from V4 go lang helpers currently
-    # TODO GDEV-3771
-    # @abstractmethod
-    # def process_redo_record(self, redo_record: str, flags: int, **kwargs: Any) -> str:
-    #     """
-    #     #TODO The `process_redo_record` method...
+    @abstractmethod
+    def process_redo_record(self, redo_record: str, flags: int, **kwargs: Any) -> str:
+        """
+        #TODO The `process_redo_record` method...
 
-    #     Raises:
+        Raises:
 
-    #     .. collapse:: Example:
+        .. collapse:: Example:
 
-    #         .. literalinclude:: ../../examples/szengine/prime_engine.py
-    #             :linenos:
-    #             :language: python
-    #     """
+            .. literalinclude:: ../../examples/szengine/prime_engine.py
+                :linenos:
+                :language: python
+        """
 
     @abstractmethod
     def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
@@ -932,7 +913,7 @@ class SzEngineAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            szexception.SzException: config_id does not exist.
+            szexception.SzError: config_id does not exist.
 
         .. collapse:: Example:
 
@@ -942,41 +923,10 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
-    def replace_record(
-        self,
-        data_source_code: str,
-        record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> str:
-        """
-        The `replace_record` method updates/replaces a record in the Senzing repository.
-        If record doesn't exist, a new record is added to the data repository.
-
-        Args:
-            data_source_code (str): Identifies the provenance of the data.
-            record_id (str): The unique identifier within the records of the same data source.
-            record_definition (str): A JSON document containing the record to be added to the Senzing repository.
-            flags (int, optional):  Flags used to control information returned. Defaults to 0.
-
-        Returns:
-            str: If flags are set to return the WITH_INFO response a JSON document containing the details, otherwise an empty JSON document.
-
-        Raises:
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szengine/replace_record.py
-                :linenos:
-                :language: python
-        """
-
-    @abstractmethod
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],
-        search_profile: str = "SEARCH",
+        search_profile: str = "",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -1092,22 +1042,6 @@ class SzEngineAbstract(ABC):
     # Convenience methods
     # -------------------------------------------------------------------------
 
-    # TODO Keep with _return_dict methods?
-    def get_record_as_dict(
-        # self, data_source_code: str, record_id: str, **kwargs: Any
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        # TODO document
-        """ """
-        return cast(
-            Dict[str, Any],
-            json.loads(self.get_record(data_source_code, record_id, flags, **kwargs)),
-        )
-
     # TODO doc strings for all return_dict methods it _return_dict methods are staying?
     def add_record_return_dict(
         self,
@@ -1117,7 +1051,6 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1253,7 +1186,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
+        """ """
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1277,7 +1210,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1291,7 +1223,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1309,7 +1240,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1317,7 +1247,6 @@ class SzEngineAbstract(ABC):
         )
 
     def get_stats_return_dict(self, **kwargs: Any) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(self.get_stats(**kwargs)),
@@ -1343,7 +1272,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1356,7 +1284,6 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1370,31 +1297,11 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
             json.loads(
                 self.reevaluate_record(data_source_code, record_id, flags, **kwargs)
-            ),
-        )
-
-    def replace_record_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        # TODO: Document
-        """ """
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.replace_record(
-                    data_source_code, record_id, record_definition, flags, **kwargs
-                )
             ),
         )
 
@@ -1405,7 +1312,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO: Document
         """ """
         return cast(
             Dict[str, Any],
@@ -1421,7 +1327,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(self.why_entities(entity_id_1, entity_id_2, flags, **kwargs)),
@@ -1436,7 +1341,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1458,7 +1362,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        # TODO document
         """ """
         # TODO Is the cast needed?
         return cast(

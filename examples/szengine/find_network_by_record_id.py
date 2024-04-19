@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szerror import SzError
 
 BUILD_OUT_DEGREE = 2
 INSTANCE_NAME = "Example"
@@ -19,7 +19,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
@@ -28,5 +28,5 @@ try:
         RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

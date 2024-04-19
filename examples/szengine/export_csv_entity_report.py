@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szerror import SzError
 
 # Full list of available fields, modify to suit your preferences
 # csv_headers_full = "RESOLVED_ENTITY_ID,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA,LAST_SEEN_DT,NAME_DATA,ATTRIBUTE_DATA,IDENTIFIER_DATA,ADDRESS_DATA,PHONE_DATA,RELATIONSHIP_DATA,ENTITY_DATA,OTHER_DATA"
@@ -15,7 +15,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
@@ -30,5 +30,5 @@ try:
             export_out.write(export_record)
 
     sz_engine.close_export(export_handle)
-except SzException as err:
+except SzError as err:
     print(err)

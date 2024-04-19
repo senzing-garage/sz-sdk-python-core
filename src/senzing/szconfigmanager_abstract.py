@@ -32,7 +32,6 @@ class SzConfigManagerAbstract(ABC):
     # -------------------------------------------------------------------------
 
     PREFIX = "szconfigmanager."
-    # TODO: remove + concats for f-strings
     ID_MESSAGES = {
         4001: PREFIX + "add_config({0}, {1}) failed. Return code: {2}",
         4002: PREFIX + "destroy() failed. Return code: {0}",
@@ -43,7 +42,7 @@ class SzConfigManagerAbstract(ABC):
         4007: PREFIX + "replace_default_config_id({0}, {1}) failed. Return code: {2}",
         4008: PREFIX + "set_default_config_id({0}) failed. Return code: {1}",
         4009: PREFIX
-        + "SzConfigManager({0}, {1}) must have both module_name and ini_params nor neither.",
+        + "SzConfigManager({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------

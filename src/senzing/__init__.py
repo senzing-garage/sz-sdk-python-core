@@ -15,7 +15,7 @@ from . import (
     szdiagnostic,
     szengine,
     szengineflags,
-    szexception,
+    szerror,
     szhasher,
     szproduct,
 )
@@ -26,7 +26,7 @@ import_lists = [
     szdiagnostic.__all__,
     szengine.__all__,
     szengineflags.__all__,
-    szexception.__all__,
+    szerror.__all__,
     szhasher.__all__,
     szproduct.__all__,
 ]

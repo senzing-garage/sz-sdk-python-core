@@ -30,13 +30,15 @@ class SzDiagnosticAbstract(ABC):
 
     PREFIX = "szdiagnostic."
     ID_MESSAGES = {
-        4001: PREFIX + "check_database_performance({0}) failed. Return code: {1}",
+        4001: PREFIX + "check_datastore_performance({0}) failed. Return code: {1}",
         4002: PREFIX + "destroy() failed. Return code: {0}",
-        4003: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
-        4004: PREFIX + "purge_repository() failed. Return code: {0}",
-        4005: PREFIX + "reinitialize({0}) failed. Return Code: {1}",
-        4006: PREFIX
-        + "SzDiagnostic({0}, {1}) must have both instance_name and ini_settings nor neither.",
+        4003: PREFIX + "get_datastore_info() failed. Return code: {0}",
+        4004: PREFIX + "get_feature({0}) failed. Return code: {1}",
+        4005: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4006: PREFIX + "purge_repository() failed. Return code: {0}",
+        4007: PREFIX + "reinitialize({0}) failed. Return Code: {1}",
+        4008: PREFIX
+        + "SzDiagnostic({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------
@@ -44,9 +46,9 @@ class SzDiagnosticAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def check_database_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
+    def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
         """
-        The `check_database_performance` method performs inserts to determine rate of insertion.
+        The `check_datastore_performance` method performs inserts to determine rate of insertion.
 
         Args:
             seconds_to_run (int): Duration of the test in seconds.
@@ -56,7 +58,7 @@ class SzDiagnosticAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            szexception.SzException:
+            szexception.SzError:
 
         .. collapse:: Example:
 
@@ -88,7 +90,7 @@ class SzDiagnosticAbstract(ABC):
             sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
 
         Raises:
-            szexception.SzException:
+            szexception.SzError:
 
         .. collapse:: Example:
 
@@ -97,11 +99,32 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
-    # TODO Complete when added to Go helpers - GDEV-3801
+    # TODO docstring
+    @abstractmethod
+    def get_datastore_info(self, **kwargs: Any) -> str:
+        """
+        The `get_datastore_info` method will...
+
+        Example:
+
+        .. code-block:: python
+
+            sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
+
+        Raises:
+            szexception.SzError:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/szdiagnostic/
+                :linenos:
+                :language: python
+        """
+
     # NOTE This is included but not to be documented
-    # @abstractmethod
-    # def get_feature(self, feature_id: int, **kwargs: Any) -> str:
-    #     """"""
+    @abstractmethod
+    def get_feature(self, feature_id: int, **kwargs: Any) -> str:
+        """"""
 
     @abstractmethod
     def initialize(
@@ -112,7 +135,6 @@ class SzDiagnosticAbstract(ABC):
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
-        # TODO Add in config_id to docstring
         """
         The `initialize` method initializes the Senzing SzDiagnosis object.
         It must be called prior to any other calls.
@@ -130,12 +152,12 @@ class SzDiagnosticAbstract(ABC):
         Args:
             instance_name (str): A name for the auditing node, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            config_id (int):
+            config_id (int): `Optional:` Initialize with a specific configuration ID and not the current default.
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            szexception.SzException:
+            szexception.SzError:
 
         .. collapse:: Example:
 
@@ -172,7 +194,7 @@ class SzDiagnosticAbstract(ABC):
 
         Raises:
             TypeError: Incorrect datatype of input parameter.
-            szexception.SzException: config_id does not exist.
+            szexception.SzError: config_id does not exist.
 
         .. collapse:: Example:
 

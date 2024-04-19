@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szproduct
+from senzing import szdiagnostic
 from senzing.szerror import SzError
 
 INSTANCE_NAME = "Example"
@@ -13,18 +13,9 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-# Example 1
-
 try:
-    sz_product1 = szproduct.SzProduct(INSTANCE_NAME, SETTINGS)
-except SzError as err:
-    print(err)
-
-# Example 2
-
-try:
-    sz_product2 = szproduct.SzProduct()
-    sz_product2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_product2.destroy()
+    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
+    result = sz_diagnostic.get_feature(1)
+    print(result)
 except SzError as err:
     print(err)

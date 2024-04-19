@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szerror import SzError
 
 END_ENTITY_ID = 200013
 INSTANCE_NAME = "Example"
@@ -12,7 +12,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 START_ENTITY_ID = 200003
 
@@ -23,5 +23,5 @@ try:
         START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
     )
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)

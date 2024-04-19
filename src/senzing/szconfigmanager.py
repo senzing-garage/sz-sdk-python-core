@@ -22,7 +22,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, cdll
 from typing import Any, Dict, Union
 
 from .szconfigmanager_abstract import SzConfigManagerAbstract
-from .szexception import SzException, new_szexception
+from .szerror import SzError, new_szexception
 from .szhelpers import (
     FreeCResources,
     as_c_char_p,
@@ -41,7 +41,6 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
 SENZING_PRODUCT_ID = "5041"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
-# CALLER_SKIP = 6
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -113,7 +112,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         sz_configmgr.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzException**.
+    Just specifying one or the other results in a **SzError**.
 
     Parameters:
         instance_name:
@@ -127,7 +126,7 @@ class SzConfigManager(SzConfigManagerAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzException: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -177,7 +176,8 @@ class SzConfigManager(SzConfigManagerAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            raise SzException("Failed to load the G2 library") from err
+            # TODO Change to Sz library when the libG2.so is changed in a build
+            raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2configmgr.h
@@ -240,7 +240,6 @@ class SzConfigManager(SzConfigManagerAbstract):
             SENZING_PRODUCT_ID,
             error_id,
             self.ID_MESSAGES,
-            # CALLER_SKIP,
             *args,
         )
 
@@ -290,11 +289,11 @@ class SzConfigManager(SzConfigManagerAbstract):
                 raise self.new_exception(4004, result.return_codes)
             return as_python_str(result.response)
 
-    # TODO What if no config created yet, need to use as_python_int()?
     def get_default_config_id(self, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4005, result.return_code)
+        # TODO int needed?
         return int(result.response)
 
     @catch_ctypes_exceptions

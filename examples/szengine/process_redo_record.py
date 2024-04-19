@@ -3,7 +3,7 @@
 from sys import exit
 
 from senzing import szengine
-from senzing.szexception import SzException
+from senzing.szerror import SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -12,7 +12,7 @@ SETTINGS = {
         "RESOURCEPATH": "/opt/senzing/g2/resources",
         "SUPPORTPATH": "/opt/senzing/data",
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/var/opt/senzing/G2C.db"},
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
@@ -24,5 +24,5 @@ try:
 
     result = sz_engine.process_redo_record(record)
     print(result)
-except SzException as err:
+except SzError as err:
     print(err)
