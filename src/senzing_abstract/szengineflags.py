@@ -110,7 +110,7 @@ class SzEngineFlags(IntFlag):
     SZ_SEARCH_INCLUDE_MATCH_KEY_DETAILS = SZ_ENTITY_OPTION_INCLUDE_MATCH_KEY_DETAILS
 
     # Flag for returning with info responses.
-    SZ_WITH_INFO = 1 << 63
+    SZ_WITH_INFO = 1 << 62
 
     # Flags for exporting entity data.
 
@@ -216,3 +216,24 @@ class SzEngineFlags(IntFlag):
     )
 
     SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS = SZ_SEARCH_BY_ATTRIBUTES_ALL
+
+    # -----------------------------------------------------------------------------
+    # non-SzEngineFlags flags
+    # -----------------------------------------------------------------------------
+
+    SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION = 0
+    SZ_NO_FLAGS = 0
+    SZ_NO_LOGGING = 0
+    SZ_VERBOSE_LOGGING = 1
+    SZ_WITHOUT_INFO = 0
+
+
+# -----------------------------------------------------------------------------
+# Additional default values
+# TODO:  Not sure if these values belong in this file.
+# -----------------------------------------------------------------------------
+
+SZ_NO_ATTRIBUTES = ""
+SZ_NO_EXCLUSIONS = ""
+SZ_NO_REQUIRED_DATASOURCES = ""
+SZ_NO_SEARCH_PROFILE = ""

@@ -15,7 +15,7 @@ __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 # -----------------------------------------------------------------------------
-# G2DiagnosticAbstract
+# SzDiagnosticAbstract
 # -----------------------------------------------------------------------------
 
 
@@ -62,13 +62,13 @@ class SzDiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/check_db_perf.py
+            .. literalinclude:: ../../examples/szdiagnostic/check_datastore_performance.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szdiagnostic/check_db_perf.txt
+            .. literalinclude:: ../../examples/szdiagnostic/check_datastore_performance.txt
                 :linenos:
                 :language: json
         """
@@ -83,18 +83,12 @@ class SzDiagnosticAbstract(ABC):
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
-
         Raises:
             szexception.SzError:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -105,20 +99,20 @@ class SzDiagnosticAbstract(ABC):
         """
         The `get_datastore_info` method will...
 
-        Example:
-
-        .. code-block:: python
-
-            sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
-
         Raises:
             szexception.SzError:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/
+            .. literalinclude:: ../../examples/szdiagnostic/get_datastore_info.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szdiagnostic/get_datastore_info.txt
+                :linenos:
+                :language: json
         """
 
     # NOTE This is included but not to be documented
@@ -143,12 +137,6 @@ class SzDiagnosticAbstract(ABC):
         the constructor will automatically call the `initialize()` method.
         In this case, a separate call to `initialize()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_diagnosis = szdiagnosis.SzDiagnosis(instance_name, settings)
-
         Args:
             instance_name (str): A name for the auditing node, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
@@ -161,7 +149,7 @@ class SzDiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_init_and_destroy.py
+            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -198,7 +186,7 @@ class SzDiagnosticAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/sziagnostic/szdiagnostic_reinit.py
+            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_reinitialize.py
                 :linenos:
                 :language: python
         """

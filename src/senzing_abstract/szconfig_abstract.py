@@ -4,7 +4,7 @@
 szconfig_abstract.py is the abstract class for all implementations of szconfig.
 """
 
-# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
+# TODO: Determine specific SzErrors, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Union
@@ -17,7 +17,7 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-08"
 
 # -----------------------------------------------------------------------------
-# G2ConfigAbstract
+# SzConfigAbstract
 # -----------------------------------------------------------------------------
 
 
@@ -128,11 +128,7 @@ class SzConfigAbstract(ABC):
 
     @abstractmethod
     def delete_data_source(
-        self,
-        config_handle: int,
-        # input_json: Union[str, Dict[Any, Any]],
-        data_source_code: str,
-        **kwargs: Any
+        self, config_handle: int, data_source_code: str, **kwargs: Any
     ) -> None:
         """
         The `delete_data_source` method removes a data source from an existing in-memory configuration.
@@ -161,18 +157,12 @@ class SzConfigAbstract(ABC):
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_config = szconfig.SzConfig(module_name, ini_params)
-
         Raises:
-            g2exception.G2Exception:
+            szerror.SzError:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfig/szconfig_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfig/szconfig_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -193,19 +183,19 @@ class SzConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfig/save.py
+            .. literalinclude:: ../../examples/szconfig/export_config.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szconfig/save.txt
+            .. literalinclude:: ../../examples/szconfig/export_config.txt
                 :linenos:
                 :language: json
 
-            **Create, save, load, and close example**
+            **Create, export, import, and close example**
 
-            .. literalinclude:: ../../examples/szconfig/create_save_load_close.py
+            .. literalinclude:: ../../examples/szconfig/create_export_import_close.py
                 :linenos:
                 :language: python
         """
@@ -227,13 +217,13 @@ class SzConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfig/list_data_sources.py
+            .. literalinclude:: ../../examples/szconfig/get_data_sources.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szconfig/list_data_sources.txt
+            .. literalinclude:: ../../examples/szconfig/get_data_sources.txt
                 :linenos:
                 :language: json
         """
@@ -254,12 +244,6 @@ class SzConfigAbstract(ABC):
         the constructor will automatically call the `initialize()` method.
         In this case, a separate call to `initialize()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_config = szconfig.SzConfig(instance_name, settings)
-
         Args:
             instance_name (str): A short name given to this instance of the SzConfig object, to help identify it within system logs.
             settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
@@ -270,7 +254,7 @@ class SzConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfig/szconfig_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfig/szconfig_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -297,13 +281,13 @@ class SzConfigAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfig/load.py
+            .. literalinclude:: ../../examples/szconfig/import_config.py
                 :linenos:
                 :language: python
 
             **Create, save, load, and close**
 
-            .. literalinclude:: ../../examples/szconfig/create_save_load_close.py
+            .. literalinclude:: ../../examples/szconfig/create_export_import_close.py
                 :linenos:
                 :language: python
         """

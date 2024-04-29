@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2hasher_abstract.py
+TODO: szhasher_abstract.py
 """
 
 from abc import ABC, abstractmethod
@@ -9,26 +9,26 @@ from typing import Any
 
 # Metadata
 
-__all__ = ["G2HasherAbstract"]
+__all__ = ["SzHasherAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
 # -----------------------------------------------------------------------------
-# G2HasherAbstract
+# SzHasherAbstract
 # -----------------------------------------------------------------------------
 
 
-class G2HasherAbstract(ABC):
+class SzHasherAbstract(ABC):
     """
-    G2 hasher module access library
+    SzHasher module access library
     """
 
     # -------------------------------------------------------------------------
     # Messages
     # -------------------------------------------------------------------------
 
-    PREFIX = "g2hasher."
+    PREFIX = "szhasher."
     ID_MESSAGES = {0: ""}
 
     # -------------------------------------------------------------------------

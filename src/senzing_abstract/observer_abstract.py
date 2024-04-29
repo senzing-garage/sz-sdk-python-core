@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 __all__ = ["ObserverAbstract"]
 
 # -----------------------------------------------------------------------------
-# G2ConfigAbstract
+# ObserverAbstract
 # -----------------------------------------------------------------------------
 
 

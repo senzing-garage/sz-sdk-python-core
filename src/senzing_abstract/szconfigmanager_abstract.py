@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 
 """
-szconfigmgr_abstract.py is the abstract class for all implementations of szconfigmgr.
+szconfigmanager_abstract.py is the abstract class for all implementations of szconfigmanager.
 """
 
-# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
+# TODO: Determine specific SzErrors, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Union
@@ -17,14 +17,14 @@ __date__ = "2023-10-30"
 __updated__ = "2023-11-08"
 
 # -----------------------------------------------------------------------------
-# G2ConfigMgrAbstract
+# SzConfigManagerAbstract
 # -----------------------------------------------------------------------------
 
 
 class SzConfigManagerAbstract(ABC):
     """
-    SzConfigMgrAbstract is the definition of the Senzing Python API that is
-    implemented by packages such as szconfigmgr.py.
+    SzConfigManagerAbstract is the definition of the Senzing Python API that is
+    implemented by packages such as szconfigmanager.py.
     """
 
     # -------------------------------------------------------------------------
@@ -71,7 +71,7 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/add_config.py
+            .. literalinclude:: ../../examples/szconfigmanager/add_config.py
                 :linenos:
                 :language: python
         """
@@ -79,25 +79,19 @@ class SzConfigManagerAbstract(ABC):
     @abstractmethod
     def destroy(self, **kwargs: Any) -> None:
         """
-        The `destroy` method will destroy and perform cleanup for the Senzing SzConfigMgr object.
+        The `destroy` method will destroy and perform cleanup for the Senzing SzConfigManager object.
         It should be called after all other calls are complete.
 
         **Note:** If the `SzConfigManager` constructor was called with parameters,
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_configmgr = szconfigmgr.SzConfigMgr(module_name, ini_params)
-
         Raises:
             TypeError: Incorrect datatype of input parameter.
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -118,13 +112,13 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/get_config.py
+            .. literalinclude:: ../../examples/szconfigmanager/get_config.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szconfigmgr/get_config.txt
+            .. literalinclude:: ../../examples/szconfigmanager/get_config.txt
                 :linenos:
                 :language: json
         """
@@ -142,13 +136,13 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/get_config_list.py
+            .. literalinclude:: ../../examples/szconfigmanager/get_config_list.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szconfigmgr/get_config_list.txt
+            .. literalinclude:: ../../examples/szconfigmanager/get_config_list.txt
                 :linenos:
                 :language: json
         """
@@ -166,7 +160,7 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/get_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmanager/get_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -180,18 +174,12 @@ class SzConfigManagerAbstract(ABC):
         **kwargs: Any
     ) -> None:
         """
-        The `initialize` method initializes the Senzing SzConfigMgr object.
+        The `initialize` method initializes the Senzing SzConfigManager object.
         It must be called prior to any other calls.
 
-        **Note:** If the SzConfigMgr constructor is called with parameters,
+        **Note:** If the SzConfigManager constructor is called with parameters,
         the constructor will automatically call the `initialize()` method.
         In this case, a separate call to `initialize()` is not needed.
-
-        Example:
-
-        .. code-block:: python
-
-            sz_configmgr = szconfigmgr.SzConfigMgr(module_name, ini_params)
 
         Args:
             instance_name (str): A short name given to this instance of the SzProduct object, to help identify it within system logs.
@@ -203,7 +191,7 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_init_and_destroy.py
+            .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -227,7 +215,7 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/replace_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmanager/replace_default_config_id.py
                 :linenos:
                 :language: python
         """
@@ -246,7 +234,7 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmgr/set_default_config_id.py
+            .. literalinclude:: ../../examples/szconfigmanager/set_default_config_id.py
                 :linenos:
                 :language: python
         """

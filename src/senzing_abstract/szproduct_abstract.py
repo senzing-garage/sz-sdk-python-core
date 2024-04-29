@@ -4,7 +4,7 @@
 szproduct_abstract.py is the abstract class for all implementations of szproduct.
 """
 
-# TODO: Determine specific G2Exceptions, Errors for "Raises:" documentation.
+# TODO: Determine specific SzError, Errors for "Raises:" documentation.
 import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Union, cast
@@ -53,18 +53,12 @@ class SzProductAbstract(ABC):
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_product = szproduct.SzProduct(instance_name, settings)
-
         Raises:
             szexception.SzError:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szproduct/szproduct_init_and_destroy.py
+            .. literalinclude:: ../../examples/szproduct/szproduct_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -85,12 +79,6 @@ class SzProductAbstract(ABC):
         the constructor will automatically call the `initialize()` method.
         In this case, a separate call to `initialize()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_product = szproduct.SzProduct(instance_name, settings)
-
         Args:
             instance_name (str): A short name given to this instance of the SzProduct object, to help identify it within system logs.
             settings (str): A JSON string containing configuration parameters.
@@ -101,7 +89,7 @@ class SzProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szproduct/szproduct_init_and_destroy.py
+            .. literalinclude:: ../../examples/szproduct/szproduct_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -109,8 +97,6 @@ class SzProductAbstract(ABC):
     @abstractmethod
     def get_license(self, **kwargs: Any) -> str:
         """
-        .. _license:
-
         The `get_license` method retrieves information about the currently used license by the Senzing API.
 
         Returns:
@@ -118,13 +104,13 @@ class SzProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szproduct/license.py
+            .. literalinclude:: ../../examples/szproduct/get_license.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szproduct/license.txt
+            .. literalinclude:: ../../examples/szproduct/get_license.txt
                 :linenos:
                 :language: json
         """
@@ -132,8 +118,6 @@ class SzProductAbstract(ABC):
     @abstractmethod
     def get_version(self, **kwargs: Any) -> str:
         """
-        .. _version:
-
         The `get_version` method returns the version of the Senzing API.
 
         Returns:
@@ -141,13 +125,13 @@ class SzProductAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szproduct/version.py
+            .. literalinclude:: ../../examples/szproduct/get_version.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szproduct/version.txt
+            .. literalinclude:: ../../examples/szproduct/get_version.txt
                 :linenos:
                 :language: json
         """
@@ -159,11 +143,10 @@ class SzProductAbstract(ABC):
     def license_as_dict(self, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
-        :ref:`license<license>`.
+        :meth:`senzing_abstract.SzProductAbstract.get_license`
 
         Returns:
             Dict[str, Any]: A dictionary containing Senzing license metadata.
-
         """
         return cast(
             Dict[str, Any],
@@ -173,11 +156,10 @@ class SzProductAbstract(ABC):
     def version_as_dict(self, **kwargs: Any) -> Dict[str, Any]:
         """
         A convenience method for
-        :ref:`version<version>`.
+        :meth:`senzing_abstract.SzProductAbstract.get_version`
 
         Returns:
             Dict[str, Any]: A dictionary containing metadata about the Senzing Engine version being used.
-
         """
         return cast(
             Dict[str, Any],

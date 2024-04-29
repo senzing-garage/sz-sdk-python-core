@@ -19,7 +19,7 @@ from .szengineflags import SzEngineFlags
 
 # Metadata
 
-# __all__ = ["G2EngineAbstract", "WithInfoResponsesAbstract"]
+# __all__ = ["SzEngineAbstract", "WithInfoResponsesAbstract"]
 __all__ = ["SzEngineAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
@@ -134,6 +134,12 @@ class SzEngineAbstract(ABC):
             .. literalinclude:: ../../examples/szengine/add_record.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/add_record.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -176,6 +182,12 @@ class SzEngineAbstract(ABC):
             .. literalinclude:: ../../examples/szengine/count_redo_records.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/count_redo_records.txt
+                :linenos:
+                :language: guess
         """
 
     @abstractmethod
@@ -205,6 +217,12 @@ class SzEngineAbstract(ABC):
 
             .. literalinclude:: ../../examples/szengine/delete_record.py
                 :linenos:
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/delete_record.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -217,18 +235,12 @@ class SzEngineAbstract(ABC):
         the destructor will automatically call the destroy() method.
         In this case, a separate call to `destroy()` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_engine = szengine.SzEngine(instance_name, settings)
-
         Raises:
             szexception.SzError:
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/szengine_init_and_destroy.py
+            .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -268,7 +280,7 @@ class SzEngineAbstract(ABC):
 
             .. literalinclude:: ../../examples/szengine/export_csv_fetch_close.txt
                 :linenos:
-                :language: json
+                :language: guess
         """
 
     @abstractmethod
@@ -708,13 +720,13 @@ class SzEngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/stats.py
+            .. literalinclude:: ../../examples/szengine/get_stats.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szengine/stats.txt
+            .. literalinclude:: ../../examples/szengine/get_stats.txt
                 :linenos:
                 :language: json
         """
@@ -806,12 +818,6 @@ class SzEngineAbstract(ABC):
         the constructor will automatically call the ``initialize()`` method.
         In this case, a separate call to ``initialize()`` is not needed.
 
-        Example:
-
-        .. code-block:: python
-
-            sz_engine = szengine.SzEngine(instance_name, settings)
-
         Args:
             instance_name (str): A short name given to this instance of the SzEngine object, to help identify it within system logs.
             settings (str): A JSON string containing configuration parameters.
@@ -823,7 +829,7 @@ class SzEngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/szengine_init_and_destroy.py
+            .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -854,9 +860,15 @@ class SzEngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/prime_engine.py
+            .. literalinclude:: ../../examples/szengine/process_redo_record.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/process_redo_record.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -875,6 +887,12 @@ class SzEngineAbstract(ABC):
             .. literalinclude:: ../../examples/szengine/reevaluate_entity.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/reevaluate_entity.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -896,9 +914,15 @@ class SzEngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/reevaluate_entity.py
+            .. literalinclude:: ../../examples/szengine/reevaluate_record.py
                 :linenos:
                 :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/reevaluate_record.txt
+                :linenos:
+                :language: json
         """
 
     @abstractmethod
@@ -906,7 +930,7 @@ class SzEngineAbstract(ABC):
         """
         The `reinitialize` method reinitializes the Senzing SzEngine object using a specific configuration
         identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmgr.get_config_list`.
+        `szconfigmanager.get_config_list`.
 
         Args:
             config_id (int): The configuration ID used for the initialization
@@ -917,7 +941,7 @@ class SzEngineAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/szengine_reinit.py
+            .. literalinclude:: ../../examples/szengine/szengine_reinitialize.py
                 :linenos:
                 :language: python
         """
@@ -991,6 +1015,40 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
+    def why_record_in_entity(
+        self,
+        data_source_code: str,
+        record_id: str,
+        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
+        **kwargs: Any,
+    ) -> str:
+        """
+        The `why_record_in_entity` ... TODO:
+
+        Args:
+            data_source_code (str): Identifies the provenance of the data.
+            record_id (str): The unique identifier within the records of the same data source.
+            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_ENTITY_DEFAULT_FLAGS.
+
+        Returns:
+            str: A JSON document.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/szengine/why_record_in_entity.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+        .. literalinclude:: ../../examples/szengine/why_record_in_entity.txt
+                :linenos:
+                :language: json
+        """
+
+    @abstractmethod
     def why_records(
         self,
         data_source_code_1: str,
@@ -1027,16 +1085,6 @@ class SzEngineAbstract(ABC):
                 :linenos:
                 :language: json
         """
-
-    @abstractmethod
-    def why_record_in_entity(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> str:
-        """ """
 
     # -------------------------------------------------------------------------
     # Convenience methods
