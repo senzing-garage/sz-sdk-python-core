@@ -20,16 +20,18 @@ import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict, Optional, Union
 
-from .szdiagnostic_abstract import SzDiagnosticAbstract
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
     FreeCResources,
+    SzDiagnosticAbstract,
+    SzError,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata

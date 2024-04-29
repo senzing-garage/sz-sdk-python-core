@@ -31,10 +31,10 @@ from ctypes import (
 )
 from typing import Any, Dict, Union
 
-from .szconfig_abstract import SzConfigAbstract
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
     FreeCResources,
+    SzConfigAbstract,
+    SzError,
     as_c_char_p,
     as_python_int,
     as_python_str,
@@ -42,7 +42,9 @@ from .szhelpers import (
     as_uintptr_t,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata

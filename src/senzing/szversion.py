@@ -5,12 +5,24 @@ TODO: szversion.py
 
 import datetime
 import json
+import traceback
 
-from .szerror import SzError, get_location
+from senzing import SzError
+
 from .szproduct import SzProduct
 
 SENZING_VERSION_MINIMUM = "3.8.0"
 SENZING_VERSION_MAXIMUM = "5.0.0"
+
+
+def get_location() -> str:
+    """
+    Determine caller.
+
+    :meta private:
+    """
+    stack = traceback.format_stack()
+    return stack[0].replace("\n   ", "", 1).rstrip()
 
 
 def normalize_semantic_version(semantic_version: str) -> int:

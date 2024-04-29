@@ -16,9 +16,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import szconfig, szconfigmanager, szengine
-from senzing.szengineflags import SzEngineFlags
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szconfig, szconfigmanager, szengine
 
 # AC - Temp disables to get changes in for move to senzing garage
 # pylint: disable=C0302

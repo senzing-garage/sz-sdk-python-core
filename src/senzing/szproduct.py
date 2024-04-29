@@ -21,15 +21,16 @@ import os
 from ctypes import c_char_p, c_int, c_longlong, cdll
 from typing import Any, Dict, Union
 
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
+    SzError,
+    SzProductAbstract,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
-from .szproduct_abstract import SzProductAbstract
 
 # Metadata
 

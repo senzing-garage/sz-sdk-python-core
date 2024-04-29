@@ -20,10 +20,12 @@ from .szerror import (
     SzUnrecoverableError,
     new_szexception,
 )
+from .szhasher_abstract import SzHasherAbstract
 from .szproduct_abstract import SzProductAbstract
 
 __all__ = [
     "EXCEPTION_MAP",
+    "new_szexception",
     "SzBadInputError",
     "SzConfigAbstract",
     "SzConfigManagerAbstract",
@@ -34,6 +36,7 @@ __all__ = [
     "SzEngineAbstract",
     "SzEngineFlags",
     "SzError",
+    "SzHasherAbstract",
     "SzLicenseError",
     "SzNotFoundError",
     "SzNotInitializedError",
@@ -43,5 +46,4 @@ __all__ = [
     "SzUnhandledError",
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
-    "new_szexception",
 ]

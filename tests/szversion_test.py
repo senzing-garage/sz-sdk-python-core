@@ -1,6 +1,6 @@
 import pytest
 
-from . import szexception, szversion
+from senzing import szerror, szversion
 
 # -----------------------------------------------------------------------------
 # g2version testcases
@@ -42,5 +42,5 @@ def test_supports_senzingapi_version_exceptions():
     ]
 
     for test in tests:
-        with pytest.raises(szexception.G2Exception):
+        with pytest.raises(szerror.SzError):
             szversion.supports_senzingapi_version(test[0], test[1], test[2])

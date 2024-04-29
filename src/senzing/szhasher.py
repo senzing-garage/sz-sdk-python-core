@@ -8,14 +8,13 @@ import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
 from typing import Any
 
-from .szerror import SzError, new_szexception
-from .szhasher_abstract import G2HasherAbstract
-from .szhelpers import find_file_in_path
+from senzing import SzError, SzHasherAbstract, find_file_in_path, new_szexception
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["G2Hasher"]
+__all__ = ["SzHasher"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
@@ -32,7 +31,7 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 
-class G2Hasher(G2HasherAbstract):
+class SzHasher(SzHasherAbstract):
     """
     G2 product module access library
     """
