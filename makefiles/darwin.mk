@@ -1,13 +1,19 @@
-# Makefile extensions for linux.
+# Makefile extensions for darwin.
 
 # -----------------------------------------------------------------------------
 # Variables
 # -----------------------------------------------------------------------------
 
+SENZING_DIR ?= /opt/senzing/g2
+SENZING_TOOLS_SENZING_DIRECTORY ?= $(SENZING_DIR)
+
+LD_LIBRARY_PATH := $(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
+DYLD_LIBRARY_PATH := $(LD_LIBRARY_PATH)
+
 SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
 
 # -----------------------------------------------------------------------------
-# OS-ARCH specific targets
+# OS specific targets
 # -----------------------------------------------------------------------------
 
 .PHONY: clean-osarch-specific
@@ -25,7 +31,7 @@ dependencies-osarch-specific:
 
 .PHONY: hello-world-osarch-specific
 hello-world-osarch-specific:
-	@echo "Hello World, from linux."
+	@echo "Hello World, from darwin."
 
 
 .PHONY: setup-osarch-specific
@@ -37,27 +43,19 @@ setup-osarch-specific:
 .PHONY: test-osarch-specific
 test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
-	@pytest tests/ --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
-#	@echo "--- Test examples ----------------------------------------------------"
-#	@pytest examples/ --verbose --capture=no --cov=src/senzing
-	@echo "--- Test examples using unittest -------------------------------------"
-	python3 -m unittest examples/szconfig/*.py
-	python3 -m unittest examples/szconfigmgr/*.py
-	python3 -m unittest examples/szdiagnostic/*.py
-	python3 -m unittest examples/szengine/*.py
-	python3 -m unittest examples/szproduct/*.py
-
-
+	@pytest tests/ --verbose --capture=no --cov=src/senzing
+	@echo "--- Test examples ----------------------------------------------------"
+	@pytest examples/ --verbose --capture=no --cov=src/senzing
 
 
 .PHONY: view-sphinx-osarch-specific
 view-sphinx-osarch-specific:
-	@xdg-open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
+	@open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
 
 # -----------------------------------------------------------------------------
 # Makefile targets supported only by this platform.
 # -----------------------------------------------------------------------------
 
-.PHONY: only-linux
-only-linux:
-	@echo "Only linux has this Makefile target."
+.PHONY: only-darwin
+only-darwin:
+	@echo "Only darwin has this Makefile target."
