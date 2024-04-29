@@ -16,8 +16,8 @@ def szconfigmanager_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = szconfigmanager.SzConfigManager(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     return result
 
@@ -27,8 +27,8 @@ def szdiagnostic_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = szdiagnostic.SzDiagnostic(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     return result
 
@@ -64,8 +64,8 @@ def test_exception(sz_diagnostic):
 def test_constructor(engine_vars):
     """Test constructor."""
     actual = szdiagnostic.SzDiagnostic(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
@@ -73,8 +73,8 @@ def test_constructor(engine_vars):
 def test_constructor_dict(engine_vars):
     """Test constructor."""
     actual = szdiagnostic.SzDiagnostic(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS_DICT"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
     )
     assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
@@ -85,7 +85,7 @@ def test_constructor_bad_module_name(engine_vars):
     with pytest.raises(szerror.SzError):
         actual = szdiagnostic.SzDiagnostic(
             bad_module_name,
-            engine_vars["INI_PARAMS"],
+            engine_vars["SETTINGS"],
         )
         assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
@@ -95,7 +95,7 @@ def test_constructor_bad_ini_params(engine_vars):
     bad_ini_params = ""
     with pytest.raises(szerror.SzError):
         actual = szdiagnostic.SzDiagnostic(
-            engine_vars["MODULE_NAME"],
+            engine_vars["INSTANCE_NAME"],
             bad_ini_params,
         )
         assert isinstance(actual, szdiagnostic.SzDiagnostic)
@@ -185,14 +185,14 @@ def test_total_system_memory(sz_diagnostic):
 
 def test_init_and_destroy(sz_diagnostic, engine_vars):
     """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
-    sz_diagnostic.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
+    sz_diagnostic.init(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
     sz_diagnostic.destroy()
 
 
 # def test_init_and_destroy_again(sz_diagnostic, engine_vars):
 #     """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
 #     # TODO: Doesn't work
-#     sz_diagnostic.init(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], 0)
+#     sz_diagnostic.init(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
 #     sz_diagnostic.destroy()
 
 
@@ -202,6 +202,6 @@ def test_init_and_destroy(sz_diagnostic, engine_vars):
 #     default_config_id = sz_config_manager.get_default_config_id()
 #     sz_diagnostic_2 = g2diagnostic.G2Diagnostic()
 #     sz_diagnostic_2.init_with_config_id(
-#         engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"], default_config_id, 0
+#         engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], default_config_id, 0
 #     )
 #     sz_diagnostic_2.destroy()

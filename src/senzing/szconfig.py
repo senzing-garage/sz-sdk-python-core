@@ -29,7 +29,8 @@ from ctypes import (
     c_void_p,
     cdll,
 )
-from typing import Any, Dict, Union
+from types import TracebackType
+from typing import Any, Dict, Type, Union
 
 from senzing import (
     FreeCResources,
@@ -241,6 +242,22 @@ class SzConfig(SzConfigAbstract):
         """Destructor"""
         if self.auto_init:
             self.destroy()
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Exception helpers

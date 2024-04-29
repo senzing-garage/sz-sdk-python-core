@@ -13,7 +13,7 @@ def engine_vars_fixture():
     Can be used by all pytest tests.
     """
 
-    result = {"MODULE_NAME": "Testing", "VERBOSE_LOGGING": 0}
+    result = {"INSTANCE_NAME": "Testing", "VERBOSE_LOGGING": 0}
 
     linux_config = {
         "PIPELINE": {
@@ -45,16 +45,16 @@ def engine_vars_fixture():
     run_platform = platform.system()
 
     if run_platform == "Linux":
-        result["INI_PARAMS"] = json.dumps(linux_config)
-        result["INI_PARAMS_DICT"] = linux_config
+        result["SETTINGS"] = json.dumps(linux_config)
+        result["SETTINGS_DICT"] = linux_config
     elif run_platform == "Darwin":
-        result["INI_PARAMS"] = json.dumps(darwin_config)
-        result["INI_PARAMS_DICT"] = darwin_config
+        result["SETTINGS"] = json.dumps(darwin_config)
+        result["SETTINGS_DICT"] = darwin_config
     elif run_platform == "Windows":
-        result["INI_PARAMS"] = json.dumps(windows_config)
-        result["INI_PARAMS_DICT"] = windows_config
+        result["SETTINGS"] = json.dumps(windows_config)
+        result["SETTINGS_DICT"] = windows_config
     else:
-        result["INI_PARAMS"] = json.dumps({})
-        result["INI_PARAMS_DICT"] = {}
+        result["SETTINGS"] = json.dumps({})
+        result["SETTINGS_DICT"] = {}
 
     return result

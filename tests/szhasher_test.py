@@ -13,7 +13,7 @@ def szhasher_instance_fixture(engine_vars):
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = szhasher.SzHasher(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"])
+    result = szhasher.SzHasher(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"])
     return result
 
 

@@ -12,10 +12,10 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-MODULE_NAME = "Example"
+INSTANCE_NAME = "Example"
 
 try:
-    sz_config = szconfig.SzConfig(MODULE_NAME, SETTINGS)
+    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
     config_handle = sz_config.create_config()  # Create first in-memory.
     config = sz_config.export_config(config_handle)  # Save in-memory to string.
     sz_config.close_config(config_handle)

@@ -17,8 +17,8 @@ def szproduct_fixture(engine_vars):
     engine_vars is returned from conftest.py.
     """
     result = szproduct.SzProduct(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     return result
 
@@ -72,8 +72,8 @@ def test_exception(sz_product):
 def test_constructor(engine_vars):
     """Test constructor."""
     actual = szproduct.SzProduct(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     assert isinstance(actual, szproduct.SzProduct)
 
@@ -84,7 +84,7 @@ def test_constructor_bad_module_name(engine_vars):
     with pytest.raises(szerror.SzError):
         actual = szproduct.SzProduct(
             bad_module_name,
-            engine_vars["INI_PARAMS"],
+            engine_vars["SETTINGS"],
         )
         assert isinstance(actual, szproduct.SzProduct)
 
@@ -94,7 +94,7 @@ def test_constructor_bad_ini_params(engine_vars):
     bad_ini_params = ""
     with pytest.raises(szerror.SzError):
         actual = szproduct.SzProduct(
-            engine_vars["MODULE_NAME"],
+            engine_vars["INSTANCE_NAME"],
             bad_ini_params,
         )
         assert isinstance(actual, szproduct.SzProduct)

@@ -438,7 +438,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_int)
 
     LONG_RECORD = 300
-    MODULE_NAME = pathlib.Path(sys.argv[0]).stem
+    INSTANCE_NAME = pathlib.Path(sys.argv[0]).stem
     PAYLOAD_RECORD = 0
     PAYLOAD_START_TIME = 1
     WORK_STATS_INTERVAL = 60
@@ -600,11 +600,9 @@ if __name__ == "__main__":
     )
 
     errors_file = (
-        f'{MODULE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
+        f'{INSTANCE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
     )
-    withinfo_file = (
-        f'{MODULE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
-    )
+    withinfo_file = f'{INSTANCE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
     # If running in a container use /data/
     if os.getenv("SENZING_DOCKER_LAUNCHED"):
         errors_file = f"/data/{errors_file}"
