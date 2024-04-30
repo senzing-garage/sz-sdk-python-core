@@ -1,7 +1,8 @@
 import json
+from ctypes import ArgumentError
 
 import pytest
-from pytest_schema import Or, schema
+from pytest_schema import Optional, Or, schema
 from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import (
@@ -137,7 +138,7 @@ def test_get_config_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(ArgumentError):
         sz_config_manager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -194,7 +195,7 @@ def test_replace_default_config_id_bad_new_id_type(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_config_manager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(ArgumentError):
         sz_config_manager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -226,7 +227,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
     new_default_config_id = sz_config_manager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(TypeError):
+    with pytest.raises(ArgumentError):
         sz_config_manager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -275,7 +276,7 @@ def test_set_default_config_id_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(ArgumentError):
         sz_config_manager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -327,7 +328,7 @@ def test_context_managment(engine_vars) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config", scope="module")
+@pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
 def szconfig_fixture(engine_vars):
     """
     Single engine object to use for all tests.
@@ -366,6 +367,7 @@ config_schema = {
     "G2_CONFIG": {
         "CFG_ATTR": [
             {
+                Optional("ADVANCED"): Or(str, None),
                 "ATTR_ID": int,
                 "ATTR_CODE": str,
                 "ATTR_CLASS": str,
@@ -373,16 +375,15 @@ config_schema = {
                 "FELEM_CODE": Or(str, None),
                 "FELEM_REQ": str,
                 "DEFAULT_VALUE": Or(str, None),
-                "ADVANCED": str,
-                "INTERNAL": str,
+                "INTERNAL": Or(str, None),
             },
         ],
         "CFG_CFBOM": [
             {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_CFCALL": [
@@ -390,7 +391,6 @@ config_schema = {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_ID": int,
-                "EXEC_ORDER": int,
             },
         ],
         "CFG_CFRTN": [
@@ -399,7 +399,7 @@ config_schema = {
                 "CFUNC_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_RTNVAL": str,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
                 "SAME_SCORE": int,
                 "CLOSE_SCORE": int,
                 "LIKELY_SCORE": int,
@@ -412,8 +412,6 @@ config_schema = {
                 "CFUNC_ID": int,
                 "CFUNC_CODE": str,
                 "CFUNC_DESC": str,
-                "FUNC_LIB": str,
-                "FUNC_VER": str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
@@ -424,8 +422,8 @@ config_schema = {
             {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_DFCALL": [
@@ -433,7 +431,6 @@ config_schema = {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
                 "DFUNC_ID": int,
-                "EXEC_ORDER": int,
             },
         ],
         "CFG_DFUNC": [
@@ -441,8 +438,6 @@ config_schema = {
                 "DFUNC_ID": int,
                 "DFUNC_CODE": str,
                 "DFUNC_DESC": str,
-                "FUNC_LIB": str,
-                "FUNC_VER": str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
@@ -454,26 +449,16 @@ config_schema = {
                 "DSRC_ID": int,
                 "DSRC_CODE": str,
                 "DSRC_DESC": str,
-                "DSRC_RELY": int,
                 "RETENTION_LEVEL": str,
-                "CONVERSATIONAL": str,
             },
         ],
         "CFG_DSRC_INTEREST": [],
-        "CFG_ECLASS": [
-            {
-                "ECLASS_ID": int,
-                "ECLASS_CODE": str,
-                "ECLASS_DESC": str,
-                "RESOLVE": str,
-            },
-        ],
         "CFG_EFBOM": [
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
                 "FELEM_REQ": str,
             },
         ],
@@ -481,9 +466,9 @@ config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
+                Optional("FELEM_ID"): int,
                 "EFUNC_ID": int,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
                 "EFEAT_FTYPE_ID": int,
                 "IS_VIRTUAL": str,
             },
@@ -493,8 +478,6 @@ config_schema = {
                 "EFUNC_ID": int,
                 "EFUNC_CODE": str,
                 "EFUNC_DESC": str,
-                "FUNC_LIB": str,
-                "FUNC_VER": str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
                 "JAVA_CLASS_NAME": Or(str, None),
@@ -513,29 +496,19 @@ config_schema = {
             {
                 "ERRULE_ID": int,
                 "ERRULE_CODE": str,
-                "ERRULE_DESC": str,
                 "RESOLVE": str,
                 "RELATE": str,
-                "REF_SCORE": int,
                 "RTYPE_ID": int,
                 "QUAL_ERFRAG_CODE": str,
                 "DISQ_ERFRAG_CODE": Or(str, None),
                 "ERRULE_TIER": Or(int, None),
             },
         ],
-        "CFG_ETYPE": [
-            {
-                "ETYPE_ID": int,
-                "ETYPE_CODE": str,
-                "ETYPE_DESC": str,
-                "ECLASS_ID": int,
-            },
-        ],
         "CFG_FBOM": [
             {
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
                 "DISPLAY_LEVEL": int,
                 "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
@@ -544,7 +517,6 @@ config_schema = {
         "CFG_FBOVR": [
             {
                 "FTYPE_ID": int,
-                "ECLASS_ID": int,
                 "UTYPE_CODE": str,
                 "FTYPE_FREQ": str,
                 "FTYPE_EXCL": str,
@@ -560,10 +532,9 @@ config_schema = {
         ],
         "CFG_FELEM": [
             {
-                "FELEM_ID": int,
+                Optional("FELEM_ID"): int,
                 "FELEM_CODE": str,
                 "FELEM_DESC": str,
-                "TOKENIZE": str,
                 "DATA_TYPE": str,
             },
         ],
@@ -579,7 +550,6 @@ config_schema = {
                 "PERSIST_HISTORY": str,
                 "USED_FOR_CAND": str,
                 "DERIVED": str,
-                "DERIVATION": Or(str, None),
                 "RTYPE_ID": int,
                 "ANONYMIZE": str,
                 "VERSION": int,
@@ -603,14 +573,6 @@ config_schema = {
                 "GPLAN_DESC": str,
             },
         ],
-        "CFG_LENS": [
-            {
-                "LENS_ID": int,
-                "LENS_CODE": str,
-                "LENS_DESC": str,
-            },
-        ],
-        "CFG_LENSRL": [],
         "CFG_RCLASS": [
             {
                 "RCLASS_ID": int,
@@ -625,7 +587,6 @@ config_schema = {
                 "RTYPE_CODE": str,
                 "RTYPE_DESC": str,
                 "RCLASS_ID": int,
-                "REL_STRENGTH": int,
                 "BREAK_RES": str,
             },
         ],
@@ -633,9 +594,9 @@ config_schema = {
             {
                 "SFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
+                Optional("FELEM_ID"): int,
                 "SFUNC_ID": int,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_SFUNC": [
@@ -643,8 +604,6 @@ config_schema = {
                 "SFUNC_ID": int,
                 "SFUNC_CODE": str,
                 "SFUNC_DESC": str,
-                "FUNC_LIB": str,
-                "FUNC_VER": str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
                 "JAVA_CLASS_NAME": Or(str, None),
@@ -654,11 +613,7 @@ config_schema = {
             {
                 "OOM_TYPE": str,
                 "OOM_LEVEL": str,
-                "LENS_ID": int,
                 "FTYPE_ID": int,
-                "LIB_FEAT_ID": int,
-                "FELEM_ID": int,
-                "LIB_FELEM_ID": int,
                 "THRESH1_CNT": int,
                 "THRESH1_OOM": int,
                 "NEXT_THRESH": int,

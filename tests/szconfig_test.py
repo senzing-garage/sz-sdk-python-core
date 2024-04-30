@@ -34,7 +34,7 @@ def test_constructor_dict(engine_vars) -> None:
     assert isinstance(actual, szconfig.SzConfig)
 
 
-def test_constructor_bad_INSTANCE_NAME(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
     bad_INSTANCE_NAME = ""
     with pytest.raises(szerror.SzError):
@@ -45,7 +45,7 @@ def test_constructor_bad_INSTANCE_NAME(engine_vars) -> None:
         assert isinstance(actual, szconfig.SzConfig)
 
 
-def test_constructor_bad_SETTINGS(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
     bad_SETTINGS = ""
     with pytest.raises(szerror.SzError):
