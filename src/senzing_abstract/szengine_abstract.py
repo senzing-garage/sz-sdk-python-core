@@ -76,7 +76,7 @@ class SzEngineAbstract(ABC):
         4015: PREFIX + "get_active_config_id() failed. Return code: {0}",
         4016: PREFIX + "get_entity_by_entity_id({0}, {1}) failed. Return code: {2}",
         4017: PREFIX
-        + "get_entity_by_record_id({0}, {1}, {3}) failed. Return code: {4}",
+        + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
         4018: PREFIX + "get_record({0}, {1}, {2}) failed. Return code: {3}",
         4019: PREFIX + "get_redo_record() failed. Return code: {0}",
         4020: PREFIX + "get_repository_last_modified_time() failed. Return code: {0}",
