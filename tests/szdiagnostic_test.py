@@ -144,8 +144,10 @@ def test_initialize_and_destroy(
 def test_context_managment(engine_vars) -> None:
     """Test the use of SzDiagnostic in context."""
     with szdiagnostic.SzDiagnostic(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        config_id=None,
+        verbose_logging=1,
     ) as sz_diagnostic:
         actual = sz_diagnostic.get_datastore_info()
         actual_json = json.loads(actual)
@@ -173,8 +175,10 @@ def szdiagnostic_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = szdiagnostic.SzDiagnostic(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        config_id=0,
+        verbose_logging=0,
     )
     return result
 

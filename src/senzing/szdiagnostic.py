@@ -138,8 +138,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self,
         instance_name: str = "",
         settings: Union[str, Dict[Any, Any]] = "",
-        config_id: int = 0,
-        verbose_logging: int = 0,
+        config_id: int = 1,
+        verbose_logging: int = 1,
         **kwargs: Any,
     ) -> None:
         """
@@ -216,7 +216,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.auto_init = True
             if not self.config_id:
                 print("\n>>>> Before error")
-                self.initialize(self.instance_name, self.settings, self.verbose_logging)
+                self.initialize(
+                    instance_name=self.instance_name,
+                    settings=self.settings,
+                    verbose_logging=self.verbose_logging,
+                )
                 print("\n>>>> After error")
             else:
                 self.initialize(
@@ -327,7 +331,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
+        print("\n>>>>> initialize")
+
         if not config_id:
+            print("\n>>>>> no config_id")
             result = self.library_handle.G2Diagnostic_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
@@ -343,6 +350,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
                     result,
                 )
             return
+
+        print("\n>>>>> with config_id")
 
         result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(instance_name),
