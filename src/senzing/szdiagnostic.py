@@ -18,7 +18,8 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
-from typing import Any, Dict, Optional, Union
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
 
 from senzing import (
     FreeCResources,
@@ -55,6 +56,11 @@ class G2ResponseReturnCodeResult(Structure):
         ("response", POINTER(c_char)),
         ("return_code", c_longlong),
     ]
+
+
+# TODO:  Remove when G2Diagnostic_checkDatastorePerformance_helper is available
+class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
 
 class G2DiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):
@@ -220,6 +226,22 @@ class SzDiagnostic(SzDiagnosticAbstract):
         """Destructor"""
         if self.auto_init:
             self.destroy()
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Exception helpers

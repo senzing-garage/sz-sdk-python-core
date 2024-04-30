@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import szengine, SzError
+
+# from senzing.szerror import SzError
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example1"

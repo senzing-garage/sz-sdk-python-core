@@ -6,7 +6,8 @@ TODO: g2hasher.py
 
 import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
-from typing import Any
+from types import TracebackType
+from typing import Any, Type, Union
 
 from senzing import SzError, SzHasherAbstract, find_file_in_path, new_szexception
 
@@ -114,6 +115,22 @@ class SzHasher(SzHasherAbstract):
     def __del__(self) -> None:
         """Destructor"""
         self.destroy()
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
