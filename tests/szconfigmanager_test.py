@@ -8,9 +8,9 @@ from senzing_truthset import TRUTHSET_DATASOURCES
 from senzing import (
     SzConfigurationError,
     SzEngineFlags,
+    SzError,
     szconfig,
     szconfigmanager,
-    szerror,
 )
 
 # -----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ def test_constructor_dict(engine_vars) -> None:
 def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
     bad_module_name = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = szconfigmanager.SzConfigManager(
             bad_module_name,
             engine_vars["SETTINGS"],
@@ -56,7 +56,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
 def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
     bad_ini_params = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = szconfigmanager.SzConfigManager(
             engine_vars["INSTANCE_NAME"],
             bad_ini_params,
@@ -147,7 +147,7 @@ def test_get_config_bad_config_id_value(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = 1234
-    with pytest.raises(szerror.SzConfigurationError):
+    with pytest.raises(SzConfigurationError):
         sz_config_manager.get_config(bad_config_id)
 
 
@@ -285,7 +285,7 @@ def test_set_default_config_id_bad_config_id_value(
 ) -> None:
     """Test SzConfigManager().set_default_config_id()."""
     bad_config_id = 1
-    with pytest.raises(szerror.SzConfigurationError):
+    with pytest.raises(SzConfigurationError):
         sz_config_manager.set_default_config_id(bad_config_id)
 
 

@@ -149,6 +149,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
         """
         # pylint: disable=W0613
 
+        print("\n>>>> __init__")
+
         # Verify parameters.
 
         self.auto_init = False
@@ -213,7 +215,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
         if len(self.instance_name) > 0:
             self.auto_init = True
             if not self.config_id:
+                print("\n>>>> Before error")
                 self.initialize(self.instance_name, self.settings, self.verbose_logging)
+                print("\n>>>> After error")
             else:
                 self.initialize(
                     self.instance_name,
@@ -221,9 +225,12 @@ class SzDiagnostic(SzDiagnosticAbstract):
                     self.verbose_logging,
                     self.config_id,
                 )
+        print("\n>>>> init:auto_init:", self.auto_init)
 
     def __del__(self) -> None:
         """Destructor"""
+        print("\n>>>> del:auto_init:", self.auto_init)
+
         if self.auto_init:
             self.destroy()
 
@@ -233,6 +240,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
         Any
     ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
+
+        print("\n>>>> __enter__")
+
+        self.__init__()
         return self
 
     def __exit__(
@@ -242,6 +253,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
+        print("\n>>>> __exit__")
 
     # -------------------------------------------------------------------------
     # Exception helpers

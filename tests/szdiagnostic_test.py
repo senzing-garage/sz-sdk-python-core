@@ -4,20 +4,20 @@ from ctypes import ArgumentError
 import pytest
 from pytest_schema import schema
 
-from senzing import szconfigmanager, szdiagnostic, szerror
+from senzing import SzError, szconfigmanager, szdiagnostic
 
 # -----------------------------------------------------------------------------
 # SzDiagnostic testcases
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_diagnostic):
+def test_exception(sz_diagnostic) -> None:
     """Test exceptions."""
     actual = sz_diagnostic.new_exception(0)
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars):
+def test_constructor(engine_vars) -> None:
     """Test constructor."""
     actual = szdiagnostic.SzDiagnostic(
         engine_vars["INSTANCE_NAME"],
@@ -26,129 +26,130 @@ def test_constructor(engine_vars):
     assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
 
-# def test_constructor2(engine_vars):
-#     """Test constructor."""
-#     actual = szdiagnostic.SzDiagnostic(
-#         engine_vars["INSTANCE_NAME"],
-#         engine_vars["SETTINGS"],
-#     )
-#     assert isinstance(actual, szdiagnostic.SzDiagnostic)
+def test_constructor_dict(engine_vars) -> None:
+    """Test constructor."""
+    actual = szdiagnostic.SzDiagnostic(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
 
-# def test_constructor_dict(engine_vars):
-#     """Test constructor."""
-#     actual = szdiagnostic.SzDiagnostic(
-#         engine_vars["INSTANCE_NAME"],
-#         engine_vars["SETTINGS_DICT"],
-#     )
-#     assert isinstance(actual, szdiagnostic.SzDiagnostic)
+def test_constructor_bad_instance_name(engine_vars) -> None:
+    """Test constructor."""
+    bad_module_name = ""
+    with pytest.raises(SzError):
+        actual = szdiagnostic.SzDiagnostic(
+            bad_module_name,
+            engine_vars["SETTINGS"],
+        )
+        assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
 
-# def test_constructor_bad_instance_name(engine_vars):
-#     """Test constructor."""
-#     bad_module_name = ""
-#     with pytest.raises(szerror.SzError):
-#         actual = szdiagnostic.SzDiagnostic(
-#             bad_module_name,
-#             engine_vars["SETTINGS"],
-#         )
-#         assert isinstance(actual, szdiagnostic.SzDiagnostic)
+def test_constructor_bad_settings(engine_vars) -> None:
+    """Test constructor."""
+    bad_ini_params = ""
+    with pytest.raises(SzError):
+        actual = szdiagnostic.SzDiagnostic(
+            engine_vars["INSTANCE_NAME"],
+            bad_ini_params,
+        )
+        assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
 
-# def test_constructor_bad_settings(engine_vars):
-#     """Test constructor."""
-#     bad_ini_params = ""
-#     with pytest.raises(szerror.SzError):
-#         actual = szdiagnostic.SzDiagnostic(
-#             engine_vars["INSTANCE_NAME"],
-#             bad_ini_params,
-#         )
-#         assert isinstance(actual, szdiagnostic.SzDiagnostic)
-
-
-def test_check_datastore_performance(sz_diagnostic):
-    """Test G2Diagnostic().check_db_perf()."""
+def test_check_datastore_performance(sz_diagnostic: szdiagnostic.SzDiagnostic) -> None:
+    """Test SzDiagnostic().check_datastore_performance()."""
     seconds_to_run = 3
     actual = sz_diagnostic.check_datastore_performance(seconds_to_run)
     actual_json = json.loads(actual)
     assert schema(check_datastore_performance_schema) == actual_json
 
 
-def test_check_datastore_performance_bad_seconds_to_run_type(sz_diagnostic):
-    """Test G2Diagnostic().check_db_perf()."""
+def test_check_datastore_performance_bad_seconds_to_run_type(
+    sz_diagnostic: szdiagnostic.SzDiagnostic,
+) -> None:
+    """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = "string"
     with pytest.raises(ArgumentError):
-        sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
+        sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
 
 
-def test_check_datastore_performance_bad_seconds_to_run_value(sz_diagnostic):
-    """Test G2Diagnostic().check_db_perf()."""
+def test_check_datastore_performance_bad_seconds_to_run_value(
+    sz_diagnostic: szdiagnostic.SzDiagnostic,
+) -> None:
+    """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = -1
     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
 
 
-def test_get_datastore_info(sz_diagnostic):
-    """Test G2Diagnostic().get_db_info()."""
+def test_get_datastore_info(sz_diagnostic: szdiagnostic.SzDiagnostic) -> None:
+    """Test SzDiagnostic().get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()
     actual_json = json.loads(actual)
     assert schema(get_datastore_info_schema) == actual_json
 
 
-def test_reinitialize(sz_diagnostic, sz_config_manager):
-    """Test G2Diagnostic().reinit() with current config ID."""
+def test_reinitialize(
+    sz_diagnostic: szdiagnostic.SzDiagnostic, sz_config_manager
+) -> None:
+    """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_config_manager.get_default_config_id()
     try:
         sz_diagnostic.reinitialize(default_config_id)
-    except szerror.SzError:
+    except SzError:
         assert False
 
 
-def test_reinitialize_bad_config_id(sz_diagnostic):
-    """Test G2Diagnostic().reinit() with current config ID."""
+def test_reinitialize_bad_config_id(sz_diagnostic: szdiagnostic.SzDiagnostic) -> None:
+    """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
     with pytest.raises(ArgumentError):
-        sz_diagnostic.reinitialize(bad_default_config_id)
+        sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
-def test_reinitialize_missing_config_id(sz_diagnostic):
-    """Test G2Diagnostic().reinit() raising error."""
-    with pytest.raises(szerror.SzError):
+def test_reinitialize_missing_config_id(
+    sz_diagnostic: szdiagnostic.SzDiagnostic,
+) -> None:
+    """Test SzDiagnostic().reinit() raising error."""
+    with pytest.raises(SzError):
         sz_diagnostic.reinitialize(999)
 
 
-def test_initialize_and_destroy(sz_diagnostic, engine_vars):
-    """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
+def test_initialize_and_destroy(
+    sz_diagnostic: szdiagnostic.SzDiagnostic, engine_vars
+) -> None:
+    """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
     sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
     sz_diagnostic.destroy()
 
 
 # def test_init_and_destroy_again(sz_diagnostic, engine_vars):
-#     """Test G2Diagnostic().init() and G2Diagnostic.destroy()."""
+#     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
 #     # TODO: Doesn't work
 #     sz_diagnostic.init(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
 #     sz_diagnostic.destroy()
 
 
 # def test_init_with_config_id_and_destroy(sz_config_manager, engine_vars):
-#     """Test G2Diagnostic().init_with_config_id() and G2Diagnostic.destroy()."""
+#     """Test SzDiagnostic().init_with_config_id() and SzDiagnostic.destroy()."""
 #     # TODO: This has the same issue as test_init_and_destroy_2
 #     default_config_id = sz_config_manager.get_default_config_id()
-#     sz_diagnostic_2 = g2diagnostic.G2Diagnostic()
+#     sz_diagnostic_2 = szdiagnostic.SzDiagnostic()
 #     sz_diagnostic_2.init_with_config_id(
 #         engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], default_config_id, 0
 #     )
 #     sz_diagnostic_2.destroy()
 
 
-# def test_context_managment(engine_vars) -> None:
-#     """Test the use of SzDiagnosticGrpc in context."""
-#     with szdiagnostic.SzDiagnostic(
-#         engine_vars["INSTANCE_NAME"],
-#         engine_vars["SETTINGS"],
-#     ) as sz_diagnostic:
-#         actual = sz_diagnostic.get_datastore_info()
-#         actual_json = json.loads(actual)
-#         assert schema(get_datastore_info_schema) == actual_json
+def test_context_managment(engine_vars) -> None:
+    """Test the use of SzDiagnostic in context."""
+    with szdiagnostic.SzDiagnostic(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    ) as sz_diagnostic:
+        actual = sz_diagnostic.get_datastore_info()
+        actual_json = json.loads(actual)
+        assert schema(get_datastore_info_schema) == actual_json
 
 
 # -----------------------------------------------------------------------------

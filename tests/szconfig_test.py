@@ -3,7 +3,7 @@ import json
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import SzConfigurationError, SzEngineFlags, szconfig, szerror
+from senzing import SzConfigurationError, SzEngineFlags, SzError, szconfig
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases
@@ -37,7 +37,7 @@ def test_constructor_dict(engine_vars) -> None:
 def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
     bad_INSTANCE_NAME = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = szconfig.SzConfig(
             bad_INSTANCE_NAME,
             engine_vars["SETTINGS"],
@@ -48,7 +48,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
 def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
     bad_SETTINGS = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = szconfig.SzConfig(
             engine_vars["INSTANCE_NAME"],
             bad_SETTINGS,
@@ -67,17 +67,6 @@ def test_add_data_source(sz_config: szconfig.SzConfig) -> None:
     assert schema(add_data_source_schema) == actual_json
 
 
-def test_add_data_source_dict(sz_config) -> None:
-    """Test SzConfig().add_data_source()."""
-    input_json_dict = {"DSRC_CODE": "NAME_OF_DATASOURCE"}
-    config_handle = sz_config.create_config()
-    actual = sz_config.add_data_source(config_handle, input_json_dict)
-    sz_config.close_config(config_handle)
-    assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(add_data_source_schema) == actual_json
-
-
 def test_add_data_source_bad_config_handle_type(sz_config: szconfig.SzConfig) -> None:
     """Test SzConfig().add_data_source()."""
     bad_config_handle = "string"
@@ -88,20 +77,34 @@ def test_add_data_source_bad_config_handle_type(sz_config: szconfig.SzConfig) ->
         )
 
 
-def test_add_data_source_bad_data_source_code(
-    sz_config: szconfig.SzConfig,
-) -> None:
-    """Test SzConfig().add_data_source()."""
-    # TODO: Find a bad_data_source_code type.
-    # config_handle = sz_config.create_config()
-    # bad_data_source_code = ()
-    # try:
-    #     with pytest.raises(SzError):
-    #         sz_config.add_data_source(
-    #             config_handle, bad_data_source_code  # type: ignore[arg-type]
-    #         )
-    # finally:
-    #     sz_config.close_config(config_handle)
+# TODO: Decide whether an integer is a valid data_source_code.
+# def test_add_data_source_bad_data_source_code_type(
+#     sz_config: szconfig.SzConfig,
+# ) -> None:
+#     """Test SzConfig().add_data_source()."""
+#     config_handle = sz_config.create_config()
+#     bad_data_source_code = 0
+#     try:
+#         with pytest.raises(TypeError):
+#             sz_config.add_data_source(
+#                 config_handle, bad_data_source_code  # type: ignore[arg-type]
+#             )
+#     finally:
+#         sz_config.close_config(config_handle)
+
+
+# TODO: Decide whether a dictionary is a valid data_source_code.
+# def test_add_data_source_bad_data_source_code_value(
+#     sz_config: szconfig.SzConfig,
+# ) -> None:
+#     """Test SzConfig().add_data_source()."""
+#     config_handle = sz_config.create_config()
+#     bad_data_source_code = {"XXXX": "YYYY"}
+#     try:
+#         with pytest.raises(TypeError):
+#             sz_config.add_data_source(config_handle, bad_data_source_code)  # type: ignore[arg-type]
+#     finally:
+#         sz_config.close_config(config_handle)
 
 
 def test_close_config_bad_config_handle_type(sz_config: szconfig.SzConfig) -> None:
@@ -141,18 +144,30 @@ def test_delete_data_source_bad_config_handle_type(
         )
 
 
-def test_delete_data_source_bad_data_source_code(
-    sz_config: szconfig.SzConfig,
-) -> None:
-    """Test SzConfig().delete_data_source()."""
-    # TODO: Find a bad_data_source_code type.
-    # bad_data_source_code = 0
-    # config_handle = sz_config.create_config()
-    # with pytest.raises(SzError):
-    #     sz_config.delete_data_source(
-    #         config_handle, bad_data_source_code  # type: ignore[arg-type]
-    #     )
-    # sz_config.close_config(config_handle)
+# TODO: Decide where an integer is a valid data_source_code.
+# def test_delete_data_source_bad_data_source_code_type(
+#     sz_config: szconfig.SzConfig,
+# ) -> None:
+#     """Test SzConfig().delete_data_source()."""
+#     bad_data_source_code = 0
+#     config_handle = sz_config.create_config()
+#     with pytest.raises(TypeError):
+#         sz_config.delete_data_source(
+#             config_handle, bad_data_source_code  # type: ignore[arg-type]
+#         )
+#     sz_config.close_config(config_handle)
+
+
+# TODO: Decide whether a dictionary is a valid data_source_code.
+# def test_delete_data_source_bad_data_source_code_value(
+#     sz_config: szconfig.SzConfig,
+# ) -> None:
+#     """Test SzConfig().delete_data_source()."""
+#     bad_data_source_code = {"XXXX": "YYYY"}
+#     config_handle = sz_config.create_config()
+#     with pytest.raises(TypeError):
+#         sz_config.delete_data_source(config_handle, bad_data_source_code)  # type: ignore[arg-type]
+#     sz_config.close_config(config_handle)
 
 
 def test_get_data_sources(sz_config: szconfig.SzConfig) -> None:
