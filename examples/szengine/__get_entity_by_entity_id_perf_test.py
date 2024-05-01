@@ -22,7 +22,7 @@
 # }
 
 # try:
-#     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+#     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
 # except SzError as err:
 #     print(f"\nError:\n{err}\n")
 

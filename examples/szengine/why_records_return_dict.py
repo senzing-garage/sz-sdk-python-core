@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
 DATA_SOURCE_CODE_2 = "CUSTOMERS"
@@ -19,7 +19,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.why_records_return_dict(
         DATA_SOURCE_CODE_1, RECORD_ID_1, DATA_SOURCE_CODE_2, RECORD_ID_2, 1
     )

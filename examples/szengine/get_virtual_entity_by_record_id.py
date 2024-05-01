@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
@@ -20,7 +20,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
     print(RESULT[:66], "...")
 except SzError as err:

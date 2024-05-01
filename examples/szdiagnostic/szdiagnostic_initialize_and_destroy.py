@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szdiagnostic
+from senzing import SzDiagnostic, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_diagnostic = szdiagnostic.SzDiagnostic()
+    sz_diagnostic = SzDiagnostic()
     sz_diagnostic.initialize(INSTANCE_NAME, SETTINGS)
 
     # Do work.

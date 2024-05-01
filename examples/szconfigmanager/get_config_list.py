@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfigmanager
+from senzing import SzConfigManager, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_configmanager = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
     CONFIG_LIST = sz_configmanager.get_config_list()
     print(CONFIG_LIST[:66], "...")
 except SzError as err:

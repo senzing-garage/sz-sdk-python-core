@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example"
 END_ENTITY_ID = 4
@@ -18,7 +18,7 @@ SETTINGS = {
 START_ENTITY_ID = 1
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_path_by_entity_id_return_dict(
         START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
     )

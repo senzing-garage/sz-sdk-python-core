@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 END_DATA_SOURCE_CODE = "CUSTOMERS"
 END_RECORD_ID = "1009"
@@ -21,7 +21,7 @@ START_DATA_SOURCE_CODE = "CUSTOMERS"
 START_RECORD_ID = "1001"
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_path_by_record_id(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,

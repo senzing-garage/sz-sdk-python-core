@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 BUILD_OUT_DEGREE = 2
 ENTITY_LIST = {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 4}]}
@@ -19,7 +19,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_network_by_entity_id_return_dict(
         ENTITY_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES
     )

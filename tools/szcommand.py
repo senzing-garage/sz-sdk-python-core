@@ -18,9 +18,15 @@ from functools import wraps
 # TODO Add back in when consolidated modules into a helper module
 # import G2Paths
 # from G2IniParams import G2IniParams
-from senzing import szconfig, szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szengineflags import SzEngineFlags
-from senzing.szerror import SzError
+from senzing import (
+    SzConfig,
+    SzConfigManager,
+    SzDiagnostic,
+    SzEngine,
+    SzEngineFlags,
+    SzError,
+    SzProduct,
+)
 
 try:
     import atexit
@@ -201,19 +207,13 @@ class SzCmdShell(cmd.Cmd, object):
         cmd.Cmd.__init__(self)
 
         try:
-            self.sz_engine = szengine.SzEngine(
-                "pySzEngine", engine_settings, debug_trace
-            )
-            self.sz_product = szproduct.SzProduct(
-                "pySzProduct", engine_settings, debug_trace
-            )
-            self.sz_diagnostic = szdiagnostic.SzDiagnostic(
+            self.sz_engine = SzEngine("pySzEngine", engine_settings, debug_trace)
+            self.sz_product = SzProduct("pySzProduct", engine_settings, debug_trace)
+            self.sz_diagnostic = SzDiagnostic(
                 "pySzDiagnostic", engine_settings, debug_trace
             )
-            self.sz_config = szconfig.SzConfig(
-                "pySzConfig", engine_settings, debug_trace
-            )
-            self.sz_configmgr = szconfigmanager.SzConfigManager(
+            self.sz_config = SzConfig("pySzConfig", engine_settings, debug_trace)
+            self.sz_configmanager = SzConfigManager(
                 "pySzConfigmgr", engine_settings, debug_trace
             )
         except SzError as ex:
@@ -791,28 +791,28 @@ class SzCmdShell(cmd.Cmd, object):
         {colorize('JSON Formatting', 'highlight2')}
             {colorize('- Change JSON formatting by adding "json" or "jsonl" to the end of a command', 'dim')}
                 - getEntityByEntityID 1001 jsonl
-                
+
             {colorize('- Can be combined with color formatting options', 'dim')}
                 - getEntityByEntityID 1001 jsonl nocolor
-                
+
             {colorize('- Set the JSON format for the session, saves the preference to a configuration file for use across sessions', 'dim')}
             {colorize('- Specifying the JSON and color formatting options at the end of a command override this setting for that command', 'dim')}
                 - setOutputFormat json|jsonl
-                
+
             {colorize('- Convert last response output between json and jsonl', 'dim')}
                 - responseReformatJson
-                
+
         {colorize('Color Formatting', 'highlight2')}
             {colorize('- Add or remove colors from JSON formatting by adding "color", "colour", "nocolor" or "nocolour" to the end of a command', 'dim')}
                 - getEntityByEntityID 1001 color
-                
+
             {colorize('- Can be combined with JSON formatting options', 'dim')}
                 - getEntityByEntityID 1001 color jsonl
-                
+
             {colorize('- Set the color formatting for the session, saves the preference to a configuration file for use across sessions', 'dim')}
             {colorize('- Specifying the JSON and color formatting options at the end of a command override this setting for that command', 'dim')}
                 - setOutputColor color|colour|nocolor|nocolour
-                                
+
         {colorize('Capturing Output', 'highlight2')}
             {colorize('- Capture the last response output to a file or the clipboard', 'dim')}
                 - responseToClipboard
@@ -828,11 +828,11 @@ class SzCmdShell(cmd.Cmd, object):
             {colorize('- Toggle on/off approximate time a command takes to complete', 'dim')}
             {colorize('- Turn off JSON formatting and color output for higher accuracy', 'dim')}
                 - timer
-                
+
         {colorize('Shell', 'highlight2')}
             {colorize('- Run basic OS shell commands', 'dim')}
                 - ! ls
-                
+
         {colorize('Support', 'highlight2')}
             {colorize('- Senzing Support:', 'dim')} {colorize('https://senzing.zendesk.com/hc/en-us/requests/new', 'highlight1,underline')}
             {colorize('- Senzing Knowledge Center:', 'dim')} {colorize('https://senzing.zendesk.com/hc/en-us', 'highlight1,underline')}
@@ -902,7 +902,7 @@ class SzCmdShell(cmd.Cmd, object):
 
             - Retrieve a list of configurations and identifiers with getConfigList"""
 
-        response = self.sz_configmgr.get_config(kwargs["parsed_args"].config_id)
+        response = self.sz_configmanager.get_config(kwargs["parsed_args"].config_id)
         self.print_response(response)
 
     @cmd_decorator(cmd_has_args=False)
@@ -918,7 +918,7 @@ class SzCmdShell(cmd.Cmd, object):
         self.sz_config.close_config(configHandle)
         self.print_response(response)
 
-    # szconfigmgr commands
+    # szconfigmanager commands
 
     @cmd_decorator(cmd_has_args=False)
     def do_getConfigList(self, **kwargs):
@@ -928,7 +928,7 @@ class SzCmdShell(cmd.Cmd, object):
         Syntax:
             getConfigList"""
 
-        response = self.sz_configmgr.get_config_list()
+        response = self.sz_configmanager.get_config_list()
         self.print_response(response)
 
     @cmd_decorator(cmd_has_args=False)
@@ -939,7 +939,7 @@ class SzCmdShell(cmd.Cmd, object):
         Syntax:
             getDefaultConfigID"""
 
-        response = self.sz_configmgr.get_default_config_id()
+        response = self.sz_configmanager.get_default_config_id()
         self.print_response(response, "success")
 
     @cmd_decorator()
@@ -960,7 +960,7 @@ class SzCmdShell(cmd.Cmd, object):
         Notes:
             - Retrieve a list of configurations and identifiers with getConfigList"""
 
-        self.sz_configmgr.replace_default_config_id(
+        self.sz_configmanager.replace_default_config_id(
             kwargs["parsed_args"].current_default_config_id,
             kwargs["parsed_args"].new_default_config_id,
         )
@@ -984,7 +984,7 @@ class SzCmdShell(cmd.Cmd, object):
         Notes:
             - Retrieve a list of configurations and identifiers with getConfigList"""
 
-        self.sz_configmgr.set_default_config_id(kwargs["parsed_args"].config_id)
+        self.sz_configmanager.set_default_config_id(kwargs["parsed_args"].config_id)
         self.print_response("Default config set, restarting engines...", "success")
         self.do_restart(None) if not self.debug_trace else self.do_restartDebug(None)
 
@@ -1056,14 +1056,14 @@ class SzCmdShell(cmd.Cmd, object):
         purge_msg = colorize_msg(
             textwrap.dedent(
                 """
-            
+
                 ********** WARNING **********
-                
+
                 This will purge all currently loaded data from the senzing database!
                 Before proceeding, all instances of senzing (custom code, rest api, redoer, etc.) must be shut down.
-                
+
                 ********** WARNING **********
-                
+
                 Are you sure you want to purge the senzing database? (y/n) """
             ),
             "warning",
@@ -1944,7 +1944,7 @@ class SzCmdShell(cmd.Cmd, object):
 
         config = pathlib.Path(kwargs["parsed_args"].config_json_file).read_text()
         config = config.replace("\n", "")
-        response = self.sz_configmgr.add_config(
+        response = self.sz_configmanager.add_config(
             config, kwargs["parsed_args"].config_comments
         )
         self.print_response(f"Configuration added, ID = {response}", "success")
@@ -2020,10 +2020,10 @@ class SzCmdShell(cmd.Cmd, object):
                     textwrap.dedent(
                         """\
                         - The clipboard module is installed but no clipboard command could be found
-                        
+
                         - This usually means xclip is missing on Linux and needs to be installed:
                             - sudo apt install xclip OR sudo yum install xclip
-                            
+
                         - If you are running in a container or SSH lastResponseToClipboard cannot be used"""
                     ),
                     "info",
@@ -2038,7 +2038,7 @@ class SzCmdShell(cmd.Cmd, object):
                         """\
                         - To send the last response to the clipboard the Python module pyperclip needs to be installed
                             - pip install pyperclip
-                            
+
                         - If you are running in a container or SSH lastResponseToClipboard cannot be used"""
                     ),
                     "info",
@@ -2497,9 +2497,9 @@ if __name__ == "__main__":
         default=None,
         help=textwrap.dedent(
             """\
-            
+
             Path and file name of file with commands to process.
-        
+
         """
         ),
         nargs="?",
@@ -2510,9 +2510,9 @@ if __name__ == "__main__":
         default="",
         help=textwrap.dedent(
             """\
-            
+
             Path and file name of optional G2Module.ini to use.
-        
+
         """
         ),
         nargs=1,
@@ -2524,9 +2524,9 @@ if __name__ == "__main__":
         default=False,
         help=textwrap.dedent(
             """\
-            
+
             Output debug information.
-        
+
         """
         ),
     )
@@ -2537,9 +2537,9 @@ if __name__ == "__main__":
         default=False,
         help=textwrap.dedent(
             """\
-            
+
             Disable history file usage.
-        
+
         """
         ),
     )
@@ -2550,9 +2550,9 @@ if __name__ == "__main__":
         default=False,
         help=textwrap.dedent(
             """\
-            
+
             Disable coloring of output for the session, color formatting commands will have no effect in the session.
-        
+
         """
         ),
     )
@@ -2563,9 +2563,9 @@ if __name__ == "__main__":
         default=False,
         help=textwrap.dedent(
             """\
-            
+
             Disable formatting of JSON output for the session, JSON formatting commands will have no effect in the session.
-        
+
         """
         ),
     )

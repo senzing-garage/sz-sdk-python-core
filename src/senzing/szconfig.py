@@ -117,7 +117,7 @@ class SzConfig(SzConfigAbstract):
 
     .. code-block:: python
 
-        sz_config = szconfig.SzConfig(instance_name, settings)
+        sz_config = SzConfig(instance_name, settings)
 
 
     If the SzConfig constructor is called without parameters,
@@ -127,7 +127,7 @@ class SzConfig(SzConfigAbstract):
 
     .. code-block:: python
 
-        sz_config = szconfig.SzConfig()
+        sz_config = SzConfig()
         sz_config.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.

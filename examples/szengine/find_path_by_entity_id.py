@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 END_ENTITY_ID = 4
 EXCLUSIONS = ""
@@ -19,7 +19,7 @@ REQUIRED_DATA_SOURCES = ""
 START_ENTITY_ID = 1
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_path_by_entity_id(
         START_ENTITY_ID,
         END_ENTITY_ID,

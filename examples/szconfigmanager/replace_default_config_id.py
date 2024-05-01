@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfig, szconfigmanager
+from senzing import SzConfig, SzConfigManager, SzError
 
 CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = "TEST4"
@@ -16,8 +16,8 @@ SETTINGS = {
 
 # TODO Test this
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmanager = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
 
     current_default_config_id = sz_configmanager.get_default_config_id()
 

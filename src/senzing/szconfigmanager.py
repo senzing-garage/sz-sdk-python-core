@@ -1,10 +1,10 @@
 """
-The `szconfigmgr` package is used to modify Senzing configurations in the Senzing database.
+The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's G2Configmgr C binding.
 It conforms to the interface specified in
-`g2configmgr_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
+`szconfigmanager_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/szconfigmanager_abstract.py>`_
 
-To use g2configmgr,
+To use szconfigmanager,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:
@@ -101,17 +101,17 @@ class SzConfigManager(SzConfigManagerAbstract):
 
     .. code-block:: python
 
-        sz_configmanager = szconfigmgr.SzConfigManager(instance_name, settings)
+        sz_configmanager = SzConfigManager(instance_name, settings)
 
 
-    If the SzConfigMgr constructor is called without parameters,
+    If the szconfigmanager constructor is called without parameters,
     the `initialize()` method must be called to initialize the use of SzConfigManager.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmanager = szconfigmgr.SzConfigManager()
+        sz_configmanager = SzConfigManager()
         sz_configmanager.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.

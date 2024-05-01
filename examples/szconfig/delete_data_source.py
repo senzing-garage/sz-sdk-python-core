@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfig
+from senzing import SzConfig, SzError
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -14,7 +14,7 @@ SETTINGS = {
 }
 
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
     config_handle = sz_config.create_config()
     sz_config.delete_data_source(config_handle, DATA_SOURCE_CODE)
     sz_config.close_config(config_handle)

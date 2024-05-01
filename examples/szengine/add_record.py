@@ -2,7 +2,7 @@
 
 from typing import Any, Dict
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE = "TEST"
 FLAGS = SzEngineFlags.SZ_WITH_INFO
@@ -19,7 +19,7 @@ RECORD_DEFINITION: Dict[Any, Any] = {}
 RECORD_ID = "1"
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, FLAGS)
     print(RESULT[:66], "...")
 except SzError as err:

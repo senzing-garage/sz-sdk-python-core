@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 ENTITY_ID = 1
 FLAGS = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
@@ -15,7 +15,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.how_entity_by_entity_id(ENTITY_ID, FLAGS)
     print(RESULT[:66], "...")
 except SzError as err:

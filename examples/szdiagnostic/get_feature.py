@@ -2,7 +2,7 @@
 
 # TODO: Create a testable example
 
-# from senzing import SzError, szdiagnostic
+# from senzing import SzError, SzDiagnostic
 
 # INSTANCE_NAME = "Example"
 # SETTINGS = {
@@ -15,7 +15,7 @@
 # }
 
 # try:
-#     sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
+#     sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
 #     result = sz_diagnostic.get_feature(1)
 #     print(result)
 # except SzError as err:

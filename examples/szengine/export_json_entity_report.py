@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     export_handle = sz_engine.export_json_entity_report()
 
     with open("exportJSONEntityReport.json", "w") as export_out:

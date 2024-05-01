@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example"
@@ -15,7 +15,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     while sz_engine.count_redo_records() > 0:
         redo_record = sz_engine.get_redo_record()
         RESULT = sz_engine.process_redo_record(redo_record, FLAGS)

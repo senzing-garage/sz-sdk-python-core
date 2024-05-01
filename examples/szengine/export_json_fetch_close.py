@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
@@ -14,7 +14,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     export_handle = sz_engine.export_json_entity_report(FLAGS)
     RESULT = ""
     while True:

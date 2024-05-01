@@ -1,19 +1,26 @@
 #! /usr/bin/env python3
 
-import grpc
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing_grpc import SzEngineFlags, SzEngineGrpc, SzError
+from senzing import SzEngine, SzEngineFlags, SzError
 
-GRPC_URL = "localhost:8261"
+INSTANCE_NAME = "Example1"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/g2/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
+    },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+}
 
 try:
-    grpc_channel = grpc.insecure_channel(GRPC_URL)
-    sz_engine = SzEngineGrpc(grpc_channel=grpc_channel)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+
     record_sets = [
         TRUTHSET_CUSTOMER_RECORDS,
         TRUTHSET_REFERENCE_RECORDS,

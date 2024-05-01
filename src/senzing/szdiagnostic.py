@@ -92,7 +92,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     .. code-block:: python
 
-        sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
+        sz_diagnostic = SzDiagnostic(instance_name, settings)
 
 
     If the SzDiagnostic constructor is called without parameters,
@@ -102,7 +102,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     .. code-block:: python
 
-        sz_diagnostic = szdiagnostic.SzDiagnostic()
+        sz_diagnostic = SzDiagnostic()
         sz_diagnostic.init(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
 DATA_SOURCE_CODE_2 = "CUSTOMERS"
@@ -18,7 +18,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.why_records(
         DATA_SOURCE_CODE_1,
         RECORD_ID_1,

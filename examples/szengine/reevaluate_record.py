@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE = "CUSTOMERS"
 FLAGS = SzEngineFlags.SZ_WITH_INFO
@@ -16,7 +16,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.reevaluate_record(DATA_SOURCE_CODE, RECORD_ID, FLAGS)
     print(RESULT[:66], "...")
 except SzError as err:

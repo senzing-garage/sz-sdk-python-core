@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 END_DATA_SOURCE_CODE = "CUSTOMERS"
 INSTANCE_NAME = "Example"
@@ -20,7 +20,7 @@ START_DATA_SOURCE_CODE = "CUSTOMERS"
 START_RECORD_ID = "1009"
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_path_by_record_id_return_dict(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,

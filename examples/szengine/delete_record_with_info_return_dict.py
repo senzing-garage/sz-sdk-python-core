@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import SzEngineFlags, SzError, szengine
+from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -17,7 +17,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.delete_record_return_dict(
         DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
     )

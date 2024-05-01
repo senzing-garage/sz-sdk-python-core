@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szproduct
+from senzing import SzError, SzProduct
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_product = szproduct.SzProduct()
+    sz_product = SzProduct()
     sz_product.initialize(INSTANCE_NAME, SETTINGS)
 
     # Do work.

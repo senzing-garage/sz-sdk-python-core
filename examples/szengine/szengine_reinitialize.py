@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,7 +14,7 @@ SETTINGS = {
 
 try:
     # Using get_active_config_id for demonstrations purposes
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     active_config_id = sz_engine.get_active_config_id()
     sz_engine.reinitialize(active_config_id)
 except SzError as err:

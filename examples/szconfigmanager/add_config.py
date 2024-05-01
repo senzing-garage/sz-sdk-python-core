@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfig, szconfigmanager
+from senzing import SzConfig, SzConfigManager, SzError
 
 CONFIG_COMMENT = "Just an empty example"
 INSTANCE_NAME = "Example"
@@ -14,8 +14,8 @@ SETTINGS = {
 }
 
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmanager = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
     config_handle = sz_config.create_config()
     CONFIG_DEFINITION = sz_config.export_config(config_handle)
     config_id = sz_configmanager.add_config(CONFIG_DEFINITION, CONFIG_COMMENT)

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfig
+from senzing import SzConfig, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_config = szconfig.SzConfig()
+    sz_config = SzConfig()
     sz_config.initialize(INSTANCE_NAME, SETTINGS)
 
     # Do work.

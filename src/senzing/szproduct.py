@@ -59,7 +59,7 @@ class SzProduct(SzProductAbstract):
 
     .. code-block:: python
 
-        sz_product = szproduct.SzProduct(instance_name, settings)
+        sz_product = SzProduct(instance_name, settings)
 
 
     If the SzProduct constructor is called without parameters,
@@ -69,7 +69,7 @@ class SzProduct(SzProductAbstract):
 
     .. code-block:: python
 
-        sz_product = szproduct.SzProduct()
+        sz_product = SzProduct()
         sz_product.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.

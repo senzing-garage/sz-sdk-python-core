@@ -239,7 +239,7 @@ class SzEngine(SzEngineAbstract):
 
     .. code-block:: python
 
-        sz_engine = szengine.SzEngine(instance_name, settings)
+        sz_engine = SzEngine(instance_name, settings)
 
 
     If the SzEngine constructor is called without parameters,
@@ -249,7 +249,7 @@ class SzEngine(SzEngineAbstract):
 
     .. code-block:: python
 
-        sz_engine = szengine.SzEngine()
+        sz_engine = SzEngine()
         sz_engine.initialize(instance_name, settings, verbose_logging)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.

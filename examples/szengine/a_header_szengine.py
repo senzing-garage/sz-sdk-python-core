@@ -8,7 +8,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import SzEngineFlags, szengine
+from senzing import SzEngine, SzEngineFlags
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
@@ -36,9 +36,7 @@ TEST_RECORDS: List[Tuple[str, str]] = [
 # -----------------------------------------------------------------------------
 
 
-def add_records(
-    sz_engine: szengine.SzEngine, record_id_list: List[Tuple[str, str]]
-) -> None:
+def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> None:
     """Add all of the records in the list."""
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     for record_identification in record_id_list:
@@ -59,5 +57,5 @@ def add_records(
 
 print("\n---- szengine --------------------------------------------------------\n")
 
-sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
 add_records(sz_engine, TEST_RECORDS)

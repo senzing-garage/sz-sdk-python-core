@@ -6,11 +6,11 @@ from pytest_schema import Optional, Or, schema
 from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import (
+    SzConfig,
+    SzConfigManager,
     SzConfigurationError,
     SzEngineFlags,
     SzError,
-    szconfig,
-    szconfigmanager,
 )
 
 # -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ from senzing import (
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_config_manager: szconfigmanager.SzConfigManager) -> None:
+def test_exception(sz_config_manager: SzConfigManager) -> None:
     """Test exceptions."""
     actual = sz_config_manager.new_exception(0)
     assert isinstance(actual, Exception)
@@ -26,47 +26,45 @@ def test_exception(sz_config_manager: szconfigmanager.SzConfigManager) -> None:
 
 def test_constructor(engine_vars) -> None:
     """Test constructor."""
-    actual = szconfigmanager.SzConfigManager(
+    actual = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, szconfigmanager.SzConfigManager)
+    assert isinstance(actual, SzConfigManager)
 
 
 def test_constructor_dict(engine_vars) -> None:
     """Test constructor."""
-    actual = szconfigmanager.SzConfigManager(
+    actual = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, szconfigmanager.SzConfigManager)
+    assert isinstance(actual, SzConfigManager)
 
 
 def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
-        actual = szconfigmanager.SzConfigManager(
+        actual = SzConfigManager(
             bad_instance_name,
             engine_vars["SETTINGS"],
         )
-        assert isinstance(actual, szconfigmanager.SzConfigManager)
+        assert isinstance(actual, SzConfigManager)
 
 
 def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
-        actual = szconfigmanager.SzConfigManager(
+        actual = SzConfigManager(
             engine_vars["INSTANCE_NAME"],
             bad_settings,
         )
-        assert isinstance(actual, szconfigmanager.SzConfigManager)
+        assert isinstance(actual, SzConfigManager)
 
 
-def test_add_config(
-    sz_config_manager: szconfigmanager.SzConfigManager, sz_config: szconfig.SzConfig
-) -> None:
+def test_add_config(sz_config_manager: SzConfigManager, sz_config: SzConfig) -> None:
     """Test SzConfigManager().add_config()."""
     config_handle = sz_config.create_config()
     config_definition = sz_config.export_config(config_handle)
@@ -77,7 +75,7 @@ def test_add_config(
 
 
 def test_add_config_dict(
-    sz_config_manager: szconfigmanager.SzConfigManager, sz_config: szconfig.SzConfig
+    sz_config_manager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().add_config()."""
     config_handle = sz_config.create_config()
@@ -90,7 +88,7 @@ def test_add_config_dict(
 
 
 def test_add_config_bad_config_definition_type(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().add_config()."""
     bad_config_definition = 0
@@ -102,7 +100,7 @@ def test_add_config_bad_config_definition_type(
 
 
 def test_add_config_bad_config_definition_value(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().add_config()."""
     bad_config_definition = '{"just": "junk"}'
@@ -113,7 +111,7 @@ def test_add_config_bad_config_definition_value(
 
 
 def test_add_config_bad_config_comment_type(
-    sz_config_manager: szconfigmanager.SzConfigManager, sz_config: szconfig.SzConfig
+    sz_config_manager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().add_config()."""
     config_handle = sz_config.create_config()
@@ -125,7 +123,7 @@ def test_add_config_bad_config_comment_type(
         )
 
 
-def test_get_config(sz_config_manager: szconfigmanager.SzConfigManager) -> None:
+def test_get_config(sz_config_manager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     config_id = sz_config_manager.get_default_config_id()
     actual = sz_config_manager.get_config(config_id)
@@ -134,7 +132,7 @@ def test_get_config(sz_config_manager: szconfigmanager.SzConfigManager) -> None:
 
 
 def test_get_config_bad_config_id_type(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
@@ -143,7 +141,7 @@ def test_get_config_bad_config_id_type(
 
 
 def test_get_config_bad_config_id_value(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = 1234
@@ -151,7 +149,7 @@ def test_get_config_bad_config_id_value(
         sz_config_manager.get_config(bad_config_id)
 
 
-def test_get_config_list(sz_config_manager: szconfigmanager.SzConfigManager) -> None:
+def test_get_config_list(sz_config_manager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     actual = sz_config_manager.get_config_list()
     actual_json = json.loads(actual)
@@ -159,16 +157,14 @@ def test_get_config_list(sz_config_manager: szconfigmanager.SzConfigManager) -> 
 
 
 def test_get_default_config_id(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     actual = sz_config_manager.get_default_config_id()
     assert isinstance(actual, int)
 
 
-def test_replace_default_config_id(
-    sz_config_manager, sz_config: szconfig.SzConfig
-) -> None:
+def test_replace_default_config_id(sz_config_manager, sz_config: SzConfig) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_config_manager.get_default_config_id()
     config_handle = sz_config.create_config()
@@ -190,7 +186,7 @@ def test_replace_default_config_id(
 
 
 def test_replace_default_config_id_bad_new_id_type(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_config_manager.get_default_config_id()
@@ -202,7 +198,7 @@ def test_replace_default_config_id_bad_new_id_type(
 
 
 def test_replace_default_config_id_bad_new_id_value(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_config_manager.get_default_config_id()
@@ -214,8 +210,8 @@ def test_replace_default_config_id_bad_new_id_value(
 
 
 def test_replace_default_config_id_bad_current_default_config_id_type(
-    sz_config_manager: szconfigmanager.SzConfigManager,
-    sz_config: szconfig.SzConfig,
+    sz_config_manager: SzConfigManager,
+    sz_config: SzConfig,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_current_default_config_id = "string"
@@ -234,8 +230,8 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
 
 
 def test_replace_default_config_id_bad_current_default_config_id_value(
-    sz_config_manager: szconfigmanager.SzConfigManager,
-    sz_config: szconfig.SzConfig,
+    sz_config_manager: SzConfigManager,
+    sz_config: SzConfig,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_current_default_config_id = 1234
@@ -254,8 +250,8 @@ def test_replace_default_config_id_bad_current_default_config_id_value(
 
 
 def test_set_default_config_id(
-    sz_config_manager: szconfigmanager.SzConfigManager,
-    sz_config: szconfig.SzConfig,
+    sz_config_manager: SzConfigManager,
+    sz_config: SzConfig,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     old_config_id = sz_config_manager.get_default_config_id()
@@ -272,7 +268,7 @@ def test_set_default_config_id(
 
 
 def test_set_default_config_id_bad_config_id_type(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
@@ -281,7 +277,7 @@ def test_set_default_config_id_bad_config_id_type(
 
 
 def test_set_default_config_id_bad_config_id_value(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().set_default_config_id()."""
     bad_config_id = 1
@@ -290,7 +286,7 @@ def test_set_default_config_id_bad_config_id_value(
 
 
 def test_initialize_and_destroy(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
     instance_name = "Example"
@@ -301,7 +297,7 @@ def test_initialize_and_destroy(
 
 
 def test_initialize_and_destroy_again(
-    sz_config_manager: szconfigmanager.SzConfigManager,
+    sz_config_manager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
     instance_name = "Example"
@@ -313,7 +309,7 @@ def test_initialize_and_destroy_again(
 
 def test_context_managment(engine_vars) -> None:
     """Test the use of SzConfigGrpc in context."""
-    with szconfigmanager.SzConfigManager(
+    with SzConfigManager(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     ) as sz_configmanager:
@@ -335,7 +331,7 @@ def szconfig_fixture(engine_vars):
     engine_vars is returned from conftest.py.
     """
 
-    result = szconfig.SzConfig(
+    result = SzConfig(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -347,7 +343,7 @@ def szconfigmanager_instance_fixture(engine_vars):
     """Single engine object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    result = szconfigmanager.SzConfigManager(
+    result = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

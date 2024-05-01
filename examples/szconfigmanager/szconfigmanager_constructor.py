@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szconfigmanager
+from senzing import SzConfigManager, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -15,15 +15,15 @@ SETTINGS = {
 # Example 1
 
 try:
-    sz_configmgr1 = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_configmanager_1 = SzConfigManager(INSTANCE_NAME, SETTINGS)
 except SzError as err:
     print(f"\nError:\n{err}\n")
 
 # Example 2
 
 try:
-    sz_configmgr2 = szconfigmanager.SzConfigManager()
-    sz_configmgr2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_configmgr2.destroy()
+    sz_configmanager_2 = SzConfigManager()
+    sz_configmanager_2.initialize(INSTANCE_NAME, SETTINGS)
+    sz_configmanager_2.destroy()
 except SzError as err:
     print(f"\nError:\n{err}\n")

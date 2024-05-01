@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szdiagnostic
+from senzing import SzDiagnostic, SzError
 
 INSTANCE_NAME = "Example"
 SECONDS_TO_RUN = 3
@@ -14,7 +14,7 @@ SETTINGS = {
 }
 
 try:
-    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
+    sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
     RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
     print(RESULT[:66], "...")
 except SzError as err:

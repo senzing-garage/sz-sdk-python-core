@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, szengine
+from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine()
+    sz_engine = SzEngine()
     sz_engine.initialize(INSTANCE_NAME, SETTINGS)
     # Do Work
     sz_engine.destroy()

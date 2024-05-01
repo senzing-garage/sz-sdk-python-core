@@ -3,14 +3,14 @@ import json
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzEngineFlags, szerror, szproduct
+from senzing import SzEngineFlags, SzProduct, szerror
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_product: szproduct.SzProduct) -> None:
+def test_exception(sz_product: SzProduct) -> None:
     """Test exceptions."""
     actual = sz_product.new_exception(0)
     assert isinstance(actual, Exception)
@@ -18,36 +18,36 @@ def test_exception(sz_product: szproduct.SzProduct) -> None:
 
 def test_constructor(engine_vars) -> None:
     """Test constructor."""
-    actual = szproduct.SzProduct(
+    actual = SzProduct(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, szproduct.SzProduct)
+    assert isinstance(actual, SzProduct)
 
 
 def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(szerror.SzError):
-        actual = szproduct.SzProduct(
+        actual = SzProduct(
             bad_instance_name,
             engine_vars["SETTINGS"],
         )
-        assert isinstance(actual, szproduct.SzProduct)
+        assert isinstance(actual, SzProduct)
 
 
 def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(szerror.SzError):
-        actual = szproduct.SzProduct(
+        actual = SzProduct(
             engine_vars["INSTANCE_NAME"],
             bad_settings,
         )
-        assert isinstance(actual, szproduct.SzProduct)
+        assert isinstance(actual, SzProduct)
 
 
-def test_get_license(sz_product: szproduct.SzProduct) -> None:
+def test_get_license(sz_product: SzProduct) -> None:
     """Test Senzing license."""
     actual = sz_product.get_license()
     assert isinstance(actual, str)
@@ -55,7 +55,7 @@ def test_get_license(sz_product: szproduct.SzProduct) -> None:
     assert schema(get_license_schema) == actual_json
 
 
-def test_get_version(sz_product: szproduct.SzProduct) -> None:
+def test_get_version(sz_product: SzProduct) -> None:
     """Test Senzing version."""
     actual = sz_product.get_version()
     assert isinstance(actual, str)
@@ -63,7 +63,7 @@ def test_get_version(sz_product: szproduct.SzProduct) -> None:
     assert schema(get_version_schema) == actual_json
 
 
-def test_initialize_and_destroy(sz_product: szproduct.SzProduct) -> None:
+def test_initialize_and_destroy(sz_product: SzProduct) -> None:
     """Test init/destroy cycle."""
     instance_name = "Example"
     settings = {}
@@ -72,7 +72,7 @@ def test_initialize_and_destroy(sz_product: szproduct.SzProduct) -> None:
     sz_product.destroy()
 
 
-def test_initialize_and_destroy_again(sz_product: szproduct.SzProduct) -> None:
+def test_initialize_and_destroy_again(sz_product: SzProduct) -> None:
     """Test init/destroy cycle a second time."""
     instance_name = "Example"
     settings = "{}"
@@ -83,7 +83,7 @@ def test_initialize_and_destroy_again(sz_product: szproduct.SzProduct) -> None:
 
 def test_context_managment(engine_vars) -> None:
     """Test the use of SzProductGrpc in context."""
-    with szproduct.SzProduct(
+    with SzProduct(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     ) as sz_product:
@@ -99,12 +99,12 @@ def test_context_managment(engine_vars) -> None:
 
 
 @pytest.fixture(name="sz_product", scope="module")  # type: ignore[misc]
-def szproduct_fixture(engine_vars) -> szproduct.SzProduct:
+def szproduct_fixture(engine_vars) -> SzProduct:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = szproduct.SzProduct(
+    result = SzProduct(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
