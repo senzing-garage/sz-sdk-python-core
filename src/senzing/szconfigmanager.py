@@ -91,28 +91,28 @@ class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
 
 class SzConfigManager(SzConfigManagerAbstract):
     """
-    The `initialize` method initializes the Senzing SzConfigMgr object.
+    The `initialize` method initializes the Senzing SzConfigManager object.
     It must be called prior to any other calls.
 
-    **Note:** If the SzConfigMr constructor is called with parameters,
+    **Note:** If the SzConfigManager constructor is called with parameters,
     the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmgr = szconfigmgr.SzConfigMgr(instance_name, settings)
+        sz_configmanager = szconfigmgr.SzConfigManager(instance_name, settings)
 
 
     If the SzConfigMgr constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzConfigMgr.
+    the `initialize()` method must be called to initialize the use of SzConfigManager.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmgr = szconfigmgr.SzConfigMgr()
-        sz_configmgr.initialize(instance_name, settings)
+        sz_configmanager = szconfigmgr.SzConfigManager()
+        sz_configmanager.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
     Just specifying one or the other results in a **SzError**.
@@ -122,18 +122,18 @@ class SzConfigManager(SzConfigManagerAbstract):
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
         settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
+        config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_constructor.py
+        .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_constructor.py
             :linenos:
             :language: python
     """

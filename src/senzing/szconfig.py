@@ -143,7 +143,7 @@ class SzConfig(SzConfigAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 

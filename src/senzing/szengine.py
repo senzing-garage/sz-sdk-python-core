@@ -229,48 +229,48 @@ class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
 # TODO Raises could be more granular
 class SzEngine(SzEngineAbstract):
     """
-    The `init` method initializes the Senzing G2Engine object.
+    The `initialize` method initializes the Senzing SzEngine object.
     It must be called prior to any other calls.
 
-    **Note:** If the G2Engine constructor is called with parameters,
-    the constructor will automatically call the `init()` method.
+    **Note:** If the SzEngine constructor is called with parameters,
+    the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        g2_engine = g2engine.G2Engine(module_name, ini_params)
+        sz_engine = szengine.SzEngine(instance_name, settings)
 
 
-    If the G2Engine constructor is called without parameters,
-    the `init()` method must be called to initialize the use of G2Engine.
+    If the SzEngine constructor is called without parameters,
+    the `initialize()` method must be called to initialize the use of SzEngine.
 
     Example:
 
     .. code-block:: python
 
-        g2_engine = g2engine.G2Engine()
-        g2_engine.init(module_name, ini_params, verbose_logging)
+        sz_engine = szengine.SzEngine()
+        sz_engine.initialize(instance_name, settings, verbose_logging)
 
-    Either `module_name` and `ini_params` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **G2Exception**.
+    Either `instance_name` and `settings` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **SzError**.
 
     Parameters:
-        module_name:
+        instance_name:
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        ini_params:
+        settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
+        config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        G2Exception: Raised when input parameters are incorrect.
+        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2engine/g2engine_constructor.py
+        .. literalinclude:: ../../examples/szengine/szengine_constructor.py
             :linenos:
             :language: python
     """

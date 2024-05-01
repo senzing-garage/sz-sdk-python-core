@@ -85,7 +85,7 @@ class SzProduct(SzProductAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 

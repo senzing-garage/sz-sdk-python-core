@@ -82,50 +82,50 @@ class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
 
 class SzDiagnostic(SzDiagnosticAbstract):
     """
-    The `init` method initializes the Senzing G2Diagnostic object.
+    The `initialize` method initializes the Senzing SzDiagnostic object.
     It must be called prior to any other calls.
 
-    **Note:** If the G2Diagnostic constructor is called with parameters,
-    the constructor will automatically call the `init()` method.
+    **Note:** If the SzDiagnostic constructor is called with parameters,
+    the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
+        sz_diagnostic = szdiagnostic.SzDiagnostic(instance_name, settings)
 
 
-    If the G2Diagnostic constructor is called without parameters,
-    the `init()` method must be called to initialize the use of G2Product.
+    If the SzDiagnostic constructor is called without parameters,
+    the `inititialize()` method must be called to initialize the use of G2Product.
 
     Example:
 
     .. code-block:: python
 
-        g2_diagnostic = g2diagnostic.G2Diagnostic()
-        g2_diagnostic.init(module_name, ini_params)
+        sz_diagnostic = szdiagnostic.SzDiagnostic()
+        sz_diagnostic.init(instance_name, settings)
 
-    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Either `instance_name` and `settings` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
 
     Parameters:
-        module_name:
+        instance_name:
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        ini_params:
+        settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
+        config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        g2exception.G2Exception: Failed to load the G2 library or incorrect `module_name`, `ini_params` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_constructor.py
+        .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_constructor.py
             :linenos:
             :language: python
     """
