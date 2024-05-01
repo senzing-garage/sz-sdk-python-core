@@ -2,9 +2,7 @@
 
 from sys import exit
 
-from senzing import szengine
-from senzing.szerror import SzError
-from szengineflags import SzEngineFlags
+from senzing import SzEngineFlags, SzError, szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -23,7 +21,7 @@ try:
         print("No redo records")
         exit(0)
 
-    result = sz_engine.process_redo_record(record, SzEngineFlags.SZ_WITH_INFO)
-    print(result)
+    RESULT = sz_engine.process_redo_record(record, SzEngineFlags.SZ_WITH_INFO)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

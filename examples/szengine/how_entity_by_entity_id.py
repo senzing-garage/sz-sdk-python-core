@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
-INSTANCE_NAME = "Example"
 ENTITY_ID = 1
+FLAGS = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
+INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -16,7 +16,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.how_entity_by_entity_id(ENTITY_ID)
-    print(result)
+    RESULT = sz_engine.how_entity_by_entity_id(ENTITY_ID, FLAGS)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

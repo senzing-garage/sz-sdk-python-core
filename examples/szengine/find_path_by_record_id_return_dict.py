@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 END_DATA_SOURCE_CODE = "REFERENCE"
 INSTANCE_NAME = "Example"
@@ -18,16 +19,15 @@ SETTINGS = {
 START_DATA_SOURCE_CODE = "REFERENCE"
 START_RECORD_ID = "2081"
 
-
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_path_by_record_id_return_dict(
+    RESULT = sz_engine.find_path_by_record_id_return_dict(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,
         END_DATA_SOURCE_CODE,
         END_RECORD_ID,
         MAX_DEGREES,
     )
-    print(result)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

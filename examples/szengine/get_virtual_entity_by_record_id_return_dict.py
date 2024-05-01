@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
 RECORD_LIST = {
@@ -22,7 +23,7 @@ SETTINGS = {
 # TODO Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.get_virtual_entity_by_record_id_return_dict(RECORD_LIST)
-    print(result)
+    RESULT = sz_engine.get_virtual_entity_by_record_id_return_dict(RECORD_LIST)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

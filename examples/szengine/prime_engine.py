@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -16,6 +15,5 @@ SETTINGS = {
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
     sz_engine.prime_engine()
-    # Do work
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

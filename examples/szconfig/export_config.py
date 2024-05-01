@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
 
-from senzing import szconfig
-from senzing.szerror import SzError
+from senzing import SzError, szconfig
 
 SETTINGS = {
     "PIPELINE": {
@@ -17,8 +16,10 @@ INSTANCE_NAME = "Example"
 try:
     sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
     config_handle = sz_config.create_config()  # Create first in-memory.
-    config = sz_config.export_config(config_handle)  # Save in-memory to string.
+    CONFIG_DEFINITION = sz_config.export_config(
+        config_handle
+    )  # Save in-memory to string.
     sz_config.close_config(config_handle)
-    print(config)
+    print(CONFIG_DEFINITION[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

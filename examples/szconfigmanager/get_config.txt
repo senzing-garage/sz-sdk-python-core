@@ -2,44 +2,266 @@
 
 {
     "G2_CONFIG": {
-        "CFG_ATTR": [],
-        "CFG_CFBOM": [],
-        "CFG_CFCALL": [],
-        "CFG_CFRTN": [],
-        "CFG_CFUNC": [],
-        "CFG_DFBOM": [],
-        "CFG_DFCALL": [],
-        "CFG_DFUNC": [],
-        "CFG_DSRC": [],
+        "CFG_ATTR": [
+            {
+                "ATTR_ID": 1001,
+                "ATTR_CODE": "DATA_SOURCE",
+                "ATTR_CLASS": "OBSERVATION",
+                "FTYPE_CODE": null,
+                "FELEM_CODE": null,
+                "FELEM_REQ": "Yes",
+                "DEFAULT_VALUE": null,
+                "INTERNAL": "No"
+            }
+        ],
+        "CFG_CFBOM": [
+            {
+                "CFCALL_ID": 1,
+                "FTYPE_ID": 1,
+                "FELEM_ID": 2,
+                "EXEC_ORDER": 1
+            }
+        ],
+        "CFG_CFCALL": [
+            {
+                "CFCALL_ID": 1,
+                "FTYPE_ID": 1,
+                "CFUNC_ID": 2
+            }
+        ],
+        "CFG_CFRTN": [
+            {
+                "CFRTN_ID": 1,
+                "CFUNC_ID": 1,
+                "FTYPE_ID": 0,
+                "CFUNC_RTNVAL": "FULL_SCORE",
+                "EXEC_ORDER": 1,
+                "SAME_SCORE": 100,
+                "CLOSE_SCORE": 90,
+                "LIKELY_SCORE": 80,
+                "PLAUSIBLE_SCORE": 70,
+                "UN_LIKELY_SCORE": 60
+            }
+        ],
+        "CFG_CFUNC": [
+            {
+                "CFUNC_ID": 1,
+                "CFUNC_CODE": "STR_COMP",
+                "CFUNC_DESC": "String comparison",
+                "CONNECT_STR": "g2StringComp",
+                "ANON_SUPPORT": "Yes",
+                "LANGUAGE": null,
+                "JAVA_CLASS_NAME": null
+            }
+        ],
+        "CFG_DFBOM": [
+            {
+                "DFCALL_ID": 1,
+                "FTYPE_ID": 1,
+                "FELEM_ID": 2,
+                "EXEC_ORDER": 1
+            }
+        ],
+        "CFG_DFCALL": [
+            {
+                "DFCALL_ID": 1,
+                "FTYPE_ID": 1,
+                "DFUNC_ID": 5
+            }
+        ],
+        "CFG_DFUNC": [
+            {
+                "DFUNC_ID": 1,
+                "DFUNC_CODE": "FELEM_STRICT_SUBSET",
+                "DFUNC_DESC": "Strict subset of felems",
+                "CONNECT_STR": "g2StrictSubsetFelems",
+                "ANON_SUPPORT": "Yes",
+                "LANGUAGE": null,
+                "JAVA_CLASS_NAME": null
+            }
+        ],
+        "CFG_DSRC": [
+            {
+                "DSRC_ID": 1,
+                "DSRC_CODE": "TEST",
+                "DSRC_DESC": "Test",
+                "RETENTION_LEVEL": "Remember"
+            }
+        ],
         "CFG_DSRC_INTEREST": [],
-        "CFG_ECLASS": [],
-        "CFG_EFBOM": [],
-        "CFG_EFCALL": [],
-        "CFG_EFUNC": [],
-        "CFG_ERFRAG": [],
-        "CFG_ERRULE": [],
-        "CFG_ETYPE": [],
-        "CFG_FBOM": [],
-        "CFG_FBOVR": []
-        "CFG_FCLASS": [],
-        "CFG_FELEM": [],
-        "CFG_FTYPE": [],
-        "CFG_GENERIC_THRESHOLD": [],
-        "CFG_GPLAN": [],
-        "CFG_LENS": [],
-        "CFG_LENSRL": [],
-        "CFG_RCLASS": [],
-        "CFG_RTYPE": [],
-        "CFG_SFCALL": [],
-        "CFG_SFUNC": [],
-        "SYS_OOM": [],
+        "CFG_EFBOM": [
+            {
+                "EFCALL_ID": 1,
+                "FTYPE_ID": 6,
+                "FELEM_ID": 60,
+                "EXEC_ORDER": 1,
+                "FELEM_REQ": "Yes"
+            }
+        ],
+        "CFG_EFCALL": [
+            {
+                "EFCALL_ID": 1,
+                "FTYPE_ID": 6,
+                "FELEM_ID": -1,
+                "EFUNC_ID": 4,
+                "EXEC_ORDER": 1,
+                "EFEAT_FTYPE_ID": -1,
+                "IS_VIRTUAL": "No"
+            }
+        ],
+        "CFG_EFUNC": [
+            {
+                "EFUNC_ID": 1,
+                "EFUNC_CODE": "EXPRESS_BOM",
+                "EFUNC_DESC": "General BOM Hasher",
+                "CONNECT_STR": "g2GenericHasher",
+                "LANGUAGE": null,
+                "JAVA_CLASS_NAME": null
+            }
+        ],
+        "CFG_ERFRAG": [
+            {
+                "ERFRAG_ID": 10,
+                "ERFRAG_CODE": "TRUSTED_ID",
+                "ERFRAG_DESC": "TRUSTED_ID",
+                "ERFRAG_SOURCE": "./SCORES/TRUSTED_ID[./FULL_SCORE=100]",
+                "ERFRAG_DEPENDS": null
+            }
+        ],
+        "CFG_ERRULE": [
+            {
+                "ERRULE_ID": 100,
+                "ERRULE_CODE": "SAME_A1",
+                "RESOLVE": "Yes",
+                "RELATE": "No",
+                "RTYPE_ID": 1,
+                "QUAL_ERFRAG_CODE": "SAME_A1",
+                "DISQ_ERFRAG_CODE": null,
+                "ERRULE_TIER": 10
+            }
+        ],
+        "CFG_FBOM": [
+            {
+                "FTYPE_ID": 1,
+                "FELEM_ID": 2,
+                "EXEC_ORDER": 1,
+                "DISPLAY_LEVEL": 1,
+                "DISPLAY_DELIM": null,
+                "DERIVED": "No"
+            }
+        ],
+        "CFG_FBOVR": [
+            {
+                "FTYPE_ID": 5,
+                "UTYPE_CODE": "BUSINESS",
+                "FTYPE_FREQ": "FF",
+                "FTYPE_EXCL": "Yes",
+                "FTYPE_STAB": "No"
+            }
+        ],
+        "CFG_FCLASS": [
+            {
+                "FCLASS_ID": 1,
+                "FCLASS_CODE": "NAME",
+                "FCLASS_DESC": "Name"
+            }
+        ],
+        "CFG_FELEM": [
+            {
+                "FELEM_ID": 2,
+                "FELEM_CODE": "FULL_NAME",
+                "FELEM_DESC": "Full name",
+                "DATA_TYPE": "string"
+            }
+        ],
+        "CFG_FTYPE": [
+            {
+                "FTYPE_ID": 1,
+                "FTYPE_CODE": "NAME",
+                "FTYPE_DESC": "Name",
+                "FCLASS_ID": 1,
+                "FTYPE_FREQ": "NAME",
+                "FTYPE_EXCL": "No",
+                "FTYPE_STAB": "No",
+                "PERSIST_HISTORY": "Yes",
+                "USED_FOR_CAND": "No",
+                "DERIVED": "No",
+                "RTYPE_ID": 0,
+                "ANONYMIZE": "No",
+                "VERSION": 2,
+                "SHOW_IN_MATCH_KEY": "Yes"
+            }
+        ],
+        "CFG_GENERIC_THRESHOLD": [
+            {
+                "GPLAN_ID": 1,
+                "BEHAVIOR": "NAME",
+                "FTYPE_ID": 0,
+                "CANDIDATE_CAP": 10,
+                "SCORING_CAP": -1,
+                "SEND_TO_REDO": "Yes"
+            }
+        ],
+        "CFG_GPLAN": [
+            {
+                "GPLAN_ID": 1,
+                "GPLAN_CODE": "INGEST",
+                "GPLAN_DESC": "Standard Ingestion"
+            }
+        ],
+        "CFG_RCLASS": [
+            {
+                "RCLASS_ID": 1,
+                "RCLASS_CODE": "DERIVED",
+                "RCLASS_DESC": "Derived",
+                "IS_DISCLOSED": "No"
+            }
+        ],
+        "CFG_RTYPE": [
+            {
+                "RTYPE_ID": 1,
+                "RTYPE_CODE": "RESOLVED",
+                "RTYPE_DESC": "Resolved",
+                "RCLASS_ID": 1,
+                "BREAK_RES": "No"
+            }
+        ],
+        "CFG_SFCALL": [
+            {
+                "SFCALL_ID": 1,
+                "FTYPE_ID": 1,
+                "FELEM_ID": -1,
+                "SFUNC_ID": 1,
+                "EXEC_ORDER": 1
+            }
+        ],
+        "CFG_SFUNC": [
+            {
+                "SFUNC_ID": 1,
+                "SFUNC_CODE": "PARSE_NAME",
+                "SFUNC_DESC": "Parse name",
+                "CONNECT_STR": "g2ParseName",
+                "LANGUAGE": null,
+                "JAVA_CLASS_NAME": null
+            }
+        ],
+        "SYS_OOM": [
+            {
+                "OOM_TYPE": "RF",
+                "OOM_LEVEL": "SYSDEFAULT",
+                "FTYPE_ID": 0,
+                "THRESH1_CNT": 100,
+                "THRESH1_OOM": 10,
+                "NEXT_THRESH": 1000
+            }
+        ],
         "CONFIG_BASE_VERSION": {
             "VERSION": "4.0.0",
-            "BUILD_VERSION": "4.0.0.00000",
-            "BUILD_DATE": "2024-01-01",
-            "BUILD_NUMBER": "00000",
+            "BUILD_VERSION": "4.0.0.24103",
+            "BUILD_DATE": "2024-04-12",
+            "BUILD_NUMBER": "24103",
             "COMPATIBILITY_VERSION": {
-                "CONFIG_VERSION": "10"
+                "CONFIG_VERSION": "11"
             }
         }
     }

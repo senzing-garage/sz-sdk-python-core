@@ -168,3 +168,6 @@ cython_debug/
 
 # Synology NAS files
 .DS_Store
+
+exportCSVEntityReport.csv
+exportJSONEntityReport.json

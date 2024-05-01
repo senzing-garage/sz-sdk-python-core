@@ -1,0 +1,245 @@
+// Output has been formatted for easier reading.
+
+{
+    "workload": {
+        "apiVersion": "4.0.0.24103",
+        "loadedRecords": 5,
+        "addedRecords": 10,
+        "optimizedOut": 7,
+        "optimizedOutSkipped": 0,
+        "newObsEnt": 4,
+        "obsEntHashSame": 6,
+        "obsEntHashDiff": 0,
+        "partiallyResolved": 0,
+        "deletedRecords": 1,
+        "changeDeletes": 0,
+        "reevaluations": 0,
+        "repairedEntities": 0,
+        "duration": 16,
+        "retries": 0,
+        "candidates": 2,
+        "actualAmbiguousTest": 0,
+        "cachedAmbiguousTest": 0,
+        "libFeatCacheHit": 142,
+        "libFeatCacheMiss": 52,
+        "resFeatStatCacheHit": 906,
+        "resFeatStatCacheMiss": 100,
+        "libFeatInsert": 28,
+        "resFeatStatInsert": 28,
+        "resFeatStatUpdateAttempt": 42,
+        "resFeatStatUpdateFail": 0,
+        "unresolveTest": 0,
+        "abortedUnresolve": 0,
+        "gnrScorersUsed": 1,
+        "unresolveTriggers": {
+            "normalResolve": 0,
+            "update": 0,
+            "relLink": 0,
+            "extensiveResolve": 0,
+            "ambiguousNoResolve": 0,
+            "ambiguousMultiResolve": 0
+        },
+        "reresolveTriggers": {
+            "abortRetry": 0,
+            "unresolveMovement": 0,
+            "multipleResolvableCandidates": 0,
+            "resolveNewFeatures": 2,
+            "newFeatureFTypes": [
+                {
+                    "ADDRESS": 1
+                },
+                {
+                    "ADDR_KEY": 1
+                },
+                {
+                    "DOB": 1
+                },
+                {
+                    "NAME": 2
+                },
+                {
+                    "NAMEADDR_KEY": 1
+                },
+                {
+                    "NAME_KEY": 2
+                },
+                {
+                    "PHONE": 1
+                }
+            ]
+        },
+        "reresolveSkipped": 0,
+        "filteredObsFeat": 0,
+        "expressedFeatureCalls": [
+            {
+                "EFCALL_ID": 1,
+                "EFUNC_CODE": "PHONE_HASHER",
+                "numCalls": 2
+            }
+        ],
+        "expressedFeaturesCreated": [
+            {
+                "ADDR_KEY": 6
+            },
+            {
+                "EMAIL_KEY": 3
+            },
+            {
+                "ID_KEY": 1
+            },
+            {
+                "NAMEADDR_KEY": 10
+            },
+            {
+                "NAME_KEY": 47
+            },
+            {
+                "PHONE_KEY": 2
+            },
+            {
+                "SEARCH_KEY": 1
+            }
+        ],
+        "scoredPairs": [
+            {
+                "ADDRESS": 1
+            },
+            {
+                "DOB": 4
+            },
+            {
+                "EMAIL": 1
+            },
+            {
+                "NAME": 7
+            },
+            {
+                "PHONE": 1
+            },
+            {
+                "RECORD_TYPE": 2
+            }
+        ],
+        "cacheHit": [],
+        "cacheMiss": [
+            {
+                "ADDRESS": 1
+            },
+            {
+                "DOB": 4
+            },
+            {
+                "EMAIL": 1
+            },
+            {
+                "NAME": 7
+            },
+            {
+                "PHONE": 1
+            }
+        ],
+        "redoTriggers": [],
+        "latchContention": [],
+        "highContentionFeat": [],
+        "highContentionResEnt": [],
+        "genericDetect": [],
+        "candidateBuilders": [
+            {
+                "ADDR_KEY": 5
+            },
+            {
+                "DOB": 6
+            },
+            {
+                "EMAIL": 5
+            },
+            {
+                "EMAIL_KEY": 5
+            },
+            {
+                "ID_KEY": 1
+            },
+            {
+                "NAMEADDR_KEY": 5
+            },
+            {
+                "NAME_KEY": 6
+            },
+            {
+                "PHONE": 4
+            },
+            {
+                "PHONE_KEY": 4
+            },
+            {
+                "SEARCH_KEY": 1
+            },
+            {
+                "SSN": 1
+            }
+        ],
+        "suppressedCandidateBuilders": [],
+        "suppressedScoredFeatureType": [],
+        "suppressedDisclosedRelationshipDomainCount": 0,
+        "CorruptEntityTestDiagnosis": {
+            "corruptionTypes": 0
+        },
+        "threadState": {
+            "active": 0,
+            "idle": 10,
+            "sqlExecuting": 0,
+            "loader": 0,
+            "resolver": 0,
+            "scoring": 0,
+            "dataLatchContention": 0,
+            "obsEntContention": 0,
+            "resEntContention": 0
+        },
+        "systemResources": {
+            "initResources": [
+                {
+                    "physicalCores": 16
+                },
+                {
+                    "logicalCores": 16
+                },
+                {
+                    "totalMemory": "62.6GB"
+                },
+                {
+                    "availableMemory": "47.3GB"
+                }
+            ],
+            "currResources": [
+                {
+                    "availableMemory": "41.9GB"
+                },
+                {
+                    "activeThreads": 0
+                },
+                {
+                    "workerThreads": 10
+                },
+                {
+                    "systemLoad": [
+                        {
+                            "cpuUser": 14.45705
+                        },
+                        {
+                            "cpuSystem": 2.269044
+                        },
+                        {
+                            "cpuIdle": 83.079414
+                        },
+                        {
+                            "cpuWait": 0.032415
+                        },
+                        {
+                            "cpuSoftIrq": 0.162075
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

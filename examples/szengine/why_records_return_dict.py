@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
 DATA_SOURCE_CODE_2 = "WATCHLIST"
@@ -17,12 +18,11 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.why_records_return_dict(
+    RESULT = sz_engine.why_records_return_dict(
         DATA_SOURCE_CODE_1, RECORD_ID_1, DATA_SOURCE_CODE_2, RECORD_ID_2, 1
     )
-    print(result)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

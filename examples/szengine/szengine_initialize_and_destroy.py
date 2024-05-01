@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -19,4 +18,4 @@ try:
     # Do Work
     sz_engine.destroy()
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

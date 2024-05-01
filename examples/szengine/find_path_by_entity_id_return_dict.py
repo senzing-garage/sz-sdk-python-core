@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
 END_ENTITY_ID = 137
@@ -18,9 +19,9 @@ START_ENTITY_ID = 129
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_path_by_entity_id_return_dict(
+    RESULT = sz_engine.find_path_by_entity_id_return_dict(
         START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
     )
-    print(result)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

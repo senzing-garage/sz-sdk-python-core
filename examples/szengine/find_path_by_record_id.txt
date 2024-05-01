@@ -1,0 +1,38 @@
+// Output has been formatted for easier reading.
+
+{
+    "ENTITY_PATHS": [
+        {
+            "START_ENTITY_ID": 200001,
+            "END_ENTITY_ID": 200004,
+            "ENTITIES": []
+        }
+    ],
+    "ENTITY_PATH_LINKS": [],
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": 200001,
+                "ENTITY_NAME": "Robert Smith",
+                "RECORD_SUMMARY": [
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_COUNT": 3
+                    }
+                ]
+            }
+        },
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": 200004,
+                "ENTITY_NAME": "Edward Kusha",
+                "RECORD_SUMMARY": [
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_COUNT": 1
+                    }
+                ]
+            }
+        }
+    ]
+}

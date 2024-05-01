@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szconfigmanager, szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzError, szconfigmanager, szdiagnostic
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,9 +13,9 @@ SETTINGS = {
 }
 
 try:
-    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
     sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
-    config_id = sz_configmgr.get_default_config_id()
+    config_id = sz_configmanager.get_default_config_id()
     sz_diagnostic.reinitialize(config_id)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 # TODO Use a truth set entity id - in all examples
 DATA_SOURCE_CODE = "TEST"
@@ -18,7 +19,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.get_entity_by_record_id_return_dict(DATA_SOURCE_CODE, RECORD_ID)
-    print(result)
+    RESULT = sz_engine.get_entity_by_record_id_return_dict(DATA_SOURCE_CODE, RECORD_ID)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

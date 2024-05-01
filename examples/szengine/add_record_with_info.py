@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szengineflags import SzEngineFlags
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -32,9 +30,9 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.add_record(
+    RESULT = sz_engine.add_record(
         DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, SzEngineFlags.SZ_WITH_INFO
     )
-    print(result)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

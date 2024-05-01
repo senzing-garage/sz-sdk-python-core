@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzError, szdiagnostic
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -21,4 +20,4 @@ try:
 
     sz_diagnostic.destroy()
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

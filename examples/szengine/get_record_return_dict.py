@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
@@ -17,7 +18,7 @@ RECORD_ID = "Example-1"
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.get_record_return_dict(DATA_SOURCE_CODE, RECORD_ID)
-    print(result)
+    RESULT = sz_engine.get_record_return_dict(DATA_SOURCE_CODE, RECORD_ID)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

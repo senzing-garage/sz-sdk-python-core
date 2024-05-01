@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 BUILD_OUT_DEGREE = 2
 INSTANCE_NAME = "Example"
@@ -24,9 +25,9 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_network_by_record_id_return_dict(
+    RESULT = sz_engine.find_network_by_record_id_return_dict(
         RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES
     )
-    print(result)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

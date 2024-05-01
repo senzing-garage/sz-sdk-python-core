@@ -1,0 +1,6 @@
+// Output has been formatted for easier reading.
+
+{
+    "numRecordsInserted": 0,
+    "insertTime": 0
+}

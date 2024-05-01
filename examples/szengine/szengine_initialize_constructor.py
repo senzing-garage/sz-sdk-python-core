@@ -1,10 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
-SECONDS_TO_RUN = 3
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -15,8 +13,7 @@ SETTINGS = {
 }
 
 try:
-    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
-    result = sz_diagnostic.check_database_performance(SECONDS_TO_RUN)
-    print(result)
+    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
+    # Do Work
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

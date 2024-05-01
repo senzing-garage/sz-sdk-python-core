@@ -1,26 +1,12 @@
 #! /usr/bin/env python3
 
-from senzing import szengine, SzError
+from typing import Any, Dict
 
-# from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
 DATA_SOURCE_CODE = "TEST"
+FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example1"
-RECORD_DEFINITION = {
-    "RECORD_DEFINITION_TYPE": "PERSON",
-    "PRIMARY_NAME_LAST": "Smith",
-    "PRIMARY_NAME_FIRST": "Robert",
-    "DATE_OF_BIRTH": "12/11/1978",
-    "ADDR_TYPE": "MAILING",
-    "ADDR_LINE1": "123 Main Street, Las Vegas NV 89132",
-    "PHONE_TYPE": "HOME",
-    "PHONE_NUMBER": "702-919-1300",
-    "EMAIL_ADDRESS": "bsmith@work.com",
-    "DATE": "1/2/18",
-    "STATUS": "Active",
-    "AMOUNT": "100",
-}
-RECORD_ID = "Example-1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -29,9 +15,12 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+RECORD_DEFINITION: Dict[Any, Any] = {}
+RECORD_ID = "1"
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION)
+    RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, FLAGS)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

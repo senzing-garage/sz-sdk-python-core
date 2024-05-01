@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
 ENTITY_ID = 1
+FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
@@ -16,6 +16,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    sz_engine.reevaluate_entity(ENTITY_ID)
+    RESULT = sz_engine.reevaluate_entity(ENTITY_ID, FLAGS)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

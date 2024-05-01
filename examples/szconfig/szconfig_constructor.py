@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig
-from senzing.szerror import SzError
+from senzing import SzError, szconfig
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -18,7 +17,7 @@ SETTINGS = {
 try:
     sz_config1 = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")
 
 # Example 2
 
@@ -27,4 +26,4 @@ try:
     sz_config2.initialize(INSTANCE_NAME, SETTINGS)
     sz_config2.destroy()
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

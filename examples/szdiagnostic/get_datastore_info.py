@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzError, szdiagnostic
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -15,7 +14,7 @@ SETTINGS = {
 
 try:
     sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
-    result = sz_diagnostic.get_data_store_info()
-    print(result)
+    RESULT = sz_diagnostic.get_datastore_info()
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

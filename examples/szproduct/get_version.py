@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szproduct
-from senzing.szerror import SzError
+from senzing import SzError, szproduct
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -18,4 +17,4 @@ try:
     result = sz_product.get_version()
     print(result)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

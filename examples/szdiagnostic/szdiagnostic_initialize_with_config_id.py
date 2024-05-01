@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
 
-from senzing import szconfigmanager, szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzError, szconfigmanager, szdiagnostic
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -23,4 +22,4 @@ try:
         INSTANCE_NAME, SETTINGS, config_id=config_id
     )
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

@@ -1,0 +1,11 @@
+// Output has been formatted for easier reading.
+
+{
+    "dataStores": [
+        {
+            "id": "CORE",
+            "type": "sqlite3",
+            "location": "/tmp/sqlite/G2C.db"
+        }
+    ]
+}

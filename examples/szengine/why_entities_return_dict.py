@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
+
+from senzing import SzError, szengine
 
 ENTITY_ID_1 = 1
 ENTITY_ID_2 = 6
@@ -17,7 +18,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.why_entities_return_dict(ENTITY_ID_1, ENTITY_ID_2, 1)
-    print(result)
+    RESULT = sz_engine.why_entities_return_dict(ENTITY_ID_1, ENTITY_ID_2, 1)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

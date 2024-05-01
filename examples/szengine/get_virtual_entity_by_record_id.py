@@ -1,13 +1,13 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
+FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 RECORD_LIST = {
     "RECORDS": [
         {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
-        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
+        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},
     ]
 }
 SETTINGS = {
@@ -18,10 +18,10 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-# TODO Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
+
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST)
-    print(result)
+    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

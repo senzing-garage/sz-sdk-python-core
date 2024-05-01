@@ -1,0 +1,28 @@
+// Output has been formatted for easier reading.
+
+{
+    "RESOLVED_ENTITY": {
+        "ENTITY_ID": 1,
+        "ENTITY_NAME": "",
+        "FEATURES": {},
+        "RECORD_SUMMARY": [
+            {
+                "DATA_SOURCE": "TEST",
+                "RECORD_COUNT": 1
+            }
+        ],
+        "RECORDS": [
+            {
+                "DATA_SOURCE": "TEST",
+                "RECORD_ID": "2",
+                "INTERNAL_ID": 1,
+                "MATCH_KEY": "",
+                "MATCH_LEVEL_CODE": "",
+                "ERRULE_CODE": "",
+                "FIRST_SEEN_DT": "2024-04-29T14:47:05Z",
+                "LAST_SEEN_DT": "2024-04-29T14:47:05Z"
+            }
+        ]
+    },
+    "RELATED_ENTITIES": []
+}

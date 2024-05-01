@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -26,4 +25,4 @@ try:
 
     sz_engine.close_export(export_handle)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

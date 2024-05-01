@@ -1,0 +1,26 @@
+// Output has been formatted for easier reading.
+
+{
+    "HOW_RESULTS": {
+        "RESOLUTION_STEPS": [],
+        "FINAL_STATE": {
+            "NEED_REEVALUATION": 0,
+            "VIRTUAL_ENTITIES": [
+                {
+                    "VIRTUAL_ENTITY_ID": "V1",
+                    "MEMBER_RECORDS": [
+                        {
+                            "INTERNAL_ID": 1,
+                            "RECORDS": [
+                                {
+                                    "DATA_SOURCE": "TEST",
+                                    "RECORD_ID": "2"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

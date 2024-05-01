@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngineFlags, SzError, szengine
 
 ENTITY_ID_1 = 1
-ENTITY_ID_2 = 6
+ENTITY_ID_2 = 200001
+FLAGS = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
@@ -17,7 +17,11 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.why_entities(ENTITY_ID_1, ENTITY_ID_2)
-    print(result)
+    RESULT = sz_engine.why_entities(
+        ENTITY_ID_1,
+        ENTITY_ID_2,
+        FLAGS,
+    )
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

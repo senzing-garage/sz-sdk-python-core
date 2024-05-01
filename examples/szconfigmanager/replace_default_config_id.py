@@ -1,9 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig, szconfigmanager
-from senzing.szerror import SzError
+from senzing import SzError, szconfig, szconfigmanager
 
-CONFIG_COMMENTS = "Just an example"
+CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = "TEST4"
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -18,21 +17,24 @@ SETTINGS = {
 # TODO Test this
 try:
     sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
 
-    # Create a new config for the replacement.
-    current_config_id = sz_configmgr.get_default_config_id()
-    current_config = sz_configmgr.get_config(current_config_id)
-    config_handle = sz_config.import_config(current_config)
-    sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
-    new_config = sz_config.export_config(config_handle)
-    sz_config.close_config(config_handle)
-    new_config_id = sz_configmgr.add_config(new_config, CONFIG_COMMENTS)
+    current_default_config_id = sz_configmanager.get_default_config_id()
 
-    sz_configmgr.replace_default_config_id(current_config_id, new_config_id)
-    new_current_config_id = sz_configmgr.get_default_config_id()
-    print(
-        f"Config with ID {current_config_id} was replaced by config with ID {new_current_config_id}"
+    # Create a new config.
+
+    CURRENT_CONFIG_DEFINITION = sz_configmanager.get_config(current_default_config_id)
+    current_config_handle = sz_config.import_config(CURRENT_CONFIG_DEFINITION)
+    sz_config.add_data_source(current_config_handle, DATA_SOURCE_CODE)
+    NEW_CONFIG_DEFINITION = sz_config.export_config(current_config_handle)
+    new_default_config_id = sz_configmanager.add_config(
+        NEW_CONFIG_DEFINITION, CONFIG_COMMENT
+    )
+
+    # Replace default config id.
+
+    sz_configmanager.replace_default_config_id(
+        current_default_config_id, new_default_config_id
     )
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

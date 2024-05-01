@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+import json
 
-INSTANCE_NAME = "Example"
+from senzing import SzError, szengine
+
 ENTITY_ID = 1
+INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -16,7 +17,7 @@ SETTINGS = {
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.how_entity_by_entity_id_return_dict(ENTITY_ID)
-    print(result)
+    RESULT = sz_engine.how_entity_by_entity_id_return_dict(ENTITY_ID)
+    print(json.dumps(RESULT)[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")
