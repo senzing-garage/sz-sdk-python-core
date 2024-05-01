@@ -1141,7 +1141,6 @@ class SzEngine(SzEngineAbstract):
 
     def get_redo_record(self, **kwargs: Any) -> str:
         result = self.library_handle.G2_getRedoRecord_helper()
-
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
                 raise self.new_exception(4019, result.return_code)
@@ -1234,7 +1233,6 @@ class SzEngine(SzEngineAbstract):
             result = self.library_handle.G2_processRedoRecordWithInfo_helper(
                 as_c_char_p(redo_record), final_flags
             )
-
             with FreeCResources(self.library_handle, result.response):
                 if result.return_code != 0:
                     raise self.new_exception(
@@ -1244,7 +1242,6 @@ class SzEngine(SzEngineAbstract):
                         result.return_code,
                     )
                 return as_python_str(result.response)
-
         result = self.library_handle.G2_processRedoRecord(
             as_c_char_p(redo_record),
         )

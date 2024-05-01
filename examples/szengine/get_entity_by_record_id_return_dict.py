@@ -5,9 +5,9 @@ import json
 from senzing import SzError, szengine
 
 # TODO Use a truth set entity id - in all examples
-DATA_SOURCE_CODE = "TEST"
+DATA_SOURCE_CODE = "CUSTOMERS"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-1"
+RECORD_ID = "1001"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

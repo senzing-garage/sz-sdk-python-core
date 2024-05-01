@@ -5,7 +5,7 @@ import json
 from senzing import SzError, szengine
 
 ENTITY_ID_1 = 1
-ENTITY_ID_2 = 6
+ENTITY_ID_2 = 4
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {

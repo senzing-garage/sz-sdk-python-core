@@ -37,7 +37,7 @@ setup-osarch-specific:
 .PHONY: test-osarch-specific
 test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
-	@pytest tests/szengine_test.py --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
+	@pytest tests/ --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
 	# @echo "--- Test examples ----------------------------------------------------"
 	# @pytest examples/szconfig --verbose --capture=no
 	@echo "--- Test examples using unittest -------------------------------------"
@@ -45,8 +45,8 @@ test-osarch-specific:
 		examples/szconfig/*.py \
 		examples/szconfigmanager/*.py \
 		examples/szdiagnostic/*.py \
-		examples/szengine/*.py
-		# examples/szproduct/*.py
+		examples/szengine/*.py \
+		examples/szproduct/*.py
 
 .PHONY: test-examples
 test-examples:

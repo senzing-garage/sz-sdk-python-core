@@ -17,7 +17,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-START_DATA_SOURCE_CODE = "EXCLUSIONS"
+START_DATA_SOURCE_CODE = "CUSTOMERS"
 START_RECORD_ID = "1001"
 
 try:

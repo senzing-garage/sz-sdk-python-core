@@ -2,7 +2,7 @@
 
 from senzing import SzEngineFlags, SzError, szengine
 
-END_ENTITY_ID = 200001
+END_ENTITY_ID = 4
 EXCLUSIONS = ""
 FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"

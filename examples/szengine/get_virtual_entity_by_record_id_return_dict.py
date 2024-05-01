@@ -8,7 +8,7 @@ INSTANCE_NAME = "Example"
 RECORD_LIST = {
     "RECORDS": [
         {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
-        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1022"},
+        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"},
     ]
 }
 SETTINGS = {

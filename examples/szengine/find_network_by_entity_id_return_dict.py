@@ -5,7 +5,7 @@ import json
 from senzing import SzError, szengine
 
 BUILD_OUT_DEGREE = 2
-ENTITY_LIST = {"ENTITIES": [{"ENTITY_ID": 96}, {"ENTITY_ID": 55}]}
+ENTITY_LIST = {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 4}]}
 INSTANCE_NAME = "Example"
 MAX_DEGREES = 5
 MAX_ENTITIES = 10

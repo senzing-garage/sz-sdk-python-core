@@ -6,7 +6,7 @@ from senzing import SzEngineFlags, SzError, szengine
 
 DATA_SOURCE_CODE = "TEST"
 INSTANCE_NAME = "Example"
-RECORD_ID = "Example-1"
+RECORD_ID = "1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

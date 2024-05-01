@@ -5,7 +5,7 @@ import json
 from senzing import SzError, szengine
 
 INSTANCE_NAME = "Example"
-END_ENTITY_ID = 137
+END_ENTITY_ID = 4
 MAX_DEGREES = 3
 SETTINGS = {
     "PIPELINE": {
@@ -15,7 +15,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-START_ENTITY_ID = 129
+START_ENTITY_ID = 1
 
 try:
     sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)

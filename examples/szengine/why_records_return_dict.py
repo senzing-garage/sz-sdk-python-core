@@ -5,10 +5,10 @@ import json
 from senzing import SzError, szengine
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
-DATA_SOURCE_CODE_2 = "WATCHLIST"
+DATA_SOURCE_CODE_2 = "CUSTOMERS"
 INSTANCE_NAME = "Example"
-RECORD_ID_1 = "1009"
-RECORD_ID_2 = "1014"
+RECORD_ID_1 = "1001"
+RECORD_ID_2 = "1009"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
