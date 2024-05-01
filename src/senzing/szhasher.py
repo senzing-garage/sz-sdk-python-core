@@ -114,7 +114,10 @@ class SzHasher(SzHasherAbstract):
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
+        try:
+            self.destroy()
+        except SzError:
+            pass
 
     def __enter__(
         self,

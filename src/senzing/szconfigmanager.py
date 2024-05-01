@@ -148,7 +148,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
+        settings: Union[str, Dict[Any, Any]] = "",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -162,7 +162,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(ini_params)
+        self.settings = as_str(settings)
         # self.init_config_id = init_config_id
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -225,7 +225,10 @@ class SzConfigManager(SzConfigManagerAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
 
     def __enter__(
         self,

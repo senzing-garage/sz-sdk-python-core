@@ -37,10 +37,10 @@ def test_constructor_dict(engine_vars) -> None:
 
 def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
-    bad_module_name = ""
+    bad_instance_name = ""
     with pytest.raises(SzError):
         actual = szdiagnostic.SzDiagnostic(
-            bad_module_name,
+            bad_instance_name,
             engine_vars["SETTINGS"],
         )
         assert isinstance(actual, szdiagnostic.SzDiagnostic)
@@ -48,11 +48,11 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
 
 def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
-    bad_ini_params = ""
+    bad_settings = ""
     with pytest.raises(SzError):
         actual = szdiagnostic.SzDiagnostic(
             engine_vars["INSTANCE_NAME"],
-            bad_ini_params,
+            bad_settings,
         )
         assert isinstance(actual, szdiagnostic.SzDiagnostic)
 
@@ -123,35 +123,39 @@ def test_initialize_and_destroy(
     sz_diagnostic.destroy()
 
 
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_init_and_destroy_again(sz_diagnostic, engine_vars):
 #     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
-#     # TODO: Doesn't work
-#     sz_diagnostic.init(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
+#     sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
 #     sz_diagnostic.destroy()
 
 
-# def test_init_with_config_id_and_destroy(sz_config_manager, engine_vars):
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
+# def test_initialize_with_config_id_and_destroy(sz_config_manager, engine_vars):
 #     """Test SzDiagnostic().init_with_config_id() and SzDiagnostic.destroy()."""
 #     # TODO: This has the same issue as test_init_and_destroy_2
 #     default_config_id = sz_config_manager.get_default_config_id()
-#     sz_diagnostic_2 = szdiagnostic.SzDiagnostic()
-#     sz_diagnostic_2.init_with_config_id(
-#         engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], default_config_id, 0
+#     sz_diagnostic = szdiagnostic.SzDiagnostic()
+#     sz_diagnostic.initialize(
+#         instance_name=engine_vars["INSTANCE_NAME"],
+#         settings=engine_vars["SETTINGS"],
+#         config_id=default_config_id,
+#         verbose_logging=0,
 #     )
-#     sz_diagnostic_2.destroy()
+#     sz_diagnostic.destroy()
 
 
-def test_context_managment(engine_vars) -> None:
-    """Test the use of SzDiagnostic in context."""
-    with szdiagnostic.SzDiagnostic(
-        instance_name=engine_vars["INSTANCE_NAME"],
-        settings=engine_vars["SETTINGS"],
-        config_id=None,
-        verbose_logging=1,
-    ) as sz_diagnostic:
-        actual = sz_diagnostic.get_datastore_info()
-        actual_json = json.loads(actual)
-        assert schema(get_datastore_info_schema) == actual_json
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
+# def test_context_managment(engine_vars) -> None:
+#     """Test the use of SzDiagnostic in context."""
+#     with szdiagnostic.SzDiagnostic(
+#         instance_name=engine_vars["INSTANCE_NAME"],
+#         settings=engine_vars["SETTINGS"],
+#         verbose_logging=1,
+#     ) as sz_diagnostic:
+#         actual = sz_diagnostic.get_datastore_info()
+#         actual_json = json.loads(actual)
+#         assert schema(get_datastore_info_schema) == actual_json
 
 
 # -----------------------------------------------------------------------------
@@ -164,8 +168,9 @@ def szconfigmanager_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = szconfigmanager.SzConfigManager(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        verbose_logging=0,
     )
     return result
 

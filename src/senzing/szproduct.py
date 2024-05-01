@@ -160,7 +160,10 @@ class SzProduct(SzProductAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
 
     def __enter__(
         self,

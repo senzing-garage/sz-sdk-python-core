@@ -79,7 +79,6 @@ class SzEngineAbstract(ABC):
         + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
         4018: PREFIX + "get_record({0}, {1}, {2}) failed. Return code: {3}",
         4019: PREFIX + "get_redo_record() failed. Return code: {0}",
-        4020: PREFIX + "get_repository_last_modified_time() failed. Return code: {0}",
         4021: PREFIX + "get_stats() failed. Return code: {0}",
         4022: PREFIX + "get_virtual_entity_by_record_id({0}) failed. Return code: {1}",
         4023: PREFIX + "how_entity_by_entity_id({0}) failed. Return code: {1}",
@@ -679,30 +678,6 @@ class SzEngineAbstract(ABC):
             **Output:**
 
             .. literalinclude:: ../../examples/szengine/get_redo_record.txt
-                :linenos:
-                :language: json
-        """
-
-    @abstractmethod
-    def get_repository_last_modified_time(self, **kwargs: Any) -> int:
-        """
-        The `get_repository_last_modified_time` method retrieves the last modified time of the Senzing repository,
-        measured in the number of seconds between the last modified time and January 1, 1970 12:00am GMT (epoch time).
-
-        Returns:
-            int: A Unix Timestamp.
-
-        Raises:
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szengine/get_repository_last_modified_time.py
-                :linenos:
-                :language: python
-
-            **Output:**
-
-            .. literalinclude:: ../../examples/szengine/get_repository_last_modified_time.txt
                 :linenos:
                 :language: json
         """

@@ -37,39 +37,39 @@ from senzing import (
 # -----------------------------------------------------------------------------
 
 
-# def test_exception(sz_engine: szengine.SzEngine):
-#     """Test exceptions."""
-#     actual = sz_engine.new_exception(0)
-#     assert isinstance(actual, Exception)
+def test_exception(sz_engine: szengine.SzEngine):
+    """Test exceptions."""
+    actual = sz_engine.new_exception(0)
+    assert isinstance(actual, Exception)
 
 
 def test_constructor(engine_vars) -> None:
     """Test constructor."""
     actual = szengine.SzEngine(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-        engine_vars["VERBOSE_LOGGING"],
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        verbose_logging=engine_vars["VERBOSE_LOGGING"],
     )
     assert isinstance(actual, szengine.SzEngine)
 
 
-def test_constructor_bad_module_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
-    bad_module_name = ""
+    bad_instance_name = ""
     with pytest.raises(SzError):
         szengine.SzEngine(
-            bad_module_name,
+            bad_instance_name,
             engine_vars["SETTINGS"],
         )
 
 
-def test_constructor_bad_ini_params(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
-    bad_ini_params = ""
+    bad_settings = ""
     with pytest.raises(SzError):
         szengine.SzEngine(
             engine_vars["INSTANCE_NAME"],
-            bad_ini_params,
+            bad_settings,
         )
 
 
@@ -93,23 +93,12 @@ def test_add_truthset_datasources(
     sz_engine.reinitialize(config_id)
 
 
-# TODO Doesn't appear to be working, pointing at wrong G2C I think
-# def test_add_truthset_data(engine_vars):
-#     """Add truthset data for tests"""
-#     sz_engine = szengine.SzEngine(
-#         engine_vars["INSTANCE_NAME"],
-#         engine_vars["SETTINGS"],
-#         engine_vars["VERBOSE_LOGGING"],
-#     )
-#     add_records_truthset(sz_engine: szengine.SzEngine)
-
-
 # -----------------------------------------------------------------------------
 # SzEngine testcases
 # -----------------------------------------------------------------------------
 
 
-# TODO:  Figure out why SRD_EXCEPTION
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_dict(sz_engine: szengine.SzEngine):
 #     """Test add_record where the record is a dict."""
 #     data_source_code = "TEST"
@@ -118,7 +107,7 @@ def test_add_truthset_datasources(
 #     sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-# TODO:  Figure out why SRD_EXCEPTION
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_str(sz_engine: szengine.SzEngine):
 #     """Test add_record where the record is a JSON string."""
 #     data_source_code = "TEST"
@@ -128,7 +117,7 @@ def test_add_truthset_datasources(
 
 
 # TODO Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
-# TODO:  Figure out why SRD_EXCEPTION
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_bad_data_source_code_type(sz_engine: szengine.SzEngine):
 #     """Test add_record with incorrect data source code type."""
 #     data_source_code = 1
@@ -137,7 +126,7 @@ def test_add_truthset_datasources(
 #     with pytest.raises(TypeError):
 #         sz_engine.add_record(data_source_code, record_id, json_data)
 
-# TODO:  Figure out why SRD_EXCEPTION
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_bad_data_source_code_value(sz_engine: szengine.SzEngine):
 #     """Test add_record with non-existent data source code."""
 #     data_source_code = "DOESN'T EXIST"
@@ -861,12 +850,6 @@ def test_get_redo_record(
     assert schema(redo_record_schema) == actual_dict
 
 
-def test_get_repository_last_modified_time(sz_engine: szengine.SzEngine) -> None:
-    """Test SzEngine().get_repository_last_modified_time()."""
-    actual = sz_engine.get_repository_last_modified_time()
-    assert actual >= 0
-
-
 def test_get_stats(
     sz_engine: szengine.SzEngine,
 ) -> None:
@@ -1038,7 +1021,7 @@ def test_reevaluate_record_bad_record_id(sz_engine: szengine.SzEngine) -> None:
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
-    # TODO: Fix test
+    # TODO: Fix test after GDEV-3790
     # with pytest.raises(SzNotFoundError):
     #     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
@@ -1079,7 +1062,7 @@ def test_reevaluate_record_with_info_bad_record_id(
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
-    # TODO: Fix test
+    # TODO: Fix test after GDEV-3790
     # with pytest.raises(SzNotFoundError):
     #     _ = sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
@@ -1216,6 +1199,16 @@ def test_add_record_using_context_managment(engine_vars) -> None:
         sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
 
+def test_add_truthset_data(engine_vars):
+    """Add truthset data for tests"""
+    sz_engine = szengine.SzEngine(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+        engine_vars["VERBOSE_LOGGING"],
+    )
+    add_records_truthset(sz_engine)
+
+
 # -----------------------------------------------------------------------------
 # SzEngine post tests
 # -----------------------------------------------------------------------------
@@ -1224,35 +1217,32 @@ def test_add_record_using_context_managment(engine_vars) -> None:
 # TODO Add testing bad args
 def test_inititialize_and_destroy(engine_vars) -> None:
     """Test init and destroy."""
-    module_name = "Test"
+    instance_name = engine_vars["INSTANCE_NAME"]
     ini_params = engine_vars["SETTINGS"]
     sz_engine_init_destroy = szengine.SzEngine()
-    sz_engine_init_destroy.initialize(module_name, ini_params)
+    sz_engine_init_destroy.initialize(instance_name, ini_params)
     sz_engine_init_destroy.destroy()
 
 
-# TODO Add test for constructor to take init_config_id when modified g2engine.py
-# def test_init_with_config_id(engine_vars) -> None:
-#     """Test init_with_config_id."""
-#     module_name = "Test"
-#     ini_params = engine_vars["SETTINGS"]
-#     sz_engine_2 = g2engine.G2Engine()
-#     sz_engine_2.initialize(module_name, ini_params)
-#     init_config_id = sz_engine_2.get_active_config_id()
-#     sz_engine_2.destroy()
-#     sz_engine_2 = g2engine.G2Engine()
-#     sz_engine_2.init_with_config_id(module_name, ini_params, init_config_id)
+def test_initialize_with_config_id(engine_vars) -> None:
+    """Test init_with_config_id."""
+    instance_name = engine_vars["INSTANCE_NAME"]
+    settings = engine_vars["SETTINGS"]
+    sz_engine_1 = szengine.SzEngine()
+    sz_engine_1.initialize(instance_name, settings)
+    config_id = sz_engine_1.get_active_config_id()
+    sz_engine_1.destroy()
+    sz_engine_2 = szengine.SzEngine()
+    sz_engine_2.initialize(instance_name, settings, config_id)
 
 
-# NOTE Having issues with this, coming back to...
-# def test_init_with_config_id_bad_config_id(engine_vars) -> None:
-#     """Test init_with_config_id with non-existent config id."""
-#     module_name = "Test"
-#     ini_params = engine_vars["SETTINGS"]
-#     init_config_id = 0
-#     sz_engine_with_id = g2engine.G2Engine()
-#     with pytest.raises(g2exception.SzError):
-#         sz_engine_with_id.init_with_config_id(module_name, ini_params, init_config_id)
+def test_inititialize_bad_config_id(engine_vars) -> None:
+    """Test init_with_config_id with non-existent config id."""
+    instance_name = engine_vars["INSTANCE_NAME"]
+    settings = engine_vars["SETTINGS"]
+    config_id = 0
+    sz_engine = szengine.SzEngine()
+    sz_engine.initialize(instance_name, settings, config_id)
 
 
 def test_reinitialize(sz_engine: szengine.SzEngine) -> None:
@@ -1274,11 +1264,11 @@ def test_reinitialize_bad_config_id(
         sz_engine.reinitialize(config_id)
 
 
-# def test_destroy(
-#     sz_engine: szengine.SzEngine,
-# ) -> None:
-#     """Test SzEngine().destroy()."""
-#     sz_engine.destroy()
+def test_destroy(
+    sz_engine: szengine.SzEngine,
+) -> None:
+    """Test SzEngine().destroy()."""
+    sz_engine.destroy()
 
 
 # -----------------------------------------------------------------------------

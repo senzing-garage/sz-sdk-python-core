@@ -25,24 +25,24 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, szproduct.SzProduct)
 
 
-def test_constructor_bad_module_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars) -> None:
     """Test constructor."""
-    bad_module_name = ""
+    bad_instance_name = ""
     with pytest.raises(szerror.SzError):
         actual = szproduct.SzProduct(
-            bad_module_name,
+            bad_instance_name,
             engine_vars["SETTINGS"],
         )
         assert isinstance(actual, szproduct.SzProduct)
 
 
-def test_constructor_bad_ini_params(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars) -> None:
     """Test constructor."""
-    bad_ini_params = ""
+    bad_settings = ""
     with pytest.raises(szerror.SzError):
         actual = szproduct.SzProduct(
             engine_vars["INSTANCE_NAME"],
-            bad_ini_params,
+            bad_settings,
         )
         assert isinstance(actual, szproduct.SzProduct)
 

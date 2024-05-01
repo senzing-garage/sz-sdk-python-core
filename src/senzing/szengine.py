@@ -180,15 +180,6 @@ class G2GetRedoRecordResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getRedoRecord_result"""
 
 
-class G2GetRepositoryLastModifiedTimeResult(Structure):
-    """In golang_helpers.h G2_getRepositoryLastModifiedTime_result"""
-
-    _fields_ = [
-        ("time", c_longlong),
-        ("return_code", c_longlong),
-    ]
-
-
 class G2GetVirtualEntityByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_getVirtualEntityByRecordID_V2_result"""
 
@@ -292,8 +283,8 @@ class SzEngine(SzEngineAbstract):
         self,
         instance_name: str = "",
         settings: Union[str, Dict[Any, Any]] = "",
-        verbose_logging: int = 0,
         config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -512,10 +503,6 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_getRecord_V2_helper.restype = G2GetRecordV2Result
         self.library_handle.G2_getRedoRecord_helper.argtypes = []
         self.library_handle.G2_getRedoRecord_helper.restype = G2GetRedoRecordResult
-        self.library_handle.G2_getRepositoryLastModifiedTime_helper.argtypes = []
-        self.library_handle.G2_getRepositoryLastModifiedTime_helper.restype = (
-            G2GetRepositoryLastModifiedTimeResult
-        )
         self.library_handle.G2_getVirtualEntityByRecordID_V2_helper.argtypes = [
             c_char_p,
             c_longlong,
@@ -536,7 +523,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_char_p,
             c_longlong,
-            c_int,
+            c_longlong,
         ]
         self.library_handle.G2_processRedoRecord.argtypes = [
             c_char_p,
@@ -615,20 +602,20 @@ class SzEngine(SzEngineAbstract):
         # TODO What if "" was sent for instance_name but settings are specified?
         if len(self.instance_name) > 0:
             self.auto_init = True
-            if not self.config_id:
-                self.initialize(self.instance_name, self.settings, self.verbose_logging)
-            else:
-                self.initialize(
-                    self.instance_name,
-                    self.settings,
-                    self.verbose_logging,
-                    self.config_id,
-                )
+            self.initialize(
+                instance_name=self.instance_name,
+                settings=self.settings,
+                config_id=self.config_id,
+                verbose_logging=self.verbose_logging,
+            )
 
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
 
     def __enter__(
         self,
@@ -1160,12 +1147,6 @@ class SzEngine(SzEngineAbstract):
                 raise self.new_exception(4019, result.return_code)
             return as_python_str(result.response)
 
-    def get_repository_last_modified_time(self, **kwargs: Any) -> int:
-        result = self.library_handle.G2_getRepositoryLastModifiedTime_helper()
-        if result.return_code != 0:
-            raise self.new_exception(4020, result.return_code)
-        return int(result.time)
-
     def get_stats(self, **kwargs: Any) -> str:
         result = self.library_handle.G2_stats_helper()
 
@@ -1208,12 +1189,11 @@ class SzEngine(SzEngineAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = None,
-        verbose_logging: int = 0,
+        config_id: Optional[int] = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
-
-        if not config_id:
+        if config_id == 0:
             result = self.library_handle.G2_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
@@ -1224,7 +1204,6 @@ class SzEngine(SzEngineAbstract):
                     4024, instance_name, settings, verbose_logging, config_id, result
                 )
             return
-
         result = self.library_handle.G2_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),

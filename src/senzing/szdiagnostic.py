@@ -138,8 +138,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self,
         instance_name: str = "",
         settings: Union[str, Dict[Any, Any]] = "",
-        config_id: int = 1,
-        verbose_logging: int = 1,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -148,8 +148,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
         # pylint: disable=W0613
-
-        print("\n>>>> __init__")
 
         # Verify parameters.
 
@@ -200,7 +198,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             c_char_p,
             c_char_p,
             c_longlong,
-            c_int,
+            c_longlong,
         ]
         self.library_handle.G2Diagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
@@ -214,29 +212,20 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 raise self.new_exception(4007, self.instance_name, self.settings)
         if len(self.instance_name) > 0:
             self.auto_init = True
-            if not self.config_id:
-                print("\n>>>> Before error")
-                self.initialize(
-                    instance_name=self.instance_name,
-                    settings=self.settings,
-                    verbose_logging=self.verbose_logging,
-                )
-                print("\n>>>> After error")
-            else:
-                self.initialize(
-                    self.instance_name,
-                    self.settings,
-                    self.verbose_logging,
-                    self.config_id,
-                )
-        print("\n>>>> init:auto_init:", self.auto_init)
+            self.initialize(
+                instance_name=self.instance_name,
+                settings=self.settings,
+                config_id=self.config_id,
+                verbose_logging=self.verbose_logging,
+            )
 
     def __del__(self) -> None:
         """Destructor"""
-        print("\n>>>> del:auto_init:", self.auto_init)
-
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
 
     def __enter__(
         self,
@@ -244,10 +233,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         Any
     ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
-
-        print("\n>>>> __enter__")
-
-        self.__init__()
         return self
 
     def __exit__(
@@ -257,7 +242,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-        print("\n>>>> __exit__")
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -327,14 +311,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = None,
-        verbose_logging: int = 0,
+        config_id: Optional[int] = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
-        print("\n>>>>> initialize")
-
-        if not config_id:
-            print("\n>>>>> no config_id")
+        if config_id == 0:
             result = self.library_handle.G2Diagnostic_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
@@ -350,9 +331,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
                     result,
                 )
             return
-
-        print("\n>>>>> with config_id")
-
         result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
