@@ -84,14 +84,23 @@ publish-test: package
 test: test-osarch-specific
 
 
+.PHONY: bandit
+bandit:
+	@bandit $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
+
+.PHONY: flake8
+flake8:
+	@flake8 $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
+
+
 .PHONY: pylint
 pylint:
-	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*')
+	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: mypy
 mypy:
-	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
+	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: pytest
