@@ -109,7 +109,7 @@ isort:
 
 .PHONY: mypy
 mypy:
-	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	@mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: pylint
