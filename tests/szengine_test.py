@@ -42,7 +42,7 @@ def test_exception(sz_engine: SzEngine):
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars) -> None:
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzEngine(
         instance_name=engine_vars["INSTANCE_NAME"],
@@ -52,7 +52,7 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, SzEngine)
 
 
-def test_constructor_bad_instance_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
@@ -62,7 +62,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
         )
 
 
-def test_constructor_bad_settings(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
@@ -73,7 +73,7 @@ def test_constructor_bad_settings(engine_vars) -> None:
 
 
 # TODO: Was having issues with the as_c_ini in init
-# def test_constructor_bad_verbose_logging(engine_vars):
+# def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
 #     """Test constructor."""
 
 
@@ -1185,7 +1185,7 @@ def test_why_records_bad_record_id(sz_engine: SzEngine) -> None:
 # -----------------------------------------------------------------------------
 
 
-def test_add_record_using_context_managment(engine_vars) -> None:
+def test_add_record_using_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzEngineGrpc in context."""
     with SzEngine(
         engine_vars["INSTANCE_NAME"],
@@ -1198,7 +1198,7 @@ def test_add_record_using_context_managment(engine_vars) -> None:
         sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
 
-def test_add_truthset_data(engine_vars):
+def test_add_truthset_data(engine_vars: Dict[Any, Any]):
     """Add truthset data for tests"""
     sz_engine = SzEngine(
         engine_vars["INSTANCE_NAME"],
@@ -1214,7 +1214,7 @@ def test_add_truthset_data(engine_vars):
 
 
 # TODO: Add testing bad args
-def test_inititialize_and_destroy(engine_vars) -> None:
+def test_inititialize_and_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test init and destroy."""
     instance_name = engine_vars["INSTANCE_NAME"]
     settings = engine_vars["SETTINGS"]
@@ -1223,7 +1223,7 @@ def test_inititialize_and_destroy(engine_vars) -> None:
     sz_engine_init_destroy.destroy()
 
 
-def test_initialize_with_config_id(engine_vars) -> None:
+def test_initialize_with_config_id(engine_vars: Dict[Any, Any]) -> None:
     """Test init_with_config_id."""
     instance_name = engine_vars["INSTANCE_NAME"]
     settings = engine_vars["SETTINGS"]
@@ -1235,7 +1235,7 @@ def test_initialize_with_config_id(engine_vars) -> None:
     sz_engine_2.initialize(instance_name, settings, config_id)
 
 
-def test_inititialize_bad_config_id(engine_vars) -> None:
+def test_inititialize_bad_config_id(engine_vars: Dict[Any, Any]) -> None:
     """Test init_with_config_id with non-existent config id."""
     instance_name = engine_vars["INSTANCE_NAME"]
     settings = engine_vars["SETTINGS"]
@@ -1276,7 +1276,7 @@ def test_destroy(
 
 
 @pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
-def szconfig_fixture(engine_vars) -> SzConfig:
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single config object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -1288,7 +1288,7 @@ def szconfig_fixture(engine_vars) -> SzConfig:
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")  # type: ignore[misc]
-def szconfigmanager_fixture(engine_vars) -> SzConfigManager:
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """
     Single configmanager object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -1300,7 +1300,7 @@ def szconfigmanager_fixture(engine_vars) -> SzConfigManager:
 
 
 @pytest.fixture(name="sz_engine", scope="module")  # type: ignore[misc]
-def szengine_fixture(engine_vars) -> SzEngine:
+def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.

@@ -1,5 +1,6 @@
 import json
 from ctypes import ArgumentError
+from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
@@ -24,7 +25,7 @@ def test_exception(sz_configmanager: SzConfigManager) -> None:
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars) -> None:
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
@@ -33,7 +34,7 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, SzConfigManager)
 
 
-def test_constructor_dict(engine_vars) -> None:
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
@@ -42,7 +43,7 @@ def test_constructor_dict(engine_vars) -> None:
     assert isinstance(actual, SzConfigManager)
 
 
-def test_constructor_bad_instance_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
@@ -53,7 +54,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
         assert isinstance(actual, SzConfigManager)
 
 
-def test_constructor_bad_settings(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
@@ -307,7 +308,7 @@ def test_initialize_and_destroy_again(
     sz_configmanager.destroy()
 
 
-def test_context_managment(engine_vars) -> None:
+def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzConfigGrpc in context."""
     with SzConfigManager(
         engine_vars["INSTANCE_NAME"],
@@ -325,7 +326,7 @@ def test_context_managment(engine_vars) -> None:
 
 
 @pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
-def szconfig_fixture(engine_vars):
+def szconfig_fixture(engine_vars: Dict[Any, Any]):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -339,7 +340,7 @@ def szconfig_fixture(engine_vars):
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_instance_fixture(engine_vars):
+def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]):
     """Single engine object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 

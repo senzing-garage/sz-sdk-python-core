@@ -7,7 +7,7 @@ from senzing import as_str
 # -----------------------------------------------------------------------------
 
 
-def test_as_str():
+def test_as_str() -> None:
     """Test as_str."""
     a_dict = {
         "test1": "Fred",

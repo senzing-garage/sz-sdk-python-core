@@ -1,5 +1,6 @@
 import json
 from ctypes import ArgumentError
+from typing import Any, Dict
 
 import pytest
 from pytest_schema import schema
@@ -17,7 +18,7 @@ def test_exception(sz_diagnostic) -> None:
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars) -> None:
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnostic(
         engine_vars["INSTANCE_NAME"],
@@ -26,7 +27,7 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, SzDiagnostic)
 
 
-def test_constructor_dict(engine_vars) -> None:
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnostic(
         engine_vars["INSTANCE_NAME"],
@@ -35,7 +36,7 @@ def test_constructor_dict(engine_vars) -> None:
     assert isinstance(actual, SzDiagnostic)
 
 
-def test_constructor_bad_instance_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
@@ -46,7 +47,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
         assert isinstance(actual, SzDiagnostic)
 
 
-def test_constructor_bad_settings(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
@@ -142,7 +143,7 @@ def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> Non
 
 
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_context_managment(engine_vars) -> None:
+# def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 #     """Test the use of SzDiagnostic in context."""
 #     with SzDiagnostic(
 #         instance_name=engine_vars["INSTANCE_NAME"],
@@ -160,7 +161,7 @@ def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> Non
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_fixture(engine_vars):
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManager(
@@ -172,7 +173,7 @@ def szconfigmanager_fixture(engine_vars):
 
 
 @pytest.fixture(name="sz_diagnostic", scope="module")
-def szdiagnostic_fixture(engine_vars):
+def szdiagnostic_fixture(engine_vars: Dict[Any, Any]):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnostic(

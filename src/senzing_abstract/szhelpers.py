@@ -163,7 +163,7 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     # NOTE Testing
     if isinstance(candidate_value, dict):
         if ORJSON_AVAILABLE:
-            return orjson.dumps(candidate_value).decode()  # type: ignore[reportUnboundVariable]
+            return orjson.dumps(candidate_value).decode()
         return json.dumps(candidate_value)
     return candidate_value
 

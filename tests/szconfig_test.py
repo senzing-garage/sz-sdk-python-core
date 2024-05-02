@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
@@ -16,7 +17,7 @@ def test_exception(sz_config) -> None:
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars) -> None:
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfig(
         engine_vars["INSTANCE_NAME"],
@@ -25,7 +26,7 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, SzConfig)
 
 
-def test_constructor_dict(engine_vars) -> None:
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfig(
         engine_vars["INSTANCE_NAME"],
@@ -34,7 +35,7 @@ def test_constructor_dict(engine_vars) -> None:
     assert isinstance(actual, SzConfig)
 
 
-def test_constructor_bad_instance_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_INSTANCE_NAME = ""
     with pytest.raises(SzError):
@@ -45,7 +46,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
         assert isinstance(actual, SzConfig)
 
 
-def test_constructor_bad_settings(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_SETTINGS = ""
     with pytest.raises(SzError):
@@ -274,7 +275,7 @@ def test_initialize_and_destroy_again(sz_config: SzConfig) -> None:
     sz_config.destroy()
 
 
-def test_context_managment(engine_vars) -> None:
+def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzConfigGrpc in context."""
 
     with SzConfig(
@@ -295,7 +296,7 @@ def test_context_managment(engine_vars) -> None:
 
 
 @pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
-def szconfig_fixture(engine_vars):
+def szconfig_fixture(engine_vars: Dict[Any, Any]):
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.

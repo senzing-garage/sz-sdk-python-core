@@ -1,5 +1,6 @@
 import json
 import platform
+from typing import Any, Dict
 
 import pytest
 
@@ -8,7 +9,7 @@ import pytest
 
 
 @pytest.fixture(name="engine_vars", scope="session")
-def engine_vars_fixture():
+def engine_vars_fixture() -> Dict[Any, Any]:
     """Return a dictionary of Senzing engine variables based on runtime env
     Can be used by all pytest tests.
     """

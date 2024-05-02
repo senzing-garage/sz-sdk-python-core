@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict
 
 import pytest
 from pytest_schema import Regex, schema
@@ -16,7 +17,7 @@ def test_exception(sz_product: SzProduct) -> None:
     assert isinstance(actual, Exception)
 
 
-def test_constructor(engine_vars) -> None:
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProduct(
         engine_vars["INSTANCE_NAME"],
@@ -25,7 +26,7 @@ def test_constructor(engine_vars) -> None:
     assert isinstance(actual, SzProduct)
 
 
-def test_constructor_bad_instance_name(engine_vars) -> None:
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(szerror.SzError):
@@ -36,7 +37,7 @@ def test_constructor_bad_instance_name(engine_vars) -> None:
         assert isinstance(actual, SzProduct)
 
 
-def test_constructor_bad_settings(engine_vars) -> None:
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(szerror.SzError):
@@ -66,7 +67,7 @@ def test_get_version(sz_product: SzProduct) -> None:
 def test_initialize_and_destroy(sz_product: SzProduct) -> None:
     """Test init/destroy cycle."""
     instance_name = "Example"
-    settings = {}
+    settings: Dict[Any, Any] = {}
     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
     sz_product.initialize(instance_name, settings, verbose_logging)
     sz_product.destroy()
@@ -81,7 +82,7 @@ def test_initialize_and_destroy_again(sz_product: SzProduct) -> None:
     sz_product.destroy()
 
 
-def test_context_managment(engine_vars) -> None:
+def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzProductGrpc in context."""
     with SzProduct(
         engine_vars["INSTANCE_NAME"],
@@ -98,8 +99,8 @@ def test_context_managment(engine_vars) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_product", scope="module")  # type: ignore[misc]
-def szproduct_fixture(engine_vars) -> SzProduct:
+@pytest.fixture(name="sz_product", scope="module")
+def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
