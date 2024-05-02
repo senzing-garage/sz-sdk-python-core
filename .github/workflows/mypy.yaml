@@ -26,7 +26,7 @@ jobs:
 
       - name: pip install mypy
         # run: pip install black pylint mypy
-        run: pip install mypy
+        run: pip install mypy pytest orjson
 
       - name: mypy testing
         #run: mypy --strict $(git ls-files '*.py' ':!:docs/source/*')

@@ -2,9 +2,9 @@
 
 from senzing import SzConfig, SzError
 
-DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
-INSTANCE_NAME = "Example"
-SETTINGS = {
+data_source_code = "NAME_OF_DATASOURCE"
+instance_name = "Example"
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -14,9 +14,9 @@ SETTINGS = {
 }
 
 try:
-    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(instance_name, settings)
     config_handle = sz_config.create_config()
-    RESULT = sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
+    RESULT = sz_config.add_data_source(config_handle, data_source_code)
     sz_config.close_config(config_handle)
     print(RESULT[:66], "...")
 except SzError as err:
