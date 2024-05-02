@@ -3,7 +3,7 @@ import json
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import SzConfigurationError, SzEngineFlags, SzError, SzConfig
+from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases

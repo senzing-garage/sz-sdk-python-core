@@ -1,11 +1,11 @@
 """
-The g2engine package is used to insert, update, delete and query records and entities in the Senzing product.
+The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's G2Engine C binding.
 It conforms to the interface specified in
-`g2engine_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2engine_abstract.py>`_
+`szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szengine_abstract.py>`_
 
 # TODO: Also pythonpath?
-To use g2engine,
+To use szengine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:

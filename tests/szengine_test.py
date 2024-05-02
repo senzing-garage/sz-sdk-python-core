@@ -25,12 +25,12 @@ from senzing import (
     SzUnknownDataSourceError,
 )
 
-# TODO Check and change the exception type with raises to more specific exception instead of g2exception
+# TODO Check and change the exception type with raises to more specific exception instead of SzError
 # TODO Add tests for flags
-# TODO Think about and test how to make the g2helper conversions more robust and possibly raise g2exception
+# TODO Think about and test how to make the szhelper conversions more robust and possibly raise SzError
 # TODO Test calling delete record again
 # TODO Add tests for incorrect ini parms paths and incorrect DB details for constructor
-# TODO value/type tests and handling ctype exceptions from g2helpers - needs thought
+# TODO value/type tests and handling ctype exceptions from szhelpers - needs thought
 
 # -----------------------------------------------------------------------------
 # SzEngine pre tests

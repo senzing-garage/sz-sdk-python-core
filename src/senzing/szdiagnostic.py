@@ -2,9 +2,9 @@
 The `szdiagnostic` package is used to inspect the Senzing environment.
 It is a wrapper over Senzing's G2Diagnostic C binding.
 It conforms to the interface specified in
-`szdiagnostic_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
+`szdiagnostic_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szdiagnostic_abstract.py>`_
 
-To use g2diagnostic,
+To use szdiagnostic,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:

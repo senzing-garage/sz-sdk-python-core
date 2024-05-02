@@ -2,7 +2,7 @@
 The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's G2Configmgr C binding.
 It conforms to the interface specified in
-`szconfigmanager_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/szconfigmanager_abstract.py>`_
+`szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
 
 To use szconfigmanager,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.

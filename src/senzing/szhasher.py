@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2hasher.py
+TODO: szhasher.py
 """
 
 import os
@@ -139,7 +139,7 @@ class SzHasher(SzHasherAbstract):
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2hasher(self, *args: Any, **kwargs: Any) -> None:
+    def fake_szhasher(self, *args: Any, **kwargs: Any) -> None:
         """
         TODO: Remove once SDK methods have been implemented.
 
@@ -173,10 +173,10 @@ class SzHasher(SzHasherAbstract):
     # -------------------------------------------------------------------------
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2hasher()
+        self.fake_szhasher()
 
     def export_token_library(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2hasher()
+        self.fake_szhasher()
         return "response"
 
     def init(
@@ -186,7 +186,7 @@ class SzHasher(SzHasherAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2hasher(module_name, ini_params, verbose_logging)
+        self.fake_szhasher(module_name, ini_params, verbose_logging)
 
     def init_with_config_id(
         self,
@@ -196,11 +196,11 @@ class SzHasher(SzHasherAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)
+        self.fake_szhasher(module_name, ini_params, init_config_id, verbose_logging)
 
     def process(self, record: str, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2hasher(record)
+        self.fake_szhasher(record)
         return "response"
 
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2hasher(init_config_id)
+        self.fake_szhasher(init_config_id)

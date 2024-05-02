@@ -2,7 +2,7 @@
 The `szproduct` package is used to inspect the Senzing product.
 It is a wrapper over Senzing's G2Product C binding.
 It conforms to the interface specified in
-`szproduct_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2product_abstract.py>`_
+`szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
 
 To use szproduct,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.

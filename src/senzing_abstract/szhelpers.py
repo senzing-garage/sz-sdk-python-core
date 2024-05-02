@@ -79,7 +79,7 @@ class FreeCResources:
 #     # NOTE https://stackoverflow.com/questions/76759158/type-hinting-a-json-object-in-python
 #     # NOTE "Even the good people at typeshed use Any as the return type for json.load/json.loads to this day. And they basically maintain the official type stubs for the standard library."
 #     # NOTE https://github.com/python/typeshed/blob/f2ee9e9368a18b19bbf2ac05b6eb6bfea96d9a0c/stdlib/json/__init__.pyi#L39-L60
-#     # NOTE Using Any will impact automatic documentation generation if g2helpers gets documented?
+#     # NOTE Using Any will impact automatic documentation generation if szhelpers gets documented?
 
 #     def as_dict(self) -> Any:
 #         # # TODO Add check to ensure json_string looks like JSON, is it needed? It's the engines methods using the class not customers.

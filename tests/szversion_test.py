@@ -3,7 +3,7 @@ import pytest
 from senzing import szerror, szversion
 
 # -----------------------------------------------------------------------------
-# g2version testcases
+# szversion testcases
 # -----------------------------------------------------------------------------
 
 
