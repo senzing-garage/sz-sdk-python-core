@@ -12,7 +12,6 @@ import json
 import os
 import re
 import sys
-from contextlib import suppress
 from ctypes import (
     CDLL,
     POINTER,
@@ -34,14 +33,14 @@ else:
     from typing import ParamSpec
 
 # NOTE import orjson if available, on a basic loads it is at least 12% faster on a decently sized getentity and higher for other operations
-with suppress(ModuleNotFoundError):
-    import orjson
+# with suppress(ModuleNotFoundError):
+#     import orjson
 
 uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
 P = ParamSpec("P")
 
-ORJSON_AVAILABLE = True if "orjson" in dir() else False
+# ORJSON_AVAILABLE = "orjson" in dir()
 
 # -----------------------------------------------------------------------------
 # Classes
@@ -128,10 +127,8 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                     ]
                 except (IndexError, ValueError):
                     raise TypeError(basic_raise_msg) from err
-                else:
-                    if len(bad_arg_tuple) != 2:
-                        raise TypeError(basic_raise_msg) from err
-
+                if len(bad_arg_tuple) != 2:
+                    raise TypeError(basic_raise_msg) from err
                 raise TypeError(
                     f"wrong type for argument {bad_arg_tuple[0]}, expected {bad_arg_tuple[1]} but received {bad_arg_type.__name__} when calling {module_name}.{method_name}"
                 ) from err
@@ -162,8 +159,8 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     """
     # NOTE Testing
     if isinstance(candidate_value, dict):
-        if ORJSON_AVAILABLE:
-            return orjson.dumps(candidate_value).decode()
+        # if ORJSON_AVAILABLE:
+        #     return orjson.dumps(candidate_value).decode()
         return json.dumps(candidate_value)
     return candidate_value
 

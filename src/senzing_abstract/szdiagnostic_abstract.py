@@ -93,10 +93,10 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
-    # TODO: docstring
     @abstractmethod
     def get_datastore_info(self, **kwargs: Any) -> str:
         """
+        TODO: Document get_datastore_info()
         The `get_datastore_info` method will...
 
         Raises:
