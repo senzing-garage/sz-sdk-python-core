@@ -38,8 +38,8 @@
 
 1. References:
     1. [Bandit](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/bandit.md)
-    1. [Coverage](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/coverage.md)
     1. [Black](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/black.md)
+    1. [Coverage](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/coverage.md)
     1. [Flake8](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/flake8.md)
     1. [Mypy](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/mypy.md)
     1. [Pylint](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pylint.md)
