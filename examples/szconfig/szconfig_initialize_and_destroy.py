@@ -3,7 +3,7 @@
 from senzing import SzConfig, SzError
 
 INSTANCE_NAME = "Example"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -14,7 +14,7 @@ SETTINGS = {
 
 try:
     sz_config = SzConfig()
-    sz_config.initialize(INSTANCE_NAME, SETTINGS)
+    sz_config.initialize(INSTANCE_NAME, settings)
 
     # Do work.
 

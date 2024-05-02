@@ -10,13 +10,13 @@ from senzing_truthset import (
 
 from senzing import SzEngine, SzEngineFlags
 
-DATA_SOURCES = {
+data_sources = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
     "REFERENCE": TRUTHSET_REFERENCE_RECORDS,
     "WATCHLIST": TRUTHSET_WATCHLIST_RECORDS,
 }
 INSTANCE_NAME = "Example1"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -24,7 +24,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-TEST_RECORDS: List[Tuple[str, str]] = [
+test_records: List[Tuple[str, str]] = [
     ("CUSTOMERS", "1001"),
     ("CUSTOMERS", "1002"),
     ("CUSTOMERS", "1003"),
@@ -36,14 +36,16 @@ TEST_RECORDS: List[Tuple[str, str]] = [
 # -----------------------------------------------------------------------------
 
 
-def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> None:
+def add_records(
+    sz_engine_local: SzEngine, record_id_list: List[Tuple[str, str]]
+) -> None:
     """Add all of the records in the list."""
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     for record_identification in record_id_list:
         datasource = record_identification[0]
         record_id = record_identification[1]
-        record = DATA_SOURCES.get(datasource, {}).get(record_id, {})
-        sz_engine.add_record(
+        record = data_sources.get(datasource, {}).get(record_id, {})
+        sz_engine_local.add_record(
             record.get("DataSource", ""),
             record.get("Id", ""),
             record.get("Json", ""),
@@ -57,5 +59,5 @@ def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> N
 
 print("\n---- szengine --------------------------------------------------------\n")
 
-sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-add_records(sz_engine, TEST_RECORDS)
+sz_engine = SzEngine(INSTANCE_NAME, settings)
+add_records(sz_engine, test_records)

@@ -1073,7 +1073,7 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             # TODO: orjson?
@@ -1091,6 +1091,7 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1101,7 +1102,7 @@ class SzEngineAbstract(ABC):
     def find_interesting_entities_by_entity_id_return_dict(
         self, entity_id: int, flags: int = 0, **kwargs: Any
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1112,7 +1113,7 @@ class SzEngineAbstract(ABC):
     def find_interesting_entities_by_record_id_return_dict(
         self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
     ) -> Dict[str, Any]:
-        """T"""
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1131,7 +1132,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1155,7 +1156,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1180,7 +1181,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """TODO: document"""
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1208,7 +1209,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1232,7 +1233,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(self.get_entity_by_entity_id(entity_id, flags, **kwargs)),
@@ -1245,7 +1246,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1262,13 +1263,14 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(self.get_record(data_source_code, record_id, flags, **kwargs)),
         )
 
     def get_stats_return_dict(self, **kwargs: Any) -> Dict[str, Any]:
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(self.get_stats(**kwargs)),
@@ -1280,7 +1282,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1294,7 +1296,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(self.how_entity_by_entity_id(entity_id, flags, **kwargs)),
@@ -1306,7 +1308,7 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(self.reevaluate_entity(entity_id, flags, **kwargs)),
@@ -1319,7 +1321,7 @@ class SzEngineAbstract(ABC):
         flags: int = 0,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1334,7 +1336,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document xxxxxx())"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1349,6 +1351,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
+        """TODO:  Document why_entities_return_dict()"""
         return cast(
             Dict[str, Any],
             json.loads(self.why_entities(entity_id_1, entity_id_2, flags, **kwargs)),
@@ -1363,6 +1366,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
+        """TODO:  Document why_records_return_dict()"""
         return cast(
             Dict[str, Any],
             json.loads(
@@ -1384,7 +1388,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
-        """ """
+        """TODO:  Document why_record_in_entity_return_dict()"""
         # TODO: Is the cast needed?
         return cast(
             Dict[str, Any],

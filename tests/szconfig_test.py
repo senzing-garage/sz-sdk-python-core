@@ -37,10 +37,10 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    bad_INSTANCE_NAME = ""
+    bad_instance_name = ""
     with pytest.raises(SzError):
         actual = SzConfig(
-            bad_INSTANCE_NAME,
+            bad_instance_name,
             engine_vars["SETTINGS"],
         )
         assert isinstance(actual, SzConfig)
@@ -48,11 +48,11 @@ def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    bad_SETTINGS = ""
+    bad_settings = ""
     with pytest.raises(SzError):
         actual = SzConfig(
             engine_vars["INSTANCE_NAME"],
-            bad_SETTINGS,
+            bad_settings,
         )
         assert isinstance(actual, SzConfig)
 

@@ -2,7 +2,8 @@
 
 from senzing import SzConfig, SzError
 
-SETTINGS = {
+INSTANCE_NAME = "Example"
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -10,10 +11,9 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-INSTANCE_NAME = "Example"
 
 try:
-    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.create_config()  # Create first in-memory.
     CONFIG_DEFINITION = sz_config.export_config(
         config_handle

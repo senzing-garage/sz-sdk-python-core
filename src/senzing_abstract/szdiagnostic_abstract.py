@@ -118,7 +118,7 @@ class SzDiagnosticAbstract(ABC):
     # NOTE This is included but not to be documented
     @abstractmethod
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
-        """"""
+        """TODO:  Document get_feature()"""
 
     @abstractmethod
     def initialize(

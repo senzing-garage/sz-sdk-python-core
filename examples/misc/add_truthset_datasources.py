@@ -23,7 +23,7 @@ try:
     current_default_config_id = sz_configmanager.get_default_config_id()
     OLD_CONFIG_DEFINITION = sz_configmanager.get_config(current_default_config_id)
     config_handle = sz_config.import_config(OLD_CONFIG_DEFINITION)
-    for data_source_code in TRUTHSET_DATASOURCES.keys():
+    for data_source_code in TRUTHSET_DATASOURCES:
         sz_config.add_data_source(config_handle, data_source_code)
     NEW_CONFIG_DEFINITION = sz_config.export_config(config_handle)
     new_default_config_id = sz_configmanager.add_config(

@@ -3,7 +3,7 @@
 from senzing import SzConfig, SzError
 
 INSTANCE_NAME = "Example"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -15,7 +15,7 @@ SETTINGS = {
 # Example 1
 
 try:
-    sz_config1 = SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_config1 = SzConfig(INSTANCE_NAME, settings)
 except SzError as err:
     print(f"\nError:\n{err}\n")
 
@@ -23,7 +23,7 @@ except SzError as err:
 
 try:
     sz_config2 = SzConfig()
-    sz_config2.initialize(INSTANCE_NAME, SETTINGS)
+    sz_config2.initialize(INSTANCE_NAME, settings)
     sz_config2.destroy()
 except SzError as err:
     print(f"\nError:\n{err}\n")

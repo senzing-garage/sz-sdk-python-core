@@ -2,8 +2,8 @@
 
 from senzing import SzConfig, SzError
 
-data_source_code = "NAME_OF_DATASOURCE"
-instance_name = "Example"
+DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
+INSTANCE_NAME = "Example"
 settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -14,9 +14,9 @@ settings = {
 }
 
 try:
-    sz_config = SzConfig(instance_name, settings)
+    sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.create_config()
-    RESULT = sz_config.add_data_source(config_handle, data_source_code)
+    RESULT = sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
     sz_config.close_config(config_handle)
     print(RESULT[:66], "...")
 except SzError as err:

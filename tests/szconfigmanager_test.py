@@ -171,7 +171,7 @@ def test_replace_default_config_id(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     config_handle = sz_config.create_config()
-    for data_source_code in TRUTHSET_DATASOURCES.keys():
+    for data_source_code in TRUTHSET_DATASOURCES:
         sz_config.add_data_source(config_handle, data_source_code)
     data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
     sz_config.add_data_source(config_handle, data_source_code)
