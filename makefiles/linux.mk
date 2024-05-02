@@ -17,6 +17,12 @@ clean-osarch-specific:
 	@rm -f $(GOPATH)/bin/$(PROGRAM_NAME) || true
 
 
+.PHONY: coverage-osarch-specific
+coverage-osarch-specific:
+	@coverage html
+	@xdg-open $(MAKEFILE_DIRECTORY)/htmlcov/index.html
+
+
 .PHONY: dependencies-osarch-specific
 dependencies-osarch-specific:
 	python3 -m pip install --upgrade pip
@@ -47,6 +53,7 @@ test-osarch-specific:
 		examples/szdiagnostic/*.py \
 		examples/szengine/*.py \
 		examples/szproduct/*.py
+
 
 .PHONY: test-examples
 test-examples:

@@ -30,7 +30,6 @@ PATH := $(MAKEFILE_DIRECTORY)/bin:$(PATH)
 LD_LIBRARY_PATH ?= /opt/senzing/g2/lib
 PYTHONPATH ?= $(MAKEFILE_DIRECTORY)/src
 
-
 # Export environment variables.
 
 .EXPORT_ALL_VARIABLES:
@@ -89,6 +88,10 @@ bandit:
 	@bandit $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
 
 
+.PHONY: coverage
+coverage: coverage-osarch-specific
+
+
 .PHONY: black
 black:
 	@black $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
@@ -99,9 +102,9 @@ flake8:
 	@flake8 $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 
-.PHONY: pylint
-pylint:
-	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
+.PHONY: isort
+isort:
+	@isort $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: mypy
@@ -109,9 +112,14 @@ mypy:
 	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
 
 
+.PHONY: pylint
+pylint:
+	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
+
+
 .PHONY: pytest
 pytest:
-	@pytest --cov=src/senzing --cov-report=xml  tests
+	@pytest --cov=src/senzing --cov-report=xml  $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 # -----------------------------------------------------------------------------
 # Documentation
@@ -134,7 +142,6 @@ sphinx:
 
 .PHONY: view-sphinx
 view-sphinx: view-sphinx-osarch-specific
-
 
 # -----------------------------------------------------------------------------
 # Utility targets
