@@ -225,8 +225,8 @@ class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
 # -----------------------------------------------------------------------------
 
 
-# TODO Optional on Parameters needs to be explained for different init methods
-# TODO Raises could be more granular
+# TODO: Optional on Parameters needs to be explained for different init methods
+# TODO: Raises could be more granular
 class SzEngine(SzEngineAbstract):
     """
     The `initialize` method initializes the Senzing SzEngine object.
@@ -315,8 +315,8 @@ class SzEngine(SzEngineAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -340,7 +340,7 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_closeExport_helper.argtypes = [
             POINTER(c_uint),
         ]
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2_closeExport_helper.restype = c_longlong
         self.library_handle.G2_countRedoRecords.argtypes = []
         self.library_handle.G2_countRedoRecords.restype = c_longlong
@@ -358,7 +358,7 @@ class SzEngine(SzEngineAbstract):
             G2DeleteRecordWithInfoResult
         )
         self.library_handle.G2_destroy.argtypes = []
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2_destroy.restype = c_longlong
         self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [
             c_char_p,
@@ -599,7 +599,7 @@ class SzEngine(SzEngineAbstract):
             if len(self.instance_name) + len(self.settings) != 0:
                 raise self.new_exception(4035, self.instance_name, self.settings)
 
-        # TODO What if "" was sent for instance_name but settings are specified?
+        # TODO: What if "" was sent for instance_name but settings are specified?
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(
@@ -682,7 +682,7 @@ class SzEngine(SzEngineAbstract):
                         data_source_code,
                         record_id,
                         record_definition,
-                        # TODO On all collapsed methods send flags or final_flags?
+                        # TODO: On all collapsed methods send flags or final_flags?
                         flags,
                         result.return_code,
                     )
@@ -704,7 +704,7 @@ class SzEngine(SzEngineAbstract):
             )
         return "{}"
 
-    # TODO Test @catch_ctypes_exceptions if int isn't sent
+    # TODO: Test @catch_ctypes_exceptions if int isn't sent
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2_closeExport_helper(as_uintptr_t(export_handle))
         if result != 0:
@@ -765,7 +765,7 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def export_csv_entity_report(
         self,
-        # TODO add default col list and add information to abstract docstring?
+        # TODO: add default col list and add information to abstract docstring?
         csv_column_list: str,
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -890,21 +890,21 @@ class SzEngine(SzEngineAbstract):
 
     # NOTE G2_findPathExcludingByEntityID_V2 & findPathIncludingSourceByEntityID_V2 returning spurious data
     # NOTE https://senzing.atlassian.net/browse/GDEV-3808
-    # TODO Do more testing
+    # TODO: Do more testing
     @catch_ctypes_exceptions
     def find_path_by_entity_id(
         self,
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        # TODO Could be list of entity ids or dsrc code + record id
+        # TODO: Could be list of entity ids or dsrc code + record id
         exclusions: Union[str, Dict[Any, Any]] = "",
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
 
-        # TODO GDEV-3808
+        # TODO: GDEV-3808
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
                 start_entity_id,
@@ -921,7 +921,7 @@ class SzEngine(SzEngineAbstract):
                         start_entity_id,
                         end_entity_id,
                         max_degrees,
-                        # TODO Should this and others that could be dicts use as_str?
+                        # TODO: Should this and others that could be dicts use as_str?
                         exclusions,
                         required_data_sources,
                         flags,
@@ -931,7 +931,7 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
             # return "Currently broken - GDEV-3808"
 
-        # TODO GDEV-3808
+        # TODO: GDEV-3808
         if required_data_sources:
             result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
                 start_entity_id,
@@ -949,7 +949,7 @@ class SzEngine(SzEngineAbstract):
                         start_entity_id,
                         end_entity_id,
                         max_degrees,
-                        # TODO This and others that could be dicts use as_str?
+                        # TODO: This and others that could be dicts use as_str?
                         exclusions,
                         required_data_sources,
                         flags,
@@ -972,7 +972,7 @@ class SzEngine(SzEngineAbstract):
                     start_entity_id,
                     end_entity_id,
                     max_degrees,
-                    # TODO Should this and others that could be dicts use as_str?
+                    # TODO: Should this and others that could be dicts use as_str?
                     exclusions,
                     required_data_sources,
                     flags,
@@ -980,7 +980,7 @@ class SzEngine(SzEngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # TODO Do more testing
+    # TODO: Do more testing
     @catch_ctypes_exceptions
     def find_path_by_record_id(
         self,
@@ -989,7 +989,7 @@ class SzEngine(SzEngineAbstract):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        # TODO Could be list of entity ids or dsrc code + record id
+        # TODO: Could be list of entity ids or dsrc code + record id
         exclusions: Union[str, Dict[Any, Any]] = "",
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -1254,8 +1254,8 @@ class SzEngine(SzEngineAbstract):
             )
         return "{}"
 
-    # TODO Returns nothing if the entity_id doesn't exist, may not be correct but 3.9.1 did the same
-    # TODO GDEV-3790
+    # TODO: Returns nothing if the entity_id doesn't exist, may not be correct but 3.9.1 did the same
+    # TODO: GDEV-3790
     def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) > 0:
             final_flags = flags ^ SzEngineFlags.SZ_WITH_INFO
@@ -1279,9 +1279,9 @@ class SzEngine(SzEngineAbstract):
             raise self.new_exception(4058, result)
         return "{}"
 
-    # TODO Returns nothing if the record_id doesn't exist, 3.9.1 gave an error
-    # TODO Raises error if the dsrc_code doesn't exist
-    # TODO GDEV-3790
+    # TODO: Returns nothing if the record_id doesn't exist, 3.9.1 gave an error
+    # TODO: Raises error if the dsrc_code doesn't exist
+    # TODO: GDEV-3790
     @catch_ctypes_exceptions
     def reevaluate_record(
         self,

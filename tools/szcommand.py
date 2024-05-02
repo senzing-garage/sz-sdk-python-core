@@ -15,7 +15,7 @@ import textwrap
 import time
 from functools import wraps
 
-# TODO Add back in when consolidated modules into a helper module
+# TODO: Add back in when consolidated modules into a helper module
 # import G2Paths
 # from G2IniParams import G2IniParams
 from senzing import (
@@ -438,7 +438,7 @@ class SzCmdShell(cmd.Cmd, object):
         findPathByEntityID_parser.add_argument("start_entity_id", type=int)
         findPathByEntityID_parser.add_argument("end_entity_id", type=int)
         findPathByEntityID_parser.add_argument("max_degrees", type=int)
-        # TODO nargs needs to change if accepting lists instead of json
+        # TODO: nargs needs to change if accepting lists instead of json
         findPathByEntityID_parser.add_argument(
             "-e", "--exclusions", default="", nargs="?", required=False
         )
@@ -457,7 +457,7 @@ class SzCmdShell(cmd.Cmd, object):
         findPathByRecordID_parser.add_argument("end_data_source_code")
         findPathByRecordID_parser.add_argument("end_record_id")
         findPathByRecordID_parser.add_argument("max_degrees", type=int)
-        # TODO nargs needs to change if accepting lists instead of json
+        # TODO: nargs needs to change if accepting lists instead of json
         findPathByRecordID_parser.add_argument(
             "-e", "--exclusions", default="", nargs="?", required=False
         )
@@ -537,7 +537,7 @@ class SzCmdShell(cmd.Cmd, object):
         replaceRecord_parser.add_argument("record_definition")
         replaceRecord_parser.add_argument("-f", "--flags", nargs="+", required=False)
 
-        # TODO Make this non-positional to autocomplete search_profile?
+        # TODO: Make this non-positional to autocomplete search_profile?
         searchByAttributes_parser = self.subparsers.add_parser(
             "searchByAttributes", usage=argparse.SUPPRESS
         )
@@ -881,8 +881,8 @@ class SzCmdShell(cmd.Cmd, object):
 
     # szconfig commands
 
-    # TODO Add a note this isn't an API?
-    # TODO Reorder
+    # TODO: Add a note this isn't an API?
+    # TODO: Reorder
     @cmd_decorator()
     def do_getConfig(self, **kwargs):
         """
@@ -1018,7 +1018,7 @@ class SzCmdShell(cmd.Cmd, object):
         response = self.sz_diagnostic.get_datastore_info()
         self.print_response(response)
 
-    # TODO This should be hidden
+    # TODO: This should be hidden
     @cmd_decorator()
     def do_getFeature(self, **kwargs):
         """
@@ -1160,8 +1160,8 @@ class SzCmdShell(cmd.Cmd, object):
         else:
             self.print_response(response)
 
-    # TODO Fix flag names and check all still valid
-    # TODO Check available columns for V4
+    # TODO: Fix flag names and check all still valid
+    # TODO: Check available columns for V4
     @cmd_decorator()
     def do_exportCSVEntityReport(self, **kwargs):
         """
@@ -1413,10 +1413,10 @@ class SzCmdShell(cmd.Cmd, object):
         )
         self.print_response(response)
 
-    # TODO Wording on exclusions
-    # TODO Examples with list of entity ids when szengine supports it
-    # TODO EXCLUSIONS ... ?
-    # TODO Autocomplete data sources? And on other methods?
+    # TODO: Wording on exclusions
+    # TODO: Examples with list of entity ids when szengine supports it
+    # TODO: EXCLUSIONS ... ?
+    # TODO: Autocomplete data sources? And on other methods?
     @cmd_decorator()
     def do_findPathByRecordID(self, **kwargs):
         """
@@ -1453,10 +1453,10 @@ class SzCmdShell(cmd.Cmd, object):
         )
         self.print_response(response)
 
-    # TODO Wording on exclusions
-    # TODO Examples with list of entity ids when szengine supports it
-    # TODO EXCLUSIONS ... ?
-    # TODO Autocomplete data sources? And on other methods?
+    # TODO: Wording on exclusions
+    # TODO: Examples with list of entity ids when szengine supports it
+    # TODO: EXCLUSIONS ... ?
+    # TODO: Autocomplete data sources? And on other methods?
     @cmd_decorator()
     def do_findPathByRecordID(self, **kwargs):
         """
@@ -1926,7 +1926,7 @@ class SzCmdShell(cmd.Cmd, object):
     # Helper commands
 
     # NOTE This isn't an API call
-    # TODO Test
+    # TODO: Test
     @cmd_decorator()
     def do_addConfigFile(self, **kwargs):
         """
@@ -1959,9 +1959,9 @@ class SzCmdShell(cmd.Cmd, object):
         else:
             self.print_response("History isn't available in this session.", "caution")
 
-    # TODO Add a note this isn't an API
-    # TODO Reorder
-    # TODO process() is no longer available would need to pull out details and action
+    # TODO: Add a note this isn't an API
+    # TODO: Reorder
+    # TODO: process() is no longer available would need to pull out details and action
     @cmd_decorator()
     def do_processFile(self, **kwargs):
         """
@@ -2296,7 +2296,7 @@ class SzCmdShell(cmd.Cmd, object):
 
     # ===== Auto completers =====
 
-    # TODO Order
+    # TODO: Order
     def complete_addRecord(self, text, line, begidx, endidx):
         return self.flags_completes(text, line)
 

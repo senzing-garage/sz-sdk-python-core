@@ -20,7 +20,7 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-# TODO Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
+# TODO: Set sane flags or use default? Examples should show use of flags? Or examples on using flags?
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.get_virtual_entity_by_record_id_return_dict(RECORD_LIST)

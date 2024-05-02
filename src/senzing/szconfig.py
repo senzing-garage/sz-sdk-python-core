@@ -193,7 +193,7 @@ class SzConfig(SzConfigAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.

@@ -179,7 +179,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -283,7 +283,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             raise self.new_exception(
                 4001, as_str(config_definition), config_comment, result.return_code
             )
-        # TODO int needed?
+        # TODO: int needed?
         return int(result.response)
 
     def destroy(self, **kwargs: Any) -> None:
@@ -315,7 +315,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4005, result.return_code)
-        # TODO int needed?
+        # TODO: int needed?
         return int(result.response)
 
     @catch_ctypes_exceptions

@@ -4,7 +4,6 @@ import json
 
 from senzing import SzEngine, SzError
 
-# TODO Use a truth set entity id - in all examples
 DATA_SOURCE_CODE = "CUSTOMERS"
 INSTANCE_NAME = "Example"
 RECORD_ID = "1001"

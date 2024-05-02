@@ -211,7 +211,7 @@ def signal_int(signum, frame):
     do_shutdown = True
 
 
-# TODO Check file size and drop to single thread if small
+# TODO: Check file size and drop to single thread if small
 def load_and_redo(
     engine,
     file_input,
@@ -272,7 +272,7 @@ def load_and_redo(
 
     overall_start_time = time.time()
 
-    # TODO Add a no-redo mode, make it a hidden arg?
+    # TODO: Add a no-redo mode, make it a hidden arg?
     with open(file_output, "w") as out_file:
         for mode in [add_record, process_redo_record]:
             # for mode in [add_record]:
@@ -557,7 +557,7 @@ if __name__ == "__main__":
              """
         ),
     )
-    # TODO
+    # TODO:
     # arg_parser.add_argument(
     #     "-n",
     #     "--debugTrace",

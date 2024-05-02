@@ -251,7 +251,7 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
-        # TODO Add into docstring a good default csv_column_list example
+        # TODO: Add into docstring a good default csv_column_list example
         """
         **Warning:** `export_csv_entity_report` is not recommended for large systems as it does not scale.
         It is recommended larger systems implement real-time replication to a data warehouse.
@@ -446,7 +446,7 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        # TODO Should accept both entity and record IDs in V4, test
+        # TODO: Should accept both entity and record IDs in V4, test
         exclusions: Union[str, Dict[Any, Any]] = "",
         required_data_sources: Union[str, Dict[Any, Any]] = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -784,7 +784,7 @@ class SzEngineAbstract(ABC):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        # TODO docstring plugin
+        # TODO: docstring plugin
         """
         he ``initialize`` method initializes the Senzing SzEngine object.
         It must be called prior to any other calls.
@@ -829,7 +829,7 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def process_redo_record(self, redo_record: str, flags: int, **kwargs: Any) -> str:
         """
-        #TODO The `process_redo_record` method...
+        # TODO: The `process_redo_record` method...
 
         Raises:
 
@@ -1065,7 +1065,7 @@ class SzEngineAbstract(ABC):
     # Convenience methods
     # -------------------------------------------------------------------------
 
-    # TODO doc strings for all return_dict methods it _return_dict methods are staying?
+    # TODO: doc strings for all return_dict methods it _return_dict methods are staying?
     def add_record_return_dict(
         self,
         data_source_code: str,
@@ -1077,7 +1077,7 @@ class SzEngineAbstract(ABC):
         """ """
         return cast(
             Dict[str, Any],
-            # TODO orjson?
+            # TODO: orjson?
             json.loads(
                 self.add_record(
                     data_source_code, record_id, record_definition, flags, **kwargs
@@ -1386,7 +1386,7 @@ class SzEngineAbstract(ABC):
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """ """
-        # TODO Is the cast needed?
+        # TODO: Is the cast needed?
         return cast(
             Dict[str, Any],
             json.loads(

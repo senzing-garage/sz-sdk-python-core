@@ -1,4 +1,4 @@
-# TODO Move in szhelpers?
+# TODO: Move in szhelpers?
 """
 TODO: szversion.py
 """

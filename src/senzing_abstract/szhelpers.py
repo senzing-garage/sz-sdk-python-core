@@ -82,11 +82,11 @@ class FreeCResources:
 #     # NOTE Using Any will impact automatic documentation generation if szhelpers gets documented?
 
 #     def as_dict(self) -> Any:
-#         # # TODO Add check to ensure json_string looks like JSON, is it needed? It's the engines methods using the class not customers.
+#         # TODO: Add check to ensure json_string looks like JSON, is it needed? It's the engines methods using the class not customers.
 #         # if re.match("^{.*}$", self.json_string):
 #         #     return json.loads(self.json_string)
 #         # return self.json_string
-#         # TODO What if the loads fails?
+#         # TODO: What if the loads fails?
 #         if ORJSON_AVAILABLE:
 #             return orjson.loads(self.json_string).decode()
 #         return json.loads(self.json_string)
@@ -137,7 +137,7 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                 ) from err
             raise TypeError() from err
         # # NOTE Do we need to catch anything else? Has a code smell about it
-        # TODO Is this generic catch needed?
+        # TODO: Is this generic catch needed?
         # except Exception as err:
         #     # print(f"In szhelpers last exception: {err}")
         #     raise err
@@ -182,7 +182,7 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
-    # TODO ctypes_exception catch this - before and after test should be the same
+    # TODO: ctypes_exception catch this - before and after test should be the same
     if not isinstance(candidate_value, int):
         raise TypeError(
             f"{candidate_value} is type{type(candidate_value)}. Needs to be type(int)"
@@ -202,7 +202,7 @@ def as_c_int(candidate_value: Any) -> int:
     """
 
     if candidate_value is None:  # handle null string
-        # TODO Doesn't need int
+        # TODO: Doesn't need int
         return int(0)
     if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
         return int(candidate_value.encode("utf-8"))
@@ -212,7 +212,7 @@ def as_c_int(candidate_value: Any) -> int:
         return int(candidate_value)
     if isinstance(candidate_value, bytes):
         return int(candidate_value)
-    # TODO If already an int why use int()?
+    # TODO: If already an int why use int()?
     # input is already an int
     return int(candidate_value)
 
@@ -236,7 +236,7 @@ def as_c_char_p(candidate_value: Any) -> Any:
         return str(candidate_value).encode("utf-8")
     # input is already a str
     return candidate_value
-    # TODO Instead of TypeError can we utilise SzBadInputException and a new exception so a user only needs to catch
+    # TODO: Instead of TypeError can we utilise SzBadInputException and a new exception so a user only needs to catch
     # SzError or SzBadInputException instead of knowing they must also catch TypeError. Would be more convenient and simpler
     # raise TypeError(
     #     f"{candidate_value} has unsupported type of {type(candidate_value)}"
@@ -257,9 +257,9 @@ def as_python_int(candidate_value: Any) -> int:
     """
 
     result = cast(candidate_value, c_void_p).value
-    # TODO For methods using this could we get a non zero return code and return None?
-    # TODO Would never reach the return as_python_int(result.response) is non zero return code
-    # TODO Consequences of returning a 0 which wouldn't be a valid handle?
+    # TODO: For methods using this could we get a non zero return code and return None?
+    # TODO: Would never reach the return as_python_int(result.response) is non zero return code
+    # TODO: Consequences of returning a 0 which wouldn't be a valid handle?
     if result is None:
         result = 0
     return result
@@ -277,7 +277,7 @@ def as_python_str(candidate_value: Any) -> str:
 
     :meta private:
     """
-    # TODO Do these functions need try/except?
+    # TODO: Do these functions need try/except?
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result

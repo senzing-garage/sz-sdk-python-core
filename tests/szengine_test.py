@@ -1,5 +1,11 @@
 # pylint: disable=C0302
 
+# TODO: Check and change the exception type with raises to more specific exception instead of SzError
+# TODO: Add tests for flags
+# TODO: Think about and test how to make the szhelper conversions more robust and possibly raise SzError
+# TODO: Test calling delete record again
+# TODO: Add tests for incorrect ini parms paths and incorrect DB details for constructor
+# TODO: value/type tests and handling ctype exceptions from szhelpers - needs thought
 
 import json
 from typing import Any, Dict, List, Tuple
@@ -24,13 +30,6 @@ from senzing import (
     SzNotFoundError,
     SzUnknownDataSourceError,
 )
-
-# TODO Check and change the exception type with raises to more specific exception instead of SzError
-# TODO Add tests for flags
-# TODO Think about and test how to make the szhelper conversions more robust and possibly raise SzError
-# TODO Test calling delete record again
-# TODO Add tests for incorrect ini parms paths and incorrect DB details for constructor
-# TODO value/type tests and handling ctype exceptions from szhelpers - needs thought
 
 # -----------------------------------------------------------------------------
 # SzEngine pre tests
@@ -73,7 +72,7 @@ def test_constructor_bad_settings(engine_vars) -> None:
         )
 
 
-# TODO Was having issues with the as_c_ini in init
+# TODO: Was having issues with the as_c_ini in init
 # def test_constructor_bad_verbose_logging(engine_vars):
 #     """Test constructor."""
 
@@ -116,7 +115,7 @@ def test_add_truthset_datasources(
 #     sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-# TODO Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_bad_data_source_code_type(sz_engine: SzEngine):
 #     """Test add_record with incorrect data source code type."""
@@ -247,7 +246,7 @@ def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
     assert schema(add_record_with_info_schema) == actual_dict
 
 
-# TODO Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
 def test_add_record_with_info_bad_data_source_code_type(
     sz_engine: SzEngine,
 ) -> None:
@@ -1214,7 +1213,7 @@ def test_add_truthset_data(engine_vars):
 # -----------------------------------------------------------------------------
 
 
-# TODO Add testing bad args
+# TODO: Add testing bad args
 def test_inititialize_and_destroy(engine_vars) -> None:
     """Test init and destroy."""
     instance_name = engine_vars["INSTANCE_NAME"]

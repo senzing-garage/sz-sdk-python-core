@@ -130,17 +130,17 @@ class SzProduct(SzProductAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
         self.library_handle.G2Product_destroy.argtypes = []
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_destroy.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
         self.library_handle.G2Product_license.restype = c_char_p
