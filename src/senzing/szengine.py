@@ -665,7 +665,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
-
         if (flags & SzEngineFlags.SZ_WITH_INFO) > 0:
             final_flags = flags ^ SzEngineFlags.SZ_WITH_INFO
             result = self.library_handle.G2_addRecordWithInfo_helper(
@@ -903,7 +902,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-
         # TODO: GDEV-3808
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
@@ -995,7 +993,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
                 as_c_char_p(start_data_source_code),

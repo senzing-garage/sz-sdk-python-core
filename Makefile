@@ -88,6 +88,12 @@ test: test-osarch-specific
 bandit:
 	@bandit $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
 
+
+.PHONY: black
+black:
+	@black $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
+
+
 .PHONY: flake8
 flake8:
 	@flake8 $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')

@@ -13,7 +13,6 @@ settings = {
 }
 
 try:
-
     # For this example, get default configuration.
 
     sz_configmanager = SzConfigManager(INSTANCE_NAME, settings)

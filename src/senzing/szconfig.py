@@ -290,7 +290,6 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> str:
-
         json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_addDataSource_helper(
             # as_uintptr_t(config_handle), as_c_char_p(as_str(data_source_code))
@@ -322,7 +321,6 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> None:
-
         json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_deleteDataSource_helper(
             as_uintptr_t(config_handle), as_c_char_p(json_string)

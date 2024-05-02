@@ -101,7 +101,6 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
 
     @wraps(function_to_decorate)
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
-
         try:
             return function_to_decorate(*args, **kwargs)
         except ArgumentError as err:
