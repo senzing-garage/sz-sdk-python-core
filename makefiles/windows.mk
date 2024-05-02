@@ -13,8 +13,11 @@ SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db
 .PHONY: clean-osarch-specific
 clean-osarch-specific:
 	@rmdir /S /Q C:\Temp\sqlite || echo ...but it is not an error.
-	del /F /S /Q $(TARGET_DIRECTORY)
+	del /F /S /Q $(DIST_DIRECTORY)
 	del /F /S /Q $(GOPATH)/bin/$(PROGRAM_NAME)
+	del /F /S /Q $(MAKEFILE_DIRECTORY)/__pycache__
+	del /F /S /Q $(MAKEFILE_DIRECTORY)/coverage.xml
+	del /F /S /Q $(TARGET_DIRECTORY)
 
 
 .PHONY: dependencies-osarch-specific
