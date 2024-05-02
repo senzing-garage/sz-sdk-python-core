@@ -12,7 +12,7 @@ from senzing import SzConfigManager, SzDiagnostic, SzError
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_diagnostic) -> None:
+def test_exception(sz_diagnostic: SzDiagnostic) -> None:
     """Test exceptions."""
     actual = sz_diagnostic.new_exception(0)
     assert isinstance(actual, Exception)
@@ -90,7 +90,9 @@ def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     assert schema(get_datastore_info_schema) == actual_json
 
 
-def test_reinitialize(sz_diagnostic: SzDiagnostic, sz_configmanager) -> None:
+def test_reinitialize(
+    sz_diagnostic: SzDiagnostic, sz_configmanager: SzConfigManager
+) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
@@ -114,7 +116,9 @@ def test_reinitialize_missing_config_id(
         sz_diagnostic.reinitialize(999)
 
 
-def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> None:
+def test_initialize_and_destroy(
+    sz_diagnostic: SzDiagnostic, engine_vars: Dict[Any, Any]
+) -> None:
     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
     sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
     sz_diagnostic.destroy()
@@ -161,7 +165,7 @@ def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> Non
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]):
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManager(
@@ -173,7 +177,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]):
 
 
 @pytest.fixture(name="sz_diagnostic", scope="module")
-def szdiagnostic_fixture(engine_vars: Dict[Any, Any]):
+def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnostic(

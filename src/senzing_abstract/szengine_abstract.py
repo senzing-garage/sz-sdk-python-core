@@ -204,7 +204,6 @@ class SzEngineAbstract(ABC):
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
-            load_id (str, optional): An identifier used to distinguish different load batches/sessions. An empty string is acceptable. Defaults to "".
             flags (int, optional): Flags used to control information returned. Defaults to 0.
 
         Returns:
@@ -324,7 +323,7 @@ class SzEngineAbstract(ABC):
         lifecycle of a list of exported entities.
 
         Args:
-            response_handle (int): A handle created by `export_json_entity_report` or `export_json_entity_report`.
+            export_handle (int): A handle created by `export_json_entity_report` or `export_json_entity_report`.
 
         Returns:
             str: TODO:
@@ -462,8 +461,8 @@ class SzEngineAbstract(ABC):
             start_entity_id (int): The entity ID for the starting entity of the search path.
             end_entity_id (int): The entity ID for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            exclusions (str): TODO
-            required_data_sources (str): TODO
+            exclusions (str): TODO:
+            required_data_sources (str): TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
@@ -511,8 +510,8 @@ class SzEngineAbstract(ABC):
             end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.
             end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            exclusions (str): TODO
-            required_data_sources (str): TODO
+            exclusions (str): TODO:
+            required_data_sources (str): TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
@@ -1018,9 +1017,9 @@ class SzEngineAbstract(ABC):
 
             **Output:**
 
-        .. literalinclude:: ../../examples/szengine/why_record_in_entity.txt
-                :linenos:
-                :language: json
+            .. literalinclude:: ../../examples/szengine/why_record_in_entity.txt
+                    :linenos:
+                    :language: json
         """
 
     @abstractmethod
@@ -1056,9 +1055,9 @@ class SzEngineAbstract(ABC):
 
             **Output:**
 
-        .. literalinclude:: ../../examples/szengine/why_records.txt
-                :linenos:
-                :language: json
+            .. literalinclude:: ../../examples/szengine/why_records.txt
+                    :linenos:
+                    :language: json
         """
 
     # -------------------------------------------------------------------------

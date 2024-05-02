@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import pytest
 
 from senzing import szhasher
@@ -8,7 +10,7 @@ from senzing import szhasher
 
 
 @pytest.fixture(name="szhasher_instance", scope="module")
-def szhasher_instance_fixture(engine_vars):
+def szhasher_instance_fixture(engine_vars: Dict[Any, Any]) -> szhasher.SzHasher:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -22,7 +24,7 @@ def szhasher_instance_fixture(engine_vars):
 # -----------------------------------------------------------------------------
 
 
-def test_process(szhasher_instance):
+def test_process(szhasher_instance: szhasher.SzHasher) -> None:
     """Test Senzing license."""
     actual = szhasher_instance.process("")
     assert isinstance(actual, str)

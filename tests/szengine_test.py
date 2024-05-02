@@ -36,7 +36,7 @@ from senzing import (
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_engine: SzEngine):
+def test_exception(sz_engine: SzEngine) -> None:
     """Test exceptions."""
     actual = sz_engine.new_exception(0)
     assert isinstance(actual, Exception)
@@ -749,7 +749,7 @@ def test_get_active_config_id(sz_engine: SzEngine) -> None:
 
 
 def test_get_entity_by_entity_id(
-    sz_engine,
+    sz_engine: SzEngine,
 ) -> None:
     """Test SzEngine().get_entity_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
@@ -1198,7 +1198,7 @@ def test_add_record_using_context_managment(engine_vars: Dict[Any, Any]) -> None
         sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
 
-def test_add_truthset_data(engine_vars: Dict[Any, Any]):
+def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
     """Add truthset data for tests"""
     sz_engine = SzEngine(
         engine_vars["INSTANCE_NAME"],
@@ -1275,7 +1275,7 @@ def test_destroy(
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
+@pytest.fixture(name="sz_config", scope="module")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single config object to use for all tests.
@@ -1287,7 +1287,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     )
 
 
-@pytest.fixture(name="sz_configmanager", scope="module")  # type: ignore[misc]
+@pytest.fixture(name="sz_configmanager", scope="module")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """
     Single configmanager object to use for all tests.
@@ -1299,7 +1299,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     )
 
 
-@pytest.fixture(name="sz_engine", scope="module")  # type: ignore[misc]
+@pytest.fixture(name="sz_engine", scope="module")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
     Single engine object to use for all tests.
@@ -1331,7 +1331,7 @@ def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> N
         )
 
 
-def add_records_truthset(sz_engine: SzEngine, do_redo=True) -> None:
+def add_records_truthset(sz_engine: SzEngine, do_redo: bool = True) -> None:
     """Add all truth-set the records."""
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     for record_set in DATA_SOURCES.values():

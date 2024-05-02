@@ -28,10 +28,10 @@ try:
     old_config_handle = sz_config.import_config(OLD_CONFIG_DEFINITION)
     sz_config.add_data_source(old_config_handle, DATA_SOURCE_CODE)
     NEW_CONFIG_DEFINITION = sz_config.export_config(old_config_handle)
-    new_config_id = sz_configmanager.add_config(NEW_CONFIG_DEFINITION, CONFIG_COMMENT)
+    config_id = sz_configmanager.add_config(NEW_CONFIG_DEFINITION, CONFIG_COMMENT)
 
     # Set default config id.
 
-    sz_configmanager.set_default_config_id(new_config_id)
+    sz_configmanager.set_default_config_id(config_id)
 except SzError as err:
     print(f"\nError:\n{err}\n")

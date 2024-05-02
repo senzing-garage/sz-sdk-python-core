@@ -11,7 +11,7 @@ from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_config) -> None:
+def test_exception(sz_config: SzConfig) -> None:
     """Test exceptions."""
     actual = sz_config.new_exception(0)
     assert isinstance(actual, Exception)
@@ -226,7 +226,7 @@ def test_import_config_bad_config_definition_value(
     """Test SzConfig().import_config()."""
     bad_config_definition = '{"Just": "Junk"}'
     with pytest.raises(SzConfigurationError):
-        sz_config.import_config(bad_config_definition)  # type: ignore[arg-type]
+        sz_config.import_config(bad_config_definition)
 
 
 def test_export_config(sz_config: SzConfig) -> None:
@@ -260,7 +260,7 @@ def test_initialize_and_destroy(sz_config: SzConfig) -> None:
 def test_initialize_and_destroy_dict(sz_config: SzConfig) -> None:
     """Test SzConfig().init() and SzConfig.destroy()."""
     instance_name = "Example"
-    settings = {}
+    settings: Dict[Any, Any] = {}
     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
     sz_config.initialize(instance_name, settings, verbose_logging)
     sz_config.destroy()
@@ -295,8 +295,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
-def szconfig_fixture(engine_vars: Dict[Any, Any]):
+@pytest.fixture(name="sz_config", scope="module")
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.

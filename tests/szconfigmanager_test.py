@@ -165,7 +165,9 @@ def test_get_default_config_id(
     assert isinstance(actual, int)
 
 
-def test_replace_default_config_id(sz_configmanager, sz_config: SzConfig) -> None:
+def test_replace_default_config_id(
+    sz_configmanager: SzConfigManager, sz_config: SzConfig
+) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     config_handle = sz_config.create_config()
@@ -302,7 +304,7 @@ def test_initialize_and_destroy_again(
 ) -> None:
     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
     instance_name = "Example"
-    settings = {}
+    settings: Dict[Any, Any] = {}
     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
     sz_configmanager.initialize(instance_name, settings, verbose_logging)
     sz_configmanager.destroy()
@@ -325,8 +327,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config", scope="module")  # type: ignore[misc]
-def szconfig_fixture(engine_vars: Dict[Any, Any]):
+@pytest.fixture(name="sz_config", scope="module")
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single engine object to use for all tests.
     engine_vars is returned from conftest.py.
@@ -340,7 +342,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]):
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]):
+def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single engine object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 

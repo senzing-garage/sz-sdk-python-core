@@ -103,7 +103,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     .. code-block:: python
 
         sz_diagnostic = SzDiagnostic()
-        sz_diagnostic.init(instance_name, settings)
+        sz_diagnostic.inititialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
