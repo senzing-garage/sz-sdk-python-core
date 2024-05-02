@@ -43,9 +43,9 @@ class SzHasher(SzHasherAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: str = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str = "",
+        config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -58,13 +58,13 @@ class SzHasher(SzHasherAbstract):
 
         # Verify parameters.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(9999, module_name, ini_params)
+        if (len(instance_name) == 0) or (len(settings) == 0):
+            if len(instance_name) + len(settings) != 0:
+                raise self.new_exception(9999, instance_name, settings)
 
-        self.ini_params = ini_params
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = settings
+        self.config_id = config_id
+        self.instance_name = instance_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
@@ -109,8 +109,8 @@ class SzHasher(SzHasherAbstract):
 
         # Initialize Senzing engine.
 
-        if len(module_name) > 0:
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(instance_name) > 0:
+            self.init(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -181,22 +181,22 @@ class SzHasher(SzHasherAbstract):
 
     def init(
         self,
-        module_name: str,
-        ini_params: str,
+        instance_name: str,
+        settings: str,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_szhasher(module_name, ini_params, verbose_logging)
+        self.fake_szhasher(instance_name, settings, verbose_logging)
 
     def init_with_config_id(
         self,
-        module_name: str,
-        ini_params: str,
-        init_config_id: int,
+        instance_name: str,
+        settings: str,
+        config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_szhasher(module_name, ini_params, init_config_id, verbose_logging)
+        self.fake_szhasher(instance_name, settings, config_id, verbose_logging)
 
     def process(self, record: str, *args: Any, **kwargs: Any) -> str:
         self.fake_szhasher(record)

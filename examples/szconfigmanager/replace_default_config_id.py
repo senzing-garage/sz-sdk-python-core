@@ -14,7 +14,6 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-# TODO: Test this
 try:
     sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
     sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# TODO: Create a testable example
+# TODO: Create a testable example.
 
 # from senzing import SzError, SzDiagnostic
 

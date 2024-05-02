@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-
 from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_WITH_INFO

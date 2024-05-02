@@ -15,7 +15,6 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.get_entity_by_entity_id_return_dict(ENTITY_ID)

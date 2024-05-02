@@ -13,7 +13,7 @@ SETTINGS = {
 }
 
 try:
-    # Using get_active_config_id for demonstrations purposes
+    # Using get_active_config_id for demonstrations purposes.
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     active_config_id = sz_engine.get_active_config_id()
     sz_engine.reinitialize(active_config_id)

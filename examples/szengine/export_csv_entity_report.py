@@ -20,14 +20,12 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     export_handle = sz_engine.export_csv_entity_report(CSV_HEADERS)
-
     with open("exportCSVEntityReport.csv", "w") as export_out:
         while True:
             export_record = sz_engine.fetch_next(export_handle)
             if not export_record:
                 break
             export_out.write(export_record)
-
     sz_engine.close_export(export_handle)
 except SzError as err:
     print(f"\nError:\n{err}\n")

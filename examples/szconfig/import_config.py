@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-
 from senzing import SzConfig, SzConfigManager, SzError
 
 INSTANCE_NAME = "Example"
@@ -12,7 +11,6 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-
 
 try:
 

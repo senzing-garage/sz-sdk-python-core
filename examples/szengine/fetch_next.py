@@ -15,7 +15,6 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     export_handle = sz_engine.export_json_entity_report()
-
     with open("exportJSONEntityReport.json", "w") as export_out:
         while True:
             export_record = sz_engine.fetch_next(export_handle)

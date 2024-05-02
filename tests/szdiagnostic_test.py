@@ -89,9 +89,9 @@ def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     assert schema(get_datastore_info_schema) == actual_json
 
 
-def test_reinitialize(sz_diagnostic: SzDiagnostic, sz_config_manager) -> None:
+def test_reinitialize(sz_diagnostic: SzDiagnostic, sz_configmanager) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
-    default_config_id = sz_config_manager.get_default_config_id()
+    default_config_id = sz_configmanager.get_default_config_id()
     try:
         sz_diagnostic.reinitialize(default_config_id)
     except SzError:
@@ -127,10 +127,10 @@ def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> Non
 
 
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_initialize_with_config_id_and_destroy(sz_config_manager, engine_vars):
+# def test_initialize_with_config_id_and_destroy(sz_configmanager, engine_vars):
 #     """Test SzDiagnostic().init_with_config_id() and SzDiagnostic.destroy()."""
 #     # TODO: This has the same issue as test_init_and_destroy_2
-#     default_config_id = sz_config_manager.get_default_config_id()
+#     default_config_id = sz_configmanager.get_default_config_id()
 #     sz_diagnostic = SzDiagnostic()
 #     sz_diagnostic.initialize(
 #         instance_name=engine_vars["INSTANCE_NAME"],
@@ -159,7 +159,7 @@ def test_initialize_and_destroy(sz_diagnostic: SzDiagnostic, engine_vars) -> Non
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config_manager", scope="module")
+@pytest.fixture(name="sz_configmanager", scope="module")
 def szconfigmanager_fixture(engine_vars):
     """Single engine object to use for all tests.
     engine_vars is returned from conftest.pys"""

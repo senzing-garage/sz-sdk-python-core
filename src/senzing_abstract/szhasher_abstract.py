@@ -45,16 +45,16 @@ class SzHasherAbstract(ABC):
 
     @abstractmethod
     def init(
-        self, module_name: str, ini_params: str, verbose_logging: int = 0, **kwargs: Any
+        self, instance_name: str, settings: str, verbose_logging: int = 0, **kwargs: Any
     ) -> None:
         """TODO: document"""
 
     @abstractmethod
     def init_with_config_id(
         self,
-        module_name: str,
-        ini_params: str,
-        init_config_id: int,
+        instance_name: str,
+        settings: str,
+        config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:

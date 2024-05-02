@@ -7,6 +7,8 @@ from senzing import SzEngine, SzEngineFlags, SzError
 DATA_SOURCE_CODE = "TEST"
 FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example1"
+RECORD_DEFINITION: Dict[Any, Any] = {}
+RECORD_ID = "1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -15,8 +17,6 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-RECORD_DEFINITION: Dict[Any, Any] = {}
-RECORD_ID = "1"
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)

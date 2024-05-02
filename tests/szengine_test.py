@@ -1217,9 +1217,9 @@ def test_add_truthset_data(engine_vars):
 def test_inititialize_and_destroy(engine_vars) -> None:
     """Test init and destroy."""
     instance_name = engine_vars["INSTANCE_NAME"]
-    ini_params = engine_vars["SETTINGS"]
+    settings = engine_vars["SETTINGS"]
     sz_engine_init_destroy = SzEngine()
-    sz_engine_init_destroy.initialize(instance_name, ini_params)
+    sz_engine_init_destroy.initialize(instance_name, settings)
     sz_engine_init_destroy.destroy()
 
 

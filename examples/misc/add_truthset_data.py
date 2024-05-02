@@ -20,7 +20,6 @@ SETTINGS = {
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-
     record_sets = [
         TRUTHSET_CUSTOMER_RECORDS,
         TRUTHSET_REFERENCE_RECORDS,
