@@ -34,7 +34,7 @@ jobs:
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install psutil pytest pytest-cov pytest-schema
+          pip install orjson psutil pytest pytest-cov pytest-schema
 
       - if: matrix.python-version == '3.8' || matrix.python-version == '3.9'
         name: install python libraries for python 3.8 and 3.9
