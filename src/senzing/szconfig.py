@@ -279,7 +279,7 @@ class SzConfig(SzConfigAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Config methods
+    # SzConfig methods
     # -------------------------------------------------------------------------
 
     @catch_ctypes_exceptions

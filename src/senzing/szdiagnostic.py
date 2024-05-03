@@ -76,7 +76,7 @@ class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# G2Diagnostic class
+# SzDiagnostic class
 # -----------------------------------------------------------------------------
 
 
@@ -263,7 +263,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Diagnostic methods
+    # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
     def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:

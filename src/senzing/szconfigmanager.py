@@ -85,7 +85,7 @@ class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# G2ConfigMgr class
+# SzConfigManager class
 # -----------------------------------------------------------------------------
 
 
@@ -266,7 +266,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2ConfigMgr methods
+    # SzConfigManager methods
     # -------------------------------------------------------------------------
 
     @catch_ctypes_exceptions

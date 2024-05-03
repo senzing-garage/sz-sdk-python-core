@@ -201,7 +201,7 @@ class SzProduct(SzProductAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Product methods
+    # SzProduct methods
     # -------------------------------------------------------------------------
 
     def destroy(self, **kwargs: Any) -> None:
