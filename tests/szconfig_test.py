@@ -64,8 +64,8 @@ def test_add_data_source(sz_config: SzConfig) -> None:
     actual = sz_config.add_data_source(config_handle, data_source_code)
     sz_config.close_config(config_handle)
     assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(add_data_source_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(add_data_source_schema) == actual_as_dict
 
 
 def test_add_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
@@ -177,8 +177,8 @@ def test_get_data_sources(sz_config: SzConfig) -> None:
     actual = sz_config.get_data_sources(config_handle)
     sz_config.close_config(config_handle)
     assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(get_data_sources_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(get_data_sources_schema) == actual_as_dict
 
 
 def test_get_data_sources_bad_config_handle_type(
@@ -204,8 +204,8 @@ def test_import_config_dict(sz_config: SzConfig) -> None:
     """Test SzConfig().import_config()."""
     config_handle = sz_config.create_config()
     config_definition = sz_config.export_config(config_handle)
-    config_definition_dict = json.loads(config_definition)
-    config_handle = sz_config.import_config(config_definition_dict)
+    config_definition_as_dict = json.loads(config_definition)
+    config_handle = sz_config.import_config(config_definition_as_dict)
     assert isinstance(config_handle, int)
     assert config_handle > 0
     sz_config.close_config(config_handle)
@@ -235,8 +235,8 @@ def test_export_config(sz_config: SzConfig) -> None:
     actual = sz_config.export_config(config_handle)
     sz_config.close_config(config_handle)
     assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(export_config_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(export_config_schema) == actual_as_dict
 
 
 def test_export_config_bad_config_handle_type(
@@ -286,8 +286,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
         actual = sz_config.get_data_sources(config_handle)
         sz_config.close_config(config_handle)
         assert isinstance(actual, str)
-        actual_json = json.loads(actual)
-        assert schema(get_data_sources_schema) == actual_json
+        actual_as_dict = json.loads(actual)
+        assert schema(get_data_sources_schema) == actual_as_dict
 
 
 # -----------------------------------------------------------------------------

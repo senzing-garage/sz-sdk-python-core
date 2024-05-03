@@ -1,14 +1,14 @@
-import json
 from ctypes import ArgumentError
 from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_dict import SzConfig as SzConfigDict
-from senzing_dict import SzConfigManager as SzConfigManagerDict
+from senzing_dict import SzConfig, SzConfigManager
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-from senzing import SzConfig, SzConfigManager, SzConfigurationError, SzEngineFlags
+from senzing import SzConfig as SzConfigCore
+from senzing import SzConfigManager as SzConfigManagerCore
+from senzing import SzConfigurationError, SzEngineFlags
 
 # -----------------------------------------------------------------------------
 # SzConfigManager testcases
@@ -17,12 +17,12 @@ from senzing import SzConfig, SzConfigManager, SzConfigurationError, SzEngineFla
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    sz_product = SzConfigManager(
+    sz_product = SzConfigManagerCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    actual = SzConfigManagerDict(sz_product)
-    assert isinstance(actual, SzConfigManagerDict)
+    actual = SzConfigManager(sz_product)
+    assert isinstance(actual, SzConfigManager)
 
 
 def test_add_config(sz_configmanager: SzConfigManager, sz_config: SzConfig) -> None:
@@ -269,14 +269,14 @@ def test_initialize_and_destroy_again(
 
 def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzConfigGrpc in context."""
-    with SzConfigManager(
+    with SzConfigManagerCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
-    ) as sz_configmanager:
-        config_id = sz_configmanager.get_default_config_id()
-        actual = sz_configmanager.get_config(config_id)
-        actual_json = json.loads(actual)
-        assert schema(config_schema) == actual_json
+    ) as sz_configmanager_core:
+        with SzConfigManager(sz_configmanager_core) as sz_configmanager:
+            config_id = sz_configmanager.get_default_config_id()
+            actual = sz_configmanager.get_config(config_id)
+            assert schema(config_schema) == actual
 
 
 # -----------------------------------------------------------------------------
@@ -285,32 +285,30 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 
 
 @pytest.fixture(name="sz_config", scope="module")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigDict:
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
 
-    sz_config = SzConfig(
+    sz_config = SzConfigCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    result = SzConfigDict(sz_config)
+    result = SzConfig(sz_config)
     return result
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_instance_fixture(
-    engine_vars: Dict[Any, Any]
-) -> SzConfigManagerDict:
+def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single szconfigmanager object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    sz_configmanager = SzConfigManager(
+    sz_configmanager = SzConfigManagerCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    result = SzConfigManagerDict(sz_configmanager)
+    result = SzConfigManager(sz_configmanager)
     return result
 
 

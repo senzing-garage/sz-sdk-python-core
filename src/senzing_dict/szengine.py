@@ -129,7 +129,13 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.sz_engine.export_json_entity_report(flags, **kwargs)
 
-    def fetch_next(self, export_handle: int, **kwargs: Any) -> Dict[str, Any]:
+    def fetch_next(self, export_handle: int, **kwargs: Any) -> str:
+        """TODO: Create documentation"""
+        return self.sz_engine.fetch_next(export_handle, **kwargs)
+
+    def fetch_next_return_dict(
+        self, export_handle: int, **kwargs: Any
+    ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(self.sz_engine.fetch_next(export_handle, **kwargs))
 
@@ -302,12 +308,10 @@ class SzEngine:
             )
         )
 
-    def get_redo_record(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_redo_record(self, **kwargs: Any) -> str:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_engine.get_redo_record(
-                **kwargs,
-            )
+        return self.sz_engine.get_redo_record(
+            **kwargs,
         )
 
     def get_stats(self, **kwargs: Any) -> Dict[str, Any]:
@@ -407,6 +411,7 @@ class SzEngine:
         )
 
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        """TODO: Create documentation"""
         return self.sz_engine.reinitialize(config_id, **kwargs)
 
     def search_by_attributes(

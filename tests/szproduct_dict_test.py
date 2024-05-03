@@ -2,9 +2,9 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Regex, schema
-from senzing_dict import SzProduct as SzProductDict
+from senzing_dict import SzProduct
 
-from senzing import SzProduct
+from senzing import SzProduct as SzProductCore
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -13,12 +13,12 @@ from senzing import SzProduct
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    sz_product = SzProduct(
+    sz_product = SzProductCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    actual = SzProductDict(sz_product)
-    assert isinstance(actual, SzProductDict)
+    actual = SzProduct(sz_product)
+    assert isinstance(actual, SzProduct)
 
 
 def test_get_license(sz_product: SzProduct) -> None:
@@ -35,11 +35,11 @@ def test_get_version(sz_product: SzProduct) -> None:
 
 def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzProduct in context."""
-    with SzProduct(
+    with SzProductCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     ) as sz_product_core:
-        with SzProductDict(sz_product_core) as sz_product:
+        with SzProduct(sz_product_core) as sz_product:
             actual = sz_product.get_license()
             assert schema(get_license_schema) == actual
 
@@ -50,17 +50,17 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 
 
 @pytest.fixture(name="sz_product", scope="module")
-def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProductDict:
+def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
     Single szproduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    sz_product = SzProduct(
+    sz_product = SzProductCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
 
-    result = SzProductDict(sz_product)
+    result = SzProduct(sz_product)
     return result
 
 

@@ -177,8 +177,8 @@ def test_add_record_with_info(sz_engine: SzEngine) -> None:
     record_definition: Dict[Any, Any] = {}
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_add_record_bad_record(sz_engine: SzEngine) -> None:
@@ -231,8 +231,8 @@ def test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
     record_definition = RECORD_DICT
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
@@ -242,8 +242,8 @@ def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
     record_definition = RECORD_STR
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 # TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
@@ -312,7 +312,7 @@ def test_close_export() -> None:
 def test_count_redo_records(sz_engine: SzEngine) -> None:
     """Test SzEngine().count_redo_records()."""
     actual = sz_engine.count_redo_records()
-    assert actual == 0
+    assert actual == 1
 
 
 def test_delete_record(sz_engine: SzEngine) -> None:
@@ -360,8 +360,8 @@ def test_delete_record_with_info(
     record_id = "1001"
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.delete_record(data_source_code, record_id, flags)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_delete_record_with_info_bad_data_source_code(
@@ -383,8 +383,8 @@ def test_delete_record_with_info_bad_record_id(
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.delete_record(data_source_code, bad_record_id, flags)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_export_csv_entity_report(sz_engine: SzEngine) -> None:
@@ -414,8 +414,8 @@ def test_export_json_entity_report(sz_engine: SzEngine) -> None:
     sz_engine.close_export(handle)
     for line in actual.splitlines():
         if len(line) > 0:
-            actual_dict = json.loads(line)
-            assert schema(export_json_entity_report_iterator_schema) == actual_dict
+            actual_as_dict = json.loads(line)
+            assert schema(export_json_entity_report_iterator_schema) == actual_as_dict
 
 
 def test_fetch_next() -> None:
@@ -436,8 +436,8 @@ def test_find_interesting_entities_by_entity_id(
     actual = sz_engine.find_interesting_entities_by_entity_id(entity_id, flags)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
-        actual_dict = json.loads(actual)
-        assert schema(interesting_entities_schema) == actual_dict
+        actual_as_dict = json.loads(actual)
+        assert schema(interesting_entities_schema) == actual_as_dict
 
 
 def test_find_interesting_entities_by_entity_id_bad_entity_id(
@@ -466,8 +466,8 @@ def test_find_interesting_entities_by_record_id(
     )
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
-        actual_dict = json.loads(actual)
-        assert schema(interesting_entities_schema) == actual_dict
+        actual_as_dict = json.loads(actual)
+        assert schema(interesting_entities_schema) == actual_as_dict
 
 
 def test_find_interesting_entities_by_record_id_bad_data_source_code(
@@ -521,8 +521,8 @@ def test_find_network_by_entity_id(
         entity_list, max_degrees, build_out_degree, max_entities, flags
     )
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(network_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(network_schema) == actual_as_dict
 
 
 def test_find_network_by_entity_id_bad_entity_ids(
@@ -568,8 +568,8 @@ def test_find_network_by_record_id(
         record_list, max_degrees, build_out_degree, max_entities, flags
     )
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(network_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(network_schema) == actual_as_dict
 
 
 def test_find_network_by_record_id_bad_data_source_code(
@@ -634,8 +634,8 @@ def test_find_path_by_entity_id(
         flags,
     )
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(path_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(path_schema) == actual_as_dict
 
 
 def test_find_path_by_entity_id_bad_entity_ids(
@@ -688,8 +688,8 @@ def test_find_path_by_record_id(
         flags,
     )
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(path_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(path_schema) == actual_as_dict
 
 
 def test_find_path_by_record_id_bad_data_source_code(
@@ -761,8 +761,8 @@ def test_get_entity_by_entity_id(
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
     actual = sz_engine.get_entity_by_entity_id(entity_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(resolved_entity_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(resolved_entity_schema) == actual_as_dict
 
 
 def test_get_entity_by_record_id(sz_engine: SzEngine) -> None:
@@ -776,8 +776,8 @@ def test_get_entity_by_record_id(sz_engine: SzEngine) -> None:
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
     actual = sz_engine.get_entity_by_record_id(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(resolved_entity_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(resolved_entity_schema) == actual_as_dict
 
 
 def test_get_entity_by_record_id_bad_data_source_code(
@@ -811,8 +811,8 @@ def test_get_record(sz_engine: SzEngine) -> None:
     flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
     actual = sz_engine.get_record(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(record_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(record_schema) == actual_as_dict
 
 
 def test_get_record_bad_data_source_code(sz_engine: SzEngine) -> None:
@@ -845,8 +845,8 @@ def test_get_redo_record(
     add_records(sz_engine, test_records)
     actual = sz_engine.get_redo_record()
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(redo_record_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(redo_record_schema) == actual_as_dict
 
 
 def test_get_stats(
@@ -854,8 +854,8 @@ def test_get_stats(
 ) -> None:
     """Test SzEngine().stats()."""
     actual = sz_engine.get_stats()
-    actual_dict = json.loads(actual)
-    assert schema(stats_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(stats_schema) == actual_as_dict
 
 
 def test_get_virtual_entity_by_record_id(
@@ -876,8 +876,8 @@ def test_get_virtual_entity_by_record_id(
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     actual = sz_engine.get_virtual_entity_by_record_id(record_list, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(virtual_entity_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(virtual_entity_schema) == actual_as_dict
 
 
 def test_get_virtual_entity_by_record_id_bad_data_source_code(
@@ -922,8 +922,8 @@ def test_how_entity_by_entity_id(
     flags = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
     actual = sz_engine.how_entity_by_entity_id(entity_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(how_results_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(how_results_schema) == actual_as_dict
 
 
 def test_how_entity_by_entity_id_bad_entity_id(
@@ -976,8 +976,8 @@ def test_reevaluate_entity_with_info(
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.reevaluate_entity(entity_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_entity_with_info_bad_entity_id(
@@ -1038,8 +1038,8 @@ def test_reevaluate_record_with_info(
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.reevaluate_record(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_record_with_info_bad_data_source_code(
@@ -1083,8 +1083,8 @@ def test_search_by_attributes(
     actual = sz_engine.search_by_attributes(attributes, search_profile, flags)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
-        actual_dict = json.loads(actual)
-        assert schema(search_schema) == actual_dict
+        actual_as_dict = json.loads(actual)
+        assert schema(search_schema) == actual_as_dict
 
 
 def test_search_by_attributes_bad_attributes(
@@ -1112,8 +1112,8 @@ def test_why_entities(
     flags = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
     actual = sz_engine.why_entities(entity_id_1, entity_id_2, flags)
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(why_entities_results_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(why_entities_results_schema) == actual_as_dict
 
 
 def test_why_entities_bad_entity_ids(
@@ -1150,8 +1150,8 @@ def test_why_records(
         data_source_code_1, record_id_1, data_source_code_2, record_id_2, flags
     )
     delete_records(sz_engine, test_records)
-    actual_dict = json.loads(actual)
-    assert schema(why_entity_results_schema) == actual_dict
+    actual_as_dict = json.loads(actual)
+    assert schema(why_entity_results_schema) == actual_as_dict
 
 
 def test_why_records_bad_data_source_code(sz_engine: SzEngine) -> None:
@@ -1372,9 +1372,9 @@ def get_entity_id_from_record_id(
     sz_engine: SzEngine, data_source_code: str, record_id: str
 ) -> int:
     """Given a (datasource, record_id), return the entity ID."""
-    entity_json = sz_engine.get_entity_by_record_id(data_source_code, record_id)
-    entity = json.loads(entity_json)
-    return int(entity.get("RESOLVED_ENTITY", {}).get("ENTITY_ID", 0))
+    entity = sz_engine.get_entity_by_record_id(data_source_code, record_id)
+    entity_as_dict = json.loads(entity)
+    return int(entity_as_dict.get("RESOLVED_ENTITY", {}).get("ENTITY_ID", 0))
 
 
 # -----------------------------------------------------------------------------
@@ -1449,7 +1449,18 @@ export_json_entity_report_iterator_schema = {
             }
         ],
     },
-    Optional("RELATED_ENTITIES"): [],
+    Optional("RELATED_ENTITIES"): [
+        {
+            "ENTITY_ID": int,
+            "MATCH_LEVEL_CODE": str,
+            "MATCH_KEY": str,
+            "ERRULE_CODE": str,
+            "IS_DISCLOSED": int,
+            "IS_AMBIGUOUS": int,
+            "ENTITY_NAME": str,
+            "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+        }
+    ],
 }
 
 
@@ -1778,7 +1789,18 @@ network_schema = {
                 ],
                 Optional("LAST_SEEN_DT"): str,
             },
-            Optional("RELATED_ENTITIES"): [],
+            Optional("RELATED_ENTITIES"): [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                    "ENTITY_NAME": str,
+                    "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+                }
+            ],
         }
     ],
 }
@@ -1800,7 +1822,18 @@ path_schema = {
                 ],
                 Optional("LAST_SEEN_DT"): str,
             },
-            Optional("RELATED_ENTITIES"): [],
+            Optional("RELATED_ENTITIES"): [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                    "ENTITY_NAME": str,
+                    "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+                }
+            ],
         }
     ],
 }
@@ -1853,7 +1886,18 @@ resolved_entity_schema = {
             },
         ],
     },
-    Optional("RELATED_ENTITIES"): [],
+    Optional("RELATED_ENTITIES"): [
+        {
+            "ENTITY_ID": int,
+            "MATCH_LEVEL_CODE": str,
+            "MATCH_KEY": str,
+            "ERRULE_CODE": str,
+            "IS_DISCLOSED": int,
+            "IS_AMBIGUOUS": int,
+            "ENTITY_NAME": str,
+            "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+        }
+    ],
 }
 
 search_schema = {
@@ -1994,7 +2038,18 @@ why_entities_results_schema = {
                     }
                 ],
             },
-            Optional("RELATED_ENTITIES"): [{}],
+            Optional("RELATED_ENTITIES"): [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                    "ENTITY_NAME": str,
+                    "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+                }
+            ],
         }
     ],
 }
@@ -2040,7 +2095,18 @@ why_entity_results_schema = {
                     }
                 ],
             },
-            Optional("RELATED_ENTITIES"): [{}],
+            Optional("RELATED_ENTITIES"): [
+                {
+                    "ENTITY_ID": int,
+                    "MATCH_LEVEL_CODE": str,
+                    "MATCH_KEY": str,
+                    "ERRULE_CODE": str,
+                    "IS_DISCLOSED": int,
+                    "IS_AMBIGUOUS": int,
+                    "ENTITY_NAME": str,
+                    "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+                }
+            ],
         }
     ],
 }

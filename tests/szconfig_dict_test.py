@@ -1,11 +1,11 @@
-import json
 from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_dict import SzConfig as SzConfigDict
+from senzing_dict import SzConfig
 
-from senzing import SzConfig, SzConfigurationError, SzEngineFlags
+from senzing import SzConfig as SzConfigCore
+from senzing import SzConfigurationError, SzEngineFlags
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases
@@ -14,12 +14,12 @@ from senzing import SzConfig, SzConfigurationError, SzEngineFlags
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    sz_product = SzConfig(
+    sz_product = SzConfigCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    actual = SzConfigDict(sz_product)
-    assert isinstance(actual, SzConfigDict)
+    actual = SzConfig(sz_product)
+    assert isinstance(actual, SzConfig)
 
 
 def test_add_data_source(sz_config: SzConfig) -> None:
@@ -180,16 +180,15 @@ def test_initialize_and_destroy_again(sz_config: SzConfig) -> None:
 def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzConfigGrpc in context."""
 
-    with SzConfig(
+    with SzConfigCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
-    ) as sz_config:
-        config_handle = sz_config.create_config()
-        actual = sz_config.get_data_sources(config_handle)
-        sz_config.close_config(config_handle)
-        assert isinstance(actual, str)
-        actual_json = json.loads(actual)
-        assert schema(get_data_sources_schema) == actual_json
+    ) as sz_config_core:
+        with SzConfig(sz_config_core) as sz_config:
+            config_handle = sz_config.create_config()
+            actual = sz_config.get_data_sources(config_handle)
+            sz_config.close_config(config_handle)
+            assert schema(get_data_sources_schema) == actual
 
 
 # -----------------------------------------------------------------------------
@@ -198,17 +197,17 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 
 
 @pytest.fixture(name="sz_config", scope="module")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigDict:
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
 
-    sz_config = SzConfig(
+    sz_config = SzConfigCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    result = SzConfigDict(sz_config)
+    result = SzConfig(sz_config)
     return result
 
 

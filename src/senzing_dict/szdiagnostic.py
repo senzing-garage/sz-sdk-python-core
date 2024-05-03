@@ -89,6 +89,7 @@ class SzDiagnostic:
         return self.dict_function(self.sz_diagnostic.get_datastore_info(**kwargs))
 
     def get_feature(self, feature_id: int, **kwargs: Any) -> Dict[str, Any]:
+        """TODO: Create documentation"""
         return self.dict_function(self.sz_diagnostic.get_feature(feature_id, **kwargs))
 
     def initialize(

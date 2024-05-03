@@ -62,8 +62,8 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     seconds_to_run = 3
     actual = sz_diagnostic.check_datastore_performance(seconds_to_run)
-    actual_json = json.loads(actual)
-    assert schema(check_datastore_performance_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(check_datastore_performance_schema) == actual_as_dict
 
 
 def test_check_datastore_performance_bad_seconds_to_run_type(
@@ -86,8 +86,8 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
 def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()
-    actual_json = json.loads(actual)
-    assert schema(get_datastore_info_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(get_datastore_info_schema) == actual_as_dict
 
 
 def test_reinitialize(

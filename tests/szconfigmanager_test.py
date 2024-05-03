@@ -81,9 +81,9 @@ def test_add_config_dict(
     """Test SzConfigManager().add_config()."""
     config_handle = sz_config.create_config()
     config_definition = sz_config.export_config(config_handle)
-    config_definition_dict = json.loads(config_definition)
+    config_definition_as_dict = json.loads(config_definition)
     config_comment = "Test"
-    actual = sz_configmanager.add_config(config_definition_dict, config_comment)
+    actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
     assert isinstance(actual, int)
     assert actual > 0
 
@@ -128,8 +128,8 @@ def test_get_config(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     config_id = sz_configmanager.get_default_config_id()
     actual = sz_configmanager.get_config(config_id)
-    actual_json = json.loads(actual)
-    assert schema(config_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(config_schema) == actual_as_dict
 
 
 def test_get_config_bad_config_id_type(
@@ -153,8 +153,8 @@ def test_get_config_bad_config_id_value(
 def test_get_config_list(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     actual = sz_configmanager.get_config_list()
-    actual_json = json.loads(actual)
-    assert schema(config_list_schema) == actual_json
+    actual_as_dict = json.loads(actual)
+    assert schema(config_list_schema) == actual_as_dict
 
 
 def test_get_default_config_id(
@@ -318,8 +318,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
     ) as sz_configmanager:
         config_id = sz_configmanager.get_default_config_id()
         actual = sz_configmanager.get_config(config_id)
-        actual_json = json.loads(actual)
-        assert schema(config_schema) == actual_json
+        actual_as_dict = json.loads(actual)
+        assert schema(config_schema) == actual_as_dict
 
 
 # -----------------------------------------------------------------------------
