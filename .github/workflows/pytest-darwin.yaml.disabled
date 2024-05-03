@@ -1,5 +1,7 @@
 name: pytest darwin
 
+# TODO: Once arm64 senzing binaries are available, rename file to "pytest-darwin.yaml"
+
 on: [pull_request, workflow_dispatch]
 
 env:
