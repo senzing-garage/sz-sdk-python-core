@@ -12,7 +12,7 @@ from senzing import szhasher
 @pytest.fixture(name="szhasher_instance", scope="module")
 def szhasher_instance_fixture(engine_vars: Dict[Any, Any]) -> szhasher.SzHasher:
     """
-    Single engine object to use for all tests.
+    Single szhasher object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = szhasher.SzHasher(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"])

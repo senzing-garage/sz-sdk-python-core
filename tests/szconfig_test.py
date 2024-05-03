@@ -298,7 +298,7 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 @pytest.fixture(name="sz_config", scope="module")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single engine object to use for all tests.
+    Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
 

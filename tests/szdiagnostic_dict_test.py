@@ -96,7 +96,7 @@ def test_initialize_and_destroy(
 def szconfigmanager_instance_fixture(
     engine_vars: Dict[Any, Any]
 ) -> SzConfigManagerDict:
-    """Single engine object to use for all tests.
+    """Single szconfigmanager object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
     sz_configmanager = SzConfigManager(
@@ -109,7 +109,7 @@ def szconfigmanager_instance_fixture(
 
 @pytest.fixture(name="sz_diagnostic", scope="module")
 def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnosticDict:
-    """Single engine object to use for all tests.
+    """Single szdiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     sz_diagnostic = SzDiagnostic(
         instance_name=engine_vars["INSTANCE_NAME"],

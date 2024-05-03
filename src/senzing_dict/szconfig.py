@@ -47,8 +47,6 @@ class SzConfig:
     ) -> None:
         """TODO: Create documentation"""
 
-        # Verify parameters.
-
         self.sz_config = sz_config
         self.dict_function = dict_function
         _ = kwargs

@@ -12,6 +12,9 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
+from senzing_dict import SzConfig as SzConfigDict
+from senzing_dict import SzConfigManager as SzConfigManagerDict
+from senzing_dict import SzEngine as SzEngineDict
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_DATASOURCES,
@@ -36,45 +39,15 @@ from senzing import (
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_engine: SzEngine) -> None:
-    """Test exceptions."""
-    actual = sz_engine.new_exception(0)
-    assert isinstance(actual, Exception)
-
-
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzEngine(
+    sz_engine = SzEngine(
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         verbose_logging=engine_vars["VERBOSE_LOGGING"],
     )
-    assert isinstance(actual, SzEngine)
-
-
-def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_instance_name = ""
-    with pytest.raises(SzError):
-        SzEngine(
-            bad_instance_name,
-            engine_vars["SETTINGS"],
-        )
-
-
-def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_settings = ""
-    with pytest.raises(SzError):
-        SzEngine(
-            engine_vars["INSTANCE_NAME"],
-            bad_settings,
-        )
-
-
-# TODO: Was having issues with the as_c_ini in init
-# def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
-#     """Test constructor."""
+    actual = SzEngineDict(sz_engine)
+    assert isinstance(actual, SzEngineDict)
 
 
 def test_add_truthset_datasources(
@@ -1276,39 +1249,47 @@ def test_destroy(
 
 
 @pytest.fixture(name="sz_config", scope="module")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigDict:
     """
     Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return SzConfig(
+
+    sz_config = SzConfig(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    result = SzConfigDict(sz_config)
+    return result
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """
-    Single szconfigmanager object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    return SzConfigManager(
+def szconfigmanager_instance_fixture(
+    engine_vars: Dict[Any, Any]
+) -> SzConfigManagerDict:
+    """Single szconfigmanager object to use for all tests.
+    build_engine_vars is returned from conftest.pys"""
+
+    sz_configmanager = SzConfigManager(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    result = SzConfigManagerDict(sz_configmanager)
+    return result
 
 
 @pytest.fixture(name="sz_engine", scope="module")
-def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
+def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngineDict:
     """
     Single szengine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return SzEngine(
+    sz_engine = SzEngine(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    result = SzEngineDict(sz_engine)
+    return result
 
 
 # -----------------------------------------------------------------------------

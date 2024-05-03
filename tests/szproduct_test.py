@@ -102,7 +102,7 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 @pytest.fixture(name="sz_product", scope="module")
 def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
-    Single engine object to use for all tests.
+    Single szproduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = SzProduct(
