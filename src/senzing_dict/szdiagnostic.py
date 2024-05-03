@@ -2,18 +2,17 @@
 TODO: Create documentation
 """
 
-# pylint: disable=R0903
-
+# pylint: disable=R0903,R0915
 
 import json
 from types import TracebackType
-from typing import Any, Callable, Dict, Type, Union
+from typing import Any, Callable, Dict, Optional, Type, Union
 
-from senzing_abstract import SzConfigAbstract
+from senzing_abstract import SzDiagnosticAbstract
 
 # Metadata
 
-__all__ = ["SzConfig"]
+__all__ = ["SzDiagnostic"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-05-03"
 __updated__ = "2024-05-03"
@@ -26,11 +25,11 @@ def default_dict_function(input_string: str) -> Dict[str, Any]:
 
 
 # -----------------------------------------------------------------------------
-# SzConfig class
+# SzDiagnostic class
 # -----------------------------------------------------------------------------
 
 
-class SzConfig:
+class SzDiagnostic:
     """
     TODO: Create documentation
     """
@@ -41,7 +40,7 @@ class SzConfig:
 
     def __init__(
         self,
-        sz_config: SzConfigAbstract,
+        sz_diagnostic: SzDiagnosticAbstract,
         dict_function: Callable[[str], Dict[str, Any]] = default_dict_function,
         **kwargs: Any,
     ) -> None:
@@ -49,7 +48,7 @@ class SzConfig:
 
         # Verify parameters.
 
-        self.sz_config = sz_config
+        self.sz_diagnostic = sz_diagnostic
         self.dict_function = dict_function
         _ = kwargs
 
@@ -70,67 +69,45 @@ class SzConfig:
         """Context Manager method."""
 
     # -------------------------------------------------------------------------
-    # SzConfig methods
+    # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
-    def add_data_source(
-        self,
-        config_handle: int,
-        data_source_code: str,
-        **kwargs: Any,
+    def check_datastore_performance(
+        self, seconds_to_run: int, **kwargs: Any
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
-            self.sz_config.add_data_source(config_handle, data_source_code, **kwargs)
-        )
-
-    def close_config(self, config_handle: int, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_config.close_config(config_handle, **kwargs)
-
-    def create_config(self, **kwargs: Any) -> int:
-        """TODO: Create documentation"""
-        return self.sz_config.create_config(**kwargs)
-
-    def delete_data_source(
-        self,
-        config_handle: int,
-        data_source_code: str,
-        **kwargs: Any,
-    ) -> None:
-        """TODO: Create documentation"""
-        return self.sz_config.delete_data_source(
-            config_handle, data_source_code, **kwargs
+            self.sz_diagnostic.check_datastore_performance(seconds_to_run, **kwargs)
         )
 
     def destroy(self, **kwargs: Any) -> None:
         """TODO: Create documentation"""
-        return self.sz_config.destroy(**kwargs)
+        return self.sz_diagnostic.destroy(**kwargs)
 
-    def export_config(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
+    def get_datastore_info(self, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(self.sz_config.export_config(config_handle, **kwargs))
+        return self.dict_function(self.sz_diagnostic.get_datastore_info(**kwargs))
 
-    def get_data_sources(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
-        """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_config.get_data_sources(config_handle, **kwargs)
-        )
+    def get_feature(self, feature_id: int, **kwargs: Any) -> Dict[str, Any]:
+        return self.dict_function(self.sz_diagnostic.get_feature(feature_id, **kwargs))
 
     def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
+        config_id: Optional[int] = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         """TODO: Create documentation"""
-        return self.sz_config.initialize(
-            instance_name, settings, verbose_logging, **kwargs
+        return self.sz_diagnostic.initialize(
+            instance_name, settings, config_id, verbose_logging, **kwargs
         )
 
-    def import_config(
-        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
-    ) -> int:
+    def purge_repository(self, **kwargs: Any) -> None:
         """TODO: Create documentation"""
-        return self.sz_config.import_config(config_definition, **kwargs)
+        return self.sz_diagnostic.purge_repository(**kwargs)
+
+    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        """TODO: Create documentation"""
+        return self.sz_diagnostic.reinitialize(config_id, **kwargs)

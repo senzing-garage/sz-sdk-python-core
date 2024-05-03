@@ -125,8 +125,8 @@ class SzDiagnosticAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = None,
-        verbose_logging: int = 0,
+        config_id: Optional[int] = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any
     ) -> None:
         """

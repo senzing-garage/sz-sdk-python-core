@@ -20,7 +20,7 @@ Example:
 import os
 from ctypes import c_char_p, c_int, c_longlong, cdll
 from types import TracebackType
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Optional, Type, Union
 
 from senzing import (
     SzError,
@@ -214,7 +214,7 @@ class SzProduct(SzProductAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(

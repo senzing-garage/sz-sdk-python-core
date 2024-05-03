@@ -19,6 +19,7 @@ __updated__ = "2024-05-03"
 
 
 def default_dict_function(input_string: str) -> Dict[str, Any]:
+    """TODO: Create documentation"""
     result: Dict[str, Any] = json.loads(input_string)
     return result
 
@@ -51,6 +52,7 @@ class SzProduct:
 
         self.sz_product = sz_product
         self.dict_function = dict_function
+        _ = kwargs
 
     def __enter__(
         self,
@@ -73,7 +75,9 @@ class SzProduct:
     # -------------------------------------------------------------------------
 
     def get_license(self, **kwargs: Any) -> Dict[str, Any]:
-        return self.dict_function(self.sz_product.get_license())
+        """TODO: Create documentation"""
+        return self.dict_function(self.sz_product.get_license(**kwargs))
 
     def get_version(self, **kwargs: Any) -> Dict[str, Any]:
-        return self.dict_function(self.sz_product.get_version())
+        """TODO: Create documentation"""
+        return self.dict_function(self.sz_product.get_version(**kwargs))

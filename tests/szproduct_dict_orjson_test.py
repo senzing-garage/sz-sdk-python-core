@@ -51,7 +51,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 
 
 def orjson_dict_function(input_string: str) -> Dict[str, Any]:
-    result: Dict[str, Any] = orjson.loads(input_string)
+    """TODO: Create documentation"""
+    result: Dict[str, Any] = orjson.loads(input_string)  # pylint: disable=no-member
     return result
 
 
