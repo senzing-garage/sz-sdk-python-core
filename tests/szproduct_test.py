@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzEngineFlags, SzProduct, szerror
+from senzing import SzEngineFlags, SzError, SzProduct
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -29,7 +29,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = SzProduct(
             bad_instance_name,
             engine_vars["SETTINGS"],
@@ -40,7 +40,7 @@ def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
-    with pytest.raises(szerror.SzError):
+    with pytest.raises(SzError):
         actual = SzProduct(
             engine_vars["INSTANCE_NAME"],
             bad_settings,

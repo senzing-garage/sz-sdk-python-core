@@ -1,6 +1,6 @@
 import pytest
 
-from senzing import szerror, szversion
+from senzing import SzError, szversion
 
 # -----------------------------------------------------------------------------
 # szversion testcases
@@ -42,5 +42,5 @@ def test_supports_senzingapi_version_exceptions() -> None:
     ]
 
     for test in tests:
-        with pytest.raises(szerror.SzError):
+        with pytest.raises(SzError):
             szversion.supports_senzingapi_version(test[0], test[1], test[2])

@@ -21,8 +21,6 @@ from senzing_abstract import (
     SzUnknownDataSourceError,
     SzUnrecoverableError,
     new_szexception,
-    szerror,
-    szhelpers,
 )
 from senzing_abstract.szhelpers import (
     FreeCResources,
@@ -65,10 +63,8 @@ __all__ = [
     "SzEngine",
     "SzEngineAbstract",
     "SzEngineFlags",
-    "szerror",
     "SzError",
     "SzHasherAbstract",
-    "szhelpers",
     "SzLicenseError",
     "SzNotFoundError",
     "SzNotInitializedError",

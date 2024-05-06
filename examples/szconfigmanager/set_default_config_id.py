@@ -19,7 +19,6 @@ SETTINGS = {
 try:
     sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
     sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
-
     old_config_id = sz_configmanager.get_default_config_id()
 
     # Create a new config.
