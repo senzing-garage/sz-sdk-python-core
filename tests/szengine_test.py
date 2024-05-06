@@ -1256,7 +1256,7 @@ def test_reinitialize_bad_config_id(
     """Test SzEngine().reinitialize()."""
     _ = sz_engine
     _ = sz_configmanager
-    # TODO: Uncomment once fixed in engine
+    # TODO: Uncomment once fixed in engine GDEV-3739
     # bad_config_id = 0
     # try:
     #     with pytest.raises(SzNotInitializedError):

@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import schema
 
-from senzing import SzConfigManager, SzDiagnostic, SzError
+from senzing import SzConfigManager, SzDiagnostic, SzEngineFlags, SzError
 
 # -----------------------------------------------------------------------------
 # SzDiagnostic testcases
@@ -120,7 +120,10 @@ def test_initialize_and_destroy(
     sz_diagnostic: SzDiagnostic, engine_vars: Dict[Any, Any]
 ) -> None:
     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
-    sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
+    instance_name = engine_vars["INSTANCE_NAME"]
+    settings = engine_vars["SETTINGS"]
+    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+    sz_diagnostic.initialize(instance_name, settings, verbose_logging)
     sz_diagnostic.destroy()
 
 

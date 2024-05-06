@@ -48,7 +48,7 @@ test-osarch-specific:
 	@echo "--- Unit tests -------------------------------------------------------"
 	@pytest tests/ --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
 	# @echo "--- Test examples ----------------------------------------------------"
-	# @pytest examples/szconfig --verbose --capture=no
+	# @pytest examples/ --verbose --capture=no
 	@echo "--- Test examples using unittest -------------------------------------"
 	@python3 -m unittest \
 		examples/szconfig/*.py \
