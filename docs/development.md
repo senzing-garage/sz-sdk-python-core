@@ -8,7 +8,6 @@ These are "one-time tasks" which may already have been completed.
 1. The following software programs need to be installed:
     1. [git](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md)
     1. [make](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md)
-    1. [docker](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md)
 
 ## Clone repository
 
@@ -136,11 +135,11 @@ see [Environment Variables](https://github.com/senzing-garage/knowledge-base/blo
     make package
     ```
 
-1. Verify that `senzing-grpc` is not installed.
+1. Verify that `senzing` is not installed.
    Example:
 
     ```console
-    python3 -m pip freeze | grep -e senzing-grpc -e senzing_grpc
+    python3 -m pip freeze | grep -e senzing
     ```
 
    Nothing is returned.
@@ -152,21 +151,21 @@ see [Environment Variables](https://github.com/senzing-garage/knowledge-base/blo
     python3 -m pip install ${GIT_REPOSITORY_DIR}/dist/*.whl
     ```
 
-1. Verify that `senzing-grpc` is installed.
+1. Verify that `senzing` is installed.
    Example:
 
     ```console
-    python3 -m pip freeze | grep -e senzing-grpc -e senzing_grpc
+    python3 -m pip freeze | grep -e senzing
     ```
 
     Example return:
-    > senzing-grpc @ file:///home/senzing/senzing-garage.git/sz-sdk-python-grpc/dist/senzing_grpc-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
+    > senzing @ file:///home/senzing/senzing-garage.git/sz-sdk-python-/dist/senzing-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
 
-1. Uninstall the `senzing-grpc` python package.
+1. Uninstall the `senzing` python package.
    Example:
 
     ```console
-    python3 -m pip uninstall senzing-grpc
+    python3 -m pip uninstall senzing
     ```
 
 ## References
