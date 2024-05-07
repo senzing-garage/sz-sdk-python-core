@@ -108,9 +108,7 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnostic) -> None:
         sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
-def test_reinitialize_missing_config_id(
-    sz_diagnostic: SzDiagnostic,
-) -> None:
+def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
         sz_diagnostic.reinitialize(999)

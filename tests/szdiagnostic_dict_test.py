@@ -72,9 +72,7 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnostic) -> None:
         sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
-def test_reinitialize_missing_config_id(
-    sz_diagnostic: SzDiagnostic,
-) -> None:
+def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
         sz_diagnostic.reinitialize(999)
@@ -94,10 +92,9 @@ def test_initialize_and_destroy(
 
 
 @pytest.fixture(name="sz_configmanager", scope="module")
-def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single szconfigmanager object to use for all tests.
-    build_engine_vars is returned from conftest.pys"""
-
+    engine_vars is returned from conftest.pys"""
     sz_configmanager = SzConfigManagerCore(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],

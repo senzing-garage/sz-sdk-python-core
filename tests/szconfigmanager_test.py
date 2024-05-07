@@ -132,18 +132,14 @@ def test_get_config(sz_configmanager: SzConfigManager) -> None:
     assert schema(config_schema) == actual_as_dict
 
 
-def test_get_config_bad_config_id_type(
-    sz_configmanager: SzConfigManager,
-) -> None:
+def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
     with pytest.raises(ArgumentError):
         sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
-def test_get_config_bad_config_id_value(
-    sz_configmanager: SzConfigManager,
-) -> None:
+def test_get_config_bad_config_id_value(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = 1234
     with pytest.raises(SzConfigurationError):
@@ -157,9 +153,7 @@ def test_get_config_list(sz_configmanager: SzConfigManager) -> None:
     assert schema(config_list_schema) == actual_as_dict
 
 
-def test_get_default_config_id(
-    sz_configmanager: SzConfigManager,
-) -> None:
+def test_get_default_config_id(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     actual = sz_configmanager.get_default_config_id()
     assert isinstance(actual, int)
@@ -188,7 +182,7 @@ def test_replace_default_config_id(
     assert actual == new_default_config_id
 
 
-def test_replace_default_config_id_bad_new_id_type(
+def test_replace_default_config_id_bad_new_default_config_id_type(
     sz_configmanager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
@@ -200,7 +194,7 @@ def test_replace_default_config_id_bad_new_id_type(
         )
 
 
-def test_replace_default_config_id_bad_new_id_value(
+def test_replace_default_config_id_bad_new_default_config_id_value(
     sz_configmanager: SzConfigManager,
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
@@ -213,8 +207,7 @@ def test_replace_default_config_id_bad_new_id_value(
 
 
 def test_replace_default_config_id_bad_current_default_config_id_type(
-    sz_configmanager: SzConfigManager,
-    sz_config: SzConfig,
+    sz_configmanager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_current_default_config_id = "string"
@@ -233,8 +226,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
 
 
 def test_replace_default_config_id_bad_current_default_config_id_value(
-    sz_configmanager: SzConfigManager,
-    sz_config: SzConfig,
+    sz_configmanager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_current_default_config_id = 1234
@@ -253,8 +245,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(
 
 
 def test_set_default_config_id(
-    sz_configmanager: SzConfigManager,
-    sz_config: SzConfig,
+    sz_configmanager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     old_config_id = sz_configmanager.get_default_config_id()
@@ -288,9 +279,7 @@ def test_set_default_config_id_bad_config_id_value(
         sz_configmanager.set_default_config_id(bad_config_id)
 
 
-def test_initialize_and_destroy(
-    sz_configmanager: SzConfigManager,
-) -> None:
+def test_initialize_and_destroy(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
     instance_name = "Example"
     settings = "{}"
@@ -299,9 +288,7 @@ def test_initialize_and_destroy(
     sz_configmanager.destroy()
 
 
-def test_initialize_and_destroy_again(
-    sz_configmanager: SzConfigManager,
-) -> None:
+def test_initialize_and_destroy_again(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
     instance_name = "Example"
     settings: Dict[Any, Any] = {}
@@ -330,7 +317,7 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 @pytest.fixture(name="sz_config", scope="module")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single szconfig object to use for all tests.
+    Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.py.
     """
 
