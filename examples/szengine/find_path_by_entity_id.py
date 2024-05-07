@@ -1,11 +1,12 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngine, SzEngineFlags, SzError
 
-END_ENTITY_ID = 200013
+END_ENTITY_ID = 4
+EXCLUSIONS = ""
+FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-MAX_DEGREES = 3
+MAX_DEGREES = 2
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -14,14 +15,19 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-START_ENTITY_ID = 200003
-
+REQUIRED_DATA_SOURCES = ""
+START_ENTITY_ID = 1
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_path_by_entity_id(
-        START_ENTITY_ID, END_ENTITY_ID, MAX_DEGREES
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    RESULT = sz_engine.find_path_by_entity_id(
+        START_ENTITY_ID,
+        END_ENTITY_ID,
+        MAX_DEGREES,
+        EXCLUSIONS,
+        REQUIRED_DATA_SOURCES,
+        FLAGS,
     )
-    print(result)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

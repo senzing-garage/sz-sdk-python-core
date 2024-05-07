@@ -1,0 +1,8 @@
+// Output has been formatted for easier reading.
+
+{
+    "REASON": "deferred delete",
+    "DATA_SOURCE": "CUSTOMERS",
+    "RECORD_ID": "1003",
+    "DSRC_ACTION": "X"
+}

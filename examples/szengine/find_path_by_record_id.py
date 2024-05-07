@@ -1,12 +1,14 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngine, SzEngineFlags, SzError
 
-END_DATA_SOURCE_CODE = "REFERENCE"
-END_RECORD_ID = "2132"
+END_DATA_SOURCE_CODE = "CUSTOMERS"
+END_RECORD_ID = "1009"
+EXCLUSIONS = ""
+FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-MAX_DEGREES = 3
+MAX_DEGREES = 2
+REQUIRED_DATA_SOURCES = ""
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -15,23 +17,21 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-START_DATA_SOURCE_CODE = "REFERENCE"
-START_RECORD_ID = "2081"
+START_DATA_SOURCE_CODE = "CUSTOMERS"
+START_RECORD_ID = "1001"
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.find_path_by_record_id(
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    RESULT = sz_engine.find_path_by_record_id(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,
         END_DATA_SOURCE_CODE,
         END_RECORD_ID,
         MAX_DEGREES,
-        # TODO Move these into new example files for find_path
-        # NOTE Testing exclusions
-        # {"ENTITIES": [{"ENTITY_ID": 800148}]},
-        # NOTE Testing required dsrc
-        # required_data_sources={"DATA_SOURCES": ["CUSTOMERS"]},
+        EXCLUSIONS,
+        REQUIRED_DATA_SOURCES,
+        FLAGS,
     )
-    print(result)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

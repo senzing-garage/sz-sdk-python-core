@@ -1,10 +1,10 @@
 """
-The `szconfigmgr` package is used to modify Senzing configurations in the Senzing database.
+The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's G2Configmgr C binding.
 It conforms to the interface specified in
-`g2configmgr_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2configmgr_abstract.py>`_
+`szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
 
-To use g2configmgr,
+To use szconfigmanager,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:
@@ -19,18 +19,21 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, cdll
-from typing import Any, Dict, Union
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
 
-from .szconfigmanager_abstract import SzConfigManagerAbstract
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
     FreeCResources,
+    SzConfigManagerAbstract,
+    SzError,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
@@ -82,34 +85,34 @@ class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# G2ConfigMgr class
+# SzConfigManager class
 # -----------------------------------------------------------------------------
 
 
 class SzConfigManager(SzConfigManagerAbstract):
     """
-    The `initialize` method initializes the Senzing SzConfigMgr object.
+    The `initialize` method initializes the Senzing SzConfigManager object.
     It must be called prior to any other calls.
 
-    **Note:** If the SzConfigMr constructor is called with parameters,
+    **Note:** If the SzConfigManager constructor is called with parameters,
     the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmgr = szconfigmgr.SzConfigMgr(instance_name, settings)
+        sz_configmanager = SzConfigManager(instance_name, settings)
 
 
-    If the SzConfigMgr constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzConfigMgr.
+    If the szconfigmanager constructor is called without parameters,
+    the `initialize()` method must be called to initialize the use of SzConfigManager.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmgr = szconfigmgr.SzConfigMgr()
-        sz_configmgr.initialize(instance_name, settings)
+        sz_configmanager = SzConfigManager()
+        sz_configmanager.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
     Just specifying one or the other results in a **SzError**.
@@ -119,18 +122,18 @@ class SzConfigManager(SzConfigManagerAbstract):
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
         settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
+        config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/szconfigmgr/szconfigmgr_constructor.py
+        .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_constructor.py
             :linenos:
             :language: python
     """
@@ -145,8 +148,8 @@ class SzConfigManager(SzConfigManagerAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        ini_params: Union[str, Dict[Any, Any]] = "",
-        verbose_logging: int = 0,
+        settings: Union[str, Dict[Any, Any]] = "",
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -159,7 +162,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(ini_params)
+        self.settings = as_str(settings)
         # self.init_config_id = init_config_id
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -176,7 +179,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -222,7 +225,26 @@ class SzConfigManager(SzConfigManagerAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -244,7 +266,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2ConfigMgr methods
+    # SzConfigManager methods
     # -------------------------------------------------------------------------
 
     @catch_ctypes_exceptions
@@ -261,7 +283,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             raise self.new_exception(
                 4001, as_str(config_definition), config_comment, result.return_code
             )
-        # TODO int needed?
+        # TODO: int needed?
         return int(result.response)
 
     def destroy(self, **kwargs: Any) -> None:
@@ -293,7 +315,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4005, result.return_code)
-        # TODO int needed?
+        # TODO: int needed?
         return int(result.response)
 
     @catch_ctypes_exceptions
@@ -301,7 +323,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_init(

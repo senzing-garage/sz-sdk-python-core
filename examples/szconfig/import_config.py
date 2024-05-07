@@ -1,12 +1,9 @@
 #! /usr/bin/env python3
 
-from typing import Any, Dict
-
-from senzing import szconfig
-from senzing.szerror import SzError
+from senzing import SzConfig, SzConfigManager, SzError
 
 INSTANCE_NAME = "Example"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -14,14 +11,17 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-# TODO Change to use config manager to get a default config
-json_config_dict: Dict[str, Any] = (
-    {}
-)  # Naturally, this would be a full Senzing configuration.
-
 
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    config_handle = sz_config.import_config(json_config_dict)
+    # For this example, get default configuration.
+
+    sz_configmanager = SzConfigManager(INSTANCE_NAME, settings)
+    config_id = sz_configmanager.get_default_config_id()
+    config_definition = sz_configmanager.get_config(config_id)
+
+    # Import the configuration.
+
+    sz_config = SzConfig(INSTANCE_NAME, settings)
+    config_handle = sz_config.import_config(config_definition)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

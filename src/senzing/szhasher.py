@@ -1,21 +1,21 @@
 #! /usr/bin/env python3
 
 """
-TODO: g2hasher.py
+TODO: szhasher.py
 """
 
 import os
 from ctypes import POINTER, c_char, c_longlong, c_size_t, cdll
-from typing import Any
+from types import TracebackType
+from typing import Any, Type, Union
 
-from .szerror import SzError, new_szexception
-from .szhasher_abstract import G2HasherAbstract
-from .szhelpers import find_file_in_path
+from senzing import SzError, SzHasherAbstract, find_file_in_path, new_szexception
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["G2Hasher"]
+__all__ = ["SzHasher"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
@@ -28,11 +28,11 @@ CALLER_SKIP = 6
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# G2Hasher class
+# SzHasher class
 # -----------------------------------------------------------------------------
 
 
-class G2Hasher(G2HasherAbstract):
+class SzHasher(SzHasherAbstract):
     """
     G2 product module access library
     """
@@ -43,9 +43,9 @@ class G2Hasher(G2HasherAbstract):
 
     def __init__(
         self,
-        module_name: str = "",
-        ini_params: str = "",
-        init_config_id: int = 0,
+        instance_name: str = "",
+        settings: str = "",
+        config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -58,13 +58,13 @@ class G2Hasher(G2HasherAbstract):
 
         # Verify parameters.
 
-        if (len(module_name) == 0) or (len(ini_params) == 0):
-            if len(module_name) + len(ini_params) != 0:
-                raise self.new_exception(9999, module_name, ini_params)
+        if (len(instance_name) == 0) or (len(settings) == 0):
+            if len(instance_name) + len(settings) != 0:
+                raise self.new_exception(9999, instance_name, settings)
 
-        self.ini_params = ini_params
-        self.init_config_id = init_config_id
-        self.module_name = module_name
+        self.settings = settings
+        self.config_id = config_id
+        self.instance_name = instance_name
         self.noop = ""
         self.verbose_logging = verbose_logging
 
@@ -109,18 +109,37 @@ class G2Hasher(G2HasherAbstract):
 
         # Initialize Senzing engine.
 
-        if len(module_name) > 0:
-            self.init(self.module_name, self.ini_params, self.verbose_logging)
+        if len(instance_name) > 0:
+            self.init(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        self.destroy()
+        try:
+            self.destroy()
+        except SzError:
+            pass
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Development methods - to be removed after initial development
     # -------------------------------------------------------------------------
 
-    def fake_g2hasher(self, *args: Any, **kwargs: Any) -> None:
+    def fake_szhasher(self, *args: Any, **kwargs: Any) -> None:
         """
         TODO: Remove once SDK methods have been implemented.
 
@@ -150,38 +169,38 @@ class G2Hasher(G2HasherAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Hasher methods
+    # SzHasher methods
     # -------------------------------------------------------------------------
 
     def destroy(self, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2hasher()
+        self.fake_szhasher()
 
     def export_token_library(self, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2hasher()
+        self.fake_szhasher()
         return "response"
 
     def init(
         self,
-        module_name: str,
-        ini_params: str,
+        instance_name: str,
+        settings: str,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2hasher(module_name, ini_params, verbose_logging)
+        self.fake_szhasher(instance_name, settings, verbose_logging)
 
     def init_with_config_id(
         self,
-        module_name: str,
-        ini_params: str,
-        init_config_id: int,
+        instance_name: str,
+        settings: str,
+        config_id: int,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        self.fake_g2hasher(module_name, ini_params, init_config_id, verbose_logging)
+        self.fake_szhasher(instance_name, settings, config_id, verbose_logging)
 
     def process(self, record: str, *args: Any, **kwargs: Any) -> str:
-        self.fake_g2hasher(record)
+        self.fake_szhasher(record)
         return "response"
 
     def reinit(self, init_config_id: int, *args: Any, **kwargs: Any) -> None:
-        self.fake_g2hasher(init_config_id)
+        self.fake_szhasher(init_config_id)

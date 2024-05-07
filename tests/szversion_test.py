@@ -1,13 +1,13 @@
 import pytest
 
-from . import szexception, szversion
+from senzing import SzError, szversion
 
 # -----------------------------------------------------------------------------
-# g2version testcases
+# szversion testcases
 # -----------------------------------------------------------------------------
 
 
-def test_normalize_semantic_version():
+def test_normalize_semantic_version() -> None:
     """Test whether semantic version strings are transformed to integer correctly."""
     tests = {
         "0.0.0": 0,
@@ -21,7 +21,7 @@ def test_normalize_semantic_version():
         assert actual == number
 
 
-def test_supports_senzingapi_version():
+def test_supports_senzingapi_version() -> None:
     """Test whether current versions are within min/max range."""
     tests = [
         ["0.0.0", "99.99.99", "50.50.50"],
@@ -33,7 +33,7 @@ def test_supports_senzingapi_version():
         assert actual
 
 
-def test_supports_senzingapi_version_exceptions():
+def test_supports_senzingapi_version_exceptions() -> None:
     """Test whether exceptions are thrown when current version is outside min/max range."""
 
     tests = [
@@ -42,5 +42,5 @@ def test_supports_senzingapi_version_exceptions():
     ]
 
     for test in tests:
-        with pytest.raises(szexception.G2Exception):
+        with pytest.raises(SzError):
             szversion.supports_senzingapi_version(test[0], test[1], test[2])

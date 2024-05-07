@@ -1,10 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig
-from senzing.szerror import SzError
+from senzing import SzConfig, SzError
 
 INSTANCE_NAME = "Example"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -14,11 +13,11 @@ SETTINGS = {
 }
 
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.create_config()
 
     # Do work.
 
     sz_config.close_config(config_handle)
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

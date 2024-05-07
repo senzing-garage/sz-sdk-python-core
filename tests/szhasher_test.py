@@ -1,29 +1,31 @@
+from typing import Any, Dict
+
 import pytest
 
-from . import szhasher
+from senzing import szhasher
 
 # -----------------------------------------------------------------------------
-# G2Hasher fixtures
+# SzHasher fixtures
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2hasher_instance", scope="module")
-def g2hasher_instance_fixture(engine_vars):
+@pytest.fixture(name="szhasher_instance", scope="module")
+def szhasher_instance_fixture(engine_vars: Dict[Any, Any]) -> szhasher.SzHasher:
     """
-    Single engine object to use for all tests.
+    Single szhasher object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = szhasher.G2Hasher(engine_vars["MODULE_NAME"], engine_vars["INI_PARAMS"])
+    result = szhasher.SzHasher(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"])
     return result
 
 
 # -----------------------------------------------------------------------------
-# G2Hasher testcases
+# SzHasher testcases
 # -----------------------------------------------------------------------------
 
 
-def test_process(g2hasher_instance):
+def test_process(szhasher_instance: szhasher.SzHasher) -> None:
     """Test Senzing license."""
-    actual = g2hasher_instance.process("")
+    actual = szhasher_instance.process("")
     assert isinstance(actual, str)
     assert actual == "response"

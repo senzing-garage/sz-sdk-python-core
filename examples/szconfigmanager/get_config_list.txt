@@ -1,0 +1,16 @@
+// Output has been formatted for easier reading.
+
+{
+    "CONFIGS": [
+        {
+            "CONFIG_ID": 41320074,
+            "CONFIG_COMMENTS": "Default Senzing configuration",
+            "SYS_CREATE_DT": "YYYY-MM-DD HH:MM:SS.mmm"
+        },
+        {
+            "CONFIG_ID": 490826130,
+            "CONFIG_COMMENTS": "Test",
+            "SYS_CREATE_DT": "YYYY-MM-DD HH:MM:SS.mmm"
+        }
+    ]
+}

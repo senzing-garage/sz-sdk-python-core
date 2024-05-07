@@ -1,33 +1,122 @@
 import json
+from typing import Any, Dict
 
 import pytest
 from pytest_schema import Regex, schema
 
-from . import szexception, szproduct
+from senzing import SzEngineFlags, SzError, SzProduct
 
 # -----------------------------------------------------------------------------
-# G2Product fixtures
+# SzProduct testcases
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="g2_product", scope="module")
-def g2product_fixture(engine_vars):
+def test_exception(sz_product: SzProduct) -> None:
+    """Test exceptions."""
+    actual = sz_product.new_exception(0)
+    assert isinstance(actual, Exception)
+
+
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzProduct(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    assert isinstance(actual, SzProduct)
+
+
+def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    bad_instance_name = ""
+    with pytest.raises(SzError):
+        actual = SzProduct(
+            bad_instance_name,
+            engine_vars["SETTINGS"],
+        )
+        assert isinstance(actual, SzProduct)
+
+
+def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    bad_settings = ""
+    with pytest.raises(SzError):
+        actual = SzProduct(
+            engine_vars["INSTANCE_NAME"],
+            bad_settings,
+        )
+        assert isinstance(actual, SzProduct)
+
+
+def test_get_license(sz_product: SzProduct) -> None:
+    """Test Senzing license."""
+    actual = sz_product.get_license()
+    assert isinstance(actual, str)
+    actual_as_dict = json.loads(actual)
+    assert schema(get_license_schema) == actual_as_dict
+
+
+def test_get_version(sz_product: SzProduct) -> None:
+    """Test Senzing version."""
+    actual = sz_product.get_version()
+    assert isinstance(actual, str)
+    actual_as_dict = json.loads(actual)
+    assert schema(get_version_schema) == actual_as_dict
+
+
+def test_initialize_and_destroy(sz_product: SzProduct) -> None:
+    """Test init/destroy cycle."""
+    instance_name = "Example"
+    settings: Dict[Any, Any] = {}
+    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+    sz_product.initialize(instance_name, settings, verbose_logging)
+    sz_product.destroy()
+
+
+def test_initialize_and_destroy_again(sz_product: SzProduct) -> None:
+    """Test init/destroy cycle a second time."""
+    instance_name = "Example"
+    settings = "{}"
+    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+    sz_product.initialize(instance_name, settings, verbose_logging)
+    sz_product.destroy()
+
+
+def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
+    """Test the use of SzProductGrpc in context."""
+    with SzProduct(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    ) as sz_product:
+        actual = sz_product.get_license()
+        assert isinstance(actual, str)
+        actual_as_dict = json.loads(actual)
+        assert schema(get_license_schema) == actual_as_dict
+
+
+# -----------------------------------------------------------------------------
+# SzProduct fixtures
+# -----------------------------------------------------------------------------
+
+
+@pytest.fixture(name="sz_product", scope="module")
+def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
-    Single engine object to use for all tests.
+    Single szproduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = szproduct.G2Product(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
+    result = SzProduct(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
     )
     return result
 
 
 # -----------------------------------------------------------------------------
-# G2Product schemas
+# SzProduct schemas
 # -----------------------------------------------------------------------------
 
-license_schema = {
+get_license_schema = {
     "customer": str,
     "contract": str,
     "issueDate": Regex(r"^\d{4}-\d{2}-\d{2}$"),
@@ -39,7 +128,7 @@ license_schema = {
 }
 
 
-version_schema = {
+get_version_schema = {
     "PRODUCT_NAME": str,
     "VERSION": Regex(
         r"^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$"
@@ -56,73 +145,3 @@ version_schema = {
         "MAXIMUM_REQUIRED_SCHEMA_VERSION": str,
     },
 }
-
-
-# -----------------------------------------------------------------------------
-# G2Product testcases
-# -----------------------------------------------------------------------------
-
-
-def test_exception(g2_product):
-    """Test exceptions."""
-    actual = g2_product.new_exception(0)
-    assert isinstance(actual, Exception)
-
-
-def test_constructor(engine_vars):
-    """Test constructor."""
-    actual = szproduct.G2Product(
-        engine_vars["MODULE_NAME"],
-        engine_vars["INI_PARAMS"],
-    )
-    assert isinstance(actual, szproduct.G2Product)
-
-
-def test_constructor_bad_module_name(engine_vars):
-    """Test constructor."""
-    bad_module_name = ""
-    with pytest.raises(szexception.G2Exception):
-        actual = szproduct.G2Product(
-            bad_module_name,
-            engine_vars["INI_PARAMS"],
-        )
-        assert isinstance(actual, szproduct.G2Product)
-
-
-def test_constructor_bad_ini_params(engine_vars):
-    """Test constructor."""
-    bad_ini_params = ""
-    with pytest.raises(szexception.G2Exception):
-        actual = szproduct.G2Product(
-            engine_vars["MODULE_NAME"],
-            bad_ini_params,
-        )
-        assert isinstance(actual, szproduct.G2Product)
-
-
-def test_license(g2_product):
-    """Test Senzing license."""
-    actual = g2_product.license()
-    assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(license_schema) == actual_json
-
-
-def test_version(g2_product):
-    """Test Senzing version."""
-    actual = g2_product.version()
-    assert isinstance(actual, str)
-    actual_json = json.loads(actual)
-    assert schema(version_schema) == actual_json
-
-
-def test_init_and_destroy(g2_product):
-    """Test init/destroy cycle."""
-    g2_product.init("Example", "{}", 0)
-    g2_product.destroy()
-
-
-def test_init_and_destroy_again(g2_product):
-    """Test init/destroy cycle a second time."""
-    g2_product.init("Example", "{}", 0)
-    g2_product.destroy()

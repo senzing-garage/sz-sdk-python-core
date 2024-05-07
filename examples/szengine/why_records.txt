@@ -1,0 +1,46 @@
+// Output has been formatted and pruned for easier reading.
+
+{
+    "WHY_RESULTS": [
+        {
+            "INTERNAL_ID": 200001,
+            "ENTITY_ID": 200001,
+            "FOCUS_RECORDS": [],
+            "INTERNAL_ID_2": 200002,
+            "ENTITY_ID_2": 200001,
+            "FOCUS_RECORDS_2": [],
+            "MATCH_INFO": {
+                "WHY_KEY": "+NAME+DOB+PHONE",
+                "WHY_ERRULE_CODE": "CNAME_CFF_CEXCL",
+                "MATCH_LEVEL_CODE": "RESOLVED",
+                "CANDIDATE_KEYS": {},
+                "DISCLOSED_RELATIONS": {},
+                "FEATURE_SCORES": {}
+            }
+        }
+    ],
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": 200001,
+                "ENTITY_NAME": "Robert Smith",
+                "FEATURES": {
+                    "ADDRESS": [],
+                    "ADDR_KEY": [],
+                    "DOB": [],
+                    "EMAIL": [],
+                    "EMAIL_KEY": [],
+                    "NAME": [],
+                    "NAMEADDR_KEY": [],
+                    "NAME_KEY": [],
+                    "PHONE": [],
+                    "PHONE_KEY": [],
+                    "RECORD_TYPE": []
+                },
+                "RECORD_SUMMARY": [],
+                "RECORDS": []
+            },
+            "RELATED_ENTITIES": []
+        }
+    ]
+}

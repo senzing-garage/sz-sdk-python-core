@@ -1,12 +1,10 @@
 #! /usr/bin/env python3
 
-from senzing import szconfig, szconfigmanager
-from senzing.szerror import SzError
+from senzing import SzConfig, SzError
 
-CONFIG_COMMENT = "Added new datasource"
-DATA_SOURCE_CODE = "TEST12"
+DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
 INSTANCE_NAME = "Example"
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -16,20 +14,10 @@ SETTINGS = {
 }
 
 try:
-    sz_config = szconfig.SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmgr = szconfigmanager.SzConfigManager(INSTANCE_NAME, SETTINGS)
-
-    current_config_id = sz_configmgr.get_default_config_id()
-    current_config = sz_configmgr.get_config(current_config_id)
-    config_handle = sz_config.import_config(current_config)
-
-    result = sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
-    new_config = sz_config.export_config(config_handle)
+    sz_config = SzConfig(INSTANCE_NAME, settings)
+    config_handle = sz_config.create_config()
+    RESULT = sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
     sz_config.close_config(config_handle)
-
-    new_config_id = sz_configmgr.add_config(new_config, CONFIG_COMMENT)
-    sz_configmgr.set_default_config_id(new_config_id)
-
-    print(result)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

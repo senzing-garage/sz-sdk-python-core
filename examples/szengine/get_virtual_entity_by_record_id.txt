@@ -1,0 +1,137 @@
+// Output has been formatted for easier reading.
+
+{
+    "RESOLVED_ENTITY": {
+        "ENTITY_ID": 200001,
+        "ENTITY_NAME": "Robert Smith",
+        "FEATURES": {
+            "ADDRESS": [
+                {
+                    "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                    "LIB_FEAT_ID": 22,
+                    "USAGE_TYPE": "HOME",
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                            "LIB_FEAT_ID": 22
+                        }
+                    ]
+                },
+                {
+                    "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                    "LIB_FEAT_ID": 3,
+                    "USAGE_TYPE": "MAILING",
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                            "LIB_FEAT_ID": 3
+                        }
+                    ]
+                }
+            ],
+            "DOB": [
+                {
+                    "FEAT_DESC": "12/11/1978",
+                    "LIB_FEAT_ID": 2,
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "12/11/1978",
+                            "LIB_FEAT_ID": 2
+                        },
+                        {
+                            "FEAT_DESC": "11/12/1978",
+                            "LIB_FEAT_ID": 21
+                        }
+                    ]
+                }
+            ],
+            "EMAIL": [
+                {
+                    "FEAT_DESC": "bsmith@work.com",
+                    "LIB_FEAT_ID": 5,
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "bsmith@work.com",
+                            "LIB_FEAT_ID": 5
+                        }
+                    ]
+                }
+            ],
+            "NAME": [
+                {
+                    "FEAT_DESC": "Robert Smith",
+                    "LIB_FEAT_ID": 1,
+                    "USAGE_TYPE": "PRIMARY",
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "Robert Smith",
+                            "LIB_FEAT_ID": 1
+                        },
+                        {
+                            "FEAT_DESC": "Bob Smith",
+                            "LIB_FEAT_ID": 20
+                        }
+                    ]
+                }
+            ],
+            "PHONE": [
+                {
+                    "FEAT_DESC": "702-919-1300",
+                    "LIB_FEAT_ID": 4,
+                    "USAGE_TYPE": "HOME",
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "702-919-1300",
+                            "LIB_FEAT_ID": 4
+                        }
+                    ]
+                },
+                {
+                    "FEAT_DESC": "702-919-1300",
+                    "LIB_FEAT_ID": 4,
+                    "USAGE_TYPE": "MOBILE",
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "702-919-1300",
+                            "LIB_FEAT_ID": 4
+                        }
+                    ]
+                }
+            ],
+            "RECORD_TYPE": [
+                {
+                    "FEAT_DESC": "PERSON",
+                    "LIB_FEAT_ID": 16,
+                    "FEAT_DESC_VALUES": [
+                        {
+                            "FEAT_DESC": "PERSON",
+                            "LIB_FEAT_ID": 16
+                        }
+                    ]
+                }
+            ]
+        },
+        "RECORD_SUMMARY": [
+            {
+                "DATA_SOURCE": "CUSTOMERS",
+                "RECORD_COUNT": 2
+            }
+        ],
+        "RECORDS": [
+            {
+                "DATA_SOURCE": "CUSTOMERS",
+                "RECORD_ID": "1001",
+                "INTERNAL_ID": 200001,
+                "FIRST_SEEN_DT": "2024-04-29T15:04:04Z",
+                "LAST_SEEN_DT": "2024-04-29T15:04:04Z"
+            },
+            {
+                "DATA_SOURCE": "CUSTOMERS",
+                "RECORD_ID": "1002",
+                "INTERNAL_ID": 200002,
+                "FIRST_SEEN_DT": "2024-04-29T15:04:04Z",
+                "LAST_SEEN_DT": "2024-04-29T15:04:04Z"
+            }
+        ]
+    }
+}

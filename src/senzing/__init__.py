@@ -1,39 +1,78 @@
-# Tricky code:
-# Because the filenames are the same as class names in many instances,
-# the __all__ list needs to be constructed from the files before the
-# classes are imported.   For that reason, there is a 2-step process:
-#   1) Use the "names" as filenames to access the "__all__" attribute.
-#   2) Use the "names" as class names.
-
-# Step 1: Import the files so that the __all__ attribute will work with the "name" (e.g. szconfig, szconfigmgr)
-
-from typing import List
-
-from . import (
-    szconfig,
-    szconfigmanager,
-    szdiagnostic,
-    szengine,
-    szengineflags,
-    szerror,
-    szhasher,
-    szproduct,
+from senzing_abstract import (
+    EXCEPTION_MAP,
+    SzBadInputError,
+    SzConfigAbstract,
+    SzConfigManagerAbstract,
+    SzConfigurationError,
+    SzDatabaseConnectionLostError,
+    SzDatabaseError,
+    SzDiagnosticAbstract,
+    SzEngineAbstract,
+    SzEngineFlags,
+    SzError,
+    SzHasherAbstract,
+    SzLicenseError,
+    SzNotFoundError,
+    SzNotInitializedError,
+    SzProductAbstract,
+    SzRetryableError,
+    SzRetryTimeoutExceededError,
+    SzUnhandledError,
+    SzUnknownDataSourceError,
+    SzUnrecoverableError,
+    new_szexception,
+)
+from senzing_abstract.szhelpers import (
+    FreeCResources,
+    as_c_char_p,
+    as_python_int,
+    as_python_str,
+    as_str,
+    as_uintptr_t,
+    catch_ctypes_exceptions,
+    find_file_in_path,
 )
 
-import_lists = [
-    szconfig.__all__,
-    szconfigmanager.__all__,
-    szdiagnostic.__all__,
-    szengine.__all__,
-    szengineflags.__all__,
-    szerror.__all__,
-    szhasher.__all__,
-    szproduct.__all__,
+from .szconfig import SzConfig
+from .szconfigmanager import SzConfigManager
+from .szdiagnostic import SzDiagnostic
+from .szengine import SzEngine
+from .szproduct import SzProduct
+
+__all__ = [
+    "as_c_char_p",
+    "as_python_int",
+    "as_python_str",
+    "as_str",
+    "as_uintptr_t",
+    "catch_ctypes_exceptions",
+    "EXCEPTION_MAP",
+    "find_file_in_path",
+    "FreeCResources",
+    "new_szexception",
+    "SzBadInputError",
+    "SzConfig",
+    "SzConfigAbstract",
+    "SzConfigManager",
+    "SzConfigManagerAbstract",
+    "SzConfigurationError",
+    "SzDatabaseConnectionLostError",
+    "SzDatabaseError",
+    "SzDiagnostic",
+    "SzDiagnosticAbstract",
+    "SzEngine",
+    "SzEngineAbstract",
+    "SzEngineFlags",
+    "SzError",
+    "SzHasherAbstract",
+    "SzLicenseError",
+    "SzNotFoundError",
+    "SzNotInitializedError",
+    "SzProduct",
+    "SzProductAbstract",
+    "SzRetryableError",
+    "SzRetryTimeoutExceededError",
+    "SzUnhandledError",
+    "SzUnknownDataSourceError",
+    "SzUnrecoverableError",
 ]
-
-__all__: List[str] = []
-# for import_list in import_lists:
-#     __all__.extend(import_list)
-
-# Step 2: Overwrite the "name" that did point to the file in step #1 to now point to the class.
-# Each of the submodules must have the having an __all__ variable defined for the "*" to work.

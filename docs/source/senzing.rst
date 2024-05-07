@@ -4,73 +4,46 @@ senzing package
 Submodules
 ----------
 
-senzing.g2config module
+senzing.szconfig module
 -----------------------
 
-.. automodule:: senzing.g2config
+.. automodule:: senzing.szconfig
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.g2configmgr module
---------------------------
+senzing.szconfigmanager module
+------------------------------
 
-.. automodule:: senzing.g2configmgr
+.. automodule:: senzing.szconfigmanager
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.g2diagnostic module
+senzing.szdiagnostic module
 ---------------------------
 
-.. automodule:: senzing.g2diagnostic
+.. automodule:: senzing.szdiagnostic
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.g2engine module
+senzing.szengine module
 -----------------------
 
-.. automodule:: senzing.g2engine
+.. automodule:: senzing.szengine
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.g2engineflags module
-----------------------------
-
-.. automodule:: senzing.g2engineflags
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-
-senzing.g2exception module
---------------------------
-
-.. automodule:: senzing.g2exception
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-
-senzing.g2hasher module
------------------------
-
-.. automodule:: senzing.g2hasher
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
-
-senzing.g2product module
+senzing.szproduct module
 ------------------------
 
-.. automodule:: senzing.g2product
+.. automodule:: senzing.szproduct
    :members:
    :undoc-members:
    :show-inheritance:

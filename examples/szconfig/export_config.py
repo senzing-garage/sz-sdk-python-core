@@ -1,10 +1,9 @@
 #! /usr/bin/env python3
 
+from senzing import SzConfig, SzError
 
-from senzing import szconfig
-from senzing.szerror import SzError
-
-SETTINGS = {
+INSTANCE_NAME = "Example"
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/g2/resources",
@@ -12,13 +11,14 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-MODULE_NAME = "Example"
 
 try:
-    sz_config = szconfig.SzConfig(MODULE_NAME, SETTINGS)
+    sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.create_config()  # Create first in-memory.
-    config = sz_config.export_config(config_handle)  # Save in-memory to string.
+    CONFIG_DEFINITION = sz_config.export_config(
+        config_handle
+    )  # Save in-memory to string.
     sz_config.close_config(config_handle)
-    print(config)
+    print(CONFIG_DEFINITION[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

@@ -2,9 +2,9 @@
 The `szdiagnostic` package is used to inspect the Senzing environment.
 It is a wrapper over Senzing's G2Diagnostic C binding.
 It conforms to the interface specified in
-`szdiagnostic_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2diagnostic_abstract.py>`_
+`szdiagnostic_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szdiagnostic_abstract.py>`_
 
-To use g2diagnostic,
+To use szdiagnostic,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:
@@ -18,18 +18,21 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
-from typing import Any, Dict, Optional, Union
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
 
-from .szdiagnostic_abstract import SzDiagnosticAbstract
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
     FreeCResources,
+    SzDiagnosticAbstract,
+    SzError,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
@@ -55,6 +58,11 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
+# TODO:  Remove when G2Diagnostic_checkDatastorePerformance_helper is available
+class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
+    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
+
+
 class G2DiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2Diagnostic_checkDatastorePerformance_result"""
 
@@ -68,56 +76,56 @@ class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# G2Diagnostic class
+# SzDiagnostic class
 # -----------------------------------------------------------------------------
 
 
 class SzDiagnostic(SzDiagnosticAbstract):
     """
-    The `init` method initializes the Senzing G2Diagnostic object.
+    The `initialize` method initializes the Senzing SzDiagnostic object.
     It must be called prior to any other calls.
 
-    **Note:** If the G2Diagnostic constructor is called with parameters,
-    the constructor will automatically call the `init()` method.
+    **Note:** If the SzDiagnostic constructor is called with parameters,
+    the constructor will automatically call the `initialize()` method.
 
     Example:
 
     .. code-block:: python
 
-        g2_diagnostic = g2diagnostic.G2Diagnostic(module_name, ini_params)
+        sz_diagnostic = SzDiagnostic(instance_name, settings)
 
 
-    If the G2Diagnostic constructor is called without parameters,
-    the `init()` method must be called to initialize the use of G2Product.
+    If the SzDiagnostic constructor is called without parameters,
+    the `inititialize()` method must be called to initialize the use of G2Product.
 
     Example:
 
     .. code-block:: python
 
-        g2_diagnostic = g2diagnostic.G2Diagnostic()
-        g2_diagnostic.init(module_name, ini_params)
+        sz_diagnostic = SzDiagnostic()
+        sz_diagnostic.inititialize(instance_name, settings)
 
-    Either `module_name` and `ini_params` must both be specified or neither must be specified.
+    Either `instance_name` and `settings` must both be specified or neither must be specified.
     Just specifying one or the other results in a **G2Exception**.
 
     Parameters:
-        module_name:
+        instance_name:
             `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        ini_params:
+        settings:
             `Optional:` A JSON string containing configuration parameters. Default: ""
-        init_config_id:
+        config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
             `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        g2exception.G2Exception: Failed to load the G2 library or incorrect `module_name`, `ini_params` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
 
     .. collapse:: Example:
 
-        .. literalinclude:: ../../examples/g2diagnostic/g2diagnostic_constructor.py
+        .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_constructor.py
             :linenos:
             :language: python
     """
@@ -162,7 +170,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -190,7 +198,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             c_char_p,
             c_char_p,
             c_longlong,
-            c_int,
+            c_longlong,
         ]
         self.library_handle.G2Diagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
@@ -204,20 +212,36 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 raise self.new_exception(4007, self.instance_name, self.settings)
         if len(self.instance_name) > 0:
             self.auto_init = True
-            if not self.config_id:
-                self.initialize(self.instance_name, self.settings, self.verbose_logging)
-            else:
-                self.initialize(
-                    self.instance_name,
-                    self.settings,
-                    self.verbose_logging,
-                    self.config_id,
-                )
+            self.initialize(
+                instance_name=self.instance_name,
+                settings=self.settings,
+                config_id=self.config_id,
+                verbose_logging=self.verbose_logging,
+            )
 
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -239,7 +263,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Diagnostic methods
+    # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
     def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
@@ -287,11 +311,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = None,
-        verbose_logging: int = 0,
+        config_id: Optional[int] = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
-        if not config_id:
+        if config_id == 0:
             result = self.library_handle.G2Diagnostic_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
@@ -307,7 +331,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
                     result,
                 )
             return
-
         result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),

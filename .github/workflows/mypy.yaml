@@ -25,11 +25,9 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: pip install mypy
-        # run: pip install black pylint mypy
-        run: pip install mypy
+        run: pip install mypy pytest orjson
 
       - name: mypy testing
-        #run: mypy --strict $(git ls-files '*.py' ':!:docs/source/*')
         run: |
           # shellcheck disable=SC2046
-          mypy --strict $(git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
+          mypy --strict $(git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')

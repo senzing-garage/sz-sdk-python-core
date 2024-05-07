@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import szdiagnostic
-from senzing.szerror import SzError
+from senzing import SzDiagnostic, SzError
 
 INSTANCE_NAME = "Example"
 SETTINGS = {
@@ -14,10 +13,10 @@ SETTINGS = {
 }
 
 try:
-    sz_diagnostic = szdiagnostic.SzDiagnostic(INSTANCE_NAME, SETTINGS)
+    sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
     # WARNING
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING
     sz_diagnostic.purge_repository()
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

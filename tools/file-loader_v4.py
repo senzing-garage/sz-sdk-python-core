@@ -13,8 +13,15 @@ import textwrap
 import time
 from datetime import datetime
 
-from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szerror import SzBadInputError, SzError, SzRetryableError
+from senzing import (
+    SzBadInputError,
+    SzConfigManager,
+    SzDiagnostic,
+    SzEngine,
+    SzError,
+    SzProduct,
+    SzRetryableError,
+)
 
 try:
     import orjson as json
@@ -56,13 +63,13 @@ def arg_convert_boolean(env_var, cli_arg):
     return cli_arg
 
 
-def startup_info(engine, diag, product, configmgr):
+def startup_info(engine, diag, product, configmanager):
     """Fetch and display information at startup. Detect if Postgres is in use to use Governor"""
     lic_info = json.loads(product.get_license())
     ver_info = json.loads(product.get_version())
 
     try:
-        response = configmgr.get_config_list()
+        response = configmanager.get_config_list()
         config_list = json.loads(response)
 
         active_cfg_id = engine.get_active_config_id()
@@ -204,7 +211,7 @@ def signal_int(signum, frame):
     do_shutdown = True
 
 
-# TODO Check file size and drop to single thread if small
+# TODO: Check file size and drop to single thread if small
 def load_and_redo(
     engine,
     file_input,
@@ -265,7 +272,7 @@ def load_and_redo(
 
     overall_start_time = time.time()
 
-    # TODO Add a no-redo mode, make it a hidden arg?
+    # TODO: Add a no-redo mode, make it a hidden arg?
     with open(file_output, "w") as out_file:
         for mode in [add_record, process_redo_record]:
             # for mode in [add_record]:
@@ -438,7 +445,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_int)
 
     LONG_RECORD = 300
-    MODULE_NAME = pathlib.Path(sys.argv[0]).stem
+    INSTANCE_NAME = pathlib.Path(sys.argv[0]).stem
     PAYLOAD_RECORD = 0
     PAYLOAD_START_TIME = 1
     WORK_STATS_INTERVAL = 60
@@ -550,7 +557,7 @@ if __name__ == "__main__":
              """
         ),
     )
-    # TODO
+    # TODO:
     # arg_parser.add_argument(
     #     "-n",
     #     "--debugTrace",
@@ -600,11 +607,9 @@ if __name__ == "__main__":
     )
 
     errors_file = (
-        f'{MODULE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
+        f'{INSTANCE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
     )
-    withinfo_file = (
-        f'{MODULE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
-    )
+    withinfo_file = f'{INSTANCE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
     # If running in a container use /data/
     if os.getenv("SENZING_DOCKER_LAUNCHED"):
         errors_file = f"/data/{errors_file}"
@@ -638,20 +643,16 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     try:
-        sz_engine = szengine.SzEngine("pySzEngine", engine_config, debug_trace)
-        sz_diag = szdiagnostic.SzDiagnostic(
-            "pySzDiagnostic", engine_config, debug_trace
-        )
-        sz_product = szproduct.SzProduct("pySzProduct", engine_config, debug_trace)
-        sz_configmgr = szconfigmanager.SzConfigManager(
-            "pySzConfigMgr", engine_config, debug_trace
-        )
+        sz_engine = SzEngine("pySzEngine", engine_config, debug_trace)
+        sz_diag = SzDiagnostic("pySzDiagnostic", engine_config, debug_trace)
+        sz_product = SzProduct("pySzProduct", engine_config, debug_trace)
+        sz_configmanager = SzConfigManager("pySzConfigMgr", engine_config, debug_trace)
     except SzError as ex:
         logger.error(ex)
         sys.exit(-1)
 
     # If the database is Postgres import the governor and logger for Governor
-    db_is_postgres = startup_info(sz_engine, sz_diag, sz_product, sz_configmgr)
+    db_is_postgres = startup_info(sz_engine, sz_diag, sz_product, sz_configmanager)
     if db_is_postgres:
         logger.info("Postgres detected, loading the Senzing governor")
         logger.info("")

@@ -2,7 +2,7 @@
 The `szproduct` package is used to inspect the Senzing product.
 It is a wrapper over Senzing's G2Product C binding.
 It conforms to the interface specified in
-`szproduct_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2product_abstract.py>`_
+`szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
 
 To use szproduct,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -19,17 +19,19 @@ Example:
 
 import os
 from ctypes import c_char_p, c_int, c_longlong, cdll
-from typing import Any, Dict, Union
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
 
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
+    SzError,
+    SzProductAbstract,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
-from .szproduct_abstract import SzProductAbstract
 
 # Metadata
 
@@ -57,7 +59,7 @@ class SzProduct(SzProductAbstract):
 
     .. code-block:: python
 
-        sz_product = szproduct.SzProduct(instance_name, settings)
+        sz_product = SzProduct(instance_name, settings)
 
 
     If the SzProduct constructor is called without parameters,
@@ -67,7 +69,7 @@ class SzProduct(SzProductAbstract):
 
     .. code-block:: python
 
-        sz_product = szproduct.SzProduct()
+        sz_product = SzProduct()
         sz_product.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
@@ -83,7 +85,7 @@ class SzProduct(SzProductAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -128,17 +130,17 @@ class SzProduct(SzProductAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
         self.library_handle.G2Product_destroy.argtypes = []
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_destroy.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
-        # TODO Why is this c_longlong but others that don't return are c_int?
+        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
         self.library_handle.G2Product_license.restype = c_char_p
@@ -158,7 +160,26 @@ class SzProduct(SzProductAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            self.destroy()
+            try:
+                self.destroy()
+            except SzError:
+                pass
+
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
 
     # -------------------------------------------------------------------------
     # Exception helpers
@@ -180,7 +201,7 @@ class SzProduct(SzProductAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Product methods
+    # SzProduct methods
     # -------------------------------------------------------------------------
 
     def destroy(self, **kwargs: Any) -> None:
@@ -193,7 +214,7 @@ class SzProduct(SzProductAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(

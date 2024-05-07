@@ -2,9 +2,9 @@
 The `szconfig` package is used to modify the in-memory representation of a Senzing configuration.
 It is a wrapper over Senzing's G2Config C binding.
 It conforms to the interface specified in
-`g2config_abstract.py <https://github.com/senzing-garage/g2-sdk-python-next/blob/main/src/senzing/g2config_abstract.py>`_
+`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
 
-To use g2config,
+To use szconfig,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
 Example:
@@ -29,12 +29,13 @@ from ctypes import (
     c_void_p,
     cdll,
 )
-from typing import Any, Dict, Union
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
 
-from .szconfig_abstract import SzConfigAbstract
-from .szerror import SzError, new_szexception
-from .szhelpers import (
+from senzing import (
     FreeCResources,
+    SzConfigAbstract,
+    SzError,
     as_c_char_p,
     as_python_int,
     as_python_str,
@@ -42,7 +43,9 @@ from .szhelpers import (
     as_uintptr_t,
     catch_ctypes_exceptions,
     find_file_in_path,
+    new_szexception,
 )
+
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
@@ -114,7 +117,7 @@ class SzConfig(SzConfigAbstract):
 
     .. code-block:: python
 
-        sz_config = szconfig.SzConfig(instance_name, settings)
+        sz_config = SzConfig(instance_name, settings)
 
 
     If the SzConfig constructor is called without parameters,
@@ -124,7 +127,7 @@ class SzConfig(SzConfigAbstract):
 
     .. code-block:: python
 
-        sz_config = szconfig.SzConfig()
+        sz_config = SzConfig()
         sz_config.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
@@ -140,7 +143,7 @@ class SzConfig(SzConfigAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        szexception.SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -190,7 +193,7 @@ class SzConfig(SzConfigAbstract):
             else:
                 self.library_handle = cdll.LoadLibrary("libG2.so")
         except OSError as err:
-            # TODO Change to Sz library when the libG2.so is changed in a build
+            # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
         # Initialize C function input parameters and results.
@@ -240,6 +243,22 @@ class SzConfig(SzConfigAbstract):
         if self.auto_init:
             self.destroy()
 
+    def __enter__(
+        self,
+    ) -> (
+        Any
+    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+        """Context Manager method."""
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Union[Type[BaseException], None],
+        exc_val: Union[BaseException, None],
+        exc_tb: Union[TracebackType, None],
+    ) -> None:
+        """Context Manager method."""
+
     # -------------------------------------------------------------------------
     # Exception helpers
     # -------------------------------------------------------------------------
@@ -260,7 +279,7 @@ class SzConfig(SzConfigAbstract):
         )
 
     # -------------------------------------------------------------------------
-    # G2Config methods
+    # SzConfig methods
     # -------------------------------------------------------------------------
 
     @catch_ctypes_exceptions
@@ -271,7 +290,6 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> str:
-
         json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_addDataSource_helper(
             # as_uintptr_t(config_handle), as_c_char_p(as_str(data_source_code))
@@ -303,7 +321,6 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> None:
-
         json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_deleteDataSource_helper(
             as_uintptr_t(config_handle), as_c_char_p(json_string)
@@ -337,7 +354,7 @@ class SzConfig(SzConfigAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
+        verbose_logging: Optional[int] = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Config_init(

@@ -1,13 +1,13 @@
 #! /usr/bin/env python3
 
-from senzing import szengine
-from senzing.szerror import SzError
+from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE_1 = "CUSTOMERS"
-DATA_SOURCE_CODE_2 = "WATCHLIST"
+DATA_SOURCE_CODE_2 = "CUSTOMERS"
+FLAGS = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-RECORD_ID_1 = "1009"
-RECORD_ID_2 = "1014"
+RECORD_ID_1 = "1001"
+RECORD_ID_2 = "1002"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -18,10 +18,14 @@ SETTINGS = {
 }
 
 try:
-    sz_engine = szengine.SzEngine(INSTANCE_NAME, SETTINGS)
-    result = sz_engine.why_records(
-        DATA_SOURCE_CODE_1, RECORD_ID_1, DATA_SOURCE_CODE_2, RECORD_ID_2
+    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    RESULT = sz_engine.why_records(
+        DATA_SOURCE_CODE_1,
+        RECORD_ID_1,
+        DATA_SOURCE_CODE_2,
+        RECORD_ID_2,
+        FLAGS,
     )
-    print(result)
+    print(RESULT[:66], "...")
 except SzError as err:
-    print(err)
+    print(f"\nError:\n{err}\n")

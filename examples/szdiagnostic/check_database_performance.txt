@@ -1,6 +1,0 @@
-// Just example numbers. Your mileage may vary.
-
-{
-    "numRecordsInserted": 200000,
-    "insertTime": 3000
-}

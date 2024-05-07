@@ -2,7 +2,7 @@
 
 # Detect the operating system and architecture.
 
-include Makefile.osdetect
+include makefiles/osdetect.mk
 
 # -----------------------------------------------------------------------------
 # Variables
@@ -12,9 +12,10 @@ include Makefile.osdetect
 
 # PROGRAM_NAME is the name of the GIT repository.
 PROGRAM_NAME := $(shell basename `git rev-parse --show-toplevel`)
-MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+MAKEFILE_PATH := $(abspath $(firstword $(MAKEFILE_LIST)))
 MAKEFILE_DIRECTORY := $(shell dirname $(MAKEFILE_PATH))
 TARGET_DIRECTORY := $(MAKEFILE_DIRECTORY)/target
+DIST_DIRECTORY := $(MAKEFILE_DIRECTORY)/dist
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty  | sed 's/v//')
 BUILD_TAG := $(shell git describe --always --tags --abbrev=0  | sed 's/v//')
 BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/^ *//')
@@ -44,8 +45,8 @@ default: help
 # Operating System / Architecture targets
 # -----------------------------------------------------------------------------
 
--include Makefile.$(OSTYPE)
--include Makefile.$(OSTYPE)_$(OSARCH)
+-include makefiles/$(OSTYPE).mk
+-include makefiles/$(OSTYPE)_$(OSARCH).mk
 
 
 .PHONY: hello-world
@@ -59,6 +60,22 @@ hello-world: hello-world-osarch-specific
 dependencies: dependencies-osarch-specific
 
 # -----------------------------------------------------------------------------
+# build
+# -----------------------------------------------------------------------------
+
+.PHONY: package
+package: clean
+	python3 -m build
+
+# -----------------------------------------------------------------------------
+# publish
+# -----------------------------------------------------------------------------
+
+.PHONY: publish-test
+publish-test: package
+	python3 -m twine upload --repository testpypi dist/*
+
+# -----------------------------------------------------------------------------
 # Test
 # -----------------------------------------------------------------------------
 
@@ -66,19 +83,43 @@ dependencies: dependencies-osarch-specific
 test: test-osarch-specific
 
 
-.PHONY: pylint
-pylint:
-	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*')
+.PHONY: bandit
+bandit:
+	@bandit $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
+
+
+.PHONY: coverage
+coverage: coverage-osarch-specific
+
+
+.PHONY: black
+black:
+	@black $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tests/*' ':!:tools/*')
+
+
+.PHONY: flake8
+flake8:
+	@flake8 $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
+
+
+.PHONY: isort
+isort:
+	@isort $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: mypy
 mypy:
-	mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tests/*')
+	@mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+
+
+.PHONY: pylint
+pylint:
+	@pylint $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 
 .PHONY: pytest
 pytest:
-	@pytest --cov=src/senzing --cov-report=xml  tests
+	@pytest --cov=src/senzing --cov-report=xml  $(shell git ls-files '*.py'  ':!:docs/source/*' ':!:tools/*')
 
 # -----------------------------------------------------------------------------
 # Documentation
@@ -102,15 +143,12 @@ sphinx:
 .PHONY: view-sphinx
 view-sphinx: view-sphinx-osarch-specific
 
-
 # -----------------------------------------------------------------------------
 # Utility targets
 # -----------------------------------------------------------------------------
 
 .PHONY: clean
 clean: clean-osarch-specific
-	@go clean -cache
-	@go clean -testcache
 
 
 .PHONY: help
