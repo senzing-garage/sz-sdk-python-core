@@ -795,7 +795,7 @@ class SzEngineAbstract(ABC):
         Args:
             instance_name (str): A short name given to this instance of the SzEngine object, to help identify it within system logs.
             settings (str): A JSON string containing configuration parameters.
-            config_id (int):
+            config_id (int): 'Optional:' Initialize with a specific configuration ID and not the current default
             verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
         Raises:

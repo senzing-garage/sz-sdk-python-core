@@ -576,6 +576,9 @@ class ErrorBuffer(threading.local):
 
     # pylint: disable=R0903
 
+    # TODO This doesn't report correct location when a function calls a function
+    # TODO file--loader_v4.py loading customers without adding data source shows this
+    # TODO Are we going to keep the json error?
     def __init__(self) -> None:
         super().__init__()
         self.string_buffer = create_string_buffer(65535)

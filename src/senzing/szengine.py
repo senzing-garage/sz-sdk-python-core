@@ -887,8 +887,6 @@ class SzEngine(SzEngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # NOTE G2_findPathExcludingByEntityID_V2 & findPathIncludingSourceByEntityID_V2 returning spurious data
-    # NOTE https://senzing.atlassian.net/browse/GDEV-3808
     # TODO: Do more testing
     @catch_ctypes_exceptions
     def find_path_by_entity_id(
@@ -902,7 +900,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        # TODO: GDEV-3808
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByEntityID_V2_helper(
                 start_entity_id,
@@ -927,9 +924,7 @@ class SzEngine(SzEngineAbstract):
                     )
 
             return as_python_str(result.response)
-            # return "Currently broken - GDEV-3808"
 
-        # TODO: GDEV-3808
         if required_data_sources:
             result = self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper(
                 start_entity_id,
@@ -955,7 +950,6 @@ class SzEngine(SzEngineAbstract):
                     )
 
             return as_python_str(result.response)
-            # return "Currently broken - GDEV-3808"
 
         result = self.library_handle.G2_findPathByEntityID_V2_helper(
             start_entity_id,
