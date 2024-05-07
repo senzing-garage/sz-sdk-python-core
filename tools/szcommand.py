@@ -1597,17 +1597,6 @@ class SzCmdShell(cmd.Cmd, object):
             self.print_response(response)
 
     @cmd_decorator(cmd_has_args=False)
-    def do_getRepositoryLastModifiedTime(self, **kwargs):
-        """
-        Get the last modified time of the Senzing database
-
-        Syntax:
-            getRepositoryLastModifiedTime"""
-
-        response = self.sz_engine.get_repository_last_modified_time()
-        self.print_response(response, "success")
-
-    @cmd_decorator(cmd_has_args=False)
     def do_getStats(self, **kwargs):
         """
         Get engine workload statistics for last process
