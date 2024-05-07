@@ -25,7 +25,6 @@ jobs:
         run: python3 -m pip install --upgrade pip
 
       - name: pip install python packages for testing
-        # run: pip install black pylint mypy
         run: pip install black
 
       - name: black testing
