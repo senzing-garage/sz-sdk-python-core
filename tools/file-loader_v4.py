@@ -2,7 +2,6 @@
 
 import argparse
 import concurrent.futures
-import importlib
 import itertools
 import logging
 import os
@@ -13,15 +12,9 @@ import textwrap
 import time
 from datetime import datetime
 
-from senzing import (
-    SzBadInputError,
-    SzConfigManager,
-    SzDiagnostic,
-    SzEngine,
-    SzError,
-    SzProduct,
-    SzRetryableError,
-)
+from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
+from senzing.szengineflags import SzEngineFlags
+from senzing.szerror import SzBadInputError, SzError, SzRetryableError
 
 try:
     import orjson as json
@@ -63,21 +56,21 @@ def arg_convert_boolean(env_var, cli_arg):
     return cli_arg
 
 
-def startup_info(engine, diag, product, configmanager):
-    """Fetch and display information at startup. Detect if Postgres is in use to use Governor"""
-    lic_info = json.loads(product.get_license())
-    ver_info = json.loads(product.get_version())
+def startup_info(engine, diag, product, configmgr):
+    """Fetch and display information at startup."""
 
     try:
-        response = configmanager.get_config_list()
+        lic_info = json.loads(product.get_license())
+        ver_info = json.loads(product.get_version())
+        response = configmgr.get_config_list()
         config_list = json.loads(response)
-
         active_cfg_id = engine.get_active_config_id()
+        ds_info = json.loads(diag.get_datastore_info())
     except SzError as ex:
         logger.error(f"Failed to get startup information: {ex}")
         sys.exit(-1)
 
-    # Get details for the currently active ID
+    # Get details for the currently active config ID
     active_cfg_details = [
         details
         for details in config_list["CONFIGS"]
@@ -86,6 +79,12 @@ def startup_info(engine, diag, product, configmanager):
     config_comments = active_cfg_details[0]["CONFIG_COMMENTS"]
     config_created = active_cfg_details[0]["SYS_CREATE_DT"]
 
+    # Get data store info, build list of strings, could be a cluster
+    ds_list = []
+    for ds in ds_info["dataStores"]:
+        ds_list.append(f"{ds['id']} - {ds['type']} - {ds['location']}")
+
+    logger.info("")
     logger.info("Version & Configuration")
     logger.info("-----------------------")
     logger.info("")
@@ -96,6 +95,9 @@ def startup_info(engine, diag, product, configmanager):
     logger.info(f"Instance Config ID:         {active_cfg_id}")
     logger.info(f"Instance Config Comments:   {config_comments}")
     logger.info(f"Instance Config Created:    {config_created}")
+    logger.info(f"Datastore(s):               {ds_list.pop(0)}")
+    for ds in ds_list:
+        logger.info(f"{' ' * 28}{ds}")
     logger.info("")
     logger.info("License")
     logger.info("-------")
@@ -107,8 +109,6 @@ def startup_info(engine, diag, product, configmanager):
     logger.info(f'Contract:    {lic_info["contract"]}')
     logger.info("")
 
-    return False
-
 
 def add_record(engine, rec_to_add, with_info):
     """Add a single record, returning with info details if --info or SENZING_WITHINFO was specified"""
@@ -117,8 +117,9 @@ def add_record(engine, rec_to_add, with_info):
     record_id = record_dict.get("RECORD_ID", None)
 
     if with_info:
-        # NOTE Sending 1 currently for V4 to trigger with info
-        response = engine.add_record(data_source, record_id, rec_to_add, 1)
+        response = engine.add_record(
+            data_source, record_id, rec_to_add, SzEngineFlags.SZ_WITH_INFO
+        )
         return response
 
     engine.add_record(data_source, record_id, rec_to_add)
@@ -151,8 +152,7 @@ def prime_redo_records(engine, quantity):
 def process_redo_record(engine, record, with_info):
     """Process a single redo record, returning with info details if --info or SENZING_WITHINFO was specified"""
     if with_info:
-        # NOTE Sending 1 currently for V4 to trigger with info
-        response = engine.process_redo_record(record, 1)
+        response = engine.process_redo_record(record, SzEngineFlags.SZ_WITH_INFO)
         return response
 
     engine.process_redo_record(record)
@@ -177,7 +177,7 @@ def workload_stats(engine):
         logger.info(stats)
         logger.info("")
     except SzError as ex:
-        logger.critical(f"Exception: {ex} - Operation: stats")
+        logger.critical(f"Exception: {ex} - Operation: get_stats")
         global do_shutdown
         do_shutdown = True
 
@@ -211,16 +211,14 @@ def signal_int(signum, frame):
     do_shutdown = True
 
 
-# TODO: Check file size and drop to single thread if small
 def load_and_redo(
     engine,
     file_input,
     file_output,
     file_errors,
     num_workers,
+    no_redo,
     with_info,
-    call_governor,
-    gov,
 ):
     """Load records and process redo records after loading is complete"""
 
@@ -230,6 +228,7 @@ def load_and_redo(
             record = in_file.readline()
         else:
             record = get_redo_record(engine)
+
         if record:
             futures[
                 executor.submit(
@@ -244,18 +243,19 @@ def load_and_redo(
             return True
 
     global do_shutdown
-    load_errors = load_success = 0
+    load_errors = load_success = redo_errors = redo_success = redo_time = 0
+
     mode_text = {
         "add_record": {
             "start_msg": "Starting to load with",
-            "except_msg": "addRecord",
+            "except_msg": "add_record",
             "results_header": "Loading",
             "results_rec_type": "load",
             "stats_msg": "adds",
         },
         "process_redo_record": {
             "start_msg": "Starting to process redo records with",
-            "except_msg": "processRedoRecord",
+            "except_msg": "process_redo_record",
             "results_header": "Redo",
             "results_rec_type": "redo",
             "stats_msg": "redos",
@@ -270,26 +270,31 @@ def load_and_redo(
     if ingest_file:
         in_file = open(file_input, "r")
 
-    overall_start_time = time.time()
+    modes = [add_record] if no_redo else [add_record, process_redo_record]
+    main_start_time = time.time()
 
-    # TODO: Add a no-redo mode, make it a hidden arg?
     with open(file_output, "w") as out_file:
-        for mode in [add_record, process_redo_record]:
-            # for mode in [add_record]:
-            success_recs = error_recs = 0
-            start_time = long_check_time = work_stats_time = prev_time = time.time()
+        for mode in modes:
+            # If loading is stopped or fails don't process redo
+            if do_shutdown:
+                break
+
             add_future = True
             end_of_recs = False
+            success_recs = error_recs = 0
 
             # If the file was empty or no file was specified skip loading
             if mode.__name__ == "add_record" and not ingest_file:
                 logger.info("")
-                logger.info("No input file specified, skipping loading...")
-                load_end_time = time.time()
+                logger.info(
+                    "No input file. Skipping loading, checking for redo records..."
+                )
+                load_time = 0
                 continue
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
+            start_time = long_check_time = work_stats_time = prev_time = time.time()
 
+            with concurrent.futures.ThreadPoolExecutor(max_workers) as executor:
                 if mode.__name__ == "add_record":
                     futures = {
                         executor.submit(mode, engine, record, with_info): (
@@ -356,29 +361,25 @@ def load_and_redo(
                         finally:
                             del futures[f]
 
+                    # # TODO Keep?
+                    # Early errors check to catch mis-mapping, missing dsrc_code, etc
+                    if error_recs == executor._max_workers:
+                        logger.info("")
+                        # TODO Does this show the errors file?
+                        logger.error(
+                            f"All initial {executor._max_workers:,} records failed! Stopping processing, please review the errors file."
+                        )
+                        logger.info("")
+                        do_shutdown = True
+                    # if success_recs <= 100 and error_recs > 50:
+                    #     logger.critical(
+                    #         f"Shutting down - {success_recs = } - {error_recs = }"
+                    #     )
+                    #     print(f"{len(futures) = }")
+                    #     do_shutdown = True
+
                     if (do_shutdown or end_of_recs) and len(futures) == 0:
                         break
-
-                    # Only used when Postgres is the Senzing repository
-                    if call_governor and not do_shutdown:
-                        gov_pause_secs = gov.govern()
-                        # -1 returned, halt all processing due to transaction ID age (XID) high watermark
-                        # Postgres vacuum required
-                        if gov_pause_secs < 0:
-                            time.sleep(1)
-                            add_future = False
-                            continue
-                        add_future = True
-
-                        # Slow down processing
-                        if gov_pause_secs > 0:
-                            time.sleep(gov_pause_secs)
-
-                        # If processing was halted futures would be drained, once processing can continue create
-                        # new futures
-                        if add_future and not end_of_recs:
-                            while len(futures) < executor._max_workers:
-                                end_of_recs = add_new_future()
 
                     time_now = time.time()
                     if time_now > work_stats_time + WORK_STATS_INTERVAL:
@@ -389,30 +390,37 @@ def load_and_redo(
                         long_check_time = time_now
                         long_running_check(futures, time_now, executor._max_workers)
 
-            workload_stats(engine)
+            if not do_shutdown:
+                workload_stats(engine)
 
             if do_shutdown:
                 logger.warning("Processing was interrupted, shutting down.")
-                sys.exit(-1)
+                logger.info("")
 
+            # TODO Add same for redo so don't get 100 error on redo when first 100 load fail
             # Store loading stats for overall results stats
             if mode.__name__ == "add_record":
+                load_time = round((time.time() - main_start_time) / 60, 1)
                 load_errors = error_recs
-                load_end_time = time.time()
                 load_success = success_recs
-                logger.info(
-                    f"Successfully loaded {load_success:,} records in"
-                    f" {round((load_end_time - overall_start_time) / 60, 1)} mins with"
-                    f" {load_errors:,} error(s)"
-                )
+                if not do_shutdown:
+                    logger.info(
+                        f"Successfully loaded {load_success:,} records in"
+                        f" {load_time} mins with"
+                        f" {load_errors:,} error(s)"
+                    )
+            else:
+                redo_time = 0 if no_redo else round((time.time() - start_time) / 60, 1)
+                redo_errors = error_recs
+                redo_success = success_recs
 
-        load_time = round((load_end_time - overall_start_time) / 60, 1)
-        redo_time = round((time.time() - start_time) / 60, 1)
-        total_time = load_time + redo_time
+        if no_redo:
+            logger.info("")
         logger.info("Results")
         logger.info("-------")
         logger.info("")
         logger.info(
+            # TODO Make files Path objects earlier
             "Source file:                "
             f"{pathlib.Path(file_input).resolve() if file_input else 'No input file specified'}"
         )
@@ -420,18 +428,28 @@ def load_and_redo(
             "With info file:             "
             f"{pathlib.Path(file_output).resolve() if with_info else 'With info responses not requested'}"
         )
+        logger.info(
+            "Errors file                 "
+            f"{pathlib.Path(errors_file).resolve() if (load_errors + error_recs) > 0 else 'No errors'}"
+        )
         logger.info("")
+        # TODO Language?
         logger.info(f"Successful loaded records:  {load_success:,}")
         logger.info(f"Error loaded records:       {load_errors:,}")
-        logger.info(f"Loading elapsed time:       {load_time}")
+        logger.info(f"Loading elapsed time (s):   {load_time}")
         logger.info("")
-        logger.info(f"Successful redo records:    {success_recs:,}")
-        logger.info(f"Error redo records:         {error_recs:,}")
-        logger.info(f"Redo elapsed time:          {redo_time}")
+        logger.info(
+            # f"Successful redo records:    {f'{redo_success:,}' if not no_redo else no_redo_msg}"
+            f"Successful redo records:    {f'{redo_success:,}' if not no_redo else 'Redo disabled'}"
+        )
+        logger.info(
+            f"Error redo records:         {f'{redo_errors:,}' if not no_redo else ''}"
+        )
+        logger.info(f"Redo elapsed time (s):      {redo_time if not no_redo else ''}")
         logger.info("")
-        logger.info(f"Total elapsed time:         {total_time}")
+        logger.info(f"Total elapsed time (s):     {load_time + redo_time}")
 
-        if not cli_args.info and not os.getenv("SENZING_WITHINFO"):
+        if not cli_args.withinfo and not os.getenv("SENZING_WITHINFO"):
             pathlib.Path(file_output).unlink(missing_ok=True)
 
         if not load_errors and not error_recs:
@@ -445,12 +463,11 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_int)
 
     LONG_RECORD = 300
-    INSTANCE_NAME = pathlib.Path(sys.argv[0]).stem
+    MODULE_NAME = pathlib.Path(sys.argv[0]).stem
     PAYLOAD_RECORD = 0
     PAYLOAD_START_TIME = 1
     WORK_STATS_INTERVAL = 60
     do_shutdown = False
-    gov = None
 
     arg_parser = argparse.ArgumentParser(
         allow_abbrev=False,
@@ -484,7 +501,7 @@ if __name__ == "__main__":
             """\
                Path and name of file to load.
 
-               Default: None, must be specified.
+               Default: None, skip loading but still process redo records
                Env Var: SENZING_INPUT_FILE
 
              """
@@ -502,21 +519,21 @@ if __name__ == "__main__":
             """\
                JSON string of the Senzing engine configuration.
 
-               Default: None, must be specified.
+               Default: None
                Env Var: SENZING_ENGINE_CONFIGURATION_JSON
 
              """
         ),
     )
     arg_parser.add_argument(
-        "-i",
-        "--info",
+        "-w",
+        "--withinfo",
         action=CustomArgActionStoreTrue,
         default=False,
         nargs=0,
         help=textwrap.dedent(
             """\
-               Produce withInfo messages and write to a file
+               Produce with info messages and write to a file.
 
                Default: False
                Env Var: SENZING_WITHINFO
@@ -551,29 +568,20 @@ if __name__ == "__main__":
             """\
                Total number of worker threads performing load.
 
-               Default: Calculated based on hardware.
+               Default: Calculated
                Env Var: SENZING_THREADS_PER_PROCESS
 
              """
         ),
     )
-    # TODO:
-    # arg_parser.add_argument(
-    #     "-n",
-    #     "--debugTrace",
-    #     action=CustomArgActionStoreTrue,
-    #     default=False,
-    #     nargs=0,
-    #     help=textwrap.dedent(
-    #         """\
-    #            Output debug trace information.
-
-    #            Default: False
-    #            Env Var: SENZING_DEBUG
-
-    #          """
-    #     ),
-    # )
+    arg_parser.add_argument(
+        "-n",
+        "--noRedo",
+        action=CustomArgActionStoreTrue,
+        default=False,
+        nargs=0,
+        help=argparse.SUPPRESS,
+    )
 
     cli_args = arg_parser.parse_args()
 
@@ -590,10 +598,10 @@ if __name__ == "__main__":
         if cli_args.__dict__.get("configJson_specified")
         else os.getenv("SENZING_ENGINE_CONFIGURATION_JSON", cli_args.configJson)
     )
-    withinfo = (
-        cli_args.info
+    with_info = (
+        cli_args.withinfo
         if cli_args.__dict__.get("info_specified")
-        else arg_convert_boolean("SENZING_WITHINFO", cli_args.info)
+        else arg_convert_boolean("SENZING_WITHINFO", cli_args.withinfo)
     )
     debug_trace = (
         cli_args.debugTrace
@@ -605,18 +613,25 @@ if __name__ == "__main__":
         if cli_args.__dict__.get("numThreads_specified")
         else int(os.getenv("SENZING_THREADS_PER_PROCESS", cli_args.numThreads))
     )
+    no_redo = (
+        cli_args.noRedo
+        if cli_args.__dict__.get("noRedo_specified")
+        else arg_convert_boolean("SENZING_NO_REDO", cli_args.noRedo)
+    )
 
     errors_file = (
-        f'{INSTANCE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
+        f'{MODULE_NAME}_errors_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.log'
     )
-    withinfo_file = f'{INSTANCE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
+    with_info_file = (
+        f'{MODULE_NAME}_withInfo_{str(datetime.now().strftime("%Y%m%d_%H%M%S"))}.jsonl'
+    )
     # If running in a container use /data/
     if os.getenv("SENZING_DOCKER_LAUNCHED"):
         errors_file = f"/data/{errors_file}"
-        withinfo_file = f"/data/{withinfo_file}"
+        with_info_file = f"/data/{with_info_file}"
 
     try:
-        logger = logging.getLogger(sys.argv[0].rstrip(".py").lstrip("./"))
+        logger = logging.getLogger(pathlib.Path(sys.argv[0]).stem)
         console_handle = logging.StreamHandler(stream=sys.stdout)
         console_handle.setLevel(logging.INFO)
         file_handle = logging.FileHandler(errors_file, "w")
@@ -642,47 +657,35 @@ if __name__ == "__main__":
         )
         sys.exit(-1)
 
+    if not ingest_file and no_redo:
+        logger.error("No input file and redo processing disabled, nothing to do!")
+        sys.exit(-1)
+
     try:
-        sz_engine = SzEngine("pySzEngine", engine_config, debug_trace)
-        sz_diag = SzDiagnostic("pySzDiagnostic", engine_config, debug_trace)
-        sz_product = SzProduct("pySzProduct", engine_config, debug_trace)
-        sz_configmanager = SzConfigManager("pySzConfigMgr", engine_config, debug_trace)
+        sz_engine = szengine.SzEngine(
+            "pySzEngine", engine_config, verbose_logging=debug_trace
+        )
+        sz_diag = szdiagnostic.SzDiagnostic(
+            "pySzDiagnostic", engine_config, verbose_logging=debug_trace
+        )
+        sz_product = szproduct.SzProduct(
+            "pySzProduct", engine_config, verbose_logging=debug_trace
+        )
+        sz_configmgr = szconfigmanager.SzConfigManager(
+            "pySzConfigMgr", engine_config, verbose_logging=debug_trace
+        )
     except SzError as ex:
         logger.error(ex)
         sys.exit(-1)
 
-    # If the database is Postgres import the governor and logger for Governor
-    db_is_postgres = startup_info(sz_engine, sz_diag, sz_product, sz_configmanager)
-    if db_is_postgres:
-        logger.info("Postgres detected, loading the Senzing governor")
-        logger.info("")
-
-        # For the Governor
-        log_format = "%(asctime)s - Senzing Governor - %(levelname)s:  %(message)s"
-        log_level_map = {
-            "notset": logging.NOTSET,
-            "debug": logging.DEBUG,
-            "info": logging.INFO,
-            "fatal": logging.FATAL,
-            "warning": logging.WARNING,
-            "error": logging.ERROR,
-            "critical": logging.CRITICAL,
-        }
-
-        log_level_parameter = os.getenv("SENZING_LOG_LEVEL", "info").lower()
-        log_level = log_level_map.get(log_level_parameter, logging.INFO)
-        logging.basicConfig(format=log_format, level=log_level)
-
-        senzing_governor = importlib.import_module("senzing_governor")
-        gov = senzing_governor.Governor(hint="file-loader")
+    startup_info(sz_engine, sz_diag, sz_product, sz_configmgr)
 
     load_and_redo(
         sz_engine,
         ingest_file,
-        withinfo_file,
+        with_info_file,
         errors_file,
         num_threads,
-        withinfo,
-        db_is_postgres,
-        gov,
+        no_redo,
+        with_info,
     )
