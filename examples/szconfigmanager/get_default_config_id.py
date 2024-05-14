@@ -14,6 +14,7 @@ SETTINGS = {
 
 try:
     sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
-    config_id = sz_configmanager.get_default_config_id()
+    CONFIG_ID = sz_configmanager.get_default_config_id()
+    print(CONFIG_ID)
 except SzError as err:
     print(f"\nError:\n{err}\n")

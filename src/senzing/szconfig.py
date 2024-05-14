@@ -37,7 +37,6 @@ from senzing import (
     SzConfigAbstract,
     SzError,
     as_c_char_p,
-    as_python_int,
     as_python_str,
     as_str,
     as_uintptr_t,
@@ -292,7 +291,6 @@ class SzConfig(SzConfigAbstract):
     ) -> str:
         json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_addDataSource_helper(
-            # as_uintptr_t(config_handle), as_c_char_p(as_str(data_source_code))
             as_uintptr_t(config_handle),
             as_c_char_p(json_string),
         )
@@ -302,6 +300,7 @@ class SzConfig(SzConfigAbstract):
                 raise self.new_exception(4001, data_source_code, result.return_code)
             return as_python_str(result.response)
 
+    @catch_ctypes_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
         if result != 0:
@@ -311,7 +310,8 @@ class SzConfig(SzConfigAbstract):
         result = self.library_handle.G2Config_create_helper()
         if result.return_code != 0:
             raise self.new_exception(4003, result.return_code)
-        return as_python_int(result.response)
+        # return as_python_int(result.response)
+        return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
     def delete_data_source(
@@ -333,6 +333,7 @@ class SzConfig(SzConfigAbstract):
         if result != 0:
             raise self.new_exception(4005, result)
 
+    @catch_ctypes_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
@@ -340,6 +341,7 @@ class SzConfig(SzConfigAbstract):
                 raise self.new_exception(4006, result.return_code)
             return as_python_str(result.response)
 
+    @catch_ctypes_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_listDataSources_helper(
             as_uintptr_t(config_handle)
@@ -378,4 +380,5 @@ class SzConfig(SzConfigAbstract):
             raise self.new_exception(
                 4009, as_str(config_definition), result.return_code
             )
-        return as_python_int(result.response)
+        # return as_python_int(result.response)
+        return result.response  # type: ignore[no-any-return]

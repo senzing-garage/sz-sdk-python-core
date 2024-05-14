@@ -20,7 +20,6 @@ from ctypes import (
     c_char,
     c_char_p,
     c_uint,
-    c_void_p,
     cast,
 )
 from functools import wraps
@@ -97,24 +96,28 @@ class FreeCResources:
 
 
 def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
-    """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs."""
+    # TODO doc string
+    """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
+    Also..."""
 
     @wraps(function_to_decorate)
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
+        method_name = function_to_decorate.__name__
+        module_name = function_to_decorate.__module__
+        basic_msg = (
+            f"wrong type for an argument when calling {module_name}.{method_name}"
+        )
+
         try:
             return function_to_decorate(*args, **kwargs)
         except ArgumentError as err:
+            # Checking can find the information from ctypes.Argument error, works currently but could change in future?
+            # If can locate what we are looking for from ctypes.ArgumentError, give a more detailed and useful exception message
+            # Current message from ctypes: ctypes.ArgumentError: argument 2: TypeError: wrong type
             bad_arg_match = None
-            method_name = function_to_decorate.__name__
-            module_name = function_to_decorate.__module__
-            basic_raise_msg = (
-                f"wrong type for an argument when calling {module_name}.{method_name}"
-            )
-            # NOTE Checking can find the information from ctypes.Argument error, works currently but could change in future?
-            # NOTE If can locate what we are looking for from ctypes.ArgumentError can give a more detailed and useful exception message
-            # NOTE Current message from ctypes: ctypes.ArgumentError: argument 2: TypeError: wrong type
             if len(err.args) >= 1:
                 bad_arg_match = re.match(r"argument (\d+):", err.args[0])
+
             if bad_arg_match:
                 bad_arg_index = bad_arg_match.group(1)
                 try:
@@ -125,18 +128,24 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                         bad_arg_index - 1
                     ]
                 except (IndexError, ValueError):
-                    raise TypeError(basic_raise_msg) from err
+                    raise TypeError(basic_msg) from err
+
                 if len(bad_arg_tuple) != 2:
-                    raise TypeError(basic_raise_msg) from err
+                    raise TypeError(basic_msg) from err
+
                 raise TypeError(
                     f"wrong type for argument {bad_arg_tuple[0]}, expected {bad_arg_tuple[1]} but received {bad_arg_type.__name__} when calling {module_name}.{method_name}"
-                ) from err
-            raise TypeError() from err
+                ) from None
+
+            raise TypeError(basic_msg) from err
         # # NOTE Do we need to catch anything else? Has a code smell about it
         # TODO: Is this generic catch needed?
         # except Exception as err:
         #     # print(f"In szhelpers last exception: {err}")
         #     raise err
+        # Catch TypeError from the test in as_uintptr_t()
+        except TypeError as err:
+            raise TypeError(f"{basic_msg} - {err}") from None
 
     return inner_function
 
@@ -157,6 +166,7 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
         str: The string representation of the candidate_value
     """
     # NOTE Testing
+    # TODO Are we allowing dicts anywhere in core?
     if isinstance(candidate_value, dict):
         # if ORJSON_AVAILABLE:
         #     return orjson.dumps(candidate_value).decode()
@@ -178,13 +188,13 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
-    # TODO: ctypes_exception catch this - before and after test should be the same
-    if not isinstance(candidate_value, int):
-        raise TypeError(
-            f"{candidate_value} is type{type(candidate_value)}. Needs to be type(int)"
-        )
-    result = cast(candidate_value, POINTER(c_uint))
-    return result
+    # TODO Is this an acceptable approach?
+    # Test if candidate_value can be used with the ctype and is an int. If not a
+    # TypeError is raised and caught by the catch_ctypes_exceptions decorator on
+    # calling methods
+    _ = c_uint(candidate_value)
+
+    return cast(candidate_value, POINTER(c_uint))
 
 
 # NOTE Believe not needed with catch_ctypes_exceptions decorator and this code would
@@ -232,33 +242,32 @@ def as_c_char_p(candidate_value: Any) -> Any:
         return str(candidate_value).encode("utf-8")
     # input is already a str
     return candidate_value
-    # TODO: Instead of TypeError can we utilise SzBadInputException and a new exception so a user only needs to catch
-    # SzError or SzBadInputException instead of knowing they must also catch TypeError. Would be more convenient and simpler
     # raise TypeError(
     #     f"{candidate_value} has unsupported type of {type(candidate_value)}"
     # )
 
 
-def as_python_int(candidate_value: Any) -> int:
-    """
-    From a c_void_p, return a true python int.
+# NOTE Don't believe need anymore,,,
+# def as_python_int(candidate_value: Any) -> int:
+#     """
+#     From a c_void_p, return a true python int.
 
-    Args:
-        candidate_value (Any): A c_void_p to be transformed.
+#     Args:
+#         candidate_value (Any): A c_void_p to be transformed.
 
-    Returns:
-        int: The python int representation
+#     Returns:
+#         int: The python int representation
 
-    :meta private:
-    """
+#     :meta private:
+#     """
 
-    result = cast(candidate_value, c_void_p).value
-    # TODO: For methods using this could we get a non zero return code and return None?
-    # TODO: Would never reach the return as_python_int(result.response) is non zero return code
-    # TODO: Consequences of returning a 0 which wouldn't be a valid handle?
-    if result is None:
-        result = 0
-    return result
+#     result = cast(candidate_value, c_void_p).value
+#     # TODO: For methods using this could we get a non zero return code and return None?
+#     # TODO: Would never reach the return as_python_int(result.response) is non zero return code
+#     # TODO: Consequences of returning a 0 which wouldn't be a valid handle?
+#     if result is None:
+#         result = 0
+#     return result
 
 
 def as_python_str(candidate_value: Any) -> str:

@@ -28,6 +28,6 @@ try:
     RESULT = sz_engine.find_network_by_record_id_return_dict(
         RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES
     )
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

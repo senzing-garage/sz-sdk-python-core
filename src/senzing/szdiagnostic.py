@@ -14,7 +14,7 @@ Example:
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib
 """
 
-# pylint: disable=R0903,R0915
+# pylint: disable=R0903
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
@@ -56,11 +56,6 @@ class G2ResponseReturnCodeResult(Structure):
         ("response", POINTER(c_char)),
         ("return_code", c_longlong),
     ]
-
-
-# TODO:  Remove when G2Diagnostic_checkDatastorePerformance_helper is available
-class G2DiagnosticCheckDBPerfResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_checkDBPerf_result"""
 
 
 class G2DiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):

@@ -10,7 +10,6 @@ from senzing_abstract import (
     SzEngineAbstract,
     SzEngineFlags,
     SzError,
-    SzHasherAbstract,
     SzLicenseError,
     SzNotFoundError,
     SzNotInitializedError,
@@ -22,10 +21,9 @@ from senzing_abstract import (
     SzUnrecoverableError,
     new_szexception,
 )
-from senzing_abstract.szhelpers import (
+from senzing_abstract.szhelpers import (  # as_python_int,
     FreeCResources,
     as_c_char_p,
-    as_python_int,
     as_python_str,
     as_str,
     as_uintptr_t,
@@ -41,7 +39,7 @@ from .szproduct import SzProduct
 
 __all__ = [
     "as_c_char_p",
-    "as_python_int",
+    # "as_python_int",
     "as_python_str",
     "as_str",
     "as_uintptr_t",
@@ -64,7 +62,6 @@ __all__ = [
     "SzEngineAbstract",
     "SzEngineFlags",
     "SzError",
-    "SzHasherAbstract",
     "SzLicenseError",
     "SzNotFoundError",
     "SzNotInitializedError",

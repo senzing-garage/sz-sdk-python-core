@@ -19,6 +19,6 @@ try:
         redo_record = sz_engine.get_redo_record()
         RESULT = sz_engine.process_redo_record(redo_record, FLAGS)
         # TODO: Review this output
-        print(RESULT[:66], "...")
+        print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")
