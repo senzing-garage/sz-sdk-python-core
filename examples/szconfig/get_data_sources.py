@@ -17,6 +17,6 @@ try:
     config_handle = sz_config.create_config()
     RESULT = sz_config.get_data_sources(config_handle)
     sz_config.close_config(config_handle)
-    print(RESULT[:66], "...")
+    print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

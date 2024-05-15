@@ -15,12 +15,23 @@ import textwrap
 import time
 from functools import wraps
 
+from senzing import (
+    SzConfig,
+    SzConfigManager,
+    SzDiagnostic,
+    SzEngine,
+    SzEngineFlags,
+    SzError,
+    SzProduct,
+)
+
 # TODO Add back in when consolidated modules into a helper module
 # import G2Paths
 # from G2IniParams import G2IniParams
-from senzing import szconfig, szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szengineflags import SzEngineFlags
-from senzing.szerror import SzError
+# from senzing import szconfig, szconfigmanager, szdiagnostic, szengine, szproduct
+# from senzing.szengineflags import SzEngineFlags
+# from senzing.szerror import SzError
+
 
 try:
     import atexit
@@ -204,23 +215,21 @@ class SzCmdShell(cmd.Cmd, object):
 
         try:
             # TODO What else needs verbose_logging?
-            self.sz_engine = szengine.SzEngine(
+            self.sz_engine = SzEngine(
                 # TODO Change instance name in all tools
                 "pySzEngine",
                 engine_settings,
                 verbose_logging=debug_trace,
             )
-            self.sz_product = szproduct.SzProduct(
-                "pySzProduct", engine_settings, debug_trace
+            # self.sz_product = SzProduct("pySzProduct", engine_settings, debug_trace)
+            self.sz_diagnostic = SzDiagnostic(
+                "pySzDiagnostic", engine_settings, verbose_logging=debug_trace
             )
-            self.sz_diagnostic = szdiagnostic.SzDiagnostic(
-                "pySzDiagnostic", engine_settings, debug_trace
+            self.sz_config = SzConfig(
+                "pySzConfig", engine_settings, verbose_logging=debug_trace
             )
-            self.sz_config = szconfig.SzConfig(
-                "pySzConfig", engine_settings, debug_trace
-            )
-            self.sz_configmgr = szconfigmanager.SzConfigManager(
-                "pySzConfigmgr", engine_settings, debug_trace
+            self.sz_configmgr = SzConfigManager(
+                "pySzConfigmgr", engine_settings, verbose_logging=debug_trace
             )
         # Change all ex to err
         except SzError as ex:
@@ -1903,7 +1912,7 @@ class SzCmdShell(cmd.Cmd, object):
         Syntax:
             getLicense"""
 
-        self.print_response(self.sz_product.get_license())
+        self.print_response(SzProduct().get_license())
 
     @cmd_decorator(cmd_has_args=False)
     def do_getVersion(self, **kwargs):
@@ -1914,7 +1923,7 @@ class SzCmdShell(cmd.Cmd, object):
             getVersion"""
 
         # self.printResponse(json.dumps(json.loads(self.sz_product.get_version())))
-        self.print_response(self.sz_product.get_version())
+        self.print_response(SzProduct().get_version())
 
     # Helper commands
 
@@ -2473,11 +2482,11 @@ def get_engine_flags(flags_list):
 
     # Named engine flag(s) were used, combine when > 1
     try:
-        engine_flags_int = SzEngineFlags.combine_flags(flags_list)
+        engine_flags = SzEngineFlags.combine_flags(flags_list)
     except KeyError as err:
         raise KeyError(f"Invalid engine flag: {err}") from err
 
-    return engine_flags_int
+    return engine_flags
 
 
 if __name__ == "__main__":

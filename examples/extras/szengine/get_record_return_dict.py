@@ -19,6 +19,6 @@ RECORD_ID = "1001"
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.get_record_return_dict(DATA_SOURCE_CODE, RECORD_ID)
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

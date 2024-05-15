@@ -15,6 +15,6 @@ SETTINGS = {
 try:
     sz_product = SzProduct(INSTANCE_NAME, SETTINGS)
     RESULT = sz_product.get_version()
-    print(RESULT[:66], "...")
+    print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

@@ -137,10 +137,8 @@ class SzProduct(SzProductAbstract):
         # Must be synchronized with g2/sdk/c/libg2product.h
 
         self.library_handle.G2Product_destroy.argtypes = []
-        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_destroy.restype = c_longlong
         self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
-        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2Product_init.restype = c_longlong
         self.library_handle.G2Product_license.argtypes = []
         self.library_handle.G2Product_license.restype = c_char_p

@@ -17,6 +17,6 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.get_stats_return_dict()
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

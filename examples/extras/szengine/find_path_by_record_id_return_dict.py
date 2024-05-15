@@ -28,6 +28,6 @@ try:
         END_RECORD_ID,
         MAX_DEGREES,
     )
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

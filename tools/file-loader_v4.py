@@ -12,9 +12,19 @@ import textwrap
 import time
 from datetime import datetime
 
-from senzing import szconfigmanager, szdiagnostic, szengine, szproduct
-from senzing.szengineflags import SzEngineFlags
-from senzing.szerror import SzBadInputError, SzError, SzRetryableError
+# from senzing import SzEngine, SzEngineFlags, SzError
+# from senzing import szconfigmanager, szdiagnostic, szekngine, szproduct
+from senzing import (
+    SzConfigManager,
+    SzDiagnostic,
+    SzEngine,
+    SzEngineFlags,
+    SzError,
+    SzProduct,
+)
+
+# from senzing.szengineflags import SzEngineFlags
+# from senzing.szerror import SzBadInputError, SzError, SzRetryableError
 
 try:
     import orjson as json
@@ -56,12 +66,12 @@ def arg_convert_boolean(env_var, cli_arg):
     return cli_arg
 
 
-def startup_info(engine, diag, product, configmgr):
+def startup_info(engine, diag, configmgr):
     """Fetch and display information at startup."""
 
     try:
-        lic_info = json.loads(product.get_license())
-        ver_info = json.loads(product.get_version())
+        lic_info = json.loads(SzProduct().get_license())
+        ver_info = json.loads(SzProduct().get_version())
         response = configmgr.get_config_list()
         config_list = json.loads(response)
         active_cfg_id = engine.get_active_config_id()
@@ -662,23 +672,21 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     try:
-        sz_engine = szengine.SzEngine(
-            "pySzEngine", engine_config, verbose_logging=debug_trace
-        )
-        sz_diag = szdiagnostic.SzDiagnostic(
+        sz_engine = SzEngine("pySzEngine", engine_config, verbose_logging=debug_trace)
+        sz_diag = SzDiagnostic(
             "pySzDiagnostic", engine_config, verbose_logging=debug_trace
         )
-        sz_product = szproduct.SzProduct(
-            "pySzProduct", engine_config, verbose_logging=debug_trace
-        )
-        sz_configmgr = szconfigmanager.SzConfigManager(
+        # sz_product = SzProduct(
+        # "pySzProduct", engine_config, verbose_logging=debug_trace
+        # )
+        sz_configmgr = SzConfigManager(
             "pySzConfigMgr", engine_config, verbose_logging=debug_trace
         )
     except SzError as ex:
         logger.error(ex)
         sys.exit(-1)
 
-    startup_info(sz_engine, sz_diag, sz_product, sz_configmgr)
+    startup_info(sz_engine, sz_diag, sz_configmgr)
 
     load_and_redo(
         sz_engine,

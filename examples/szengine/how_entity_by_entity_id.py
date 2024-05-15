@@ -17,6 +17,6 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.how_entity_by_entity_id(ENTITY_ID, FLAGS)
-    print(RESULT[:66], "...")
+    print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

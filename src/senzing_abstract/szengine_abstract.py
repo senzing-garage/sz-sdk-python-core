@@ -5,9 +5,6 @@ TODO: szengine_abstract.py
 """
 
 # pylint: disable=C0302
-# AC - Temp disables to get changes in for move to senzing garage
-# pylint: disable=W0511,W1113
-
 
 # Import from standard library. https://docs.python.org/3/library/
 

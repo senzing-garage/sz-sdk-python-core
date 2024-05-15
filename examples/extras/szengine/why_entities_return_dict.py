@@ -19,6 +19,6 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.why_entities_return_dict(ENTITY_ID_1, ENTITY_ID_2, 1)
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

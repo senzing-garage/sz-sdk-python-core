@@ -21,6 +21,6 @@ try:
     RESULT = sz_engine.delete_record(
         DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
     )
-    print(json.dumps(RESULT)[:66], "...")
+    print(json.dumps(RESULT))
 except SzError as err:
     print(f"\nError:\n{err}\n")

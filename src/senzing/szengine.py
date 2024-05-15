@@ -4,7 +4,7 @@ It is a wrapper over Senzing's G2Engine C binding.
 It conforms to the interface specified in
 `szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szengine_abstract.py>`_
 
-# TODO: Also pythonpath?
+# TODO: Also pythonpath? LD_LIBRARY_PATH is only for Linux
 To use szengine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
@@ -16,8 +16,6 @@ Example:
 """
 
 # pylint: disable=R0903,C0302,R0915
-# AC - Temp disables to get changes in for move to senzing garage
-# pylint: disable=W0511,W1113,W0613
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
@@ -42,7 +40,6 @@ from senzing import (
     SzEngineFlags,
     SzError,
     as_c_char_p,
-    as_python_int,
     as_python_str,
     as_str,
     as_uintptr_t,
@@ -86,6 +83,15 @@ class G2ResponseReturnCodeResult(Structure):
 
     _fields_ = [
         ("response", POINTER(c_char)),
+        ("return_code", c_longlong),
+    ]
+
+
+class G2ResponseLonglongReturnCodeResult(Structure):
+    """Simple response, return_code structure"""
+
+    _fields_ = [
+        ("response", c_longlong),
         ("return_code", c_longlong),
     ]
 
@@ -160,7 +166,8 @@ class G2FindPathIncludingSourceByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_V2_result"""
 
 
-class G2GetActiveConfigIDResult(G2ResponseReturnCodeResult):
+# class G2GetActiveConfigIDResult(G2ResponseReturnCodeResult):
+class G2GetActiveConfigIDResult(G2ResponseLonglongReturnCodeResult):
     """In golang_helpers.h G2_getActiveConfigID_result"""
 
 
@@ -327,7 +334,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_char_p,
         ]
-        self.library_handle.G2_addRecord.restype = c_int
+        self.library_handle.G2_addRecord.restype = c_longlong
         self.library_handle.G2_addRecordWithInfo_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -340,7 +347,6 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_closeExport_helper.argtypes = [
             POINTER(c_uint),
         ]
-        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2_closeExport_helper.restype = c_longlong
         self.library_handle.G2_countRedoRecords.argtypes = []
         self.library_handle.G2_countRedoRecords.restype = c_longlong
@@ -348,7 +354,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_char_p,
         ]
-        self.library_handle.G2_deleteRecord.restype = c_int
+        self.library_handle.G2_deleteRecord.restype = c_longlong
         self.library_handle.G2_deleteRecordWithInfo_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -358,7 +364,6 @@ class SzEngine(SzEngineAbstract):
             G2DeleteRecordWithInfoResult
         )
         self.library_handle.G2_destroy.argtypes = []
-        # TODO: Why is this c_longlong but others that don't return are c_int?
         self.library_handle.G2_destroy.restype = c_longlong
         self.library_handle.G2_exportCSVEntityReport_helper.argtypes = [
             c_char_p,
@@ -518,7 +523,7 @@ class SzEngine(SzEngineAbstract):
             G2HowEntityByEntityIDV2Result
         )
         self.library_handle.G2_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.G2_init.restype = c_int
+        self.library_handle.G2_init.restype = c_longlong
         self.library_handle.G2_initWithConfigID.argtypes = [
             c_char_p,
             c_char_p,
@@ -528,7 +533,7 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_processRedoRecord.argtypes = [
             c_char_p,
         ]
-        self.library_handle.G2_processRedoRecord.restype = c_int
+        self.library_handle.G2_processRedoRecord.restype = c_longlong
         self.library_handle.G2_processRedoRecordWithInfo_helper.argtypes = [
             c_char_p,
         ]
@@ -536,7 +541,7 @@ class SzEngine(SzEngineAbstract):
             G2ProcessRedoRecordWithInfoResult
         )
         self.library_handle.G2_reevaluateEntity.argtypes = [c_longlong, c_longlong]
-        self.library_handle.G2_reevaluateEntity.restype = c_int
+        self.library_handle.G2_reevaluateEntity.restype = c_longlong
         self.library_handle.G2_reevaluateEntityWithInfo_helper.argtypes = [
             c_longlong,
             c_longlong,
@@ -549,7 +554,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.G2_reevaluateRecord.restype = c_int
+        self.library_handle.G2_reevaluateRecord.restype = c_longlong
         self.library_handle.G2_reevaluateRecordWithInfo_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -559,7 +564,7 @@ class SzEngine(SzEngineAbstract):
             G2ReevaluateRecordWithInfoResult
         )
         self.library_handle.G2_reinit.argtypes = [c_longlong]
-        self.library_handle.G2_reinit.restype = c_int
+        self.library_handle.G2_reinit.restype = c_longlong
         self.library_handle.G2_searchByAttributes_V3_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -681,7 +686,6 @@ class SzEngine(SzEngineAbstract):
                         data_source_code,
                         record_id,
                         record_definition,
-                        # TODO: On all collapsed methods send flags or final_flags?
                         flags,
                         result.return_code,
                     )
@@ -703,7 +707,7 @@ class SzEngine(SzEngineAbstract):
             )
         return "{}"
 
-    # TODO: Test @catch_ctypes_exceptions if int isn't sent
+    @catch_ctypes_exceptions
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2_closeExport_helper(as_uintptr_t(export_handle))
         if result != 0:
@@ -774,7 +778,8 @@ class SzEngine(SzEngineAbstract):
         )
         if result.return_code != 0:
             raise self.new_exception(4006, csv_column_list, flags, result.return_code)
-        return as_python_int(result.export_handle)
+        # return as_python_int(result.export_handle
+        return result.export_handle  # type: ignore[no-any-return]
 
     def export_json_entity_report(
         self,
@@ -784,8 +789,10 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.G2_exportJSONEntityReport_helper(flags)
         if result.return_code != 0:
             raise self.new_exception(4007, flags, result.return_code)
-        return as_python_int(result.export_handle)
+        # return as_python_int(result.export_handle)
+        return result.export_handle  # type: ignore[no-any-return]
 
+    @catch_ctypes_exceptions
     def fetch_next(self, export_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2_fetchNext_helper(as_uintptr_t(export_handle))
         if result.return_code != 0:
@@ -887,7 +894,6 @@ class SzEngine(SzEngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # TODO: Do more testing
     @catch_ctypes_exceptions
     def find_path_by_entity_id(
         self,
@@ -972,7 +978,6 @@ class SzEngine(SzEngineAbstract):
                 )
             return as_python_str(result.response)
 
-    # TODO: Do more testing
     @catch_ctypes_exceptions
     def find_path_by_record_id(
         self,
@@ -1071,7 +1076,8 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.G2_getActiveConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4015, result.return_code)
-        return as_python_int(result.response)
+        # return as_python_int(result.response)
+        return result.response  # type: ignore[no-any-return]
 
     def get_entity_by_entity_id(
         self,

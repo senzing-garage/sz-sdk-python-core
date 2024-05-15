@@ -19,6 +19,6 @@ try:
     RESULT = sz_engine.reevaluate_record(
         DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
     )
-    print(RESULT[:66], "...")
+    print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

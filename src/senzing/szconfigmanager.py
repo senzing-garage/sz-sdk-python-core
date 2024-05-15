@@ -283,8 +283,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             raise self.new_exception(
                 4001, as_str(config_definition), config_comment, result.return_code
             )
-        # TODO: int needed?
-        return int(result.response)
+        return result.response  # type: ignore[no-any-return]
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_destroy()
@@ -315,8 +314,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
             raise self.new_exception(4005, result.return_code)
-        # TODO: int needed?
-        return int(result.response)
+        return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
     def initialize(

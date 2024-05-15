@@ -15,6 +15,6 @@ SETTINGS = {
 try:
     sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
     RESULT = sz_diagnostic.get_datastore_info()
-    print(RESULT[:66], "...")
+    print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

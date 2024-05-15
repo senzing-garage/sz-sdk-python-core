@@ -19,6 +19,6 @@ try:
         config_handle
     )  # Save in-memory to string.
     sz_config.close_config(config_handle)
-    print(CONFIG_DEFINITION[:66], "...")
+    print(CONFIG_DEFINITION)
 except SzError as err:
     print(f"\nError:\n{err}\n")
