@@ -197,30 +197,31 @@ def as_uintptr_t(candidate_value: int) -> Any:
     return cast(candidate_value, POINTER(c_uint))
 
 
+# NOTE Don't believe need anymore,,,
 # NOTE Believe not needed with catch_ctypes_exceptions decorator and this code would
 # NOTE would return ValueErrors if a str with any non digit characters was passed in
-def as_c_int(candidate_value: Any) -> int:
-    """
-    Internal processing function.
-    This converts many types of values to an integer.
+# def as_c_int(candidate_value: Any) -> int:
+#     """
+#     Internal processing function.
+#     This converts many types of values to an integer.
 
-    :meta private:
-    """
+#     :meta private:
+#     """
 
-    if candidate_value is None:  # handle null string
-        # TODO: Doesn't need int
-        return int(0)
-    if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
-        return int(candidate_value.encode("utf-8"))
-    if isinstance(
-        candidate_value, bytearray
-    ):  # if input is bytearray, assume utf-8 and convert to str
-        return int(candidate_value)
-    if isinstance(candidate_value, bytes):
-        return int(candidate_value)
-    # TODO: If already an int why use int()?
-    # input is already an int
-    return int(candidate_value)
+#     if candidate_value is None:  # handle null string
+#         # TODO: Doesn't need int
+#         return int(0)
+#     if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
+#         return int(candidate_value.encode("utf-8"))
+#     if isinstance(
+#         candidate_value, bytearray
+#     ):  # if input is bytearray, assume utf-8 and convert to str
+#         return int(candidate_value)
+#     if isinstance(candidate_value, bytes):
+#         return int(candidate_value)
+#     # TODO: If already an int why use int()?
+#     # input is already an int
+#     return int(candidate_value)
 
 
 def as_c_char_p(candidate_value: Any) -> Any:
