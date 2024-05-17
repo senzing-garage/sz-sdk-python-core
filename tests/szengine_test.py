@@ -136,7 +136,7 @@ def test_add_record(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
@@ -145,7 +145,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     bad_data_source_code = 1
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     with pytest.raises(TypeError):
         sz_engine.add_record(
@@ -157,7 +157,7 @@ def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     with pytest.raises(SzConfigurationError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)
@@ -167,7 +167,7 @@ def test_add_record_with_info(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record_with_info()."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
     actual_as_dict = json.loads(actual)
@@ -187,7 +187,7 @@ def test_add_record_bad_record_id_type(sz_engine: SzEngine) -> None:
     """Test add_record with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     with pytest.raises(TypeError):
         sz_engine.add_record(data_source_code, bad_record_id, record_definition)  # type: ignore[arg-type]
 
@@ -196,7 +196,7 @@ def test_add_record_data_source_code_empty(sz_engine: SzEngine) -> None:
     """Test add_record with empty data source code."""
     bad_data_source_code = ""
     record_id = "1"
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     with pytest.raises(SzError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition)
 
@@ -221,7 +221,7 @@ def test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
     """Test add_record with flag to return with_info where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
     actual_as_dict = json.loads(actual)
@@ -244,7 +244,7 @@ def test_add_record_with_info_bad_data_source_code_type(sz_engine: SzEngine) -> 
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = 1
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
     with pytest.raises(TypeError):
         _ = sz_engine.add_record(
@@ -256,7 +256,7 @@ def test_add_record_with_info_bad_data_source_code_value(sz_engine: SzEngine) ->
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
     with pytest.raises(SzConfigurationError):
         _ = sz_engine.add_record(
@@ -480,12 +480,14 @@ def test_find_network_by_entity_id(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
     entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1002")
-    entity_list = {
-        "ENTITIES": [
-            {"ENTITY_ID": entity_id_1},
-            {"ENTITY_ID": entity_id_2},
-        ]
-    }
+    entity_list = (
+        "{"
+        '"ENTITIES": ['
+        f'    {{{"ENTITY_ID": {entity_id_1}}}},'
+        f'    {{{"ENTITY_ID": {entity_id_2}}}},'
+        "]"
+        "}"
+    )
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
@@ -500,12 +502,7 @@ def test_find_network_by_entity_id(sz_engine: SzEngine) -> None:
 
 def test_find_network_by_entity_id_bad_entity_ids(sz_engine: SzEngine) -> None:
     """Test SzEngine().find_network_by_entity_id()."""
-    bad_entity_list = {
-        "ENTITIES": [
-            {"ENTITY_ID": 0},
-            {"ENTITY_ID": 1},
-        ]
-    }
+    bad_entity_list = '{"ENTITIES": [{"ENTITY_ID": 0}, {"ENTITY_ID": 1}]}'
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
@@ -523,12 +520,14 @@ def test_find_network_by_record_id(sz_engine: SzEngine) -> None:
         ("CUSTOMERS", "1002"),
     ]
     add_records(sz_engine, test_records)
-    record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},
-        ]
-    }
+    record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},'
+        "]"
+        "}"
+    )
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
@@ -543,12 +542,14 @@ def test_find_network_by_record_id(sz_engine: SzEngine) -> None:
 
 def test_find_network_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> None:
     """Test SzEngine().find_network_by_record_id()."""
-    bad_record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "XXXX", "RECORD_ID": "9999"},
-            {"DATA_SOURCE": "XXXX", "RECORD_ID": "9998"},
-        ]
-    }
+    bad_record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "XXXX", "RECORD_ID": "9999"},'
+        '    {"DATA_SOURCE": "XXXX", "RECORD_ID": "9998"},'
+        "]"
+        "}"
+    )
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
@@ -561,12 +562,14 @@ def test_find_network_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> 
 
 def test_find_network_by_record_id_bad_record_ids(sz_engine: SzEngine) -> None:
     """Test SzEngine().find_network_by_record_id()."""
-    bad_record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9999"},
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9998"},
-        ]
-    }
+    bad_record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9999"},'
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9998"},'
+        "]"
+        "}"
+    )
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
@@ -814,12 +817,14 @@ def test_get_virtual_entity_by_record_id(sz_engine: SzEngine) -> None:
         ("CUSTOMERS", "1002"),
     ]
     add_records(sz_engine, test_records)
-    record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},
-        ]
-    }
+    record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},'
+        "]"
+        "}"
+    )
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     actual = sz_engine.get_virtual_entity_by_record_id(record_list, flags)
     delete_records(sz_engine, test_records)
@@ -831,12 +836,14 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
     sz_engine: SzEngine,
 ) -> None:
     """Test SzEngine().get_virtual_entity_by_record_id()."""
-    bad_record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "XXXX", "RECORD_ID": "9999"},
-            {"DATA_SOURCE": "XXXX", "RECORD_ID": "9998"},
-        ]
-    }
+    bad_record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "XXXX", "RECORD_ID": "9999"},'
+        '    {"DATA_SOURCE": "XXXX", "RECORD_ID": "9998"},'
+        "]"
+        "}"
+    )
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
@@ -844,12 +851,14 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
 
 def test_get_virtual_entity_by_record_id_bad_record_ids(sz_engine: SzEngine) -> None:
     """Test SzEngine().get_virtual_entity_by_record_id()."""
-    bad_record_list = {
-        "RECORDS": [
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9999"},
-            {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9998"},
-        ]
-    }
+    bad_record_list = (
+        "{"
+        '"RECORDS": ['
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9999"},'
+        '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "9998"},'
+        "]"
+        "}"
+    )
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
@@ -1000,7 +1009,7 @@ def test_search_by_attributes(sz_engine: SzEngine) -> None:
         ("CUSTOMERS", "1003"),
     ]
     add_records(sz_engine, test_records)
-    attributes = {"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}
+    attributes = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
     actual = sz_engine.search_by_attributes(attributes, search_profile, flags)
