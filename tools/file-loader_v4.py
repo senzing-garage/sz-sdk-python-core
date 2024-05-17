@@ -144,6 +144,7 @@ def get_redo_record(engine):
         logger.critical(f"Exception: {ex} - Operation: getRedoRecord")
         global do_shutdown
         do_shutdown = True
+        # TODO For typing this would be ""
         return None
 
     return redo_record

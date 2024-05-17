@@ -148,7 +148,7 @@ def test_get_config_bad_config_id_value(sz_configmanager: SzConfigManager) -> No
 
 def test_get_config_list(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
-    actual = sz_configmanager.get_config_list()
+    actual = sz_configmanager.get_configs()
     actual_as_dict = json.loads(actual)
     assert schema(config_list_schema) == actual_as_dict
 
@@ -248,17 +248,19 @@ def test_set_default_config_id(
     sz_configmanager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
-    old_config_id = sz_configmanager.get_default_config_id()
-    config_handle = sz_config.create_config()
-    data_source_code = "CUSTOMERS"
+    current_config_id = sz_configmanager.get_default_config_id()
+    current_config = sz_configmanager.get_config(current_config_id)
+    # config_handle = sz_config.create_config()
+    config_handle = sz_config.import_config(current_config)
+    data_source_code = "CUSTOMERS2"
     sz_config.add_data_source(config_handle, data_source_code)
     config_definition = sz_config.export_config(config_handle)
     config_comment = "Test"
-    config_id = sz_configmanager.add_config(config_definition, config_comment)
-    assert old_config_id != config_id
-    sz_configmanager.set_default_config_id(config_id)
+    new_config_id = sz_configmanager.add_config(config_definition, config_comment)
+    assert current_config_id != new_config_id
+    sz_configmanager.set_default_config_id(new_config_id)
     actual = sz_configmanager.get_default_config_id()
-    assert actual == config_id
+    assert actual == new_config_id
 
 
 def test_set_default_config_id_bad_config_id_type(
@@ -353,7 +355,6 @@ config_schema = {
     "G2_CONFIG": {
         "CFG_ATTR": [
             {
-                Optional("ADVANCED"): Or(str, None),
                 "ATTR_ID": int,
                 "ATTR_CODE": str,
                 "ATTR_CLASS": str,
@@ -368,8 +369,8 @@ config_schema = {
             {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_CFCALL": [
@@ -385,7 +386,7 @@ config_schema = {
                 "CFUNC_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_RTNVAL": str,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
                 "SAME_SCORE": int,
                 "CLOSE_SCORE": int,
                 "LIKELY_SCORE": int,
@@ -401,15 +402,14 @@ config_schema = {
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_DFBOM": [
             {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_DFCALL": [
@@ -427,7 +427,6 @@ config_schema = {
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_DSRC": [
@@ -443,8 +442,8 @@ config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
                 "FELEM_REQ": str,
             },
         ],
@@ -452,9 +451,9 @@ config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
+                "FELEM_ID": int,
                 "EFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
                 "EFEAT_FTYPE_ID": int,
                 "IS_VIRTUAL": str,
             },
@@ -466,7 +465,6 @@ config_schema = {
                 "EFUNC_DESC": str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_ERFRAG": [
@@ -493,8 +491,8 @@ config_schema = {
         "CFG_FBOM": [
             {
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
                 "DISPLAY_LEVEL": int,
                 "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
@@ -521,6 +519,7 @@ config_schema = {
                 Optional("FELEM_ID"): int,
                 "FELEM_CODE": str,
                 "FELEM_DESC": str,
+                Optional("TOKENIZE"): str,
                 "DATA_TYPE": str,
             },
         ],
@@ -580,9 +579,9 @@ config_schema = {
             {
                 "SFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
+                "FELEM_ID": int,
                 "SFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_SFUNC": [
@@ -592,7 +591,6 @@ config_schema = {
                 "SFUNC_DESC": str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "SYS_OOM": [

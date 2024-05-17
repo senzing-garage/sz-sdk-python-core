@@ -204,7 +204,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4007, self.instance_name, self.settings)
+                raise self.new_exception(4007)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(
@@ -242,7 +242,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    def new_exception(self, error_id: int, *args: Any) -> Exception:
+    def new_exception(self, error_id: int) -> Exception:
         """
         Generate a new exception based on the error_id.
 
@@ -251,10 +251,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
         return new_szexception(
             self.library_handle.G2Diagnostic_getLastException,
             self.library_handle.G2Diagnostic_clearLastException,
+            self.library_handle.G2Diagnostic_getLastExceptionCode,
             SENZING_PRODUCT_ID,
             error_id,
-            self.ID_MESSAGES,
-            *args,
         )
 
     # -------------------------------------------------------------------------
@@ -267,26 +266,19 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(
-                    4001,
-                    seconds_to_run,
-                    result.return_code,
-                )
+                raise self.new_exception(4001)
             return as_python_str(result.response)
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_destroy()
         if result != 0:
-            raise self.new_exception(4002, result)
+            raise self.new_exception(4002)
 
     def get_datastore_info(self, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDatastoreInfo_helper()
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(
-                    4003,
-                    result.return_code,
-                )
+                raise self.new_exception(4003)
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented
@@ -294,11 +286,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         result = self.library_handle.G2Diagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(
-                    4003,
-                    feature_id,
-                    result.return_code,
-                )
+                raise self.new_exception(4003)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
@@ -317,14 +305,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 verbose_logging,
             )
             if result < 0:
-                raise self.new_exception(
-                    4004,
-                    instance_name,
-                    as_str(settings),
-                    verbose_logging,
-                    config_id,
-                    result,
-                )
+                raise self.new_exception(4004)
             return
         result = self.library_handle.G2Diagnostic_initWithConfigID(
             as_c_char_p(instance_name),
@@ -333,21 +314,14 @@ class SzDiagnostic(SzDiagnosticAbstract):
             verbose_logging,
         )
         if result < 0:
-            raise self.new_exception(
-                4003,
-                instance_name,
-                settings,
-                verbose_logging,
-                config_id,
-                result,
-            )
+            raise self.new_exception(4003)
 
     def purge_repository(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_purgeRepository()
         if result < 0:
-            raise self.new_exception(4005, result)
+            raise self.new_exception(4005)
 
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(config_id)
         if result < 0:
-            raise self.new_exception(4006, config_id, result)
+            raise self.new_exception(4006)

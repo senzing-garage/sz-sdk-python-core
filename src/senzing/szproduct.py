@@ -150,7 +150,7 @@ class SzProduct(SzProductAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4003, self.instance_name, self.settings)
+                raise self.new_exception(4003)
         if len(instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -183,7 +183,7 @@ class SzProduct(SzProductAbstract):
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    def new_exception(self, error_id: int, *args: Any) -> Exception:
+    def new_exception(self, error_id: int) -> Exception:
         """
         Generate a new exception based on the error_id.
 
@@ -192,10 +192,9 @@ class SzProduct(SzProductAbstract):
         return new_szexception(
             self.library_handle.G2Product_getLastException,
             self.library_handle.G2Product_clearLastException,
+            self.library_handle.G2Product_getLastExceptionCode,
             SENZING_PRODUCT_ID,
             error_id,
-            self.ID_MESSAGES,
-            *args,
         )
 
     # -------------------------------------------------------------------------
@@ -205,7 +204,7 @@ class SzProduct(SzProductAbstract):
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Product_destroy()
         if result != 0:
-            raise self.new_exception(4001, result)
+            raise self.new_exception(4001)
 
     @catch_ctypes_exceptions
     def initialize(
@@ -221,9 +220,7 @@ class SzProduct(SzProductAbstract):
             verbose_logging,
         )
         if result < 0:
-            raise self.new_exception(
-                4002, instance_name, settings, verbose_logging, result
-            )
+            raise self.new_exception(4002)
 
     def get_license(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_license())

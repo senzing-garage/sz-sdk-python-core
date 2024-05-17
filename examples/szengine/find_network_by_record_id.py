@@ -7,12 +7,14 @@ FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 MAX_DEGREES = 2
 MAX_ENTITIES = 10
-RECORD_LIST = {
-    "RECORDS": [
-        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},
-        {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"},
-    ]
-}
+RECORD_LIST = (
+    "{"
+    '"RECORDS": ['
+    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
+    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"},'
+    "]"
+    "}"
+)
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

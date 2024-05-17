@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 szconfig_abstract.py is the abstract class for all implementations of szconfig.
 """
@@ -28,35 +26,12 @@ class SzConfigAbstract(ABC):
     """
 
     # -------------------------------------------------------------------------
-    # Messages
-    # -------------------------------------------------------------------------
-
-    PREFIX = "szconfig."
-    ID_MESSAGES = {
-        4001: PREFIX + "add_data_source({0}) failed. Return code: {1}",
-        4002: PREFIX + "close_config() failed. Return code: {0}",
-        4003: PREFIX + "create_config() failed. Return code: {0}",
-        4004: PREFIX + "delete_data_source({0}) failed. Return code: {1}",
-        4005: PREFIX + "destroy() failed. Return code: {0}",
-        4006: PREFIX + "export_config() failed. Return code: {0}",
-        4007: PREFIX + "get_data_sources() failed. Return code: {0}",
-        4008: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
-        4009: PREFIX + "import_config({0}) failed. Return code: {1}",
-        4010: PREFIX
-        + "SzConfig({0}, {1}) failed. instance_name and settings must both be set or both be empty",
-    }
-
-    # -------------------------------------------------------------------------
     # Interface definition
     # -------------------------------------------------------------------------
 
     @abstractmethod
     def add_data_source(
-        self,
-        config_handle: int,
-        # data_source_code: Union[str, Dict[Any, Any]],
-        data_source_code: str,
-        **kwargs: Any
+        self, config_handle: int, data_source_code: str, **kwargs: Any
     ) -> str:
         """
         The `add_data_source` method adds a data source to an existing in-memory configuration.
@@ -260,9 +235,7 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def import_config(
-        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
-    ) -> int:
+    def import_config(self, config_definition: str, **kwargs: Any) -> int:
         """
         The `import_config` method initializes an in-memory Senzing SzConfig object from a JSON string.
         A handle is returned to identify the in-memory configuration.
@@ -271,7 +244,7 @@ class SzConfigAbstract(ABC):
         The handle is terminated by the `close` method.
 
         Args:
-            config_definition (Union[str, Dict[Any, Any]]): A JSON document containing the Senzing configuration.
+            config_definition (str): A JSON document containing the Senzing configuration.
 
         Returns:
             int: An identifier (config_handle) of an in-memory configuration.

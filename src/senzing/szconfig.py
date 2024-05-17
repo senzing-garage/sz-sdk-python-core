@@ -232,7 +232,7 @@ class SzConfig(SzConfigAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4010, self.instance_name, self.settings)
+                raise self.new_exception(4010)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -262,7 +262,7 @@ class SzConfig(SzConfigAbstract):
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    def new_exception(self, error_id: int, *args: Any) -> Exception:
+    def new_exception(self, error_id: int) -> Exception:
         """
         Generate a new exception based on the error_id.
 
@@ -271,10 +271,9 @@ class SzConfig(SzConfigAbstract):
         return new_szexception(
             self.library_handle.G2Config_getLastException,
             self.library_handle.G2Config_clearLastException,
+            self.library_handle.G2Config_getLastExceptionCode,
             SENZING_PRODUCT_ID,
             error_id,
-            self.ID_MESSAGES,
-            *args,
         )
 
     # -------------------------------------------------------------------------
@@ -285,7 +284,6 @@ class SzConfig(SzConfigAbstract):
     def add_data_source(
         self,
         config_handle: int,
-        # data_source_code: Union[str, Dict[Any, Any]],
         data_source_code: str,
         **kwargs: Any,
     ) -> str:
@@ -297,27 +295,25 @@ class SzConfig(SzConfigAbstract):
 
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4001, data_source_code, result.return_code)
+                raise self.new_exception(4001)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
         if result != 0:
-            raise self.new_exception(4002, result)
+            raise self.new_exception(4002)
 
     def create_config(self, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_create_helper()
         if result.return_code != 0:
-            raise self.new_exception(4003, result.return_code)
-        # return as_python_int(result.response)
+            raise self.new_exception(4003)
         return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
     def delete_data_source(
         self,
         config_handle: int,
-        # input_json: Union[str, Dict[Any, Any]],
         data_source_code: str,
         **kwargs: Any,
     ) -> None:
@@ -326,19 +322,19 @@ class SzConfig(SzConfigAbstract):
             as_uintptr_t(config_handle), as_c_char_p(json_string)
         )
         if result != 0:
-            raise self.new_exception(4004, data_source_code, result.return_code)
+            raise self.new_exception(4004)
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_destroy()
         if result != 0:
-            raise self.new_exception(4005, result)
+            raise self.new_exception(4005)
 
     @catch_ctypes_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4006, result.return_code)
+                raise self.new_exception(4006)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
@@ -348,7 +344,7 @@ class SzConfig(SzConfigAbstract):
         )
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4007, result.return_code)
+                raise self.new_exception(4007)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
@@ -365,20 +361,13 @@ class SzConfig(SzConfigAbstract):
             verbose_logging,
         )
         if result < 0:
-            raise self.new_exception(
-                4008, instance_name, as_str(settings), verbose_logging, result
-            )
+            raise self.new_exception(4008)
 
     @catch_ctypes_exceptions
-    def import_config(
-        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
-    ) -> int:
+    def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_load_helper(
             as_c_char_p(as_str(config_definition))
         )
         if result.return_code != 0:
-            raise self.new_exception(
-                4009, as_str(config_definition), result.return_code
-            )
-        # return as_python_int(result.response)
+            raise self.new_exception(4009)
         return result.response  # type: ignore[no-any-return]

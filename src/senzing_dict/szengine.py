@@ -11,7 +11,7 @@ from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 from senzing_abstract import SzEngineAbstract
 
-from senzing import SzEngineFlags
+from senzing import SzEngineFlags, as_str
 
 # Metadata
 
@@ -84,7 +84,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.add_record(
-                data_source_code, record_id, record_definition, flags, **kwargs
+                data_source_code, record_id, as_str(record_definition), flags, **kwargs
             )
         )
 
@@ -165,20 +165,20 @@ class SzEngine:
 
     def find_network_by_entity_id(
         self,
-        entity_list: Union[str, Dict[Any, Any]],
+        entity_ids: Union[str, Dict[Any, Any]],
         max_degrees: int,
         build_out_degree: int,
-        max_entities: int,
+        build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.find_network_by_entity_id(
-                entity_list,
+                as_str(entity_ids),
                 max_degrees,
                 build_out_degree,
-                max_entities,
+                build_out_max_entities,
                 flags,
                 **kwargs,
             )
@@ -186,20 +186,20 @@ class SzEngine:
 
     def find_network_by_record_id(
         self,
-        record_list: Union[str, Dict[str, List[Dict[str, str]]]],
+        record_keys: Union[str, Dict[str, List[Dict[str, str]]]],
         max_degrees: int,
         build_out_degree: int,
-        max_entities: int,
+        build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.find_network_by_record_id(
-                record_list,
+                as_str(record_keys),
                 max_degrees,
                 build_out_degree,
-                max_entities,
+                build_out_max_entities,
                 flags,
                 **kwargs,
             )
@@ -221,8 +221,8 @@ class SzEngine:
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                exclusions,
-                required_data_sources,
+                as_str(exclusions),
+                as_str(required_data_sources),
                 flags,
                 **kwargs,
             )
@@ -248,8 +248,8 @@ class SzEngine:
                 end_data_source_code,
                 end_record_id,
                 max_degrees,
-                exclusions,
-                required_data_sources,
+                as_str(exclusions),
+                as_str(required_data_sources),
                 flags,
                 **kwargs,
             )
@@ -331,7 +331,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.get_virtual_entity_by_record_id(
-                record_list,
+                as_str(record_list),
                 flags,
                 **kwargs,
             )
@@ -424,7 +424,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.search_by_attributes(
-                attributes,
+                as_str(attributes),
                 search_profile,
                 flags,
                 **kwargs,
