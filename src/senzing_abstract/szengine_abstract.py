@@ -291,6 +291,7 @@ class SzEngineAbstract(ABC):
     def find_network_by_entity_id(
         self,
         entity_ids: str,
+        # entity_ids: list[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -332,6 +333,7 @@ class SzEngineAbstract(ABC):
     def find_network_by_record_id(
         self,
         record_keys: str,
+        # record_keys: list[tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -421,6 +423,8 @@ class SzEngineAbstract(ABC):
         end_record_id: str,
         max_degrees: int,
         exclusions: str = "",
+        # TODO
+        # exclusions: Union[list[int], list[tuple[str, str]]] = [("", "")],
         required_data_sources: str = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,

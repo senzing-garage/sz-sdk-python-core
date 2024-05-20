@@ -147,7 +147,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         self.config_id = config_id
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging

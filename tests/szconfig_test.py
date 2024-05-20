@@ -196,15 +196,16 @@ def test_import_config(sz_config: SzConfig) -> None:
     sz_config.close_config(config_handle)
 
 
-def test_import_config_dict(sz_config: SzConfig) -> None:
-    """Test SzConfig().import_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    config_definition_as_dict = json.loads(config_definition)
-    config_handle = sz_config.import_config(config_definition_as_dict)
-    assert isinstance(config_handle, int)
-    assert config_handle > 0
-    sz_config.close_config(config_handle)
+# TODO Not needed for core SDK
+# def test_import_config_dict(sz_config: SzConfig) -> None:
+#     """Test SzConfig().import_config()."""
+#     config_handle = sz_config.create_config()
+#     config_definition = sz_config.export_config(config_handle)
+#     config_definition_as_dict = json.loads(config_definition)
+#     config_handle = sz_config.import_config(config_definition_as_dict)
+#     assert isinstance(config_handle, int)
+#     assert config_handle > 0
+#     sz_config.close_config(config_handle)
 
 
 def test_import_config_bad_config_definition_type(sz_config: SzConfig) -> None:

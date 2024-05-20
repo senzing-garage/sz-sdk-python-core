@@ -75,17 +75,18 @@ def test_add_config(sz_configmanager: SzConfigManager, sz_config: SzConfig) -> N
     assert actual > 0
 
 
-def test_add_config_dict(
-    sz_configmanager: SzConfigManager, sz_config: SzConfig
-) -> None:
-    """Test SzConfigManager().add_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    config_definition_as_dict = json.loads(config_definition)
-    config_comment = "Test"
-    actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
-    assert isinstance(actual, int)
-    assert actual > 0
+# TODO Not needed in core SDK
+# def test_add_config_dict(
+#     sz_configmanager: SzConfigManager, sz_config: SzConfig
+# ) -> None:
+#     """Test SzConfigManager().add_config()."""
+#     config_handle = sz_config.create_config()
+#     config_definition = sz_config.export_config(config_handle)
+#     config_definition_as_dict = json.loads(config_definition)
+#     config_comment = "Test"
+#     actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
+#     assert isinstance(actual, int)
+#     assert actual > 0
 
 
 def test_add_config_bad_config_definition_type(
@@ -250,7 +251,6 @@ def test_set_default_config_id(
     """Test SzConfigManager().get_default_config_id()."""
     current_config_id = sz_configmanager.get_default_config_id()
     current_config = sz_configmanager.get_config(current_config_id)
-    # config_handle = sz_config.create_config()
     config_handle = sz_config.import_config(current_config)
     data_source_code = "CUSTOMERS2"
     sz_config.add_data_source(config_handle, data_source_code)

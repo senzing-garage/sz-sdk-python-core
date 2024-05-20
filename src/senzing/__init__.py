@@ -21,7 +21,7 @@ from senzing_abstract import (
     SzUnrecoverableError,
     new_szexception,
 )
-from senzing_abstract.szhelpers import (  # as_python_int,
+from senzing_abstract.szhelpers import (  # as_python_int,; TODO; build_find_network_entities,; build_find_network_records,
     FreeCResources,
     as_c_char_p,
     as_python_str,
@@ -43,6 +43,8 @@ __all__ = [
     "as_python_str",
     "as_str",
     "as_uintptr_t",
+    # "build_find_network_entities",
+    # "build_find_network_records",
     "catch_ctypes_exceptions",
     "EXCEPTION_MAP",
     "find_file_in_path",

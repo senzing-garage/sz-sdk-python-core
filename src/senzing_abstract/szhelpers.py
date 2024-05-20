@@ -39,7 +39,12 @@ uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
 P = ParamSpec("P")
 
+# TODO
 # ORJSON_AVAILABLE = "orjson" in dir()
+
+START_ENTITIES_JSON = '{"ENTITIES": ['
+START_RECORDS_JSON = '{"RECORDS": ['
+END_JSON = "]}"
 
 # -----------------------------------------------------------------------------
 # Classes
@@ -151,6 +156,48 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
 
 
 # -----------------------------------------------------------------------------
+# Helpers for building JSON strings for Senzing engine
+# -----------------------------------------------------------------------------
+
+# TODO
+# def build_find_network_entities(entity_ids: list[int]) -> str:
+#     # TODO
+#     """
+#     Build JSON string of entity ids.
+
+#     Args:
+#         entity_ids (list): _description_
+
+#     Returns:
+#         str: JSON string as expected by Senzing engine
+#     """
+#     # {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
+#     entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
+#     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
+
+# TODO
+# def build_find_network_records(record_keys: list[tuple[str, str]]) -> str:
+#     # TODO
+#     """
+#     Build JSON string of data source and record ids.
+
+#     Args:
+#         entity_ids (list): _description_
+
+#     Returns:
+#         str: JSON string as expected by Senzing engine
+#     """
+#     # {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
+#     records = ", ".join(
+#         [
+#             f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
+#             for ds, rec_id in record_keys
+#         ]
+#     )
+#     return f"{START_RECORDS_JSON}{records}{END_JSON}"
+
+
+# -----------------------------------------------------------------------------
 # Helpers for working with parameters
 # -----------------------------------------------------------------------------
 
@@ -224,6 +271,7 @@ def as_uintptr_t(candidate_value: int) -> Any:
 #     return int(candidate_value)
 
 
+# TODO Are all these different types needed, we really expect a str?
 def as_c_char_p(candidate_value: Any) -> Any:
     """
     Internal processing function.
@@ -294,6 +342,7 @@ def as_python_str(candidate_value: Any) -> str:
 # -----------------------------------------------------------------------------
 
 
+# TODO ctypes has a function to do this I think I saw?
 def find_file_in_path(filename: str) -> str:
     """
     Find a file in the PATH environment variable.

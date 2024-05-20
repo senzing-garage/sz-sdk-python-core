@@ -162,7 +162,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         # self.init_config_id = init_config_id
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -276,7 +277,9 @@ class SzConfigManager(SzConfigManagerAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(as_str(config_definition)), as_c_char_p(config_comment)
+            # as_c_char_p(as_str(config_definition)), as_c_char_p(config_comment)
+            as_c_char_p(config_definition),
+            as_c_char_p(config_comment),
         )
         if result.return_code != 0:
             raise self.new_exception(4001)

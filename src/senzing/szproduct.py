@@ -118,7 +118,8 @@ class SzProduct(SzProductAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 

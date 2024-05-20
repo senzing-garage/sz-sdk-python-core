@@ -175,7 +175,8 @@ class SzConfig(SzConfigAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
@@ -366,7 +367,7 @@ class SzConfig(SzConfigAbstract):
     @catch_ctypes_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_load_helper(
-            as_c_char_p(as_str(config_definition))
+            as_c_char_p(config_definition)
         )
         if result.return_code != 0:
             raise self.new_exception(4009)

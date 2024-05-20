@@ -304,7 +304,8 @@ class SzEngine(SzEngineAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         self.config_id = config_id
         self.instance_name = instance_name
         self.noop = ""
@@ -678,7 +679,8 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(data_source_code),
                 as_c_char_p(record_id),
                 # TODO as_str()
-                as_c_char_p(as_str(record_definition)),
+                # as_c_char_p(as_str(record_definition)),
+                as_c_char_p(record_definition),
                 final_flags,
             )
 
@@ -690,7 +692,9 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.G2_addRecord(
             as_c_char_p(data_source_code),
             as_c_char_p(record_id),
-            as_c_char_p(as_str(record_definition)),
+            as_c_char_p(record_definition),
+            # as_c_char_p(as_str(record_definition)),
+            as_c_char_p(record_definition),
         )
         if result != 0:
             raise self.new_exception(4001)
@@ -804,18 +808,25 @@ class SzEngine(SzEngineAbstract):
                 raise self.new_exception(4010)
             return as_python_str(result.response)
 
+    # TODO What happens if don't send it all args? Not tested this yet?
     @catch_ctypes_exceptions
     def find_network_by_entity_id(
         self,
         entity_ids: str,
+        # # TODO tuple instead of list?
+        # entity_ids: list[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
+
         result = self.library_handle.G2_findNetworkByEntityID_V2_helper(
-            as_c_char_p(as_str(entity_ids)),
+            # TODO remove as_str where no longer needed throughout all modules
+            # as_c_char_p(as_str(entity_ids)),
+            as_c_char_p(entity_ids),
+            # as_c_char_p(build_find_network_entities(entity_ids)),
             max_degrees,
             build_out_degree,
             build_out_max_entities,
@@ -831,14 +842,19 @@ class SzEngine(SzEngineAbstract):
     def find_network_by_record_id(
         self,
         record_keys: str,
+        # record_keys: list[tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
+        # TODO
+
         result = self.library_handle.G2_findNetworkByRecordID_V2_helper(
-            as_c_char_p(as_str(record_keys)),
+            # as_c_char_p(as_str(record_keys)),
+            as_c_char_p(record_keys),
+            # as_c_char_p(build_find_network_records(record_keys)),
             max_degrees,
             build_out_degree,
             build_out_max_entities,
@@ -858,6 +874,7 @@ class SzEngine(SzEngineAbstract):
         max_degrees: int,
         # TODO: Should accept both entity and record IDs in V4, test
         # TODO Exclusions should also accept entity_ids and record_keys?
+        # TODO Tests for both
         exclusions: str = "",
         required_data_sources: str = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -868,7 +885,8 @@ class SzEngine(SzEngineAbstract):
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(as_str(exclusions)),
+                # as_c_char_p(as_str(exclusions)),
+                as_c_char_p(exclusions),
                 flags,
             )
 
@@ -882,8 +900,10 @@ class SzEngine(SzEngineAbstract):
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(as_str(exclusions)),
-                as_c_char_p(as_str(required_data_sources)),
+                # as_c_char_p(as_str(exclusions)),
+                # as_c_char_p(as_str(required_data_sources)),
+                as_c_char_p(exclusions),
+                as_c_char_p(required_data_sources),
                 flags,
             )
 
@@ -913,11 +933,25 @@ class SzEngine(SzEngineAbstract):
         max_degrees: int,
         # TODO: Should accept both entity and record IDs in V4, test
         # TODO Exclusions should also accept entity_ids and record_keys?
+        # TODO Tests for both
         exclusions: str = "",
+        # # TODO Is there where Optional would be ideal?
+        # exclusions: Union[None, list[int], list[tuple[str, str]]] = None,
         required_data_sources: str = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
+
+        # TODO Macy
+        # if exclusions and len(exclusions) > 0:
+        #     print(type(exclusions[0]))
+        #     if isinstance(exclusions[0], int):
+        #         exclusions_json = build_find_network_entities(exclusions)
+        #     else:
+        #         exclusions_json = build_find_network_records(exclusions)
+        #     print(exclusions_json)
+        # exit()
+
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
                 as_c_char_p(start_data_source_code),
@@ -925,7 +959,8 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(end_data_source_code),
                 as_c_char_p(end_record_id),
                 max_degrees,
-                as_c_char_p(as_str(exclusions)),
+                # as_c_char_p(as_str(exclusions)),
+                as_c_char_p(exclusions),
                 flags,
             )
 
@@ -941,8 +976,10 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(end_data_source_code),
                 as_c_char_p(end_record_id),
                 max_degrees,
-                as_c_char_p(as_str(exclusions)),
-                as_c_char_p(as_str(required_data_sources)),
+                # as_c_char_p(as_str(exclusions)),
+                # as_c_char_p(as_str(required_data_sources)),
+                as_c_char_p(exclusions),
+                as_c_char_p(required_data_sources),
                 flags,
             )
 
@@ -1043,7 +1080,9 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_getVirtualEntityByRecordID_V2_helper(
-            as_c_char_p(as_str(record_list)), flags
+            # as_c_char_p(as_str(record_list)), flags
+            as_c_char_p(record_list),
+            flags,
         )
 
         with FreeCResources(self.library_handle, result.response):
@@ -1182,8 +1221,10 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_searchByAttributes_V3_helper(
-            as_c_char_p(as_str(attributes)),
-            as_c_char_p(as_str(search_profile)),
+            # as_c_char_p(as_str(attributes)),
+            # as_c_char_p(as_str(search_profile)),
+            as_c_char_p(attributes),
+            as_c_char_p(search_profile),
             flags,
         )
 
