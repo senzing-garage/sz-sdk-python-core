@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 TODO: szengine_abstract.py
 """
@@ -8,9 +6,8 @@ TODO: szengine_abstract.py
 
 # Import from standard library. https://docs.python.org/3/library/
 
-import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, Optional, Union
 
 from .szengineflags import SzEngineFlags
 
@@ -34,70 +31,6 @@ class SzEngineAbstract(ABC):
     """
 
     # -------------------------------------------------------------------------
-    # Messages
-    # -------------------------------------------------------------------------
-
-    PREFIX = "szengine."
-    """ :meta private: """
-
-    ID_MESSAGES = {
-        4001: PREFIX + "add_record({0}, {1}, {2}, {3}) failed. Return code: {4}",
-        4002: PREFIX + "close_export() failed. Return code: {0}",
-        4003: PREFIX + "count_redo_records() failed. Return code: {0}",
-        4004: PREFIX + "delete_record({0}, {1}, {2}) failed. Return code: {3}",
-        4005: PREFIX + "destroy() failed. Return code: {0}",
-        4006: PREFIX + "export_csv_entity_report({0}, {1}) failed. Return code: {2}",
-        4007: PREFIX + "export_json_entity_report({0}) failed. Return code: {1}",
-        4008: PREFIX + "fetch_next({0}) failed. Return code: {1}",
-        # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-        4009: PREFIX
-        + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}",
-        # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-        4010: (
-            PREFIX
-            + "find_interesting_entities_by_record_id({0}, {1}, {2}) failed. Return"
-            " code: {3}"
-        ),
-        4011: (
-            PREFIX
-            + "find_network_by_entity_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
-        ),
-        4012: (
-            PREFIX
-            + "find_network_by_record_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
-        ),
-        4013: PREFIX
-        + "find_path_by_entity_id({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
-        4014: PREFIX
-        + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}",
-        4015: PREFIX + "get_active_config_id() failed. Return code: {0}",
-        4016: PREFIX + "get_entity_by_entity_id({0}, {1}) failed. Return code: {2}",
-        4017: PREFIX
-        + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
-        4018: PREFIX + "get_record({0}, {1}, {2}) failed. Return code: {3}",
-        4019: PREFIX + "get_redo_record() failed. Return code: {0}",
-        4021: PREFIX + "get_stats() failed. Return code: {0}",
-        4022: PREFIX + "get_virtual_entity_by_record_id({0}) failed. Return code: {1}",
-        4023: PREFIX + "how_entity_by_entity_id({0}) failed. Return code: {1}",
-        4024: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
-        4025: PREFIX + "prime_engine() failed. Return code: {0}",
-        4026: PREFIX + "process_redo_record({0}, {1}) failed. Return code: {2}",
-        4027: PREFIX + "reevaluate_entity({0}, {1}) failed. Return code: {2}",
-        4028: PREFIX + "reevaluate_record({0}, {1}, {2}) failed. Return code: {3}",
-        4029: PREFIX + "reinitialize({0}) failed. Return code: {1}",
-        4030: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
-        4031: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
-        4032: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
-        4033: PREFIX + "why_record_in_entity{0}, {1}, {2}) failed. Return code: {3}",
-        4034: (
-            PREFIX
-            + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or"
-            " both be empty"
-        ),
-    }
-    """ :meta private: """
-
-    # -------------------------------------------------------------------------
     # Interface definition
     # -------------------------------------------------------------------------
 
@@ -106,7 +39,7 @@ class SzEngineAbstract(ABC):
         self,
         data_source_code: str,
         record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
+        record_definition: str,
         flags: int = 0,
         **kwargs: Any,
     ) -> str:
@@ -357,10 +290,11 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_entity_id(
         self,
-        entity_list: Union[str, Dict[str, List[Dict[str, int]]]],
+        entity_ids: str,
+        # entity_ids: list[int],
         max_degrees: int,
         build_out_degree: int,
-        max_entities: int,
+        build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -371,10 +305,10 @@ class SzEngineAbstract(ABC):
         and the information for the entities in the path.
 
         Args:
-            entity_list (str): A JSON document listing entities.
+            entity_ids (str):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             build_out_degree (int): The number of degrees of relationships to show around each search entity.
-            max_entities (int): The maximum number of entities to return in the discovered network.
+            build_out_max_entities (int): The maximum number of entities to return in the discovered network.
             flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
@@ -398,10 +332,11 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_record_id(
         self,
-        record_list: Union[str, Dict[str, List[Dict[str, str]]]],
+        record_keys: str,
+        # record_keys: list[tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
-        max_entities: int,
+        build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -412,10 +347,10 @@ class SzEngineAbstract(ABC):
         and the information for the entities in the path.
 
         Args:
-            record_list (str): A JSON document listing records.
+            record_keys (str):
             max_degrees (int): The maximum number of degrees in paths between search entities.
             build_out_degree (int): The number of degrees of relationships to show around each search entity.
-            max_entities (int): The maximum number of entities to return in the discovered network.
+            build_out_max_entities (int): The maximum number of entities to return in the discovered network.
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
@@ -442,9 +377,8 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        # TODO: Should accept both entity and record IDs in V4, test
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
+        exclusions: str = "",
+        required_data_sources: str = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -488,8 +422,10 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
+        exclusions: str = "",
+        # TODO
+        # exclusions: Union[list[int], list[tuple[str, str]]] = [("", "")],
+        required_data_sources: str = "",
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -705,7 +641,7 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def get_virtual_entity_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        record_list: str,
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -920,7 +856,7 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def search_by_attributes(
         self,
-        attributes: Union[str, Dict[Any, Any]],
+        attributes: str,
         search_profile: str = "",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -1057,339 +993,340 @@ class SzEngineAbstract(ABC):
                     :language: json
         """
 
+    # TODO
     # -------------------------------------------------------------------------
     # Convenience methods
     # -------------------------------------------------------------------------
 
     # TODO: doc strings for all return_dict methods it _return_dict methods are staying?
-    def add_record_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        record_definition: Union[str, Dict[Any, Any]],
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document add_record_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            # TODO: orjson?
-            json.loads(
-                self.add_record(
-                    data_source_code, record_id, record_definition, flags, **kwargs
-                )
-            ),
-        )
+    # def add_record_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     record_definition: Union[str, Dict[Any, Any]],
+    #     flags: int = 0,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document add_record_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         # TODO: orjson?
+    #         json.loads(
+    #             self.add_record(
+    #                 data_source_code, record_id, record_definition, flags, **kwargs
+    #             )
+    #         ),
+    #     )
 
-    def delete_record_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document delete_record_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.delete_record(data_source_code, record_id, flags, **kwargs)
-            ),
-        )
+    # def delete_record_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = 0,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document delete_record_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.delete_record(data_source_code, record_id, flags, **kwargs)
+    #         ),
+    #     )
 
-    def find_interesting_entities_by_entity_id_return_dict(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_interesting_entities_by_entity_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_interesting_entities_by_entity_id(entity_id, flags, **kwargs)
-            ),
-        )
+    # def find_interesting_entities_by_entity_id_return_dict(
+    #     self, entity_id: int, flags: int = 0, **kwargs: Any
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_interesting_entities_by_entity_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_interesting_entities_by_entity_id(entity_id, flags, **kwargs)
+    #         ),
+    #     )
 
-    def find_interesting_entities_by_record_id_return_dict(
-        self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_interesting_entities_by_record_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_interesting_entities_by_record_id(
-                    data_source_code, record_id, flags, **kwargs
-                )
-            ),
-        )
+    # def find_interesting_entities_by_record_id_return_dict(
+    #     self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_interesting_entities_by_record_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_interesting_entities_by_record_id(
+    #                 data_source_code, record_id, flags, **kwargs
+    #             )
+    #         ),
+    #     )
 
-    def find_network_by_entity_id_return_dict(
-        self,
-        entity_list: Union[str, Dict[Any, Any]],
-        max_degrees: int,
-        build_out_degree: int,
-        max_entities: int,
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_network_by_entity_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_network_by_entity_id(
-                    entity_list,
-                    max_degrees,
-                    build_out_degree,
-                    max_entities,
-                    flags,
-                    **kwargs,
-                )
-            ),
-        )
+    # def find_network_by_entity_id_return_dict(
+    #     self,
+    #     entity_list: Union[str, Dict[Any, Any]],
+    #     max_degrees: int,
+    #     build_out_degree: int,
+    #     build_out_max_entities: int,
+    #     flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_network_by_entity_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_network_by_entity_id(
+    #                 entity_list,
+    #                 max_degrees,
+    #                 build_out_degree,
+    #                 build_out_max_entities,
+    #                 flags,
+    #                 **kwargs,
+    #             )
+    #         ),
+    #     )
 
-    def find_network_by_record_id_return_dict(
-        self,
-        record_list: Union[str, Dict[Any, Any]],
-        max_degrees: int,
-        build_out_degree: int,
-        max_entities: int,
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_network_by_record_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_network_by_record_id(
-                    record_list,
-                    max_degrees,
-                    build_out_degree,
-                    max_entities,
-                    flags,
-                    **kwargs,
-                )
-            ),
-        )
+    # def find_network_by_record_id_return_dict(
+    #     self,
+    #     record_list: Union[str, Dict[Any, Any]],
+    #     max_degrees: int,
+    #     build_out_degree: int,
+    #     build_out_max_entities: int,
+    #     flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_network_by_record_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_network_by_record_id(
+    #                 record_list,
+    #                 max_degrees,
+    #                 build_out_degree,
+    #                 build_out_max_entities,
+    #                 flags,
+    #                 **kwargs,
+    #             )
+    #         ),
+    #     )
 
-    def find_path_by_entity_id_return_dict(
-        self,
-        start_entity_id: int,
-        end_entity_id: int,
-        max_degrees: int,
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_path_by_entity_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_path_by_entity_id(
-                    start_entity_id,
-                    end_entity_id,
-                    max_degrees,
-                    exclusions,
-                    required_data_sources,
-                    flags,
-                    **kwargs,
-                )
-            ),
-        )
+    # def find_path_by_entity_id_return_dict(
+    #     self,
+    #     start_entity_id: int,
+    #     end_entity_id: int,
+    #     max_degrees: int,
+    #     exclusions: Union[str, Dict[Any, Any]] = "",
+    #     required_data_sources: Union[str, Dict[Any, Any]] = "",
+    #     flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_path_by_entity_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_path_by_entity_id(
+    #                 start_entity_id,
+    #                 end_entity_id,
+    #                 max_degrees,
+    #                 exclusions,
+    #                 required_data_sources,
+    #                 flags,
+    #                 **kwargs,
+    #             )
+    #         ),
+    #     )
 
-    def find_path_by_record_id_return_dict(
-        self,
-        start_data_source_code: str,
-        start_record_id: str,
-        end_data_source_code: str,
-        end_record_id: str,
-        max_degrees: int,
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document find_path_by_record_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.find_path_by_record_id(
-                    start_data_source_code,
-                    start_record_id,
-                    end_data_source_code,
-                    end_record_id,
-                    max_degrees,
-                    exclusions,
-                    required_data_sources,
-                    flags,
-                    **kwargs,
-                )
-            ),
-        )
+    # def find_path_by_record_id_return_dict(
+    #     self,
+    #     start_data_source_code: str,
+    #     start_record_id: str,
+    #     end_data_source_code: str,
+    #     end_record_id: str,
+    #     max_degrees: int,
+    #     exclusions: Union[str, Dict[Any, Any]] = "",
+    #     required_data_sources: Union[str, Dict[Any, Any]] = "",
+    #     flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document find_path_by_record_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.find_path_by_record_id(
+    #                 start_data_source_code,
+    #                 start_record_id,
+    #                 end_data_source_code,
+    #                 end_record_id,
+    #                 max_degrees,
+    #                 exclusions,
+    #                 required_data_sources,
+    #                 flags,
+    #                 **kwargs,
+    #             )
+    #         ),
+    #     )
 
-    def get_entity_by_entity_id_return_dict(
-        self,
-        entity_id: int,
-        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document get_entity_by_entity_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.get_entity_by_entity_id(entity_id, flags, **kwargs)),
-        )
+    # def get_entity_by_entity_id_return_dict(
+    #     self,
+    #     entity_id: int,
+    #     flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document get_entity_by_entity_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.get_entity_by_entity_id(entity_id, flags, **kwargs)),
+    #     )
 
-    def get_entity_by_record_id_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document get_entity_by_record_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.get_entity_by_record_id(
-                    data_source_code, record_id, flags, **kwargs
-                )
-            ),
-        )
+    # def get_entity_by_record_id_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document get_entity_by_record_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.get_entity_by_record_id(
+    #                 data_source_code, record_id, flags, **kwargs
+    #             )
+    #         ),
+    #     )
 
-    def get_record_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document get_record_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.get_record(data_source_code, record_id, flags, **kwargs)),
-        )
+    # def get_record_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document get_record_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.get_record(data_source_code, record_id, flags, **kwargs)),
+    #     )
 
-    def get_stats_return_dict(self, **kwargs: Any) -> Dict[str, Any]:
-        """TODO:  Document get_stats_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.get_stats(**kwargs)),
-        )
+    # def get_stats_return_dict(self, **kwargs: Any) -> Dict[str, Any]:
+    #     """TODO:  Document get_stats_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.get_stats(**kwargs)),
+    #     )
 
-    def get_virtual_entity_by_record_id_return_dict(
-        self,
-        record_list: Union[str, Dict[Any, Any]],
-        flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document get_virtual_entity_by_record_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.get_virtual_entity_by_record_id(record_list, flags, **kwargs)
-            ),
-        )
+    # def get_virtual_entity_by_record_id_return_dict(
+    #     self,
+    #     record_list: Union[str, Dict[Any, Any]],
+    #     flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document get_virtual_entity_by_record_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.get_virtual_entity_by_record_id(record_list, flags, **kwargs)
+    #         ),
+    #     )
 
-    def how_entity_by_entity_id_return_dict(
-        self,
-        entity_id: int,
-        flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document how_entity_by_entity_id_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.how_entity_by_entity_id(entity_id, flags, **kwargs)),
-        )
+    # def how_entity_by_entity_id_return_dict(
+    #     self,
+    #     entity_id: int,
+    #     flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document how_entity_by_entity_id_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.how_entity_by_entity_id(entity_id, flags, **kwargs)),
+    #     )
 
-    def reevaluate_entity_return_dict(
-        self,
-        entity_id: int,
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document reevaluate_entity_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.reevaluate_entity(entity_id, flags, **kwargs)),
-        )
+    # def reevaluate_entity_return_dict(
+    #     self,
+    #     entity_id: int,
+    #     flags: int = 0,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document reevaluate_entity_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.reevaluate_entity(entity_id, flags, **kwargs)),
+    #     )
 
-    def reevaluate_record_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = 0,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document reevaluate_record_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.reevaluate_record(data_source_code, record_id, flags, **kwargs)
-            ),
-        )
+    # def reevaluate_record_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = 0,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document reevaluate_record_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.reevaluate_record(data_source_code, record_id, flags, **kwargs)
+    #         ),
+    #     )
 
-    def search_by_attributes_return_dict(
-        self,
-        attributes: Union[str, Dict[Any, Any]],
-        search_profile: str = "SEARCH",
-        flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document search_by_attributes_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.search_by_attributes(attributes, search_profile, flags, **kwargs)
-            ),
-        )
+    # def search_by_attributes_return_dict(
+    #     self,
+    #     attributes: Union[str, Dict[Any, Any]],
+    #     search_profile: str = "SEARCH",
+    #     flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document search_by_attributes_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.search_by_attributes(attributes, search_profile, flags, **kwargs)
+    #         ),
+    #     )
 
-    def why_entities_return_dict(
-        self,
-        entity_id_1: int,
-        entity_id_2: int,
-        flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document why_entities_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(self.why_entities(entity_id_1, entity_id_2, flags, **kwargs)),
-        )
+    # def why_entities_return_dict(
+    #     self,
+    #     entity_id_1: int,
+    #     entity_id_2: int,
+    #     flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document why_entities_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(self.why_entities(entity_id_1, entity_id_2, flags, **kwargs)),
+    #     )
 
-    def why_records_return_dict(
-        self,
-        data_source_code_1: str,
-        record_id_1: str,
-        data_source_code_2: str,
-        record_id_2: str,
-        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document why_records_return_dict()"""
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.why_records(
-                    data_source_code_1,
-                    record_id_1,
-                    data_source_code_2,
-                    record_id_2,
-                    flags,
-                    **kwargs,
-                )
-            ),
-        )
+    # def why_records_return_dict(
+    #     self,
+    #     data_source_code_1: str,
+    #     record_id_1: str,
+    #     data_source_code_2: str,
+    #     record_id_2: str,
+    #     flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document why_records_return_dict()"""
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.why_records(
+    #                 data_source_code_1,
+    #                 record_id_1,
+    #                 data_source_code_2,
+    #                 record_id_2,
+    #                 flags,
+    #                 **kwargs,
+    #             )
+    #         ),
+    #     )
 
-    def why_record_in_entity_return_dict(
-        self,
-        data_source_code: str,
-        record_id: str,
-        flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
-        **kwargs: Any,
-    ) -> Dict[str, Any]:
-        """TODO:  Document why_record_in_entity_return_dict()"""
-        # TODO: Is the cast needed?
-        return cast(
-            Dict[str, Any],
-            json.loads(
-                self.why_record_in_entity(data_source_code, record_id, flags, **kwargs)
-            ),
-        )
+    # def why_record_in_entity_return_dict(
+    #     self,
+    #     data_source_code: str,
+    #     record_id: str,
+    #     flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
+    #     **kwargs: Any,
+    # ) -> Dict[str, Any]:
+    #     """TODO:  Document why_record_in_entity_return_dict()"""
+    #     # TODO: Is the cast needed?
+    #     return cast(
+    #         Dict[str, Any],
+    #         json.loads(
+    #             self.why_record_in_entity(data_source_code, record_id, flags, **kwargs)
+    #         ),
+    #     )

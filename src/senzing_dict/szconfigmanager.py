@@ -11,6 +11,8 @@ from typing import Any, Callable, Dict, Type, Union
 
 from senzing_abstract import SzConfigManagerAbstract
 
+from senzing import as_str
+
 # Metadata
 
 __all__ = ["SzConfigManager"]
@@ -81,7 +83,7 @@ class SzConfigManager:
     ) -> int:
         """TODO: Create documentation"""
         return self.sz_configmanager.add_config(
-            config_definition, config_comment, **kwargs
+            as_str(config_definition), config_comment, **kwargs
         )
 
     def destroy(self, **kwargs: Any) -> None:
@@ -94,7 +96,7 @@ class SzConfigManager:
 
     def get_config_list(self, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(self.sz_configmanager.get_config_list(**kwargs))
+        return self.dict_function(self.sz_configmanager.get_configs(**kwargs))
 
     def get_default_config_id(self, **kwargs: Any) -> int:
         """TODO: Create documentation"""

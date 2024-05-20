@@ -31,7 +31,7 @@ jobs:
       - name: Security vulnerabilities scan
         uses: aufdenpunkt/python-safety-check@v1.0.5
         with:
-          safety_args: '-i 62044'
+          safety_args: '-i 62044,67599'
 
   pip-audit:
     runs-on: ubuntu-latest

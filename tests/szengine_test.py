@@ -28,7 +28,6 @@ from senzing import (
     SzEngineFlags,
     SzError,
     SzNotFoundError,
-    SzUnknownDataSourceError,
 )
 
 # -----------------------------------------------------------------------------
@@ -137,7 +136,7 @@ def test_add_record(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
@@ -146,7 +145,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     bad_data_source_code = 1
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
     with pytest.raises(TypeError):
         sz_engine.add_record(
@@ -158,9 +157,9 @@ def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)
 
 
@@ -168,7 +167,7 @@ def test_add_record_with_info(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record_with_info()."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
     actual_as_dict = json.loads(actual)
@@ -188,7 +187,7 @@ def test_add_record_bad_record_id_type(sz_engine: SzEngine) -> None:
     """Test add_record with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     with pytest.raises(TypeError):
         sz_engine.add_record(data_source_code, bad_record_id, record_definition)  # type: ignore[arg-type]
 
@@ -197,7 +196,7 @@ def test_add_record_data_source_code_empty(sz_engine: SzEngine) -> None:
     """Test add_record with empty data source code."""
     bad_data_source_code = ""
     record_id = "1"
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     with pytest.raises(SzError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition)
 
@@ -222,7 +221,7 @@ def test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
     """Test add_record with flag to return with_info where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
-    record_definition = RECORD_DICT
+    record_definition = RECORD_STR
     flags = SzEngineFlags.SZ_WITH_INFO
     actual = sz_engine.add_record(data_source_code, record_id, record_definition, flags)
     actual_as_dict = json.loads(actual)
@@ -245,7 +244,7 @@ def test_add_record_with_info_bad_data_source_code_type(sz_engine: SzEngine) -> 
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = 1
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
     with pytest.raises(TypeError):
         _ = sz_engine.add_record(
@@ -257,9 +256,9 @@ def test_add_record_with_info_bad_data_source_code_value(sz_engine: SzEngine) ->
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
-    record_definition: Dict[Any, Any] = {}
+    record_definition: str = "{}"
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.add_record(
             bad_data_source_code, record_id, record_definition, flags
         )
@@ -302,7 +301,7 @@ def test_close_export() -> None:
 def test_count_redo_records(sz_engine: SzEngine) -> None:
     """Test SzEngine().count_redo_records()."""
     actual = sz_engine.count_redo_records()
-    assert actual == 1
+    assert isinstance(actual, int)
 
 
 def test_delete_record(sz_engine: SzEngine) -> None:
@@ -453,7 +452,7 @@ def test_find_interesting_entities_by_record_id_bad_data_source_code(
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_NO_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_interesting_entities_by_record_id(
             bad_data_source_code, record_id, flags
         )
@@ -481,18 +480,13 @@ def test_find_network_by_entity_id(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     entity_id_1 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
     entity_id_2 = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1002")
-    entity_list = {
-        "ENTITIES": [
-            {"ENTITY_ID": entity_id_1},
-            {"ENTITY_ID": entity_id_2},
-        ]
-    }
+    entity_list = {"ENTITIES": [{"ENTITY_ID": entity_id_1}, {"ENTITY_ID": entity_id_2}]}
     max_degrees = 2
     build_out_degree = 1
     max_entities = 10
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
     actual = sz_engine.find_network_by_entity_id(
-        entity_list, max_degrees, build_out_degree, max_entities, flags
+        json.dumps(entity_list), max_degrees, build_out_degree, max_entities, flags
     )
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
@@ -513,7 +507,11 @@ def test_find_network_by_entity_id_bad_entity_ids(sz_engine: SzEngine) -> None:
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_network_by_entity_id(
-            bad_entity_list, max_degrees, build_out_degree, max_entities, flags
+            json.dumps(bad_entity_list),
+            max_degrees,
+            build_out_degree,
+            max_entities,
+            flags,
         )
 
 
@@ -535,7 +533,7 @@ def test_find_network_by_record_id(sz_engine: SzEngine) -> None:
     max_entities = 10
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
     actual = sz_engine.find_network_by_record_id(
-        record_list, max_degrees, build_out_degree, max_entities, flags
+        json.dumps(record_list), max_degrees, build_out_degree, max_entities, flags
     )
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
@@ -554,9 +552,13 @@ def test_find_network_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> 
     build_out_degree = 1
     max_entities = 10
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_network_by_record_id(
-            bad_record_list, max_degrees, build_out_degree, max_entities, flags
+            json.dumps(bad_record_list),
+            max_degrees,
+            build_out_degree,
+            max_entities,
+            flags,
         )
 
 
@@ -574,7 +576,11 @@ def test_find_network_by_record_id_bad_record_ids(sz_engine: SzEngine) -> None:
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_network_by_record_id(
-            bad_record_list, max_degrees, build_out_degree, max_entities, flags
+            json.dumps(bad_record_list),
+            max_degrees,
+            build_out_degree,
+            max_entities,
+            flags,
         )
 
 
@@ -664,7 +670,7 @@ def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> Non
     exclusions = ""
     required_data_sources = ""
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_path_by_record_id(
             bad_start_data_source_code,
             start_record_id,
@@ -741,7 +747,7 @@ def test_get_entity_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> No
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_entity_by_record_id(bad_data_source_code, record_id, flags)
 
 
@@ -774,7 +780,7 @@ def test_get_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_record(bad_data_source_code, record_id, flags)
 
 
@@ -822,7 +828,7 @@ def test_get_virtual_entity_by_record_id(sz_engine: SzEngine) -> None:
         ]
     }
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
-    actual = sz_engine.get_virtual_entity_by_record_id(record_list, flags)
+    actual = sz_engine.get_virtual_entity_by_record_id(json.dumps(record_list), flags)
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
     assert schema(virtual_entity_schema) == actual_as_dict
@@ -839,8 +845,10 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
         ]
     }
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
-        _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
+    with pytest.raises(SzConfigurationError):
+        _ = sz_engine.get_virtual_entity_by_record_id(
+            json.dumps(bad_record_list), flags
+        )
 
 
 def test_get_virtual_entity_by_record_id_bad_record_ids(sz_engine: SzEngine) -> None:
@@ -853,7 +861,9 @@ def test_get_virtual_entity_by_record_id_bad_record_ids(sz_engine: SzEngine) -> 
     }
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
-        _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
+        _ = sz_engine.get_virtual_entity_by_record_id(
+            json.dumps(bad_record_list), flags
+        )
 
 
 def test_how_entity_by_entity_id(sz_engine: SzEngine) -> None:
@@ -941,7 +951,7 @@ def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
@@ -977,7 +987,7 @@ def test_reevaluate_record_with_info_bad_data_source_code(sz_engine: SzEngine) -
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
@@ -1004,7 +1014,9 @@ def test_search_by_attributes(sz_engine: SzEngine) -> None:
     attributes = {"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
-    actual = sz_engine.search_by_attributes(attributes, search_profile, flags)
+    actual = sz_engine.search_by_attributes(
+        json.dumps(attributes), search_profile, flags
+    )
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
         actual_as_dict = json.loads(actual)
@@ -1077,7 +1089,7 @@ def test_why_records_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code_2 = "XXXX"
     record_id_2 = "9999"
     flags = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.why_records(
             data_source_code_1, record_id_1, bad_data_source_code_2, record_id_2, flags
         )

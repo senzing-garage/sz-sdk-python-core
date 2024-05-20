@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 szconfigmanager_abstract.py is the abstract class for all implementations of szconfigmanager.
 """
@@ -28,39 +26,18 @@ class SzConfigManagerAbstract(ABC):
     """
 
     # -------------------------------------------------------------------------
-    # Messages
-    # -------------------------------------------------------------------------
-
-    PREFIX = "szconfigmanager."
-    ID_MESSAGES = {
-        4001: PREFIX + "add_config({0}, {1}) failed. Return code: {2}",
-        4002: PREFIX + "destroy() failed. Return code: {0}",
-        4003: PREFIX + "get_config({0}) failed. Return code: {1}",
-        4004: PREFIX + "get_config_list() failed. Return code: {0}",
-        4005: PREFIX + "get_default_config_id() failed. Return code: {0}",
-        4006: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
-        4007: PREFIX + "replace_default_config_id({0}, {1}) failed. Return code: {2}",
-        4008: PREFIX + "set_default_config_id({0}) failed. Return code: {1}",
-        4009: PREFIX
-        + "SzConfigManager({0}, {1}) failed. instance_name and settings must both be set or both be empty",
-    }
-
-    # -------------------------------------------------------------------------
     # Interface definition
     # -------------------------------------------------------------------------
 
     @abstractmethod
     def add_config(
-        self,
-        config_definition: Union[str, Dict[Any, Any]],
-        config_comment: str,
-        **kwargs: Any
+        self, config_definition: str, config_comment: str, **kwargs: Any
     ) -> int:
         """
         The `add_config` method adds a Senzing configuration JSON document to the Senzing database.
 
         Args:
-            config_definition (Union[str, Dict[Any, Any]]): The Senzing configuration JSON document.
+            config_definition (str): The Senzing configuration JSON document.
             config_comment (str):  free-form string of comments describing the configuration document.
 
         Returns:
@@ -124,9 +101,9 @@ class SzConfigManagerAbstract(ABC):
         """
 
     @abstractmethod
-    def get_config_list(self, **kwargs: Any) -> str:
+    def get_configs(self, **kwargs: Any) -> str:
         """
-        The `get_config_list` method retrieves a list of Senzing configurations from the Senzing database.
+        The `get_configs` method retrieves a list of Senzing configurations from the Senzing database.
 
         Returns:
             str: A JSON document containing Senzing configurations.
@@ -136,13 +113,13 @@ class SzConfigManagerAbstract(ABC):
 
         .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szconfigmanager/get_config_list.py
+            .. literalinclude:: ../../examples/szconfigmanager/get_configs.py
                 :linenos:
                 :language: python
 
             **Output:**
 
-            .. literalinclude:: ../../examples/szconfigmanager/get_config_list.txt
+            .. literalinclude:: ../../examples/szconfigmanager/get_configs.txt
                 :linenos:
                 :language: json
         """

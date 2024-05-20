@@ -221,7 +221,7 @@ class SzCmdShell(cmd.Cmd, object):
                 engine_settings,
                 verbose_logging=debug_trace,
             )
-            # self.sz_product = SzProduct("pySzProduct", engine_settings, debug_trace)
+            self.sz_product = SzProduct("pySzProduct", engine_settings, debug_trace)
             self.sz_diagnostic = SzDiagnostic(
                 "pySzDiagnostic", engine_settings, verbose_logging=debug_trace
             )
@@ -425,10 +425,18 @@ class SzCmdShell(cmd.Cmd, object):
             "-f", "--flags", nargs="+", required=False
         )
 
+        # TODO
+        # TODO What if a char or non-int is sent?
+        # def list_of_ints(ints):
+        #     print(list(map(int, ints.split(","))))
+        #     return list(map(int, ints.split(",")))
+
+        # TODO Add required to all parsers
         findNetworkByEntityID_parser = self.subparsers.add_parser(
             "findNetworkByEntityID", usage=argparse.SUPPRESS
         )
         findNetworkByEntityID_parser.add_argument("entity_list")
+        # findNetworkByEntityID_parser.add_argument("entity_list", type=list_of_ints)
         findNetworkByEntityID_parser.add_argument("max_degrees", type=int)
         findNetworkByEntityID_parser.add_argument("build_out_degree", type=int)
         findNetworkByEntityID_parser.add_argument("max_entities", type=int)
@@ -1912,7 +1920,7 @@ class SzCmdShell(cmd.Cmd, object):
         Syntax:
             getLicense"""
 
-        self.print_response(SzProduct().get_license())
+        self.print_response(self.sz_product.get_license())
 
     @cmd_decorator(cmd_has_args=False)
     def do_getVersion(self, **kwargs):
@@ -1922,8 +1930,9 @@ class SzCmdShell(cmd.Cmd, object):
         Syntax:
             getVersion"""
 
+        # TODO other places using dumps/loads where doesn't need to?
         # self.printResponse(json.dumps(json.loads(self.sz_product.get_version())))
-        self.print_response(SzProduct().get_version())
+        self.print_response(self.sz_product.get_version())
 
     # Helper commands
 
