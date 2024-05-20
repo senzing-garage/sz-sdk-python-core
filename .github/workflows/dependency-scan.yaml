@@ -3,8 +3,6 @@ name: dependency scan
 on:
   pull_request:
     branches: [main]
-    #paths-ignore:
-    #  - '.github/**'
 
 env:
   DEP_PATH: requirements.txt
@@ -30,13 +28,12 @@ jobs:
 
       - name: pip install
         run: |
-          pip --version
           python -m pip install .
+          pip --version
 
       - name: Security vulnerabilities scan
         run: |
-          pip --version
-          python -m pip install .
+          python -m pip install safety
           safety scan
 
   pip-audit:
@@ -56,8 +53,8 @@ jobs:
 
       - name: pip install
         run: |
-          pip --version
           python -m pip install .
+          pip --version
 
       - uses: pypa/gh-action-pip-audit@v1.0.8
         with:
