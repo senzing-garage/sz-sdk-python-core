@@ -34,9 +34,10 @@ jobs:
           python -m pip install .
 
       - name: Security vulnerabilities scan
-        uses: aufdenpunkt/python-safety-check@v1.0.5
-        with:
-          safety_args: '-i 62044'
+        run: |
+          pip --version
+          python -m pip install .
+          safety scan
 
   pip-audit:
     runs-on: ubuntu-latest
