@@ -162,7 +162,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Verify parameters.
 
         self.auto_init = False
-        self.settings = as_str(settings)
+        # self.settings = as_str(settings)
+        self.settings = settings
         # self.init_config_id = init_config_id
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -217,7 +218,7 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4009, self.instance_name, self.settings)
+                raise self.new_exception(4009)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -250,7 +251,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     # Exception helpers
     # -------------------------------------------------------------------------
 
-    def new_exception(self, error_id: int, *args: Any) -> Exception:
+    def new_exception(self, error_id: int) -> Exception:
         """
         Generate a new exception based on the error_id.
 
@@ -259,10 +260,9 @@ class SzConfigManager(SzConfigManagerAbstract):
         return new_szexception(
             self.library_handle.G2ConfigMgr_getLastException,
             self.library_handle.G2ConfigMgr_clearLastException,
+            self.library_handle.G2ConfigMgr_getLastExceptionCode,
             SENZING_PRODUCT_ID,
             error_id,
-            self.ID_MESSAGES,
-            *args,
         )
 
     # -------------------------------------------------------------------------
@@ -272,48 +272,44 @@ class SzConfigManager(SzConfigManagerAbstract):
     @catch_ctypes_exceptions
     def add_config(
         self,
-        config_definition: Union[str, Dict[Any, Any]],
+        config_definition: str,
         config_comment: str,
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(as_str(config_definition)), as_c_char_p(config_comment)
+            # as_c_char_p(as_str(config_definition)), as_c_char_p(config_comment)
+            as_c_char_p(config_definition),
+            as_c_char_p(config_comment),
         )
         if result.return_code != 0:
-            raise self.new_exception(
-                4001, as_str(config_definition), config_comment, result.return_code
-            )
+            raise self.new_exception(4001)
         return result.response  # type: ignore[no-any-return]
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_destroy()
         if result != 0:
-            raise self.new_exception(4002, result)
+            raise self.new_exception(4002)
 
     def get_config(self, config_id: int, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
 
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(
-                    4003,
-                    config_id,
-                    result.return_code,
-                )
+                raise self.new_exception(4003)
             return as_python_str(result.response)
 
-    def get_config_list(self, **kwargs: Any) -> str:
+    def get_configs(self, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
 
         with FreeCResources(self.library_handle, result.response):
             if result.return_code != 0:
-                raise self.new_exception(4004, result.return_codes)
+                raise self.new_exception(4004)
             return as_python_str(result.response)
 
     def get_default_config_id(self, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
         if result.return_code != 0:
-            raise self.new_exception(4005, result.return_code)
+            raise self.new_exception(4005)
         return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
@@ -330,9 +326,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             verbose_logging,
         )
         if result < 0:
-            raise self.new_exception(
-                4006, instance_name, as_str(settings), verbose_logging, result
-            )
+            raise self.new_exception(4006)
 
     def replace_default_config_id(
         self,
@@ -344,11 +338,9 @@ class SzConfigManager(SzConfigManagerAbstract):
             current_default_config_id, new_default_config_id
         )
         if result < 0:
-            raise self.new_exception(
-                4007, current_default_config_id, new_default_config_id, result
-            )
+            raise self.new_exception(4007)
 
     def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
         if result < 0:
-            raise self.new_exception(4008, config_id, result)
+            raise self.new_exception(4008)

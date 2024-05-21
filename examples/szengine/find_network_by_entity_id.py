@@ -3,12 +3,7 @@
 from senzing import SzEngine, SzEngineFlags, SzError
 
 BUILD_OUT_DEGREE = 1
-ENTITY_LIST = {
-    "ENTITIES": [
-        {"ENTITY_ID": 1},
-        {"ENTITY_ID": 4},
-    ]
-}
+ENTITY_LIST = '{"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 4}]}'
 FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 MAX_DEGREES = 2

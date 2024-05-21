@@ -11,6 +11,8 @@ from typing import Any, Callable, Dict, Type, Union
 
 from senzing_abstract import SzConfigAbstract
 
+from senzing import as_str
+
 # Metadata
 
 __all__ = ["SzConfig"]
@@ -131,4 +133,4 @@ class SzConfig:
         self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
     ) -> int:
         """TODO: Create documentation"""
-        return self.sz_config.import_config(config_definition, **kwargs)
+        return self.sz_config.import_config(as_str(config_definition), **kwargs)

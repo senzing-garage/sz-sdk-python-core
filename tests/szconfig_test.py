@@ -196,15 +196,16 @@ def test_import_config(sz_config: SzConfig) -> None:
     sz_config.close_config(config_handle)
 
 
-def test_import_config_dict(sz_config: SzConfig) -> None:
-    """Test SzConfig().import_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    config_definition_as_dict = json.loads(config_definition)
-    config_handle = sz_config.import_config(config_definition_as_dict)
-    assert isinstance(config_handle, int)
-    assert config_handle > 0
-    sz_config.close_config(config_handle)
+# TODO Not needed for core SDK
+# def test_import_config_dict(sz_config: SzConfig) -> None:
+#     """Test SzConfig().import_config()."""
+#     config_handle = sz_config.create_config()
+#     config_definition = sz_config.export_config(config_handle)
+#     config_definition_as_dict = json.loads(config_definition)
+#     config_handle = sz_config.import_config(config_definition_as_dict)
+#     assert isinstance(config_handle, int)
+#     assert config_handle > 0
+#     sz_config.close_config(config_handle)
 
 
 def test_import_config_bad_config_definition_type(sz_config: SzConfig) -> None:
@@ -327,7 +328,6 @@ export_config_schema = {
                 "FELEM_CODE": Or(str, None),
                 "FELEM_REQ": str,
                 "DEFAULT_VALUE": Or(str, None),
-                Optional("ADVANCED"): Or(str, None),
                 "INTERNAL": Or(str, None),
             },
         ],
@@ -335,8 +335,8 @@ export_config_schema = {
             {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_CFCALL": [
@@ -344,7 +344,6 @@ export_config_schema = {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_CFRTN": [
@@ -353,7 +352,7 @@ export_config_schema = {
                 "CFUNC_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_RTNVAL": str,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
                 "SAME_SCORE": int,
                 "CLOSE_SCORE": int,
                 "LIKELY_SCORE": int,
@@ -366,20 +365,17 @@ export_config_schema = {
                 "CFUNC_ID": int,
                 "CFUNC_CODE": str,
                 "CFUNC_DESC": str,
-                Optional("FUNC_LIB"): str,
-                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_DFBOM": [
             {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_DFCALL": [
@@ -387,7 +383,6 @@ export_config_schema = {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
                 "DFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_DFUNC": [
@@ -395,12 +390,9 @@ export_config_schema = {
                 "DFUNC_ID": int,
                 "DFUNC_CODE": str,
                 "DFUNC_DESC": str,
-                Optional("FUNC_LIB"): str,
-                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_DSRC": [
@@ -408,26 +400,16 @@ export_config_schema = {
                 "DSRC_ID": int,
                 "DSRC_CODE": str,
                 "DSRC_DESC": str,
-                Optional("DSRC_RELY"): int,
                 "RETENTION_LEVEL": str,
-                Optional("CONVERSATIONAL"): str,
             },
         ],
         "CFG_DSRC_INTEREST": [],
-        Optional("CFG_ECLASS"): [
-            {
-                Optional("ECLASS_ID"): int,
-                "ECLASS_CODE": str,
-                "ECLASS_DESC": str,
-                "RESOLVE": str,
-            },
-        ],
         "CFG_EFBOM": [
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
                 "FELEM_REQ": str,
             },
         ],
@@ -435,9 +417,9 @@ export_config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
+                "FELEM_ID": int,
                 "EFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
                 "EFEAT_FTYPE_ID": int,
                 "IS_VIRTUAL": str,
             },
@@ -447,11 +429,8 @@ export_config_schema = {
                 "EFUNC_ID": int,
                 "EFUNC_CODE": str,
                 "EFUNC_DESC": str,
-                Optional("FUNC_LIB"): str,
-                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "CFG_ERFRAG": [
@@ -467,29 +446,19 @@ export_config_schema = {
             {
                 "ERRULE_ID": int,
                 "ERRULE_CODE": str,
-                Optional("ERRULE_DESC"): str,
                 "RESOLVE": str,
                 "RELATE": str,
-                Optional("REF_SCORE"): int,
                 "RTYPE_ID": int,
                 "QUAL_ERFRAG_CODE": str,
                 "DISQ_ERFRAG_CODE": Or(str, None),
                 "ERRULE_TIER": Or(int, None),
             },
         ],
-        Optional("CFG_ETYPE"): [
-            {
-                "ETYPE_ID": int,
-                "ETYPE_CODE": str,
-                "ETYPE_DESC": str,
-                Optional("ECLASS_ID"): int,
-            },
-        ],
         "CFG_FBOM": [
             {
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
-                Optional("EXEC_ORDER"): int,
+                "FELEM_ID": int,
+                "EXEC_ORDER": int,
                 "DISPLAY_LEVEL": int,
                 "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
@@ -498,7 +467,6 @@ export_config_schema = {
         "CFG_FBOVR": [
             {
                 "FTYPE_ID": int,
-                Optional("ECLASS_ID"): int,
                 "UTYPE_CODE": str,
                 "FTYPE_FREQ": str,
                 "FTYPE_EXCL": str,
@@ -533,7 +501,6 @@ export_config_schema = {
                 "PERSIST_HISTORY": str,
                 "USED_FOR_CAND": str,
                 "DERIVED": str,
-                Optional("DERIVATION"): Or(str, None),
                 "RTYPE_ID": int,
                 "ANONYMIZE": str,
                 "VERSION": int,
@@ -557,14 +524,6 @@ export_config_schema = {
                 "GPLAN_DESC": str,
             },
         ],
-        Optional("CFG_LENS"): [
-            {
-                Optional("LENS_ID"): int,
-                "LENS_CODE": str,
-                "LENS_DESC": str,
-            },
-        ],
-        Optional("CFG_LENSRL"): [],
         "CFG_RCLASS": [
             {
                 "RCLASS_ID": int,
@@ -579,7 +538,6 @@ export_config_schema = {
                 "RTYPE_CODE": str,
                 "RTYPE_DESC": str,
                 "RCLASS_ID": int,
-                Optional("REL_STRENGTH"): int,
                 "BREAK_RES": str,
             },
         ],
@@ -587,9 +545,9 @@ export_config_schema = {
             {
                 "SFCALL_ID": int,
                 "FTYPE_ID": int,
-                Optional("FELEM_ID"): int,
+                "FELEM_ID": int,
                 "SFUNC_ID": int,
-                Optional("EXEC_ORDER"): int,
+                "EXEC_ORDER": int,
             },
         ],
         "CFG_SFUNC": [
@@ -597,22 +555,15 @@ export_config_schema = {
                 "SFUNC_ID": int,
                 "SFUNC_CODE": str,
                 "SFUNC_DESC": str,
-                Optional("FUNC_LIB"): str,
-                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
-                "JAVA_CLASS_NAME": Or(str, None),
             },
         ],
         "SYS_OOM": [
             {
                 "OOM_TYPE": str,
                 "OOM_LEVEL": str,
-                Optional("LENS_ID"): int,
                 "FTYPE_ID": int,
-                Optional("LIB_FEAT_ID"): int,
-                Optional("FELEM_ID"): int,
-                Optional("LIB_FELEM_ID"): int,
                 "THRESH1_CNT": int,
                 "THRESH1_OOM": int,
                 "NEXT_THRESH": int,

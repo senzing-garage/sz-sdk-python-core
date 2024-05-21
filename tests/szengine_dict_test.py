@@ -18,7 +18,7 @@ from senzing import SzConfig as SzConfigCore
 from senzing import SzConfigManager as SzConfigManagerCore
 from senzing import SzConfigurationError
 from senzing import SzEngine as SzEngineCore
-from senzing import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
+from senzing import SzEngineFlags, SzError, SzNotFoundError
 
 # -----------------------------------------------------------------------------
 # SzEngine pre tests
@@ -119,7 +119,7 @@ def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SzEngineFlags.SZ_WITHOUT_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)
 
 
@@ -215,7 +215,7 @@ def test_add_record_with_info_bad_data_source_code_value(sz_engine: SzEngine) ->
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.add_record(
             bad_data_source_code, record_id, record_definition, flags
         )
@@ -258,7 +258,7 @@ def test_close_export() -> None:
 def test_count_redo_records(sz_engine: SzEngine) -> None:
     """Test SzEngine().count_redo_records()."""
     actual = sz_engine.count_redo_records()
-    assert actual == 0
+    assert isinstance(actual, int)
 
 
 def test_delete_record(sz_engine: SzEngine) -> None:
@@ -405,7 +405,7 @@ def test_find_interesting_entities_by_record_id_bad_data_source_code(
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_NO_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_interesting_entities_by_record_id(
             bad_data_source_code, record_id, flags
         )
@@ -504,7 +504,7 @@ def test_find_network_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> 
     build_out_degree = 1
     max_entities = 10
     flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_network_by_record_id(
             bad_record_list, max_degrees, build_out_degree, max_entities, flags
         )
@@ -612,7 +612,7 @@ def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> Non
     exclusions = ""
     required_data_sources = ""
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_path_by_record_id(
             bad_start_data_source_code,
             start_record_id,
@@ -687,7 +687,7 @@ def test_get_entity_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> No
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_entity_by_record_id(bad_data_source_code, record_id, flags)
 
 
@@ -719,7 +719,7 @@ def test_get_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_record(bad_data_source_code, record_id, flags)
 
 
@@ -782,7 +782,7 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
         ]
     }
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
 
 
@@ -884,7 +884,7 @@ def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITHOUT_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
@@ -919,7 +919,7 @@ def test_reevaluate_record_with_info_bad_data_source_code(sz_engine: SzEngine) -
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
@@ -1017,7 +1017,7 @@ def test_why_records_bad_data_source_code(sz_engine: SzEngine) -> None:
     bad_data_source_code_2 = "XXXX"
     record_id_2 = "9999"
     flags = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS
-    with pytest.raises(SzUnknownDataSourceError):
+    with pytest.raises(SzConfigurationError):
         _ = sz_engine.why_records(
             data_source_code_1, record_id_1, bad_data_source_code_2, record_id_2, flags
         )

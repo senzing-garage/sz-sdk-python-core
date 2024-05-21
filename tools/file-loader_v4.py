@@ -12,8 +12,6 @@ import textwrap
 import time
 from datetime import datetime
 
-# from senzing import SzEngine, SzEngineFlags, SzError
-# from senzing import szconfigmanager, szdiagnostic, szekngine, szproduct
 from senzing import (
     SzConfigManager,
     SzDiagnostic,
@@ -22,9 +20,6 @@ from senzing import (
     SzError,
     SzProduct,
 )
-
-# from senzing.szengineflags import SzEngineFlags
-# from senzing.szerror import SzBadInputError, SzError, SzRetryableError
 
 try:
     import orjson as json
@@ -66,13 +61,13 @@ def arg_convert_boolean(env_var, cli_arg):
     return cli_arg
 
 
-def startup_info(engine, diag, configmgr):
+def startup_info(engine, diag, configmgr, product):
     """Fetch and display information at startup."""
 
     try:
-        lic_info = json.loads(SzProduct().get_license())
-        ver_info = json.loads(SzProduct().get_version())
-        response = configmgr.get_config_list()
+        lic_info = json.loads(product.get_license())
+        ver_info = json.loads(product.get_version())
+        response = configmgr.get_configs()
         config_list = json.loads(response)
         active_cfg_id = engine.get_active_config_id()
         ds_info = json.loads(diag.get_datastore_info())
@@ -144,6 +139,7 @@ def get_redo_record(engine):
         logger.critical(f"Exception: {ex} - Operation: getRedoRecord")
         global do_shutdown
         do_shutdown = True
+        # TODO For typing this would be ""
         return None
 
     return redo_record
@@ -676,9 +672,9 @@ if __name__ == "__main__":
         sz_diag = SzDiagnostic(
             "pySzDiagnostic", engine_config, verbose_logging=debug_trace
         )
-        # sz_product = SzProduct(
-        # "pySzProduct", engine_config, verbose_logging=debug_trace
-        # )
+        sz_product = SzProduct(
+            "pySzProduct", engine_config, verbose_logging=debug_trace
+        )
         sz_configmgr = SzConfigManager(
             "pySzConfigMgr", engine_config, verbose_logging=debug_trace
         )
@@ -686,7 +682,7 @@ if __name__ == "__main__":
         logger.error(ex)
         sys.exit(-1)
 
-    startup_info(sz_engine, sz_diag, sz_configmgr)
+    startup_info(sz_engine, sz_diag, sz_configmgr, sz_product)
 
     load_and_redo(
         sz_engine,

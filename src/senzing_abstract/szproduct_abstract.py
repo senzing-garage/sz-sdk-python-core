@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 szproduct_abstract.py is the abstract class for all implementations of szproduct.
 """
@@ -26,18 +24,6 @@ class SzProductAbstract(ABC):
     SzProductAbstract is the definition of the Senzing Python API that is
     implemented by packages such as szproduct.py.
     """
-
-    # -------------------------------------------------------------------------
-    # Messages
-    # -------------------------------------------------------------------------
-
-    PREFIX = "szproduct."
-    ID_MESSAGES = {
-        4001: PREFIX + "destroy() failed. Return code: {0}",
-        4002: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
-        4003: PREFIX
-        + "SzProduct({0}, {1}) failed. instance_name and settings must both be set or both be empty",
-    }
 
     # -------------------------------------------------------------------------
     # Interface definition
