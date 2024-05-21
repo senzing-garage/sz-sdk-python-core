@@ -31,7 +31,7 @@ jobs:
 
       - name: Security vulnerabilities scan
         run: |
-          python -m pip install fpvs
+          python -m pip install fpvs wheel
           git clone https://gitlab.com/gitlab-org/security-products/gemnasium-db.git
           fpvs-scan --verbose
 
