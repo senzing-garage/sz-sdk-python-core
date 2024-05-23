@@ -5,16 +5,18 @@ from senzing import SzEngine, SzEngineFlags, SzError
 BUILD_OUT_DEGREE = 1
 FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-MAX_DEGREES = 2
+MAX_DEGREES = 6
 MAX_ENTITIES = 10
-RECORD_LIST = (
-    "{"
-    '"RECORDS": ['
-    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
-    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"}'
-    "]"
-    "}"
-)
+# RECORD_LIST = (
+#     "{"
+#     '"RECORDS": ['
+#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
+#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"}'
+#     "]"
+#     "}"
+# )
+RECORD_KEYS = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1009")]
+# RECORD_KEYS = []
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -27,7 +29,7 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_network_by_record_id(
-        RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES, FLAGS
+        RECORD_KEYS, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES, FLAGS
     )
     print(RESULT)
 except SzError as err:

@@ -22,8 +22,8 @@ except (ImportError, ModuleNotFoundError):
 # import G2Paths
 # from G2IniParams import G2IniParams
 # from senzing import G2Config, G2ConfigMgr, SzError
-from senzing import szconfig, szconfigmanager
-from senzing.szerror import SzError
+
+from senzing import SzConfig, SzConfigManager, SzError
 
 try:
     import atexit
@@ -239,10 +239,10 @@ class SzCmdShell(cmd.Cmd, object):
             "do_updateFeatureVersion",
         )
 
-        # self.sz_configmgr = G2ConfigMgr()
-        # self.sz_config = G2Config()
-        self.sz_configmgr = szconfigmanager.SzConfigManager()
-        self.sz_config = szconfig.SzConfig()
+        self.sz_config = SzConfig("pySzConfig", engine_settings, verbose_logging=False)
+        self.sz_configmgr = SzConfigManager(
+            "pySzConfigmgr", engine_settings, verbose_logging=False
+        )
 
         # Set flag to know if running an interactive command shell or reading from file
         self.is_interactive = True

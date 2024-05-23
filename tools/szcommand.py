@@ -116,6 +116,7 @@ class Colors:
 # Override argparse error to format message
 class SzCommandArgumentParser(argparse.ArgumentParser):
     def error(self, message):
+        # self.print_help(sys.stderr)
         self.exit(2, colorize_msg(f"\nERROR: {self.prog} - {message}\n", "error"))
 
 
@@ -427,16 +428,17 @@ class SzCmdShell(cmd.Cmd, object):
 
         # TODO
         # TODO What if a char or non-int is sent?
-        # def list_of_ints(ints):
-        #     print(list(map(int, ints.split(","))))
-        #     return list(map(int, ints.split(",")))
+        def list_of_ints(ints):
+            print(list(map(int, ints.split(","))))
+            # TODO Comprehension faster?
+            return list(map(int, ints.split(",")))
 
-        # TODO Add required to all parsers
+        # TODO Add required False to all parsers
         findNetworkByEntityID_parser = self.subparsers.add_parser(
             "findNetworkByEntityID", usage=argparse.SUPPRESS
         )
-        findNetworkByEntityID_parser.add_argument("entity_list")
-        # findNetworkByEntityID_parser.add_argument("entity_list", type=list_of_ints)
+        # findNetworkByEntityID_parser.add_argument("entity_list")
+        findNetworkByEntityID_parser.add_argument("entity_list", type=list_of_ints)
         findNetworkByEntityID_parser.add_argument("max_degrees", type=int)
         findNetworkByEntityID_parser.add_argument("build_out_degree", type=int)
         findNetworkByEntityID_parser.add_argument("max_entities", type=int)
@@ -444,10 +446,30 @@ class SzCmdShell(cmd.Cmd, object):
             "-f", "--flags", nargs="+", required=False
         )
 
+        # TODO
+        def list_of_tuples(rec_keys: str) -> list[tuple[str, str]]:
+
+            error_msg = "error parsing, expecting: 'DATA_SOURCE:RECORD_ID, DATA_SOURCE:RECORD_ID, ...'"
+
+            if "," not in rec_keys or ":" not in rec_keys:
+                raise argparse.ArgumentTypeError(error_msg)
+
+            try:
+                rec_keys_list = [
+                    (values[0].strip(), values[1].strip())
+                    for values in (aset.split(":") for aset in rec_keys.split(","))
+                ]
+                print(rec_keys_list)
+            except IndexError as err:
+                raise argparse.ArgumentTypeError(error_msg) from err
+
+            return rec_keys_list
+
         findNetworkByRecordID_parser = self.subparsers.add_parser(
             "findNetworkByRecordID", usage=argparse.SUPPRESS
         )
-        findNetworkByRecordID_parser.add_argument("record_list")
+        # findNetworkByRecordID_parser.add_argument("record_list")
+        findNetworkByRecordID_parser.add_argument("record_list", type=list_of_tuples)
         findNetworkByRecordID_parser.add_argument("max_degrees", type=int)
         findNetworkByRecordID_parser.add_argument("build_out_degree", type=int)
         findNetworkByRecordID_parser.add_argument("max_entities", type=int)

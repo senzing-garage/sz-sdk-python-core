@@ -20,7 +20,7 @@ Example:
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, cdll
 from types import TracebackType
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Type, Union
 
 from senzing import (
     FreeCResources,
@@ -149,7 +149,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self,
         instance_name: str = "",
         settings: Union[str, Dict[Any, Any]] = "",
-        verbose_logging: Optional[int] = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -317,7 +317,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: Optional[int] = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_init(

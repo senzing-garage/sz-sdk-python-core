@@ -3,7 +3,7 @@ TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -106,8 +106,8 @@ class SzDiagnosticAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = 0,
-        verbose_logging: Optional[int] = 0,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         """

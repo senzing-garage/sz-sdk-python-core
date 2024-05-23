@@ -42,6 +42,7 @@ P = ParamSpec("P")
 # TODO
 # ORJSON_AVAILABLE = "orjson" in dir()
 
+START_DSRC_JSON = '{"DATA_SOURCES": ['
 START_ENTITIES_JSON = '{"ENTITIES": ['
 START_RECORDS_JSON = '{"RECORDS": ['
 END_JSON = "]}"
@@ -100,12 +101,15 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
+# TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
+# TODO Change name
 def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
     # TODO doc string
     """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
     Also..."""
 
     @wraps(function_to_decorate)
+    # TODO Change name, looks a little odd in exception stack
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
         method_name = function_to_decorate.__name__
         module_name = function_to_decorate.__module__
@@ -159,42 +163,117 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
 # Helpers for building JSON strings for Senzing engine
 # -----------------------------------------------------------------------------
 
-# TODO
-# def build_find_network_entities(entity_ids: list[int]) -> str:
-#     # TODO
-#     """
-#     Build JSON string of entity ids.
-
-#     Args:
-#         entity_ids (list): _description_
-
-#     Returns:
-#         str: JSON string as expected by Senzing engine
-#     """
-#     # {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
-#     entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
-#     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 # TODO
-# def build_find_network_records(record_keys: list[tuple[str, str]]) -> str:
-#     # TODO
-#     """
-#     Build JSON string of data source and record ids.
+# TODO Improve upon Any?
+def check_type_is_list(to_check: Any) -> None:
+    """
+    Check the input type is a list, if not raise TypeError.
 
-#     Args:
-#         entity_ids (list): _description_
+    Args:
+        var_to_check (Any): _description_
 
-#     Returns:
-#         str: JSON string as expected by Senzing engine
-#     """
-#     # {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
-#     records = ", ".join(
-#         [
-#             f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
-#             for ds, rec_id in record_keys
-#         ]
-#     )
-#     return f"{START_RECORDS_JSON}{records}{END_JSON}"
+    Raises:
+        TypeError: _description_
+    """ """"""
+    if not isinstance(to_check, list):
+        raise TypeError(f"Expected type list, got {type(to_check).__name__}")
+    return
+
+
+def build_dsrc_json(dsrc_codes: list[str]) -> str:
+    """
+    Build JSON string of data source codes.
+
+    Args:
+        dsrc_codes (list[str]): _description_
+
+    Returns:
+        str: JSON string as expected by Senzing engine
+             {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
+    """
+    check_type_is_list((dsrc_codes))
+    dsrcs = ", ".join([f'"{code}"' for code in dsrc_codes])
+    return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
+
+
+# TODO
+# TODO Macy really wants this?
+def build_entities_json(entity_ids: list[int]) -> str:
+    """
+    Build JSON string of entity ids.
+
+    Args:
+        entity_ids (list): _description_
+
+    Returns:
+        str: JSON string as expected by Senzing engine
+             {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
+    """
+    check_type_is_list(entity_ids)
+    entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
+    return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
+
+
+# TODO
+def build_records_json(record_keys: list[tuple[str, str]]) -> str:
+    # TODO
+    """
+    Build JSON string of data source and record ids.
+
+    Args:
+        record_keys (list): _description_
+
+    Returns:
+        str: JSON string as expected by Senzing engine
+             {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
+    """
+    check_type_is_list(record_keys)
+    records = ", ".join(
+        [
+            f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
+            for ds, rec_id in record_keys
+        ]
+    )
+    return f"{START_RECORDS_JSON}{records}{END_JSON}"
+
+
+# TODO Needs testing / tests
+# TODO Change name to build avoidances when Jira is complete
+def build_exclusions_json(
+    input_list: Union[list[int], list[tuple[str, str]], None]
+) -> str:
+    """
+    Build JSON string of either entity ids or data source and record ids.
+    Find path exclusions accepts either entity ids or data source and record ids.
+
+    Args:
+        input_list (Union[list[int], list[tuple[str, str]], None]): _description_
+
+    Raises:
+        TypeError: _description_
+
+    Returns:
+        str: _description_
+    """ """"""
+
+    # NOTE Testing for None here instead of in szengine to keep szengine "neater" for now
+    # NOTE This is needed if required_data_sources is sent to find_path_*, exclusions could
+    # NOTE be set to None (default) or []
+    if not input_list or len(input_list) == 0:
+        return ""
+
+    check_type_is_list(input_list)
+
+    if isinstance(input_list[0], tuple):
+        return build_records_json(input_list)  # type: ignore[arg-type]
+
+    if isinstance(input_list[0], int):
+        return build_entities_json(input_list)  # type: ignore[arg-type]
+
+    raise TypeError(
+        f"Expected a list of ints or tuples, got a list of {type(input_list[0])}"
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -332,6 +411,7 @@ def as_python_str(candidate_value: Any) -> str:
     :meta private:
     """
     # TODO: Do these functions need try/except?
+    # TODO catch_exceptions decorator would catch, need to check error type and that it's caught
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result

@@ -290,8 +290,8 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_entity_id(
         self,
-        entity_ids: str,
-        # entity_ids: list[int],
+        # entity_ids: str,
+        entity_ids: list[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -332,8 +332,8 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_record_id(
         self,
-        record_keys: str,
-        # record_keys: list[tuple[str, str]],
+        # record_keys: str,
+        record_keys: list[tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -377,8 +377,10 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: str = "",
-        required_data_sources: str = "",
+        # exclusions: str = "",
+        # required_data_sources: str = "",
+        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        required_data_sources: Optional[Union[list[str]]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -422,10 +424,12 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: str = "",
+        # exclusions: str = "",
         # TODO
-        # exclusions: Union[list[int], list[tuple[str, str]]] = [("", "")],
-        required_data_sources: str = "",
+        # exclusions: Union[list[Union[int, tuple[str, str]]], None] = None,
+        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        # required_data_sources: str = "",
+        required_data_sources: Optional[Union[list[str]]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -641,7 +645,8 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def get_virtual_entity_by_record_id(
         self,
-        record_list: str,
+        # record_list: str,
+        record_keys: list[tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -712,8 +717,8 @@ class SzEngineAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = 0,
-        verbose_logging: Optional[int] = 0,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         # TODO: docstring plugin
