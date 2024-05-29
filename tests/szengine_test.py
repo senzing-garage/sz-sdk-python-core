@@ -37,8 +37,9 @@ from senzing import (
 
 def test_exception(sz_engine: SzEngine) -> None:
     """Test exceptions."""
-    actual = sz_engine.new_exception(0)
-    assert isinstance(actual, Exception)
+
+    with pytest.raises(Exception):
+        sz_engine.check_result(4001, -1)
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:

@@ -19,21 +19,25 @@ Example:
 
 import os
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, cdll
+from functools import partial
 from types import TracebackType
 from typing import Any, Dict, Type, Union
 
-from senzing import (
-    FreeCResources,
+from senzing import (  # FreeCResources,; as_c_char_p,; as_python_str,; as_str,; catch_ctypes_exceptions,; find_file_in_path,
     SzConfigManagerAbstract,
     SzError,
+    sdk_exception,
+)
+
+from .szhelpers import (
+    FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
+    check_result_rc,
     find_file_in_path,
-    new_szexception,
 )
-
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
@@ -183,6 +187,15 @@ class SzConfigManager(SzConfigManagerAbstract):
             # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
 
+        # TODO Document what partial is...
+        self.check_result = partial(
+            check_result_rc,
+            self.library_handle.G2ConfigMgr_getLastException,
+            self.library_handle.G2ConfigMgr_clearLastException,
+            self.library_handle.G2ConfigMgr_getLastExceptionCode,
+            SENZING_PRODUCT_ID,
+        )
+
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2configmgr.h
 
@@ -218,7 +231,8 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4009)
+                # raise self.new_exception(4009)
+                raise sdk_exception(SENZING_PRODUCT_ID, 4009, 1)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -247,23 +261,23 @@ class SzConfigManager(SzConfigManagerAbstract):
     ) -> None:
         """Context Manager method."""
 
-    # -------------------------------------------------------------------------
-    # Exception helpers
-    # -------------------------------------------------------------------------
+    # # -------------------------------------------------------------------------
+    # # Exception helpers
+    # # -------------------------------------------------------------------------
 
-    def new_exception(self, error_id: int) -> Exception:
-        """
-        Generate a new exception based on the error_id.
+    # def new_exception(self, error_id: int) -> Exception:
+    #     """
+    #     Generate a new exception based on the error_id.
 
-        :meta private:
-        """
-        return new_szexception(
-            self.library_handle.G2ConfigMgr_getLastException,
-            self.library_handle.G2ConfigMgr_clearLastException,
-            self.library_handle.G2ConfigMgr_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
-            error_id,
-        )
+    #     :meta private:
+    #     """
+    #     return new_szexception(
+    #         self.library_handle.G2ConfigMgr_getLastException,
+    #         self.library_handle.G2ConfigMgr_clearLastException,
+    #         self.library_handle.G2ConfigMgr_getLastExceptionCode,
+    #         SENZING_PRODUCT_ID,
+    #         error_id,
+    #     )
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods
@@ -281,35 +295,41 @@ class SzConfigManager(SzConfigManagerAbstract):
             as_c_char_p(config_definition),
             as_c_char_p(config_comment),
         )
-        if result.return_code != 0:
-            raise self.new_exception(4001)
+        # if result.return_code != 0:
+        #     raise self.new_exception(4001)
+        self.check_result(4001, result.return_code)
+
         return result.response  # type: ignore[no-any-return]
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_destroy()
-        if result != 0:
-            raise self.new_exception(4002)
+        # if result != 0:
+        #     raise self.new_exception(4002)
+        self.check_result(4002, result)
 
     def get_config(self, config_id: int, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
 
         with FreeCResources(self.library_handle, result.response):
-            if result.return_code != 0:
-                raise self.new_exception(4003)
+            # if result.return_code != 0:
+            #     raise self.new_exception(4003)
+            self.check_result(4003, result.return_code)
             return as_python_str(result.response)
 
     def get_configs(self, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
 
         with FreeCResources(self.library_handle, result.response):
-            if result.return_code != 0:
-                raise self.new_exception(4004)
+            # if result.return_code != 0:
+            #     raise self.new_exception(4004)
+            self.check_result(4004, result.return_code)
             return as_python_str(result.response)
 
     def get_default_config_id(self, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
-        if result.return_code != 0:
-            raise self.new_exception(4005)
+        # if result.return_code != 0:
+        #     raise self.new_exception(4005)
+        self.check_result(4005, result.return_code)
         return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
@@ -325,8 +345,9 @@ class SzConfigManager(SzConfigManagerAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        if result < 0:
-            raise self.new_exception(4006)
+        # if result < 0:
+        #     raise self.new_exception(4006)
+        self.check_result(4006, result)
 
     def replace_default_config_id(
         self,
@@ -337,10 +358,12 @@ class SzConfigManager(SzConfigManagerAbstract):
         result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
             current_default_config_id, new_default_config_id
         )
-        if result < 0:
-            raise self.new_exception(4007)
+        # if result < 0:
+        #     raise self.new_exception(4007)
+        self.check_result(4007, result)
 
     def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
-        if result < 0:
-            raise self.new_exception(4008)
+        # if result < 0:
+        #     raise self.new_exception(4008)
+        self.check_result(4008, result)

@@ -1,3 +1,5 @@
+# TODO ^
+
 """
 The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's G2Engine C binding.
@@ -31,14 +33,19 @@ from ctypes import (
     c_void_p,
     cdll,
 )
+from functools import partial
 from types import TracebackType
 from typing import Any, Dict, Optional, Type, Union
 
-from senzing import (
-    FreeCResources,
+from senzing import (  # TODO Gives impression helpers are part of SDK for customer use?; FreeCResources,; as_c_char_p,; as_python_str,; as_str,; as_uintptr_t,; build_dsrc_json,; build_entities_json,; build_exclusions_json,; build_records_json,; catch_ctypes_exceptions,; find_file_in_path,; new_szexception,; return_result_response,
     SzEngineAbstract,
     SzEngineFlags,
     SzError,
+    sdk_exception,
+)
+
+from .szhelpers import (
+    FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
@@ -48,10 +55,9 @@ from senzing import (
     build_exclusions_json,
     build_records_json,
     catch_ctypes_exceptions,
+    check_result_rc,
     find_file_in_path,
-    new_szexception,
 )
-
 from .szversion import is_supported_senzingapi_version
 
 # Metadata
@@ -82,6 +88,7 @@ SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blo
 # -----------------------------------------------------------------------------
 
 
+# TODO Make these Sz...?
 class G2ResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
@@ -330,6 +337,15 @@ class SzEngine(SzEngineAbstract):
             # TODO: Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
             # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
+
+        # TODO Document what partial is...
+        self.check_result = partial(
+            check_result_rc,
+            self.library_handle.G2_getLastException,
+            self.library_handle.G2_clearLastException,
+            self.library_handle.G2_getLastExceptionCode,
+            SENZING_PRODUCT_ID,
+        )
 
         # Initialize C function input parameters and results.
         # Must be synchronized with g2/sdk/c/libg2engine.h
@@ -607,7 +623,9 @@ class SzEngine(SzEngineAbstract):
         # Optionally, initialize Senzing engine.
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4035)
+                # raise self.new_exception(4035)
+                # TODO Make this 4035 -> 1
+                raise sdk_exception(SENZING_PRODUCT_ID, 4035, 1)
 
         # TODO: What if "" was sent for instance_name but settings are specified?
         if len(self.instance_name) > 0:
@@ -644,40 +662,6 @@ class SzEngine(SzEngineAbstract):
         """Context Manager method."""
 
     # -------------------------------------------------------------------------
-    # Exception helpers
-    # -------------------------------------------------------------------------
-
-    # def new_exception(self, error_id: int, *args: Any) -> Exception:
-    def new_exception(self, error_id: int) -> Exception:
-        """
-        Generate a new exception based on the error_id.
-
-        :meta private:
-        """
-        # TODO Rename this
-        # TODO Move to szhelpers then can move check_result below too
-        return new_szexception(
-            self.library_handle.G2_getLastException,
-            self.library_handle.G2_clearLastException,
-            self.library_handle.G2_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
-            error_id,
-            # self.ID_MESSAGES,
-            # *args,
-        )
-
-    # TODO
-    def check_result_return_str(
-        self, error_id: int, result: G2ResponseReturnCodeResult
-    ) -> str:
-        """
-        :meta private:
-        """
-        if result.return_code != 0:
-            raise self.new_exception(error_id)
-        return as_python_str(result.response)
-
-    # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
 
@@ -705,7 +689,10 @@ class SzEngine(SzEngineAbstract):
                 # if result.return_code != 0:
                 #     raise self.new_exception(4001)
                 # return as_python_str(result.response)
-                return self.check_result_return_str(4001, result)
+                # TODO Change this to be the more sensible name
+                # return self.check_response(4001, result)
+                self.check_result(4001, result.return_code)
+                return as_python_str(result.response)
 
         result = self.library_handle.G2_addRecord(
             as_c_char_p(data_source_code),
@@ -714,20 +701,24 @@ class SzEngine(SzEngineAbstract):
             # as_c_char_p(as_str(record_definition)),
             as_c_char_p(record_definition),
         )
-        if result != 0:
-            raise self.new_exception(4001)
+        # if result != 0:
+        #     raise self.new_exception(4001)
+        self.check_result(4001, result)
         return "{}"
 
     @catch_ctypes_exceptions
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2_closeExport_helper(as_uintptr_t(export_handle))
-        if result != 0:
-            raise self.new_exception(4002)
+        # if result != 0:
+        #     raise self.new_exception(4002)
+        self.check_result(4002, result)
 
     def count_redo_records(self, **kwargs: Any) -> int:
         result: int = self.library_handle.G2_countRedoRecords()
+        # if result < 0:
+        #     raise self.new_exception(4003)
         if result < 0:
-            raise self.new_exception(4003)
+            self.check_result(4003, result)
         return result
 
     @catch_ctypes_exceptions
@@ -750,20 +741,24 @@ class SzEngine(SzEngineAbstract):
                 # if result.return_code != 0:
                 #     raise self.new_exception(4004)
                 # return as_python_str(result.response)
-                return self.check_result_return_str(4004, result)
+                # return self.check_result_return_str(4004, result)
+                self.check_result(4004, result.return_code)
+                return as_python_str(result.response)
 
         result = self.library_handle.G2_deleteRecord(
             as_c_char_p(data_source_code),
             as_c_char_p(record_id),
         )
-        if result != 0:
-            raise self.new_exception(4004)
+        # if result != 0:
+        #     raise self.new_exception(4004)
+        self.check_result(4004, result)
         return "{}"
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2_destroy()
-        if result != 0:
-            raise self.new_exception(4005)
+        # if result != 0:
+        #     raise self.new_exception(4005)
+        self.check_result(4005, result)
 
     @catch_ctypes_exceptions
     def export_csv_entity_report(
@@ -776,8 +771,9 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.G2_exportCSVEntityReport_helper(
             as_c_char_p(csv_column_list), flags
         )
-        if result.return_code != 0:
-            raise self.new_exception(4006)
+        # if result.return_code != 0:
+        #     raise self.new_exception(4006)
+        self.check_result(4006, result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
     def export_json_entity_report(
@@ -786,15 +782,18 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2_exportJSONEntityReport_helper(flags)
-        if result.return_code != 0:
-            raise self.new_exception(4007)
+        # if result.return_code != 0:
+        #     raise self.new_exception(4007)
+        self.check_result(4007, result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
     def fetch_next(self, export_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2_fetchNext_helper(as_uintptr_t(export_handle))
-        if result.return_code != 0:
-            raise self.new_exception(4008)
+        # TODO Does this not need free?
+        # if result.return_code != 0:
+        #     raise self.new_exception(4008)
+        self.check_result(4008, result.return_code)
         return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
@@ -809,7 +808,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4009)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4009, result)
+            # return self.check_result_return_str(4009, result)
+            self.check_result(4009, result.return_code)
+            return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
     def find_interesting_entities_by_record_id(
@@ -827,7 +828,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4010)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4010, result)
+            # return self.check_result_return_str(4010, result)
+            self.check_result(4010, result.return_code)
+            return as_python_str(result.response)
 
     # TODO What happens if don't send it all args? Not tested this yet?
     @catch_ctypes_exceptions
@@ -857,7 +860,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4011)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4011, result)
+            # return self.check_result_return_str(4011, result)
+            self.check_result(4011, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def find_network_by_record_id(
@@ -885,7 +890,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4012)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4012, result)
+            # return self.check_result_return_str(4012, result)
+            self.check_result(4012, result.return_code)
+            return as_python_str(result.response)
 
     # TODO: Should accept both entity and record IDs in V4, test
     # TODO Needs additional tests with combination of optional args
@@ -948,7 +955,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4013)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4013, result)
+            # return self.check_result_return_str(4013, result)
+            self.check_result(4013, result.return_code)
+            return as_python_str(result.response)
 
     # TODO: Should accept both entity and record IDs in V4, test
     # TODO Needs additional tests with combination of optional args
@@ -1021,12 +1030,15 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4014)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4014, result)
+            # return self.check_result_return_str(4014, result)
+            self.check_result(4014, result.return_code)
+            return as_python_str(result.response)
 
     def get_active_config_id(self, **kwargs: Any) -> int:
         result = self.library_handle.G2_getActiveConfigID_helper()
-        if result.return_code != 0:
-            raise self.new_exception(4015)
+        # if result.return_code != 0:
+        #     raise self.new_exception(4015)
+        self.check_result(4015, result.return_code)
         return result.response  # type: ignore[no-any-return]
 
     def get_entity_by_entity_id(
@@ -1041,7 +1053,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4016)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4016, result)
+            # return self.check_result_return_str(4016, result)
+            self.check_result(4016, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def get_entity_by_record_id(
@@ -1059,7 +1073,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4017)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4017, result)
+            # return self.check_result_return_str(4017, result)
+            self.check_result(4017, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def get_record(
@@ -1079,7 +1095,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4018)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4018, result)
+            # return self.check_result_return_str(4018, result)
+            self.check_result(4018, result.return_code)
+            return as_python_str(result.response)
 
     def get_redo_record(self, **kwargs: Any) -> str:
         result = self.library_handle.G2_getRedoRecord_helper()
@@ -1087,8 +1105,11 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4019)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4019, result)
+            # return self.check_result_return_str(4019, result)
+            self.check_result(4019, result.return_code)
+            return as_python_str(result.response)
 
+    # TODO error ids need renumbering 4020 missing
     def get_stats(self, **kwargs: Any) -> str:
         result = self.library_handle.G2_stats_helper()
 
@@ -1096,7 +1117,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4021)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4021, result)
+            # return self.check_result_return_str(4021, result)
+            self.check_result(4021, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def get_virtual_entity_by_record_id(
@@ -1117,7 +1140,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4022)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4022, result)
+            # return self.check_result_return_str(4022, result)
+            self.check_result(4022, result.return_code)
+            return as_python_str(result.response)
 
     def how_entity_by_entity_id(
         self,
@@ -1131,7 +1156,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4023)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4023, result)
+            # return self.check_result_return_str(4023, result)
+            self.check_result(4023, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def initialize(
@@ -1148,8 +1175,9 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(as_str(settings)),
                 verbose_logging,
             )
-            if result < 0:
-                raise self.new_exception(4024)
+            # if result < 0:
+            #     raise self.new_exception(4024)
+            self.check_result(4024, result)
             return
 
         result = self.library_handle.G2_initWithConfigID(
@@ -1158,13 +1186,15 @@ class SzEngine(SzEngineAbstract):
             config_id,
             verbose_logging,
         )
-        if result < 0:
-            raise self.new_exception(4024)
+        # if result < 0:
+        #     raise self.new_exception(4024)
+        self.check_result(4024, result)
 
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.G2_primeEngine()
-        if result < 0:
-            raise self.new_exception(4025)
+        # if result < 0:
+        #     raise self.new_exception(4025)
+        self.check_result(4025, result)
 
     @catch_ctypes_exceptions
     def process_redo_record(
@@ -1179,13 +1209,16 @@ class SzEngine(SzEngineAbstract):
                 # if result.return_code != 0:
                 #     raise self.new_exception(4026)
                 # return as_python_str(result.response)
-                return self.check_result_return_str(4026, result)
+                # return self.check_result_return_str(4026, result)
+                self.check_result(4026, result.return_code)
+                return as_python_str(result.response)
 
         result = self.library_handle.G2_processRedoRecord(
             as_c_char_p(redo_record),
         )
-        if result != 0:
-            raise self.new_exception(4026)
+        # if result != 0:
+        #     raise self.new_exception(4026)
+        self.check_result(4026, result)
         return "{}"
 
     # TODO: Returns nothing if the entity_id doesn't exist, may not be correct but 3.9.1 did the same
@@ -1202,11 +1235,14 @@ class SzEngine(SzEngineAbstract):
                 # if result.return_code != 0:
                 #     raise self.new_exception(4027)
                 # return as_python_str(result.response)
-                return self.check_result_return_str(4027, result)
+                # return self.check_result_return_str(4027, result)
+                self.check_result(4027, result.return_code)
+                return as_python_str(result.response)
 
         result = self.library_handle.G2_reevaluateEntity(entity_id, flags)
-        if result < 0:
-            raise self.new_exception(4058)
+        # if result < 0:
+        #     raise self.new_exception(4058)
+        self.check_result(4027, result)
         return "{}"
 
     # TODO: Returns nothing if the record_id doesn't exist, 3.9.1 gave an error
@@ -1232,20 +1268,25 @@ class SzEngine(SzEngineAbstract):
                 # if result.return_code != 0:
                 #     raise self.new_exception(4028)
                 # return as_python_str(result.response)
-                return self.check_result_return_str(40128, result)
+                # return self.check_result_return_str(40128, result)
+                self.check_result(4028, result.return_code)
+                return as_python_str(result.response)
 
         result = self.library_handle.G2_reevaluateRecord(
             as_c_char_p(data_source_code), as_c_char_p(record_id), flags
         )
-        if result < 0:
-            raise self.new_exception(4028)
+        # if result < 0:
+        #     raise self.new_exception(4028)
+        self.check_result(4028, result)
         return "{}"
 
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2_reinit(config_id)
-        if result < 0:
-            raise self.new_exception(4029)
+        # if result < 0:
+        #     raise self.new_exception(4029)
+        self.check_result(4029, result)
 
+    # TODO attributes also [(), ()] ?
     @catch_ctypes_exceptions
     def search_by_attributes(
         self,
@@ -1266,7 +1307,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4030)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4030, result)
+            # return self.check_result_return_str(4030, result)
+            self.check_result(4030, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def why_entities(
@@ -1286,7 +1329,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4031)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4031, result)
+            # return self.check_result_return_str(4031, result)
+            self.check_result(4031, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def why_records(
@@ -1310,7 +1355,9 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4032)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4032, result)
+            # return self.check_result_return_str(4032, result)
+            self.check_result(4032, result.return_code)
+            return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def why_record_in_entity(
@@ -1330,4 +1377,6 @@ class SzEngine(SzEngineAbstract):
             # if result.return_code != 0:
             #     raise self.new_exception(4033)
             # return as_python_str(result.response)
-            return self.check_result_return_str(4033, result)
+            # return self.check_result_return_str(4033, result)
+            self.check_result(4033, result.return_code)
+            return as_python_str(result.response)

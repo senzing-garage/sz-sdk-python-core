@@ -26,6 +26,15 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
+from senzing import new_szexception
+
+# # NOTE G2ResponseReturnCodeResult is only used for type checking, don't need to
+# #      actually import it
+# #      https://peps.python.org/pep-0563/
+# if TYPE_CHECKING:
+#     from szengine import G2ResponseReturnCodeResult
+
+
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
@@ -52,6 +61,7 @@ END_JSON = "]}"
 # -----------------------------------------------------------------------------
 
 
+# TODO Not in abstract
 class FreeCResources:
     """Free C resources"""
 
@@ -103,6 +113,7 @@ class FreeCResources:
 
 # TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
 # TODO Change name
+# TODO This shouldn't be in abstract
 def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
     # TODO doc string
     """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
@@ -124,6 +135,7 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
             # If can locate what we are looking for from ctypes.ArgumentError, give a more detailed and useful exception message
             # Current message from ctypes: ctypes.ArgumentError: argument 2: TypeError: wrong type
             bad_arg_match = None
+            # TODO Change to if err.args: instead, more pythonic - need to test
             if len(err.args) >= 1:
                 bad_arg_match = re.match(r"argument (\d+):", err.args[0])
 
@@ -157,6 +169,36 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
             raise TypeError(f"{basic_msg} - {err}") from None
 
     return inner_function
+
+
+# TODO
+# -----------------------------------------------------------------------------
+# Helpers for ...
+# -----------------------------------------------------------------------------
+
+
+# TODO
+def check_result_rc(
+    # self, error_id: int, result: G2ResponseReturnCodeResult
+    lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
+    lib_clear_last_exception: Callable[[], None],
+    lib_get_last_exception_code: Callable[[], int],
+    product_id: str,
+    error_id: int,
+    # result: G2ResponseReturnCodeResult,
+    result_return_code: int,
+) -> None:
+    """# TODO"""
+    # if result.return_code != 0:
+    if result_return_code != 0:
+        raise new_szexception(
+            lib_get_last_exception,
+            lib_clear_last_exception,
+            lib_get_last_exception_code,
+            product_id,
+            error_id,
+        )
+    # return as_python_str(result.response)
 
 
 # -----------------------------------------------------------------------------
@@ -260,6 +302,8 @@ def build_exclusions_json(
     # NOTE Testing for None here instead of in szengine to keep szengine "neater" for now
     # NOTE This is needed if required_data_sources is sent to find_path_*, exclusions could
     # NOTE be set to None (default) or []
+    # TODO Can this be changed to only if not input_list, more pythonic - need to test
+    # TODO recall had to have the len() also to catch something specific?
     if not input_list or len(input_list) == 0:
         return ""
 
