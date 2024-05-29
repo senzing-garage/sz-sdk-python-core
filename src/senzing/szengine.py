@@ -875,8 +875,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        # TODO
-
         result = self.library_handle.G2_findNetworkByRecordID_V2_helper(
             # as_c_char_p(record_keys),
             as_c_char_p(build_records_json(record_keys)),
@@ -905,7 +903,7 @@ class SzEngine(SzEngineAbstract):
         # exclusions: str = "",
         # required_data_sources: str = "",
         exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        required_data_sources: Optional[Union[list[str]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -974,7 +972,7 @@ class SzEngine(SzEngineAbstract):
         # exclusions: Union[list[int], list[tuple[str, str]], None] = None,
         exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
         # required_data_sources: str = "",
-        required_data_sources: Optional[Union[list[str]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:

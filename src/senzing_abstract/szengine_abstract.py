@@ -380,7 +380,7 @@ class SzEngineAbstract(ABC):
         # exclusions: str = "",
         # required_data_sources: str = "",
         exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        required_data_sources: Optional[Union[list[str]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -429,7 +429,7 @@ class SzEngineAbstract(ABC):
         # exclusions: Union[list[Union[int, tuple[str, str]]], None] = None,
         exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
         # required_data_sources: str = "",
-        required_data_sources: Optional[Union[list[str]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:

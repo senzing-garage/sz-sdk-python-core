@@ -622,8 +622,8 @@ def test_find_path_by_entity_id(sz_engine: SzEngine) -> None:
     start_entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
     end_entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1002")
     max_degrees = 1
-    exclusions = ""
-    required_data_sources = ""
+    exclusions = None
+    required_data_sources = None
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
     actual = sz_engine.find_path_by_entity_id(
         start_entity_id,
@@ -643,8 +643,8 @@ def test_find_path_by_entity_id_bad_entity_ids(sz_engine: SzEngine) -> None:
     bad_start_entity_id = 0
     bad_end_entity_id = 1
     max_degrees = 1
-    exclusions = ""
-    required_data_sources = ""
+    exclusions = None
+    required_data_sources = None
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
     max_degrees = 1
     with pytest.raises(SzNotFoundError):
@@ -670,8 +670,8 @@ def test_find_path_by_record_id(sz_engine: SzEngine) -> None:
     end_data_source_code = "CUSTOMERS"
     end_record_id = "1002"
     max_degrees = 1
-    exclusions = ""
-    required_data_sources = ""
+    exclusions = None
+    required_data_sources = None
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
     actual = sz_engine.find_path_by_record_id(
         start_data_source_code,
@@ -695,8 +695,8 @@ def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngine) -> Non
     bad_end_data_source_code = "XXXX"
     end_record_id = "9998"
     max_degrees = 1
-    exclusions = ""
-    required_data_sources = ""
+    exclusions = None
+    required_data_sources = None
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
     with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_path_by_record_id(
@@ -718,8 +718,8 @@ def test_find_path_by_record_id_bad_record_ids(sz_engine: SzEngine) -> None:
     end_data_source_code = "CUSTOMERS"
     bad_end_record_id = "9998"
     max_degrees = 1
-    exclusions = ""
-    required_data_sources = ""
+    exclusions = None
+    required_data_sources = None
     flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_path_by_record_id(
@@ -1155,7 +1155,7 @@ def test_why_records_bad_record_id(sz_engine: SzEngine) -> None:
 # -----------------------------------------------------------------------------
 
 
-def test_add_record_using_context_managment(engine_vars: Dict[Any, Any]) -> None:
+def test_add_record_using_context_manager(engine_vars: Dict[Any, Any]) -> None:
     """Test the use of SzEngine in context."""
     with SzEngine(
         engine_vars["INSTANCE_NAME"],
@@ -1184,7 +1184,7 @@ def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
 
 
 # TODO: Add testing bad args
-def test_inititialize_and_destroy(engine_vars: Dict[Any, Any]) -> None:
+def test_initialize_and_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test init and destroy."""
     instance_name = engine_vars["INSTANCE_NAME"]
     settings = engine_vars["SETTINGS"]
@@ -1205,7 +1205,7 @@ def test_initialize_with_config_id(engine_vars: Dict[Any, Any]) -> None:
     sz_engine_2.initialize(instance_name, settings, config_id)
 
 
-def test_inititialize_bad_config_id(engine_vars: Dict[Any, Any]) -> None:
+def test_initialize_bad_config_id(engine_vars: Dict[Any, Any]) -> None:
     """Test init_with_config_id with non-existent config id."""
     instance_name = engine_vars["INSTANCE_NAME"]
     settings = engine_vars["SETTINGS"]

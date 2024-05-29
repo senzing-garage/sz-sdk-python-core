@@ -7,11 +7,12 @@ from __future__ import annotations
 
 import json
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, Optional, Type, Union
 
 from senzing_abstract import SzEngineAbstract
 
-from senzing import SzEngineFlags, as_str
+from senzing import SzEngineFlags
+from senzing.szhelpers import as_str
 
 # Metadata
 
@@ -165,7 +166,9 @@ class SzEngine:
 
     def find_network_by_entity_id(
         self,
-        entity_ids: Union[str, Dict[Any, Any]],
+        # TODO
+        # entity_ids: Union[str, Dict[Any, Any]],
+        entity_ids: list[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -175,7 +178,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.find_network_by_entity_id(
-                as_str(entity_ids),
+                entity_ids,
                 max_degrees,
                 build_out_degree,
                 build_out_max_entities,
@@ -186,7 +189,8 @@ class SzEngine:
 
     def find_network_by_record_id(
         self,
-        record_keys: Union[str, Dict[str, List[Dict[str, str]]]],
+        # record_keys: Union[str, Dict[str, List[Dict[str, str]]]],
+        record_keys: list[tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -196,7 +200,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.find_network_by_record_id(
-                as_str(record_keys),
+                record_keys,
                 max_degrees,
                 build_out_degree,
                 build_out_max_entities,
@@ -210,8 +214,10 @@ class SzEngine:
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
+        # exclusions: Union[str, Dict[Any, Any]] = "",
+        # required_data_sources: Union[str, Dict[Any, Any]] = "",
+        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -221,8 +227,8 @@ class SzEngine:
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_str(exclusions),
-                as_str(required_data_sources),
+                exclusions,
+                required_data_sources,
                 flags,
                 **kwargs,
             )
@@ -235,8 +241,10 @@ class SzEngine:
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: Union[str, Dict[Any, Any]] = "",
-        required_data_sources: Union[str, Dict[Any, Any]] = "",
+        # exclusions: Union[str, Dict[Any, Any]] = "",
+        # required_data_sources: Union[str, Dict[Any, Any]] = "",
+        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -248,8 +256,8 @@ class SzEngine:
                 end_data_source_code,
                 end_record_id,
                 max_degrees,
-                as_str(exclusions),
-                as_str(required_data_sources),
+                exclusions,
+                required_data_sources,
                 flags,
                 **kwargs,
             )
@@ -324,14 +332,15 @@ class SzEngine:
 
     def get_virtual_entity_by_record_id(
         self,
-        record_list: Union[str, Dict[Any, Any]],
+        # record_list: Union[str, Dict[Any, Any]],
+        record_keys: list[tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.get_virtual_entity_by_record_id(
-                as_str(record_list),
+                record_keys,
                 flags,
                 **kwargs,
             )
@@ -356,8 +365,8 @@ class SzEngine:
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = 0,
-        verbose_logging: Optional[int] = 0,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """TODO: Create documentation"""

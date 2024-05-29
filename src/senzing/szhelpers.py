@@ -220,7 +220,6 @@ def check_type_is_list(to_check: Any) -> None:
     """ """"""
     if not isinstance(to_check, list):
         raise TypeError(f"Expected type list, got {type(to_check).__name__}")
-    return
 
 
 def build_dsrc_json(dsrc_codes: list[str]) -> str:

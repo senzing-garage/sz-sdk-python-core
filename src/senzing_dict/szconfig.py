@@ -11,7 +11,10 @@ from typing import Any, Callable, Dict, Type, Union
 
 from senzing_abstract import SzConfigAbstract
 
-from senzing import as_str
+from senzing.szhelpers import as_str
+
+# from senzing import as_str
+
 
 # Metadata
 

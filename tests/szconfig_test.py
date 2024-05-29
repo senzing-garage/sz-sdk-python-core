@@ -4,12 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import (
-    SzConfig,
-    SzConfigurationError,
-    SzEngineFlags,
-    SzError,
-)
+from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases
