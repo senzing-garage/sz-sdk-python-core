@@ -176,6 +176,7 @@ class SzProduct(SzProductAbstract):
         Any
     ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
+        return self
 
     def __exit__(
         self,
