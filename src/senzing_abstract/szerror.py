@@ -18,6 +18,8 @@ from typing import Any, Callable, Dict
 # Metadata
 
 __all__ = [
+    # TODO Still needed as in __init__.py
+    "EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
@@ -135,6 +137,7 @@ class SzUnhandledError(SzUnrecoverableError):
 # -----------------------------------------------------------------------------
 
 # TODO ENGINE_EXCEPTION_MAP ?
+# TODO Separate maps into files for generation?
 # fmt: off
 EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"

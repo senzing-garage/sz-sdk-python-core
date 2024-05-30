@@ -18,16 +18,13 @@ Example:
 
 
 import os
+from contextlib import suppress
 from ctypes import c_char_p, c_int, c_longlong, cdll
 from functools import partial
 from types import TracebackType
 from typing import Any, Dict, Type, Union
 
-from senzing import (  # as_c_char_p,; as_python_str,; as_str,; catch_ctypes_exceptions,; find_file_in_path,
-    SzError,
-    SzProductAbstract,
-    sdk_exception,
-)
+from senzing import SzError, SzProductAbstract, sdk_exception
 
 from .szhelpers import (
     as_c_char_p,
@@ -120,12 +117,9 @@ class SzProduct(SzProductAbstract):
         """
         # pylint: disable=W0613
 
-        # Verify parameters.
-
         self.auto_init = False
-        # self.settings = as_str(settings)
-        self.settings = settings
         self.instance_name = instance_name
+        self.settings = settings
         self.verbose_logging = verbose_logging
 
         # Load binary library.
@@ -165,8 +159,7 @@ class SzProduct(SzProductAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                # raise self.new_exception(4003)
-                raise sdk_exception(SENZING_PRODUCT_ID, 4003, 1)
+                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
         if len(instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -174,10 +167,8 @@ class SzProduct(SzProductAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            try:
+            with suppress(SzError):
                 self.destroy()
-            except SzError:
-                pass
 
     def __enter__(
         self,
@@ -194,6 +185,7 @@ class SzProduct(SzProductAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
+        self.destroy()
 
     # -------------------------------------------------------------------------
     # SzProduct methods
@@ -201,9 +193,7 @@ class SzProduct(SzProductAbstract):
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Product_destroy()
-        # if result != 0:
-        #     raise self.new_exception(4001)
-        self.check_result(4001, result)
+        self.check_result(4002, result)
 
     @catch_ctypes_exceptions
     def initialize(
@@ -218,9 +208,7 @@ class SzProduct(SzProductAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        # if result < 0:
-        #     raise self.new_exception(4002)
-        self.check_result(4002, result)
+        self.check_result(4003, result)
 
     def get_license(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_license())

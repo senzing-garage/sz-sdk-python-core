@@ -26,7 +26,6 @@ from .szproduct_abstract import SzProductAbstract
 __all__ = [
     "EXCEPTION_MAP",
     "new_szexception",
-    # TODO
     "sdk_exception",
     "SzBadInputError",
     "SzConfigAbstract",

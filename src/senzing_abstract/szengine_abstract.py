@@ -180,7 +180,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
-        # TODO: Add into docstring a good default csv_column_list example
         """
         **Warning:** `export_csv_entity_report` is not recommended for large systems as it does not scale.
         It is recommended larger systems implement real-time replication to a data warehouse.
@@ -188,6 +187,14 @@ class SzEngineAbstract(ABC):
         The `export_csv_entity_report` method initializes a cursor over a document of exported entities.
         It is part of the `export_csv_entity_report`, `fetch_next`, `close_export`
         lifecycle of a list of entities to export.
+
+        Available CSV columns: RESOLVED_ENTITY_ID, RESOLVED_ENTITY_NAME, RELATED_ENTITY_ID, MATCH_LEVEL,
+                               MATCH_LEVEL_CODE, MATCH_KEY, MATCH_KEY_DETAILS,I S_DISCLOSED, IS_AMBIGUOUS,
+                               DATA_SOURCE, RECORD_ID, JSON_DATA, FIRST_SEEN_DT, LAST_SEEN_DT, UNMAPPED_DATA,
+                               ERRULE_CODE, RELATED_ENTITY_NAME
+
+        Suggested CSV columns: RESOLVED_ENTITY_ID, RELATED_ENTITY_ID, RESOLVED_ENTITY_NAME, MATCH_LEVEL,
+                               MATCH_KEY, DATA_SOURCE, RECORD_ID
 
         Args:
             csv_column_list (str): A comma-separated list of column names for the CSV export.

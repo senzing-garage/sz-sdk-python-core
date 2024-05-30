@@ -28,28 +28,14 @@ from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
 from senzing import new_szexception
 
-# # NOTE G2ResponseReturnCodeResult is only used for type checking, don't need to
-# #      actually import it
-# #      https://peps.python.org/pep-0563/
-# if TYPE_CHECKING:
-#     from szengine import G2ResponseReturnCodeResult
-
-
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
     from typing import ParamSpec
 
-# NOTE import orjson if available, on a basic loads it is at least 12% faster on a decently sized getentity and higher for other operations
-# with suppress(ModuleNotFoundError):
-#     import orjson
-
 uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
 P = ParamSpec("P")
-
-# TODO
-# ORJSON_AVAILABLE = "orjson" in dir()
 
 START_DSRC_JSON = '{"DATA_SOURCES": ['
 START_ENTITIES_JSON = '{"ENTITIES": ['
@@ -61,7 +47,6 @@ END_JSON = "]}"
 # -----------------------------------------------------------------------------
 
 
-# TODO Not in abstract
 class FreeCResources:
     """Free C resources"""
 
@@ -81,31 +66,6 @@ class FreeCResources:
         self.handle.G2GoHelper_free(self.resource)
 
 
-# class SzJsonString(str):
-#     """Normally return a JSON string representation of a response from a method call.
-#     Return a dictionary of the string response if .as_dict() is specified."""
-
-#     def __init__(self, json_string: str):
-#         self.json_string = json_string
-#         print(f"{ORJSON_AVAILABLE = }")
-
-#     # NOTE json.loads() is always Any, need union if return string when not JSON
-#     # NOTE https://stackoverflow.com/questions/76759158/type-hinting-a-json-object-in-python
-#     # NOTE "Even the good people at typeshed use Any as the return type for json.load/json.loads to this day. And they basically maintain the official type stubs for the standard library."
-#     # NOTE https://github.com/python/typeshed/blob/f2ee9e9368a18b19bbf2ac05b6eb6bfea96d9a0c/stdlib/json/__init__.pyi#L39-L60
-#     # NOTE Using Any will impact automatic documentation generation if szhelpers gets documented?
-
-#     def as_dict(self) -> Any:
-#         # TODO: Add check to ensure json_string looks like JSON, is it needed? It's the engines methods using the class not customers.
-#         # if re.match("^{.*}$", self.json_string):
-#         #     return json.loads(self.json_string)
-#         # return self.json_string
-#         # TODO: What if the loads fails?
-#         if ORJSON_AVAILABLE:
-#             return orjson.loads(self.json_string).decode()
-#         return json.loads(self.json_string)
-
-
 # -----------------------------------------------------------------------------
 # Decorators
 # -----------------------------------------------------------------------------
@@ -113,23 +73,21 @@ class FreeCResources:
 
 # TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
 # TODO Change name
-# TODO This shouldn't be in abstract
-def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P, T]:
-    # TODO doc string
-    """Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
+def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
+    """# TODO Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
     Also..."""
 
-    @wraps(function_to_decorate)
-    # TODO Change name, looks a little odd in exception stack
+    @wraps(func_to_decorate)
+    # TODO Change name, looks a little odd in traceback
     def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
-        method_name = function_to_decorate.__name__
-        module_name = function_to_decorate.__module__
+        method_name = func_to_decorate.__name__
+        module_name = func_to_decorate.__module__
         basic_msg = (
             f"wrong type for an argument when calling {module_name}.{method_name}"
         )
 
         try:
-            return function_to_decorate(*args, **kwargs)
+            return func_to_decorate(*args, **kwargs)
         except ArgumentError as err:
             # Checking can find the information from ctypes.Argument error, works currently but could change in future?
             # If can locate what we are looking for from ctypes.ArgumentError, give a more detailed and useful exception message
@@ -145,7 +103,7 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                     bad_arg_index = int(bad_arg_index)
                     bad_arg_value = args[bad_arg_index]
                     bad_arg_type = type(bad_arg_value)
-                    bad_arg_tuple = list(function_to_decorate.__annotations__.items())[
+                    bad_arg_tuple = list(func_to_decorate.__annotations__.items())[
                         bad_arg_index - 1
                     ]
                 except (IndexError, ValueError):
@@ -159,11 +117,7 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
                 ) from None
 
             raise TypeError(basic_msg) from err
-        # # NOTE Do we need to catch anything else? Has a code smell about it
-        # TODO: Is this generic catch needed?
-        # except Exception as err:
-        #     # print(f"In szhelpers last exception: {err}")
-        #     raise err
+        # # TODO Do we need to catch anything else? Has a code smell about it
         # Catch TypeError from the test in as_uintptr_t()
         except TypeError as err:
             raise TypeError(f"{basic_msg} - {err}") from None
@@ -179,17 +133,14 @@ def catch_ctypes_exceptions(function_to_decorate: Callable[P, T]) -> Callable[P,
 
 # TODO
 def check_result_rc(
-    # self, error_id: int, result: G2ResponseReturnCodeResult
     lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
     lib_clear_last_exception: Callable[[], None],
     lib_get_last_exception_code: Callable[[], int],
     product_id: str,
     error_id: int,
-    # result: G2ResponseReturnCodeResult,
     result_return_code: int,
 ) -> None:
     """# TODO"""
-    # if result.return_code != 0:
     if result_return_code != 0:
         raise new_szexception(
             lib_get_last_exception,
@@ -198,15 +149,13 @@ def check_result_rc(
             product_id,
             error_id,
         )
-    # return as_python_str(result.response)
 
 
 # -----------------------------------------------------------------------------
-# Helpers for building JSON strings for Senzing engine
+# Helpers for building JSON strings for Senzing engine APIs
 # -----------------------------------------------------------------------------
 
 
-# TODO
 # TODO Improve upon Any?
 def check_type_is_list(to_check: Any) -> None:
     """
@@ -238,8 +187,6 @@ def build_dsrc_json(dsrc_codes: list[str]) -> str:
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
 
-# TODO
-# TODO Macy really wants this?
 def build_entities_json(entity_ids: list[int]) -> str:
     """
     Build JSON string of entity ids.
@@ -256,10 +203,8 @@ def build_entities_json(entity_ids: list[int]) -> str:
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
-# TODO
 def build_records_json(record_keys: list[tuple[str, str]]) -> str:
-    # TODO
-    """
+    """# TODO
     Build JSON string of data source and record ids.
 
     Args:
@@ -334,11 +279,7 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     Returns:
         str: The string representation of the candidate_value
     """
-    # NOTE Testing
-    # TODO Are we allowing dicts anywhere in core?
     if isinstance(candidate_value, dict):
-        # if ORJSON_AVAILABLE:
-        #     return orjson.dumps(candidate_value).decode()
         return json.dumps(candidate_value)
     return candidate_value
 
@@ -366,34 +307,8 @@ def as_uintptr_t(candidate_value: int) -> Any:
     return cast(candidate_value, POINTER(c_uint))
 
 
-# NOTE Don't believe need anymore,,,
-# NOTE Believe not needed with catch_ctypes_exceptions decorator and this code would
-# NOTE would return ValueErrors if a str with any non digit characters was passed in
-# def as_c_int(candidate_value: Any) -> int:
-#     """
-#     Internal processing function.
-#     This converts many types of values to an integer.
-
-#     :meta private:
-#     """
-
-#     if candidate_value is None:  # handle null string
-#         # TODO: Doesn't need int
-#         return int(0)
-#     if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
-#         return int(candidate_value.encode("utf-8"))
-#     if isinstance(
-#         candidate_value, bytearray
-#     ):  # if input is bytearray, assume utf-8 and convert to str
-#         return int(candidate_value)
-#     if isinstance(candidate_value, bytes):
-#         return int(candidate_value)
-#     # TODO: If already an int why use int()?
-#     # input is already an int
-#     return int(candidate_value)
-
-
 # TODO Are all these different types needed, we really expect a str?
+# TODO as_c_char_p? Returns bytes
 def as_c_char_p(candidate_value: Any) -> Any:
     """
     Internal processing function.
@@ -401,44 +316,15 @@ def as_c_char_p(candidate_value: Any) -> Any:
     :meta private:
     """
 
-    if candidate_value is None:  # handle null string
+    if isinstance(candidate_value, str):
+        return candidate_value.encode()
+    if candidate_value is None:
         return b""
-    if isinstance(candidate_value, str):  # if string is unicode, transcode to utf-8 str
-        return candidate_value.encode("utf-8")
-    if isinstance(
-        candidate_value, bytearray
-    ):  # if input is bytearray, assume utf-8 and convert to str
-        return candidate_value.decode().encode("utf-8")
-    if isinstance(candidate_value, bytes):
-        return str(candidate_value).encode("utf-8")
-    # input is already a str
+    # if isinstance(candidate_value, bytearray):
+    #     return candidate_value.decode().encode()
+    # if isinstance(candidate_value, bytes):
+    #     return str(candidate_value).encode()
     return candidate_value
-    # raise TypeError(
-    #     f"{candidate_value} has unsupported type of {type(candidate_value)}"
-    # )
-
-
-# NOTE Don't believe need anymore,,,
-# def as_python_int(candidate_value: Any) -> int:
-#     """
-#     From a c_void_p, return a true python int.
-
-#     Args:
-#         candidate_value (Any): A c_void_p to be transformed.
-
-#     Returns:
-#         int: The python int representation
-
-#     :meta private:
-#     """
-
-#     result = cast(candidate_value, c_void_p).value
-#     # TODO: For methods using this could we get a non zero return code and return None?
-#     # TODO: Would never reach the return as_python_int(result.response) is non zero return code
-#     # TODO: Consequences of returning a 0 which wouldn't be a valid handle?
-#     if result is None:
-#         result = 0
-#     return result
 
 
 def as_python_str(candidate_value: Any) -> str:

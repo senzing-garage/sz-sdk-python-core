@@ -17,18 +17,15 @@ Example:
 # pylint: disable=R0903
 
 import os
+from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
 from functools import partial
 from types import TracebackType
 from typing import Any, Dict, Type, Union
 
-from senzing import (  # FreeCResources,; as_c_char_p,; as_python_str,; as_str,; catch_ctypes_exceptions,; find_file_in_path,
-    SzDiagnosticAbstract,
-    SzError,
-    sdk_exception,
-)
+from senzing import SzDiagnosticAbstract, SzError, sdk_exception
 
-from .szhelpers import (  # as_uintptr_t,; build_dsrc_json,; build_entities_json,; build_exclusions_json,; build_records_json,; return_result_response,
+from .szhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
@@ -149,13 +146,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
         """
         # pylint: disable=W0613
 
-        # Verify parameters.
-
         self.auto_init = False
-        # self.settings = as_str(settings)
+        self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
-        self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
@@ -219,8 +213,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                # raise self.new_exception(4007)
-                raise sdk_exception(SENZING_PRODUCT_ID, 4007, 1)
+                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
         if len(self.instance_name) > 0:
             self.auto_init = True
             self.initialize(
@@ -233,10 +226,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            try:
+            with suppress(SzError):
                 self.destroy()
-            except SzError:
-                pass
 
     def __enter__(
         self,
@@ -253,24 +244,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-
-    # # -------------------------------------------------------------------------
-    # # Exception helpers
-    # # -------------------------------------------------------------------------
-
-    # def new_exception(self, error_id: int) -> Exception:
-    #     """
-    #     Generate a new exception based on the error_id.
-
-    #     :meta private:
-    #     """
-    #     return new_szexception(
-    #         self.library_handle.G2Diagnostic_getLastException,
-    #         self.library_handle.G2Diagnostic_clearLastException,
-    #         self.library_handle.G2Diagnostic_getLastExceptionCode,
-    #         SENZING_PRODUCT_ID,
-    #         error_id,
-    #     )
+        self.destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
@@ -281,32 +255,24 @@ class SzDiagnostic(SzDiagnosticAbstract):
             seconds_to_run
         )
         with FreeCResources(self.library_handle, result.response):
-            # if result.return_code != 0:
-            #     raise self.new_exception(4001)
-            self.check_result(4001, result.return_code)
+            self.check_result(4002, result.return_code)
             return as_python_str(result.response)
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_destroy()
-        # if result != 0:
-        #     raise self.new_exception(4002)
-        self.check_result(4002, result)
+        self.check_result(4003, result)
 
     def get_datastore_info(self, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDatastoreInfo_helper()
         with FreeCResources(self.library_handle, result.response):
-            # if result.return_code != 0:
-            #     raise self.new_exception(4003)
-            self.check_result(4003, result.return_code)
+            self.check_result(4004, result.return_code)
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
-            # if result.return_code != 0:
-            #     raise self.new_exception(4003)
-            self.check_result(4004, result.return_code)
+            self.check_result(4005, result.return_code)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
@@ -324,9 +290,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
                 as_c_char_p(as_str(settings)),
                 verbose_logging,
             )
-            # if result < 0:
-            #     raise self.new_exception(4004)
-            self.check_result(4005, result)
+            self.check_result(4006, result)
             return
 
         result = self.library_handle.G2Diagnostic_initWithConfigID(
@@ -335,18 +299,12 @@ class SzDiagnostic(SzDiagnosticAbstract):
             config_id,
             verbose_logging,
         )
-        # if result < 0:
-        #     raise self.new_exception(4003)
-        self.check_result(4005, result)
+        self.check_result(4007, result)
 
     def purge_repository(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_purgeRepository()
-        # if result < 0:
-        #     raise self.new_exception(4005)
-        self.check_result(4006, result)
+        self.check_result(4008, result)
 
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Diagnostic_reinit(config_id)
-        # if result < 0:
-        #     raise self.new_exception(4006)
-        self.check_result(4007, result)
+        self.check_result(4009, result)
