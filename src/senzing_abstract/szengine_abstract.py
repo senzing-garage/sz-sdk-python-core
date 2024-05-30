@@ -390,7 +390,8 @@ class SzEngineAbstract(ABC):
         # required_data_sources: str = "",
         # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
         exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
-        required_data_sources: Optional[list[str]] = None,
+        # required_data_sources: Optional[list[str]] = None,
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
