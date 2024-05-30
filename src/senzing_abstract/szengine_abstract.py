@@ -7,7 +7,7 @@ TODO: szengine_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .szengineflags import SzEngineFlags
 
@@ -298,7 +298,8 @@ class SzEngineAbstract(ABC):
     def find_network_by_entity_id(
         self,
         # entity_ids: str,
-        entity_ids: list[int],
+        # entity_ids: list[int],
+        entity_ids: List[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -340,7 +341,8 @@ class SzEngineAbstract(ABC):
     def find_network_by_record_id(
         self,
         # record_keys: str,
-        record_keys: list[tuple[str, str]],
+        # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -386,7 +388,8 @@ class SzEngineAbstract(ABC):
         max_degrees: int,
         # exclusions: str = "",
         # required_data_sources: str = "",
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
         required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -434,9 +437,10 @@ class SzEngineAbstract(ABC):
         # exclusions: str = "",
         # TODO
         # exclusions: Union[list[Union[int, tuple[str, str]]], None] = None,
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
         # required_data_sources: str = "",
-        required_data_sources: Optional[list[str]] = None,
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -653,7 +657,8 @@ class SzEngineAbstract(ABC):
     def get_virtual_entity_by_record_id(
         self,
         # record_list: str,
-        record_keys: list[tuple[str, str]],
+        # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:

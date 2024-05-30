@@ -38,7 +38,7 @@ from ctypes import (
 )
 from functools import partial
 from types import TracebackType
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from senzing import SzEngineAbstract, SzEngineFlags, SzError, sdk_exception
 
@@ -777,7 +777,8 @@ class SzEngine(SzEngineAbstract):
     def find_network_by_entity_id(
         self,
         # entity_ids: str,
-        entity_ids: list[int],
+        # entity_ids: list[int],
+        entity_ids: List[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -800,7 +801,8 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def find_network_by_record_id(
         self,
-        record_keys: list[tuple[str, str]],
+        # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -827,8 +829,10 @@ class SzEngine(SzEngineAbstract):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        required_data_sources: Optional[list[str]] = None,
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # required_data_sources: Optional[list[str]] = None,
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -871,8 +875,10 @@ class SzEngine(SzEngineAbstract):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        required_data_sources: Optional[list[str]] = None,
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # required_data_sources: Optional[list[str]] = None,
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -979,7 +985,8 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def get_virtual_entity_by_record_id(
         self,
-        record_keys: list[tuple[str, str]],
+        # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
