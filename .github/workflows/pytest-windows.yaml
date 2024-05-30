@@ -78,4 +78,4 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
-    uses: senzing-factory/build-resources/.github/workflows/python-coverage-comment.yaml@v1
+    uses: senzing-factory/build-resources/.github/workflows/python-coverage-comment.yaml@v2
