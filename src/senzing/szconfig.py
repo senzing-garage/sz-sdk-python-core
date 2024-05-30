@@ -266,7 +266,6 @@ class SzConfig(SzConfigAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-        self.destroy()
 
     # -------------------------------------------------------------------------
     # SzConfig methods

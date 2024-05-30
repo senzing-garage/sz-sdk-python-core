@@ -244,7 +244,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-        self.destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods

@@ -637,7 +637,6 @@ class SzEngine(SzEngineAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-        self.destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods
