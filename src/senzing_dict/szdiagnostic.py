@@ -6,7 +6,7 @@ TODO: Create documentation
 
 import json
 from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Type, Union
+from typing import Any, Callable, Dict, Type, Union
 
 from senzing_abstract import SzDiagnosticAbstract
 
@@ -96,8 +96,8 @@ class SzDiagnostic:
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = 0,
-        verbose_logging: Optional[int] = 0,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """TODO: Create documentation"""

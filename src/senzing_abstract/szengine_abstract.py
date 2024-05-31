@@ -7,7 +7,7 @@ TODO: szengine_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from .szengineflags import SzEngineFlags
 
@@ -180,7 +180,6 @@ class SzEngineAbstract(ABC):
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
-        # TODO: Add into docstring a good default csv_column_list example
         """
         **Warning:** `export_csv_entity_report` is not recommended for large systems as it does not scale.
         It is recommended larger systems implement real-time replication to a data warehouse.
@@ -188,6 +187,14 @@ class SzEngineAbstract(ABC):
         The `export_csv_entity_report` method initializes a cursor over a document of exported entities.
         It is part of the `export_csv_entity_report`, `fetch_next`, `close_export`
         lifecycle of a list of entities to export.
+
+        Available CSV columns: RESOLVED_ENTITY_ID, RESOLVED_ENTITY_NAME, RELATED_ENTITY_ID, MATCH_LEVEL,
+                               MATCH_LEVEL_CODE, MATCH_KEY, MATCH_KEY_DETAILS,I S_DISCLOSED, IS_AMBIGUOUS,
+                               DATA_SOURCE, RECORD_ID, JSON_DATA, FIRST_SEEN_DT, LAST_SEEN_DT, UNMAPPED_DATA,
+                               ERRULE_CODE, RELATED_ENTITY_NAME
+
+        Suggested CSV columns: RESOLVED_ENTITY_ID, RELATED_ENTITY_ID, RESOLVED_ENTITY_NAME, MATCH_LEVEL,
+                               MATCH_KEY, DATA_SOURCE, RECORD_ID
 
         Args:
             csv_column_list (str): A comma-separated list of column names for the CSV export.
@@ -290,8 +297,9 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_entity_id(
         self,
-        entity_ids: str,
+        # entity_ids: str,
         # entity_ids: list[int],
+        entity_ids: List[int],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -332,8 +340,9 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def find_network_by_record_id(
         self,
-        record_keys: str,
+        # record_keys: str,
         # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
         build_out_max_entities: int,
@@ -377,8 +386,12 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: str = "",
-        required_data_sources: str = "",
+        # exclusions: str = "",
+        # required_data_sources: str = "",
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # required_data_sources: Optional[list[str]] = None,
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -422,10 +435,13 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: str = "",
+        # exclusions: str = "",
         # TODO
-        # exclusions: Union[list[int], list[tuple[str, str]]] = [("", "")],
-        required_data_sources: str = "",
+        # exclusions: Union[list[Union[int, tuple[str, str]]], None] = None,
+        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # required_data_sources: str = "",
+        required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -641,7 +657,9 @@ class SzEngineAbstract(ABC):
     @abstractmethod
     def get_virtual_entity_by_record_id(
         self,
-        record_list: str,
+        # record_list: str,
+        # record_keys: list[tuple[str, str]],
+        record_keys: List[Tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
@@ -712,8 +730,8 @@ class SzEngineAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        config_id: Optional[int] = 0,
-        verbose_logging: Optional[int] = 0,
+        config_id: int = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         # TODO: docstring plugin

@@ -5,13 +5,21 @@ Generated for: sz-sdk-python-abstract/src/senzing_abstract/szerror.py
 Generated date: 2024-05-02T19:46:40.745960+00:00
 """
 
+# NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
+# on _Pointer[c_char])
+# ctypes._Pointer is generic for type checkers, but at runtime it's not generic, so annotations
+# import is necessary - or string annotation ("_Pointer[c_char]") .
+from __future__ import annotations
+
 import threading
-from ctypes import c_char, create_string_buffer, sizeof
+from ctypes import _Pointer, c_char, create_string_buffer, sizeof
 from typing import Any, Callable, Dict
 
 # Metadata
 
 __all__ = [
+    # TODO Still needed as in __init__.py
+    "EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
@@ -112,7 +120,7 @@ class SzDatabaseError(SzUnrecoverableError):
 
 
 class SzLicenseError(SzUnrecoverableError):
-    """Licence exception"""
+    """License exception"""
 
 
 class SzNotInitializedError(SzUnrecoverableError):
@@ -128,6 +136,8 @@ class SzUnhandledError(SzUnrecoverableError):
 # Reference: https://senzing.zendesk.com/hc/en-us/articles/360026678133-Engine-Error-codes
 # -----------------------------------------------------------------------------
 
+# TODO ENGINE_EXCEPTION_MAP ?
+# TODO Separate maps into files for generation?
 # fmt: off
 EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"
@@ -586,6 +596,7 @@ ERROR_BUFFER_TYPE = c_char * 65535
 # -----------------------------------------------------------------------------
 
 
+# TODO No longer used?
 def get_message_text(error_id: int, id_messages: Dict[int, str], *args: Any) -> str:
     """
     Format the message text from a template and variables.
@@ -625,8 +636,10 @@ def get_senzing_error_text(
     return result
 
 
+# TDO engine_exception?
 def new_szexception(
-    get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
+    # get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],
+    get_last_exception: Callable[[_Pointer[c_char], int], str],
     clear_last_exception: Callable[[], None],
     get_last_exception_code: Callable[[], int],
     product_id: str,
@@ -643,3 +656,24 @@ def new_szexception(
     return senzing_error_class(
         f"{sz_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}"
     )
+
+
+# TODO
+# -----------------------------------------------------------------------------
+# Helper functions to create an SDK Exception
+# -----------------------------------------------------------------------------
+
+# fmt: off
+SDK_EXCEPTION_MAP = {
+    1: "no arguments or a minimum of instance_name and settings arguments should be specified",     # Check in module constructors
+}
+# fmt: on
+
+
+def sdk_exception(product_id: str, error_id: int, msg_code: int) -> Exception:
+    """# TODO"""
+    sdk_error_text = SDK_EXCEPTION_MAP.get(
+        msg_code, f"No message for index {msg_code}."
+    )
+    # TODO New class, SDKError?
+    return SzError(f"{sdk_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}")

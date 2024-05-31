@@ -5,7 +5,7 @@ szconfigmanager_abstract.py is the abstract class for all implementations of szc
 # TODO: Determine specific SzErrors, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 
 # Metadata
 
@@ -147,7 +147,7 @@ class SzConfigManagerAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: Optional[int] = 0,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         """

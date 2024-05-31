@@ -4,14 +4,16 @@ from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-RECORD_LIST = (
-    "{"
-    '"RECORDS": ['
-    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
-    '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},'
-    "]"
-    "}"
-)
+# TODO
+# RECORD_LIST = (
+#     "{"
+#     '"RECORDS": ['
+#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
+#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},'
+#     "]"
+#     "}"
+# )
+RECORD_KEYS = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1002")]
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -23,7 +25,7 @@ SETTINGS = {
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
+    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_KEYS, FLAGS)
     print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")

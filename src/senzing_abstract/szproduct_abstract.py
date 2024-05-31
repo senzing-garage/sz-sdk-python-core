@@ -5,7 +5,7 @@ szproduct_abstract.py is the abstract class for all implementations of szproduct
 # TODO: Determine specific SzError, Errors for "Raises:" documentation.
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, Union, cast
 
 # Metadata
 
@@ -54,7 +54,7 @@ class SzProductAbstract(ABC):
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: Optional[int] = 0,
+        verbose_logging: int = 0,
         **kwargs: Any
     ) -> None:
         """

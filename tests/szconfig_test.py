@@ -13,8 +13,8 @@ from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
 
 def test_exception(sz_config: SzConfig) -> None:
     """Test exceptions."""
-    actual = sz_config.new_exception(0)
-    assert isinstance(actual, Exception)
+    with pytest.raises(Exception):
+        sz_config.check_result(4001, -1)
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:

@@ -3,7 +3,7 @@ from .szconfigmanager_abstract import SzConfigManagerAbstract
 from .szdiagnostic_abstract import SzDiagnosticAbstract
 from .szengine_abstract import SzEngineAbstract
 from .szengineflags import SzEngineFlags
-from .szerror import (
+from .szerror import (  # TODO
     EXCEPTION_MAP,
     SzBadInputError,
     SzConfigurationError,
@@ -19,12 +19,14 @@ from .szerror import (
     SzUnknownDataSourceError,
     SzUnrecoverableError,
     new_szexception,
+    sdk_exception,
 )
 from .szproduct_abstract import SzProductAbstract
 
 __all__ = [
     "EXCEPTION_MAP",
     "new_szexception",
+    "sdk_exception",
     "SzBadInputError",
     "SzConfigAbstract",
     "SzConfigManagerAbstract",

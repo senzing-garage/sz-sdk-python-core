@@ -18,19 +18,21 @@ Example:
 
 
 import os
+from contextlib import suppress
 from ctypes import c_char_p, c_int, c_longlong, cdll
+from functools import partial
 from types import TracebackType
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any, Dict, Type, Union
 
-from senzing import (
-    SzError,
-    SzProductAbstract,
+from senzing import SzError, SzProductAbstract, sdk_exception
+
+from .szhelpers import (
     as_c_char_p,
     as_python_str,
     as_str,
     catch_ctypes_exceptions,
+    check_result_rc,
     find_file_in_path,
-    new_szexception,
 )
 
 # Metadata
@@ -115,12 +117,9 @@ class SzProduct(SzProductAbstract):
         """
         # pylint: disable=W0613
 
-        # Verify parameters.
-
         self.auto_init = False
-        # self.settings = as_str(settings)
-        self.settings = settings
         self.instance_name = instance_name
+        self.settings = settings
         self.verbose_logging = verbose_logging
 
         # Load binary library.
@@ -133,6 +132,15 @@ class SzProduct(SzProductAbstract):
         except OSError as err:
             # TODO: Change to Sz library when the libG2.so is changed in a build
             raise SzError("Failed to load the G2 library") from err
+
+        # TODO Document what partial is...
+        self.check_result = partial(
+            check_result_rc,
+            self.library_handle.G2Product_getLastException,
+            self.library_handle.G2Product_clearLastException,
+            self.library_handle.G2Product_getLastExceptionCode,
+            SENZING_PRODUCT_ID,
+        )
 
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
@@ -151,7 +159,7 @@ class SzProduct(SzProductAbstract):
 
         if (len(self.instance_name) == 0) or (len(self.settings) == 0):
             if len(self.instance_name) + len(self.settings) != 0:
-                raise self.new_exception(4003)
+                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
         if len(instance_name) > 0:
             self.auto_init = True
             self.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -159,10 +167,8 @@ class SzProduct(SzProductAbstract):
     def __del__(self) -> None:
         """Destructor"""
         if self.auto_init:
-            try:
+            with suppress(SzError):
                 self.destroy()
-            except SzError:
-                pass
 
     def __enter__(
         self,
@@ -181,38 +187,19 @@ class SzProduct(SzProductAbstract):
         """Context Manager method."""
 
     # -------------------------------------------------------------------------
-    # Exception helpers
-    # -------------------------------------------------------------------------
-
-    def new_exception(self, error_id: int) -> Exception:
-        """
-        Generate a new exception based on the error_id.
-
-        :meta private:
-        """
-        return new_szexception(
-            self.library_handle.G2Product_getLastException,
-            self.library_handle.G2Product_clearLastException,
-            self.library_handle.G2Product_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
-            error_id,
-        )
-
-    # -------------------------------------------------------------------------
     # SzProduct methods
     # -------------------------------------------------------------------------
 
     def destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Product_destroy()
-        if result != 0:
-            raise self.new_exception(4001)
+        self.check_result(4002, result)
 
     @catch_ctypes_exceptions
     def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
-        verbose_logging: Optional[int] = 0,
+        verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
@@ -220,8 +207,7 @@ class SzProduct(SzProductAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        if result < 0:
-            raise self.new_exception(4002)
+        self.check_result(4003, result)
 
     def get_license(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_license())

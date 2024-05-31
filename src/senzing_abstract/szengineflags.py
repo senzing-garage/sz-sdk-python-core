@@ -32,6 +32,11 @@ class SzEngineFlags(IntFlag):
             result = result | SzEngineFlags[string]
         return result
 
+    @classmethod
+    def get_flag_int(cls, flag: IntFlag) -> int:
+        """# TODO"""
+        return flag.value
+
     # Flags for exporting entity data.
 
     SZ_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES = 1 << 0

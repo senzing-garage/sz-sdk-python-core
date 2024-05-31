@@ -2,11 +2,16 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-END_ENTITY_ID = 4
-EXCLUSIONS = ""
+# TODO
+END_ENTITY_ID = 300002
+# EXCLUSIONS = ""
+EXCLUSIONS = None
+# EXCLUSIONS = [100019]
+# EXCLUSIONS = [("REFERENCE", "2122")]
 FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-MAX_DEGREES = 2
+# TODO Check Max_degrees are higher enough!
+MAX_DEGREES = 10
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -15,8 +20,10 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-REQUIRED_DATA_SOURCES = ""
-START_ENTITY_ID = 1
+# REQUIRED_DATA_SOURCES = ""
+# REQUIRED_DATA_SOURCES = None
+REQUIRED_DATA_SOURCES = ["CUSTOMERS"]
+START_ENTITY_ID = 300001
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
