@@ -21,8 +21,7 @@ import os
 from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, cdll
 from functools import partial
-from types import TracebackType
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Union
 
 from senzing import SzConfigManagerAbstract, SzError, sdk_exception
 
@@ -44,7 +43,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-SENZING_PRODUCT_ID = "5041"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
+# SENZING_PRODUCT_ID = "5041"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -160,7 +159,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         """
         # pylint: disable=W0613
 
-        self.auto_init = False
+        # self.auto_init = False
         self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -186,7 +185,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             self.library_handle.G2ConfigMgr_getLastException,
             self.library_handle.G2ConfigMgr_clearLastException,
             self.library_handle.G2ConfigMgr_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
+            # SENZING_PRODUCT_ID,
         )
 
         # Initialize C function input parameters and results.
@@ -222,34 +221,23 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
-            if len(self.instance_name) + len(self.settings) != 0:
-                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-        if len(self.instance_name) > 0:
-            self.auto_init = True
-            self.initialize(self.instance_name, self.settings, self.verbose_logging)
+        # if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+        #     if len(self.instance_name) + len(self.settings) != 0:
+        #         raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
+        # if len(self.instance_name) > 0:
+        #     self.auto_init = True
+
+        if not self.instance_name or len(self.settings) == 0:
+            # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
+            raise sdk_exception(1)
+
+        self._initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.auto_init:
-            with suppress(SzError):
-                self.destroy()
-
-    def __enter__(
-        self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
-        """Context Manager method."""
-        return self
-
-    def __exit__(
-        self,
-        exc_type: Union[Type[BaseException], None],
-        exc_val: Union[BaseException, None],
-        exc_tb: Union[TracebackType, None],
-    ) -> None:
-        """Context Manager method."""
+        # if self.auto_init:
+        with suppress(SzError):
+            self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods
@@ -266,35 +254,35 @@ class SzConfigManager(SzConfigManagerAbstract):
             as_c_char_p(config_definition),
             as_c_char_p(config_comment),
         )
-        self.check_result(4002, result.return_code)
+        self.check_result(result.return_code)
 
         return result.response  # type: ignore[no-any-return]
 
-    def destroy(self, **kwargs: Any) -> None:
+    # Private method
+    def _destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_destroy()
-        self.check_result(4003, result)
+        self.check_result(result)
 
     def get_config(self, config_id: int, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
-
         with FreeCResources(self.library_handle, result.response):
-            self.check_result(4004, result.return_code)
+            self.check_result(result.return_code)
             return as_python_str(result.response)
 
     def get_configs(self, **kwargs: Any) -> str:
         result = self.library_handle.G2ConfigMgr_getConfigList_helper()
-
         with FreeCResources(self.library_handle, result.response):
-            self.check_result(4005, result.return_code)
+            self.check_result(result.return_code)
             return as_python_str(result.response)
 
     def get_default_config_id(self, **kwargs: Any) -> int:
         result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
-        self.check_result(4006, result.return_code)
+        self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    # Private method
     @catch_ctypes_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
@@ -306,7 +294,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        self.check_result(4007, result)
+        self.check_result(result)
 
     def replace_default_config_id(
         self,
@@ -317,8 +305,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
             current_default_config_id, new_default_config_id
         )
-        self.check_result(4008, result)
+        self.check_result(result)
 
     def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
-        self.check_result(4009, result)
+        self.check_result(result)

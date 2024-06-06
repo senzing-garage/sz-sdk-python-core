@@ -7,7 +7,7 @@ TODO: szengine_abstract.py
 # Import from standard library. https://docs.python.org/3/library/
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple
 
 from .szengineflags import SzEngineFlags
 
@@ -153,25 +153,25 @@ class SzEngineAbstract(ABC):
                 :language: json
         """
 
-    @abstractmethod
-    def destroy(self, **kwargs: Any) -> None:
-        """
-        The `destroy` method releases resources and performs cleanup for the SzEngine object and any in-memory configurations.
-        It should be called after all other calls are complete.
+    # @abstractmethod
+    # def _destroy(self, **kwargs: Any) -> None:
+    #     """
+    #     The `destroy` method releases resources and performs cleanup for the SzEngine object and any in-memory configurations.
+    #     It should be called after all other calls are complete.
 
-        **Note:** If the `SzEngine` constructor was called with parameters,
-        the destructor will automatically call the destroy() method.
-        In this case, a separate call to `destroy()` is not needed.
+    #     **Note:** If the `SzEngine` constructor was called with parameters,
+    #     the destructor will automatically call the destroy() method.
+    #     In this case, a separate call to `destroy()` is not needed.
 
-        Raises:
-            szexception.SzError:
+    #     Raises:
+    #         szexception.SzError:
 
-        .. collapse:: Example:
+    #     .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
-                :linenos:
-                :language: python
-        """
+    #         .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
+    #             :linenos:
+    #             :language: python
+    #     """
 
     @abstractmethod
     def export_csv_entity_report(
@@ -389,7 +389,8 @@ class SzEngineAbstract(ABC):
         # exclusions: str = "",
         # required_data_sources: str = "",
         # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        exclusions: Optional[List[int]] = None,
         # required_data_sources: Optional[list[str]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -439,7 +440,8 @@ class SzEngineAbstract(ABC):
         # TODO
         # exclusions: Union[list[Union[int, tuple[str, str]]], None] = None,
         # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        # exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
+        exclusions: Optional[List[Tuple[str, str]]] = None,
         # required_data_sources: str = "",
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -725,39 +727,39 @@ class SzEngineAbstract(ABC):
                 :language: json
         """
 
-    @abstractmethod
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        config_id: int = 0,
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        # TODO: docstring plugin
-        """
-        he ``initialize`` method initializes the Senzing SzEngine object.
-        It must be called prior to any other calls.
+    # @abstractmethod
+    # def _initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     config_id: int = 0,
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     # TODO: docstring plugin
+    #     """
+    #     he ``initialize`` method initializes the Senzing SzEngine object.
+    #     It must be called prior to any other calls.
 
-        **Note:** If the SzEngine constructor is called with parameters,
-        the constructor will automatically call the ``initialize()`` method.
-        In this case, a separate call to ``initialize()`` is not needed.
+    #     **Note:** If the SzEngine constructor is called with parameters,
+    #     the constructor will automatically call the ``initialize()`` method.
+    #     In this case, a separate call to ``initialize()`` is not needed.
 
-        Args:
-            instance_name (str): A short name given to this instance of the SzEngine object, to help identify it within system logs.
-            settings (str): A JSON string containing configuration parameters.
-            config_id (int): 'Optional:' Initialize with a specific configuration ID and not the current default
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
+    #     Args:
+    #         instance_name (str): A short name given to this instance of the SzEngine object, to help identify it within system logs.
+    #         settings (str): A JSON string containing configuration parameters.
+    #         config_id (int): 'Optional:' Initialize with a specific configuration ID and not the current default
+    #         verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
+    #     Raises:
+    #         TypeError: Incorrect datatype of input parameter.
 
-        .. collapse:: Example:
+    #     .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
-                :linenos:
-                :language: python
-        """
+    #         .. literalinclude:: ../../examples/szengine/szengine_initialize_and_destroy.py
+    #             :linenos:
+    #             :language: python
+    #     """
 
     @abstractmethod
     def prime_engine(self, **kwargs: Any) -> None:

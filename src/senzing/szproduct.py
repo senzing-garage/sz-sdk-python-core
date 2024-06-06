@@ -21,8 +21,7 @@ import os
 from contextlib import suppress
 from ctypes import c_char_p, c_int, c_longlong, cdll
 from functools import partial
-from types import TracebackType
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Union
 
 from senzing import SzError, SzProductAbstract, sdk_exception
 
@@ -42,7 +41,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-SENZING_PRODUCT_ID = "5046"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
+# SENZING_PRODUCT_ID = "5046"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # SzProduct class
@@ -117,7 +116,7 @@ class SzProduct(SzProductAbstract):
         """
         # pylint: disable=W0613
 
-        self.auto_init = False
+        # self.auto_init = False
         self.instance_name = instance_name
         self.settings = settings
         self.verbose_logging = verbose_logging
@@ -139,7 +138,7 @@ class SzProduct(SzProductAbstract):
             self.library_handle.G2Product_getLastException,
             self.library_handle.G2Product_clearLastException,
             self.library_handle.G2Product_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
+            # SENZING_PRODUCT_ID,
         )
 
         # Initialize C function input parameters and results
@@ -157,45 +156,38 @@ class SzProduct(SzProductAbstract):
 
         # Optionally, initialize Senzing engine.
 
-        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
-            if len(self.instance_name) + len(self.settings) != 0:
-                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-        if len(instance_name) > 0:
-            self.auto_init = True
-            self.initialize(self.instance_name, self.settings, self.verbose_logging)
+        # if (len(self.instance_name) == 0) or (len(self.settings) == 0):
+        #     if len(self.instance_name) + len(self.settings) != 0:
+        #         raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
+        # if len(instance_name) > 0:
+        #     self.auto_init = True
+
+        # NOTE both get_license and get_version will work if "", "{}" are passed in
+        if not self.instance_name or len(self.settings) == 0:
+            # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
+            raise sdk_exception(1)
+        #     self._initialize("", "")
+
+        self._initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.auto_init:
-            with suppress(SzError):
-                self.destroy()
-
-    def __enter__(
-        self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
-        """Context Manager method."""
-        return self
-
-    def __exit__(
-        self,
-        exc_type: Union[Type[BaseException], None],
-        exc_val: Union[BaseException, None],
-        exc_tb: Union[TracebackType, None],
-    ) -> None:
-        """Context Manager method."""
+        # if self.auto_init:
+        with suppress(SzError):
+            self._destroy()
 
     # -------------------------------------------------------------------------
     # SzProduct methods
     # -------------------------------------------------------------------------
 
-    def destroy(self, **kwargs: Any) -> None:
+    # Private method
+    def _destroy(self, **kwargs: Any) -> None:
         result = self.library_handle.G2Product_destroy()
-        self.check_result(4002, result)
+        self.check_result(result)
 
+    # Private method
     @catch_ctypes_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
@@ -207,7 +199,7 @@ class SzProduct(SzProductAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        self.check_result(4003, result)
+        self.check_result(result)
 
     def get_license(self, **kwargs: Any) -> str:
         return as_python_str(self.library_handle.G2Product_license())

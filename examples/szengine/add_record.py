@@ -3,7 +3,8 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-DATA_SOURCE_CODE = "TEST"
+# DATA_SOURCE_CODE = "TEST"
+DATA_SOURCE_CODE = "éanty\r😂"
 FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example1"
 RECORD_DEFINITION = (
@@ -22,7 +23,7 @@ RECORD_DEFINITION = (
     '"AMOUNT": "100"'
     "}"
 )
-RECORD_ID = "1"
+RECORD_ID = "1\n😂"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

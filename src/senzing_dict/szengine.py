@@ -109,9 +109,10 @@ class SzEngine:
             self.sz_engine.delete_record(data_source_code, record_id, flags, **kwargs)
         )
 
-    def destroy(self, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_engine.destroy(**kwargs)
+    # TODO
+    # def destroy(self, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_engine.destroy(**kwargs)
 
     def export_csv_entity_report(
         self,
@@ -216,7 +217,7 @@ class SzEngine:
         max_degrees: int,
         # exclusions: Union[str, Dict[Any, Any]] = "",
         # required_data_sources: Union[str, Dict[Any, Any]] = "",
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[list[int]] = None,
         required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -243,7 +244,7 @@ class SzEngine:
         max_degrees: int,
         # exclusions: Union[str, Dict[Any, Any]] = "",
         # required_data_sources: Union[str, Dict[Any, Any]] = "",
-        exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
+        exclusions: Optional[list[tuple[str, str]]] = None,
         required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -361,18 +362,19 @@ class SzEngine:
             )
         )
 
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        config_id: int = 0,
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        """TODO: Create documentation"""
-        return self.sz_engine.initialize(
-            instance_name, settings, config_id, verbose_logging, **kwargs
-        )
+    # TODO
+    # def initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     config_id: int = 0,
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_engine.initialize(
+    #         instance_name, settings, config_id, verbose_logging, **kwargs
+    #     )
 
     def prime_engine(self, **kwargs: Any) -> None:
         """TODO: Create documentation"""

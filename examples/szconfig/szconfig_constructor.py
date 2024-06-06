@@ -23,7 +23,7 @@ except SzError as err:
 
 try:
     sz_config2 = SzConfig()
-    sz_config2.initialize(INSTANCE_NAME, settings)
+    sz_config2._initialize(INSTANCE_NAME, settings)
     sz_config2.destroy()
 except SzError as err:
     print(f"\nError:\n{err}\n")

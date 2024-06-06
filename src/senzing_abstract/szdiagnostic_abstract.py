@@ -3,7 +3,7 @@ TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import Any
 
 # Metadata
 
@@ -54,25 +54,25 @@ class SzDiagnosticAbstract(ABC):
                 :language: json
         """
 
-    @abstractmethod
-    def destroy(self, **kwargs: Any) -> None:
-        """
-        The `destroy` method will destroy and perform cleanup for the Senzing SzDiagnostic object.
-        It should be called after all other calls are complete.
+    # @abstractmethod
+    # def destroy(self, **kwargs: Any) -> None:
+    #     """
+    #     The `destroy` method will destroy and perform cleanup for the Senzing SzDiagnostic object.
+    #     It should be called after all other calls are complete.
 
-        **Note:** If the `SzDiagnostic` constructor was called with parameters,
-        the destructor will automatically call the destroy() method.
-        In this case, a separate call to `destroy()` is not needed.
+    #     **Note:** If the `SzDiagnostic` constructor was called with parameters,
+    #     the destructor will automatically call the destroy() method.
+    #     In this case, a separate call to `destroy()` is not needed.
 
-        Raises:
-            szexception.SzError:
+    #     Raises:
+    #         szexception.SzError:
 
-        .. collapse:: Example:
+    #     .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
-                :linenos:
-                :language: python
-        """
+    #         .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
+    #             :linenos:
+    #             :language: python
+    #     """
 
     @abstractmethod
     def get_datastore_info(self, **kwargs: Any) -> str:
@@ -101,39 +101,39 @@ class SzDiagnosticAbstract(ABC):
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
         """TODO:  Document get_feature()"""
 
-    @abstractmethod
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        config_id: int = 0,
-        verbose_logging: int = 0,
-        **kwargs: Any
-    ) -> None:
-        """
-        The `initialize` method initializes the Senzing SzDiagnosis object.
-        It must be called prior to any other calls.
+    # @abstractmethod
+    # def initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     config_id: int = 0,
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any
+    # ) -> None:
+    #     """
+    #     The `initialize` method initializes the Senzing SzDiagnosis object.
+    #     It must be called prior to any other calls.
 
-        **Note:** If the Sz Diagnosis constructor is called with parameters,
-        the constructor will automatically call the `initialize()` method.
-        In this case, a separate call to `initialize()` is not needed.
+    #     **Note:** If the Sz Diagnosis constructor is called with parameters,
+    #     the constructor will automatically call the `initialize()` method.
+    #     In this case, a separate call to `initialize()` is not needed.
 
-        Args:
-            instance_name (str): A name for the auditing node, to help identify it within system logs.
-            settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            config_id (int): `Optional:` Initialize with a specific configuration ID and not the current default.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
+    #     Args:
+    #         instance_name (str): A name for the auditing node, to help identify it within system logs.
+    #         settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
+    #         config_id (int): `Optional:` Initialize with a specific configuration ID and not the current default.
+    #         verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-            szexception.SzError:
+    #     Raises:
+    #         TypeError: Incorrect datatype of input parameter.
+    #         szexception.SzError:
 
-        .. collapse:: Example:
+    #     .. collapse:: Example:
 
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
-                :linenos:
-                :language: python
-        """
+    #         .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_initialize_and_destroy.py
+    #             :linenos:
+    #             :language: python
+    #     """
 
     @abstractmethod
     def purge_repository(self, **kwargs: Any) -> None:

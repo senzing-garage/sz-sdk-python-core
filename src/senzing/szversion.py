@@ -101,8 +101,11 @@ def is_supported_senzingapi_version() -> bool:
     :meta private:
     """
 
-    sz_product = SzProduct()
-    version_dict = sz_product.version_as_dict()
+    # TODO
+    # sz_product = SzProduct()
+    sz_product = SzProduct("szversion", "{}")
+    # version_dict = sz_product.version_as_dict()
+    version_dict = json.loads(sz_product.get_version())
     senzing_version_current = version_dict.get("VERSION", "0.0.0")
 
     result = supports_senzingapi_version(

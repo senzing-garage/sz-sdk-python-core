@@ -465,7 +465,7 @@ class SzCmdShell(cmd.Cmd, object):
             textwrap.dedent(
                 f"""
         {colorize('New features and their attributes are rarely needed.  But when they are they are usually industry specific', '')}
-        {colorize('identifiers (F1s) like medicare_provider_id init_enginesor swift_code for a bank.  If you want some other kind of attribute like a grouping (FF)', '')}
+        {colorize('identifiers (F1s) like medicare_provider_id or swift_code for a bank.  If you want some other kind of attribute like a grouping (FF)', '')}
         {colorize('or a physical attribute (FME, FMES), it is best to clone an existing feature by doing a getFeature, then modifying the json payload to', '')}
         {colorize('use it in an addFeature.', '')}
 
@@ -756,6 +756,7 @@ class SzCmdShell(cmd.Cmd, object):
 
     # ===== command loop section =====
 
+    # TODO Remove use of _initialize, temp workaround
     # def init_engines(self, init_msg=False):
     def init_engines(self):
 
@@ -764,8 +765,8 @@ class SzCmdShell(cmd.Cmd, object):
 
         try:
             # TODO Change instance name in all tools
-            self.sz_configmgr.initialize("szG2ConfigMgr", self.engine_settings)
-            self.sz_config.initialize("szG2Config", self.engine_settings)
+            self.sz_configmgr._initialize("szG2ConfigMgr", self.engine_settings)
+            self.sz_config._initialize("szG2Config", self.engine_settings)
         # TODO Change all ex to err
         except SzError as err:
             colorize_msg(err, "error")
@@ -776,10 +777,11 @@ class SzCmdShell(cmd.Cmd, object):
         if self.config_updated:
             self.load_config()
 
+    # TODO Remove use of _destroy, temp workaround
     def destroy_engines(self):
         with suppress(Exception):
-            self.sz_configmgr.destroy()
-            self.sz_config.destroy()
+            self.sz_configmgr_destroy()
+            self.sz_config._destroy()
 
     def load_config(self, default_config_id=None):
         # Get the current configuration from the Senzing database
@@ -1465,7 +1467,10 @@ class SzCmdShell(cmd.Cmd, object):
             )
             self.validate_parms(parm_data, ["DATASOURCE"])
             parm_data["ID"] = parm_data.get("ID", 0)
-            parm_data["DATASOURCE"] = parm_data["DATASOURCE"].upper()
+
+            # TODO
+            # parm_data["DATASOURCE"] = parm_data["DATASOURCE"].upper()
+            parm_data["DATASOURCE"] = parm_data["DATASOURCE"]
         except Exception as err:
             colorize_msg(f"Command error: {err}", "error")
             return

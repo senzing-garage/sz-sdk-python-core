@@ -80,9 +80,10 @@ class SzDiagnostic:
             self.sz_diagnostic.check_datastore_performance(seconds_to_run, **kwargs)
         )
 
-    def destroy(self, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_diagnostic.destroy(**kwargs)
+    # TODO
+    # def destroy(self, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_diagnostic.destroy(**kwargs)
 
     def get_datastore_info(self, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
@@ -92,18 +93,19 @@ class SzDiagnostic:
         """TODO: Create documentation"""
         return self.dict_function(self.sz_diagnostic.get_feature(feature_id, **kwargs))
 
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        config_id: int = 0,
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        """TODO: Create documentation"""
-        return self.sz_diagnostic.initialize(
-            instance_name, settings, config_id, verbose_logging, **kwargs
-        )
+    # TODO
+    # def initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     config_id: int = 0,
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_diagnostic.initialize(
+    #         instance_name, settings, config_id, verbose_logging, **kwargs
+    #     )
 
     def purge_repository(self, **kwargs: Any) -> None:
         """TODO: Create documentation"""

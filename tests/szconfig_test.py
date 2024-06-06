@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
+from senzing import SzConfig, SzConfigurationError, SzError
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases
@@ -14,7 +14,7 @@ from senzing import SzConfig, SzConfigurationError, SzEngineFlags, SzError
 def test_exception(sz_config: SzConfig) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_config.check_result(4001, -1)
+        sz_config.check_result(-1)
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
@@ -239,46 +239,31 @@ def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
         sz_config.export_config(bad_config_handle)  # type: ignore[arg-type]
 
 
-def test_initialize_and_destroy(sz_config: SzConfig) -> None:
-    """Test SzConfig().initialize() and SzConfig.destroy()."""
-    instance_name = "Example"
-    settings = "{}"
-    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-    sz_config.initialize(instance_name, settings, verbose_logging)
-    sz_config.destroy()
+# def test_initialize_and_destroy(sz_config: SzConfig) -> None:
+#     """Test SzConfig().initialize() and SzConfig.destroy()."""
+#     instance_name = "Example"
+#     settings = "{}"
+#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     sz_config.initialize(instance_name, settings, verbose_logging)
+#     sz_config.destroy()
 
 
-def test_initialize_and_destroy_dict(sz_config: SzConfig) -> None:
-    """Test SzConfig().init() and SzConfig.destroy()."""
-    instance_name = "Example"
-    settings: Dict[Any, Any] = {}
-    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-    sz_config.initialize(instance_name, settings, verbose_logging)
-    sz_config.destroy()
+# def test_initialize_and_destroy_dict(sz_config: SzConfig) -> None:
+#     """Test SzConfig().init() and SzConfig.destroy()."""
+#     instance_name = "Example"
+#     settings: Dict[Any, Any] = {}
+#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     sz_config.initialize(instance_name, settings, verbose_logging)
+#     sz_config.destroy()
 
 
-def test_initialize_and_destroy_again(sz_config: SzConfig) -> None:
-    """Test SzConfig().init() and SzConfig.destroy()."""
-    instance_name = "Example"
-    settings = "{}"
-    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-    sz_config.initialize(instance_name, settings, verbose_logging)
-    sz_config.destroy()
-
-
-def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
-    """Test the use of SzConfigGrpc in context."""
-
-    with SzConfig(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    ) as sz_config:
-        config_handle = sz_config.create_config()
-        actual = sz_config.get_data_sources(config_handle)
-        sz_config.close_config(config_handle)
-        assert isinstance(actual, str)
-        actual_as_dict = json.loads(actual)
-        assert schema(get_data_sources_schema) == actual_as_dict
+# def test_initialize_and_destroy_again(sz_config: SzConfig) -> None:
+#     """Test SzConfig().init() and SzConfig.destroy()."""
+#     instance_name = "Example"
+#     settings = "{}"
+#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     sz_config.initialize(instance_name, settings, verbose_logging)
+#     sz_config.destroy()
 
 
 # -----------------------------------------------------------------------------
@@ -286,7 +271,8 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_config", scope="module")
+# @pytest.fixture(name="sz_config", scope="module")
+@pytest.fixture(name="sz_config", scope="function")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     Single szconfig object to use for all tests.

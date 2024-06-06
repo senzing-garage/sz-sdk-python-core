@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
+from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_dict import SzConfig, SzConfigManager, SzEngine
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
@@ -97,7 +98,7 @@ def test_add_record(sz_engine: SzEngine) -> None:
     data_source_code = "TEST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.add_record(data_source_code, record_id, record_definition, flags)
 
 
@@ -106,7 +107,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     bad_data_source_code = 1
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     with pytest.raises(TypeError):
         sz_engine.add_record(
             bad_data_source_code, record_id, record_definition, flags  # type: ignore[arg-type]
@@ -118,7 +119,7 @@ def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     with pytest.raises(SzConfigurationError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)
 
@@ -269,7 +270,7 @@ def test_delete_record(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.delete_record(data_source_code, record_id, flags)
 
 
@@ -277,7 +278,7 @@ def test_delete_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     """Test SzEngine().delete_record()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     with pytest.raises(SzConfigurationError):
         sz_engine.delete_record(bad_data_source_code, record_id, flags)
 
@@ -286,7 +287,7 @@ def test_delete_record_bad_record_id(sz_engine: SzEngine) -> None:
     """Test SzEngine().delete_record()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.delete_record(data_source_code, bad_record_id, flags)
 
 
@@ -364,7 +365,7 @@ def test_find_interesting_entities_by_entity_id(sz_engine: SzEngine) -> None:
     ]
     add_records(sz_engine, test_records)
     entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
-    flags = SzEngineFlags.SZ_NO_FLAGS
+    flags = SZ_NO_FLAGS
     actual = sz_engine.find_interesting_entities_by_entity_id(entity_id, flags)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
@@ -376,7 +377,7 @@ def test_find_interesting_entities_by_entity_id_bad_entity_id(
 ) -> None:
     """Test SzEngine().find_interesting_entities_by_entity_id()."""
     bad_entity_id = 0
-    flags = SzEngineFlags.SZ_NO_FLAGS
+    flags = SZ_NO_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_interesting_entities_by_entity_id(bad_entity_id, flags)
 
@@ -389,7 +390,7 @@ def test_find_interesting_entities_by_record_id(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    flags = SzEngineFlags.SZ_NO_FLAGS
+    flags = SZ_NO_FLAGS
     actual = sz_engine.find_interesting_entities_by_record_id(
         data_source_code, record_id, flags
     )
@@ -404,7 +405,7 @@ def test_find_interesting_entities_by_record_id_bad_data_source_code(
     """Test SzEngine().find_interesting_entities_by_record_id()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
-    flags = SzEngineFlags.SZ_NO_FLAGS
+    flags = SZ_NO_FLAGS
     with pytest.raises(SzConfigurationError):
         _ = sz_engine.find_interesting_entities_by_record_id(
             bad_data_source_code, record_id, flags
@@ -417,7 +418,7 @@ def test_find_interesting_entities_by_record_id_bad_record_id(
     """Test SzEngine().find_interesting_entities_by_record_id()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
-    flags = SzEngineFlags.SZ_NO_FLAGS
+    flags = SZ_NO_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_interesting_entities_by_record_id(
             data_source_code, bad_record_id, flags
@@ -868,7 +869,7 @@ def test_reevaluate_entity(sz_engine: SzEngine) -> None:
     ]
     add_records(sz_engine, test_records)
     entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_entity(entity_id, flags)
     delete_records(sz_engine, test_records)
 
@@ -876,7 +877,7 @@ def test_reevaluate_entity(sz_engine: SzEngine) -> None:
 def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngine) -> None:
     """Test SzEngine().get_entity_id_from_record_id()."""
     bad_entity_id = 0
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_entity(bad_entity_id, flags)
 
 
@@ -910,7 +911,7 @@ def test_reevaluate_record(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_record(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
 
@@ -919,7 +920,7 @@ def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngine) -> None:
     """Test SzEngine().reevaluate_record()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     with pytest.raises(SzConfigurationError):
         sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
@@ -928,7 +929,7 @@ def test_reevaluate_record_bad_record_id(sz_engine: SzEngine) -> None:
     """Test SzEngine().reevaluate_record()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
     # TODO: Fix test after GDEV-3790
@@ -1077,20 +1078,6 @@ def test_why_records_bad_record_id(sz_engine: SzEngine) -> None:
 # -----------------------------------------------------------------------------
 
 
-def test_add_record_using_context_managment(engine_vars: Dict[Any, Any]) -> None:
-    """Test the use of SzEngineGrpc in context."""
-    with SzEngineCore(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    ) as sz_engine_core:
-        with SzEngine(sz_engine_core) as sz_engine:
-            data_source_code = "TEST"
-            record_id = "2"
-            record_definition = "{}"
-            flags = SzEngineFlags.SZ_WITHOUT_INFO
-            sz_engine.add_record(data_source_code, record_id, record_definition, flags)
-
-
 def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
     """Add truthset data for tests"""
     sz_engine_core = SzEngineCore(
@@ -1129,9 +1116,9 @@ def test_reinitialize_bad_config_id(
     #     sz_engine.reinitialize(config_id)
 
 
-def test_destroy(sz_engine: SzEngine) -> None:
-    """Test SzEngine().destroy()."""
-    sz_engine.destroy()
+# def test_destroy(sz_engine: SzEngine) -> None:
+#     """Test SzEngine().destroy()."""
+#     sz_engine.destroy()
 
 
 # -----------------------------------------------------------------------------
@@ -1188,7 +1175,7 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
 
 def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> None:
     """Add all of the records in the list."""
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
         datasource = record_identification[0]
         record_id = record_identification[1]
@@ -1203,7 +1190,7 @@ def add_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> N
 
 def add_records_truthset(sz_engine: SzEngine, do_redo: bool = True) -> None:
     """Add all truth-set the records."""
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     for record_set in DATA_SOURCES.values():
         for record in record_set.values():
             sz_engine.add_record(
@@ -1220,7 +1207,7 @@ def add_records_truthset(sz_engine: SzEngine, do_redo: bool = True) -> None:
 
 def delete_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -> None:
     """Delete all of the records in the list."""
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
         datasource = record_identification[0]
         record_id = record_identification[1]
@@ -1232,7 +1219,7 @@ def delete_records(sz_engine: SzEngine, record_id_list: List[Tuple[str, str]]) -
 
 def delete_records_truthset(sz_engine: SzEngine) -> None:
     """Delete all truth-set the records."""
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     for record_set in DATA_SOURCES.values():
         for record in record_set.values():
             sz_engine.delete_record(record.get("DataSource"), record.get("Id"), flags)

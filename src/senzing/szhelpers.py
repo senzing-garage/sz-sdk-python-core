@@ -132,12 +132,13 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
 
 # TODO
+# TODO Remove and call directly from each module now other args removed?
 def check_result_rc(
     lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
     lib_clear_last_exception: Callable[[], None],
     lib_get_last_exception_code: Callable[[], int],
-    product_id: str,
-    error_id: int,
+    # product_id: str,
+    # error_id: int,
     result_return_code: int,
 ) -> None:
     """# TODO"""
@@ -146,8 +147,8 @@ def check_result_rc(
             lib_get_last_exception,
             lib_clear_last_exception,
             lib_get_last_exception_code,
-            product_id,
-            error_id,
+            # product_id,
+            # error_id,
         )
 
 
@@ -171,7 +172,24 @@ def check_type_is_list(to_check: Any) -> None:
         raise TypeError(f"Expected type list, got {type(to_check).__name__}")
 
 
-def build_dsrc_json(dsrc_codes: list[str]) -> str:
+# TODO
+def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
+    """# TODO"""
+    escaped = json.dumps(dict(escaped=to_escape)["escaped"], ensure_ascii=False)
+    # NOTE Remove first and last double quote added by json.dumps()
+    if strip_quotes:
+        return escaped[1:-1]
+    return escaped
+
+
+# TODO
+def build_dsrc_code_json(dsrc_code: str) -> str:
+    """# TODO"""
+    # return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
+    return f'{{"DSRC_CODE": "{dsrc_code}"}}'
+
+
+def build_data_sources_json(dsrc_codes: list[str]) -> str:
     """
     Build JSON string of data source codes.
 
@@ -183,6 +201,7 @@ def build_dsrc_json(dsrc_codes: list[str]) -> str:
              {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
     """
     check_type_is_list((dsrc_codes))
+    # dsrcs = ", ".join([f"{escape_json_str(code)}" for code in dsrc_codes])
     dsrcs = ", ".join([f'"{code}"' for code in dsrc_codes])
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
@@ -203,6 +222,8 @@ def build_entities_json(entity_ids: list[int]) -> str:
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
+# TODO What if no ds or id is sent in
+# TODO Tests
 def build_records_json(record_keys: list[tuple[str, str]]) -> str:
     """# TODO
     Build JSON string of data source and record ids.
@@ -218,6 +239,7 @@ def build_records_json(record_keys: list[tuple[str, str]]) -> str:
     records = ", ".join(
         [
             f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
+            # f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
             for ds, rec_id in record_keys
         ]
     )

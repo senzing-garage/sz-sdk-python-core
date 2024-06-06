@@ -642,8 +642,8 @@ def new_szexception(
     get_last_exception: Callable[[_Pointer[c_char], int], str],
     clear_last_exception: Callable[[], None],
     get_last_exception_code: Callable[[], int],
-    product_id: str,
-    error_id: int,
+    # product_id: str,
+    # error_id: int,
 ) -> Exception:
     """
     Generate a new Senzing Exception based on the SDK product_id & error_id.
@@ -653,27 +653,30 @@ def new_szexception(
     sz_error_code = get_senzing_error_code(get_last_exception_code)
     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
     senzing_error_class = EXCEPTION_MAP.get(sz_error_code, SzError)
-    return senzing_error_class(
-        f"{sz_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}"
-    )
+    return senzing_error_class(sz_error_text)
+    # f"{sz_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}"
+    # )
 
 
 # TODO
+# TODO Make non-error class objects - maps, funcs private with _ or __?
 # -----------------------------------------------------------------------------
 # Helper functions to create an SDK Exception
 # -----------------------------------------------------------------------------
 
+# TODO SDK_ERROR_MAP?
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "no arguments or a minimum of instance_name and settings arguments should be specified",     # Check in module constructors
+    1: "instance_name and settings arguments must be specified",     # Check in module constructors
 }
 # fmt: on
 
 
-def sdk_exception(product_id: str, error_id: int, msg_code: int) -> Exception:
+# def sdk_exception(product_id: str, error_id: int, msg_code: int) -> Exception:
+def sdk_exception(msg_code: int) -> Exception:
     """# TODO"""
-    sdk_error_text = SDK_EXCEPTION_MAP.get(
-        msg_code, f"No message for index {msg_code}."
-    )
-    # TODO New class, SDKError?
-    return SzError(f"{sdk_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}")
+    # sdk_error_text = SDK_EXCEPTION_MAP.get(
+    #     msg_code, f"No message for index {msg_code}."
+    # )
+    # return SzError(f"{sdk_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}")
+    return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

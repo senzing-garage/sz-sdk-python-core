@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzEngineFlags, SzError, SzProduct
+from senzing import SzError, SzProduct
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -14,7 +14,7 @@ from senzing import SzEngineFlags, SzError, SzProduct
 def test_exception(sz_product: SzProduct) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_product.check_result(4001, -1)
+        sz_product.check_result(-1)
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
@@ -64,34 +64,22 @@ def test_get_version(sz_product: SzProduct) -> None:
     assert schema(get_version_schema) == actual_as_dict
 
 
-def test_initialize_and_destroy(sz_product: SzProduct) -> None:
-    """Test init/destroy cycle."""
-    instance_name = "Example"
-    settings: Dict[Any, Any] = {}
-    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-    sz_product.initialize(instance_name, settings, verbose_logging)
-    sz_product.destroy()
+# def test_initialize_and_destroy(sz_product: SzProduct) -> None:
+#     """Test init/destroy cycle."""
+#     instance_name = "Example"
+#     settings: Dict[Any, Any] = {}
+#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     sz_product.initialize(instance_name, settings, verbose_logging)
+#     sz_product.destroy()
 
 
-def test_initialize_and_destroy_again(sz_product: SzProduct) -> None:
-    """Test init/destroy cycle a second time."""
-    instance_name = "Example"
-    settings = "{}"
-    verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-    sz_product.initialize(instance_name, settings, verbose_logging)
-    sz_product.destroy()
-
-
-def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
-    """Test the use of SzProductGrpc in context."""
-    with SzProduct(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    ) as sz_product:
-        actual = sz_product.get_license()
-        assert isinstance(actual, str)
-        actual_as_dict = json.loads(actual)
-        assert schema(get_license_schema) == actual_as_dict
+# def test_initialize_and_destroy_again(sz_product: SzProduct) -> None:
+#     """Test init/destroy cycle a second time."""
+#     instance_name = "Example"
+#     settings = "{}"
+#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     sz_product.initialize(instance_name, settings, verbose_logging)
+#     sz_product.destroy()
 
 
 # -----------------------------------------------------------------------------
@@ -99,7 +87,7 @@ def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_product", scope="module")
+@pytest.fixture(name="sz_product", scope="function")
 def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
     Single szproduct object to use for all tests.

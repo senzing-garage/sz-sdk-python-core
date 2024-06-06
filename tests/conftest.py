@@ -4,9 +4,6 @@ from typing import Any, Dict
 
 import pytest
 
-# Ant test
-# '{"PIPELINE": {"SUPPORTPATH": "/home/ant/senzprojs/3.8.0.23292/data", "CONFIGPATH": "/home/ant/senzprojs/3.8.0.23292/etc", "RESOURCEPATH": "/home/ant/senzprojs/3.8.0.23292/resources"}, "SQL": {"CONNECTION": "postgresql://senzing:password@ant76:5432:g2"}}'
-
 
 @pytest.fixture(name="engine_vars", scope="session")
 def engine_vars_fixture() -> Dict[Any, Any]:
