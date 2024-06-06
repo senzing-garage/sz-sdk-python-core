@@ -175,7 +175,7 @@ def check_type_is_list(to_check: Any) -> None:
 # TODO
 def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
     """# TODO"""
-    escaped = json.dumps(dict(escaped=to_escape)["escaped"], ensure_ascii=False)
+    escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
     # NOTE Remove first and last double quote added by json.dumps()
     if strip_quotes:
         return escaped[1:-1]
