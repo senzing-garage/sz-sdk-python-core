@@ -2,13 +2,14 @@
 
 from typing import List, Tuple
 
+from senzing_abstract.szengineflags import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import SzEngine, SzEngineFlags
+from senzing import SzEngine
 
 data_sources = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
@@ -40,7 +41,7 @@ def add_records(
     sz_engine_local: SzEngine, record_id_list: List[Tuple[str, str]]
 ) -> None:
     """Add all of the records in the list."""
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
+    flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
         datasource = record_identification[0]
         record_id = record_identification[1]

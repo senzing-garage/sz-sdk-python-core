@@ -22,8 +22,6 @@ except SzError as err:
 # Example 2
 
 try:
-    sz_product2 = SzProduct()
-    sz_product2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_product2.destroy()
+    sz_product2 = SzProduct(INSTANCE_NAME, SETTINGS)
 except SzError as err:
     print(f"\nError:\n{err}\n")
