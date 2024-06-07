@@ -1,1 +1,14 @@
-// TODO: Construct output.
+// Output has been formatted for easier reading.
+
+{
+  "DATA_SOURCE": "CUSTOMERS",
+  "RECORD_ID": "2207",
+  "AFFECTED_ENTITIES": [
+    {
+      "ENTITY_ID": 305
+    }
+  ],
+  "INTERESTING_ENTITIES": {
+    "ENTITIES": []
+  }
+}

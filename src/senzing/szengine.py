@@ -1,5 +1,3 @@
-# TODO ^
-
 """
 The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's G2Engine C binding.
@@ -22,8 +20,6 @@ Example:
 from __future__ import annotations
 
 import os
-
-# TODO
 from contextlib import suppress
 from ctypes import (
     POINTER,
@@ -227,7 +223,6 @@ class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
 # -----------------------------------------------------------------------------
 
 
-# TODO: Optional on Parameters needs to be explained for different init methods
 # TODO: Raises could be more granular
 class SzEngine(SzEngineAbstract):
     """
@@ -615,7 +610,6 @@ class SzEngine(SzEngineAbstract):
 
         # if len(self.instance_name) > 0:
         #     self.auto_init = True
-        # TODO Should use sdk_exception?
         if not self.instance_name or len(self.settings) == 0:
             # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
             raise sdk_exception(1)
@@ -647,9 +641,8 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            # TODO Rename final_flags to ... ? Java uses downstream
-            # final_flags = flags & self.sdk_flags_mask
-            final_flags = flags & self.sdk_flags_mask
+            # base_flags = flags & self.sdk_flags_mask
+            base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_addRecordWithInfo_helper(
                 # as_c_char_p(data_source_code),
                 # as_c_char_p(escape_json_str(data_source_code, strip_quotes=True)),
@@ -657,7 +650,7 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(data_source_code),
                 as_c_char_p(record_id),
                 as_c_char_p(record_definition),
-                final_flags,
+                base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
                 # TODO Rename?
@@ -693,11 +686,11 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            final_flags = flags & self.sdk_flags_mask
+            base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_deleteRecordWithInfo_helper(
                 as_c_char_p(data_source_code),
                 as_c_char_p(record_id),
-                final_flags,
+                base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)
@@ -824,7 +817,6 @@ class SzEngine(SzEngineAbstract):
         end_entity_id: int,
         max_degrees: int,
         # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        # TODO by_entity == by_entity - by_record == by_record
         # TODO Avoidances
         # exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
         exclusions: Optional[List[int]] = None,
@@ -878,8 +870,6 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        # TODO
-
         if exclusions and not required_data_sources:
             result = self.library_handle.G2_findPathExcludingByRecordID_V2_helper(
                 as_c_char_p(start_data_source_code),
@@ -1013,8 +1003,6 @@ class SzEngine(SzEngineAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        # TODO Viable option for Python? Performance hit?
-        _ = kwargs
         if config_id == 0:
             result = self.library_handle.G2_init(
                 as_c_char_p(instance_name),
@@ -1041,9 +1029,9 @@ class SzEngine(SzEngineAbstract):
         self, redo_record: str, flags: int = 0, **kwargs: Any
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            final_flags = flags & self.sdk_flags_mask
+            base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_processRedoRecordWithInfo_helper(
-                as_c_char_p(redo_record), final_flags
+                as_c_char_p(redo_record), base_flags
             )
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)
@@ -1059,10 +1047,10 @@ class SzEngine(SzEngineAbstract):
     # TODO: GDEV-3790
     def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            final_flags = flags & self.sdk_flags_mask
+            base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_reevaluateEntityWithInfo_helper(
                 entity_id,
-                final_flags,
+                base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)
@@ -1084,11 +1072,11 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            final_flags = flags & self.sdk_flags_mask
+            base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_reevaluateRecordWithInfo_helper(
                 as_c_char_p(data_source_code),
                 as_c_char_p(record_id),
-                final_flags,
+                base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)

@@ -4,15 +4,6 @@ from senzing import SzEngine, SzEngineFlags, SzError
 
 FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-# TODO
-# RECORD_LIST = (
-#     "{"
-#     '"RECORDS": ['
-#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
-#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1002"},'
-#     "]"
-#     "}"
-# )
 RECORD_KEYS = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1002")]
 SETTINGS = {
     "PIPELINE": {

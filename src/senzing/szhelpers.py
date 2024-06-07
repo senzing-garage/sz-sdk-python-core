@@ -125,13 +125,11 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     return inner_function
 
 
-# TODO
 # -----------------------------------------------------------------------------
 # Helpers for ...
 # -----------------------------------------------------------------------------
 
 
-# TODO
 # TODO Remove and call directly from each module now other args removed?
 def check_result_rc(
     lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
@@ -172,7 +170,6 @@ def check_type_is_list(to_check: Any) -> None:
         raise TypeError(f"Expected type list, got {type(to_check).__name__}")
 
 
-# TODO
 def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
     """# TODO"""
     escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
@@ -182,7 +179,6 @@ def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
     return escaped
 
 
-# TODO
 def build_dsrc_code_json(dsrc_code: str) -> str:
     """# TODO"""
     # return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
@@ -201,7 +197,6 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
              {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
     """
     check_type_is_list((dsrc_codes))
-    # dsrcs = ", ".join([f"{escape_json_str(code)}" for code in dsrc_codes])
     dsrcs = ", ".join([f'"{code}"' for code in dsrc_codes])
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
@@ -361,7 +356,6 @@ def as_python_str(candidate_value: Any) -> str:
 
     :meta private:
     """
-    # TODO: Do these functions need try/except?
     # TODO catch_exceptions decorator would catch, need to check error type and that it's caught
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""

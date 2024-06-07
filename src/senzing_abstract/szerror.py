@@ -39,7 +39,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2024-05-02"
 
-SDK_ERROR_PREFIX = "SZSDK"
 
 # -----------------------------------------------------------------------------
 # Base SzError

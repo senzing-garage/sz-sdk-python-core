@@ -1,1 +1,1338 @@
-// TODO: Construct output.
+// Output has been formatted for easier reading.
+
+{
+    "WHY_RESULTS":
+    [
+        {
+            "INTERNAL_ID": 153,
+            "ENTITY_ID": 1,
+            "FOCUS_RECORDS":
+            [
+                {
+                    "DATA_SOURCE": "CUSTOMERS",
+                    "RECORD_ID": "1001"
+                }
+            ],
+            "MATCH_INFO":
+            {
+                "WHY_KEY": "+NAME+DOB+PHONE+EMAIL",
+                "WHY_ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+                "MATCH_LEVEL_CODE": "RESOLVED",
+                "CANDIDATE_KEYS":
+                {
+                    "DOB":
+                    [
+                        {
+                            "FEAT_ID": 2,
+                            "FEAT_DESC": "12/11/1978"
+                        }
+                    ],
+                    "EMAIL":
+                    [
+                        {
+                            "FEAT_ID": 3,
+                            "FEAT_DESC": "bsmith@work.com"
+                        }
+                    ],
+                    "EMAIL_KEY":
+                    [
+                        {
+                            "FEAT_ID": 17,
+                            "FEAT_DESC": "bsmith@WORK.COM"
+                        }
+                    ],
+                    "NAME_KEY":
+                    [
+                        {
+                            "FEAT_ID": 7,
+                            "FEAT_DESC": "RBRT|SM0|DOB.MMYY_HASH=1278"
+                        },
+                        {
+                            "FEAT_ID": 10,
+                            "FEAT_DESC": "RBRT|SM0"
+                        },
+                        {
+                            "FEAT_ID": 13,
+                            "FEAT_DESC": "RBRT|SM0|DOB.MMDD_HASH=1211"
+                        },
+                        {
+                            "FEAT_ID": 14,
+                            "FEAT_DESC": "RBRT|SM0|DOB=71211"
+                        },
+                        {
+                            "FEAT_ID": 68,
+                            "FEAT_DESC": "RBRT|SM0|ADDRESS.CITY_STD=LS FKS"
+                        },
+                        {
+                            "FEAT_ID": 70,
+                            "FEAT_DESC": "RBRT|SM0|PHONE.PHONE_LAST_5=91300"
+                        }
+                    ],
+                    "PHONE":
+                    [
+                        {
+                            "FEAT_ID": 67,
+                            "FEAT_DESC": "702-919-1300"
+                        }
+                    ],
+                    "PHONE_KEY":
+                    [
+                        {
+                            "FEAT_ID": 73,
+                            "FEAT_DESC": "7029191300"
+                        }
+                    ]
+                },
+                "FEATURE_SCORES":
+                {
+                    "ADDRESS":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 66,
+                            "INBOUND_FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                            "INBOUND_FEAT_USAGE_TYPE": "MAILING",
+                            "CANDIDATE_FEAT_ID": 91,
+                            "CANDIDATE_FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "HOME",
+                            "SCORE": 42,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 42
+                            },
+                            "SCORE_BUCKET": "NO_CHANCE",
+                            "SCORE_BEHAVIOR": "FF"
+                        },
+                        {
+                            "INBOUND_FEAT_ID": 66,
+                            "INBOUND_FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                            "INBOUND_FEAT_USAGE_TYPE": "MAILING",
+                            "CANDIDATE_FEAT_ID": 78,
+                            "CANDIDATE_FEAT_DESC": "1515 Adela Ln Las Vegas NV 89132",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "HOME",
+                            "SCORE": 33,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 33
+                            },
+                            "SCORE_BUCKET": "NO_CHANCE",
+                            "SCORE_BEHAVIOR": "FF"
+                        }
+                    ],
+                    "DOB":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 2,
+                            "INBOUND_FEAT_DESC": "12/11/1978",
+                            "INBOUND_FEAT_USAGE_TYPE": "",
+                            "CANDIDATE_FEAT_ID": 2,
+                            "CANDIDATE_FEAT_DESC": "12/11/1978",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "",
+                            "SCORE": 100,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 100
+                            },
+                            "SCORE_BUCKET": "SAME",
+                            "SCORE_BEHAVIOR": "FMES"
+                        }
+                    ],
+                    "EMAIL":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 3,
+                            "INBOUND_FEAT_DESC": "bsmith@work.com",
+                            "INBOUND_FEAT_USAGE_TYPE": "",
+                            "CANDIDATE_FEAT_ID": 3,
+                            "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "",
+                            "SCORE": 100,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 100
+                            },
+                            "SCORE_BUCKET": "SAME",
+                            "SCORE_BEHAVIOR": "F1"
+                        }
+                    ],
+                    "NAME":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 65,
+                            "INBOUND_FEAT_DESC": "Robert Smith",
+                            "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                            "CANDIDATE_FEAT_ID": 89,
+                            "CANDIDATE_FEAT_DESC": "Bob Smith",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                            "SCORE": 97,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "GENERATION_MATCH": -1,
+                                "GNR_FN": 97,
+                                "GNR_GN": 95,
+                                "GNR_ON": -1,
+                                "GNR_SN": 100
+                            },
+                            "SCORE_BUCKET": "CLOSE",
+                            "SCORE_BEHAVIOR": "NAME"
+                        },
+                        {
+                            "INBOUND_FEAT_ID": 65,
+                            "INBOUND_FEAT_DESC": "Robert Smith",
+                            "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                            "CANDIDATE_FEAT_ID": 76,
+                            "CANDIDATE_FEAT_DESC": "B Smith",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                            "SCORE": 53,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "GENERATION_MATCH": -1,
+                                "GNR_FN": 53,
+                                "GNR_GN": 8,
+                                "GNR_ON": -1,
+                                "GNR_SN": 100
+                            },
+                            "SCORE_BUCKET": "NO_CHANCE",
+                            "SCORE_BEHAVIOR": "NAME"
+                        },
+                        {
+                            "INBOUND_FEAT_ID": 65,
+                            "INBOUND_FEAT_DESC": "Robert Smith",
+                            "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                            "CANDIDATE_FEAT_ID": 1,
+                            "CANDIDATE_FEAT_DESC": "Bob J Smith",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                            "SCORE": 90,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "GENERATION_MATCH": -1,
+                                "GNR_FN": 90,
+                                "GNR_GN": 88,
+                                "GNR_ON": -1,
+                                "GNR_SN": 100
+                            },
+                            "SCORE_BUCKET": "CLOSE",
+                            "SCORE_BEHAVIOR": "NAME"
+                        }
+                    ],
+                    "PHONE":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 67,
+                            "INBOUND_FEAT_DESC": "702-919-1300",
+                            "INBOUND_FEAT_USAGE_TYPE": "HOME",
+                            "CANDIDATE_FEAT_ID": 67,
+                            "CANDIDATE_FEAT_DESC": "702-919-1300",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "MOBILE",
+                            "SCORE": 100,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 100
+                            },
+                            "SCORE_BUCKET": "SAME",
+                            "SCORE_BEHAVIOR": "FF"
+                        }
+                    ],
+                    "RECORD_TYPE":
+                    [
+                        {
+                            "INBOUND_FEAT_ID": 16,
+                            "INBOUND_FEAT_DESC": "PERSON",
+                            "INBOUND_FEAT_USAGE_TYPE": "",
+                            "CANDIDATE_FEAT_ID": 16,
+                            "CANDIDATE_FEAT_DESC": "PERSON",
+                            "CANDIDATE_FEAT_USAGE_TYPE": "",
+                            "SCORE": 100,
+                            "ADDITIONAL_SCORES":
+                            {
+                                "FULL_SCORE": 100
+                            },
+                            "SCORE_BUCKET": "SAME",
+                            "SCORE_BEHAVIOR": "FVME"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "ENTITIES":
+    [
+        {
+            "RESOLVED_ENTITY":
+            {
+                "ENTITY_ID": 1,
+                "ENTITY_NAME": "Robert Smith",
+                "FEATURES":
+                {
+                    "ADDRESS":
+                    [
+                        {
+                            "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                            "LIB_FEAT_ID": 91,
+                            "USAGE_TYPE": "HOME",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                                    "LIB_FEAT_ID": 91,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                },
+                                {
+                                    "FEAT_DESC": "1515 Adela Ln Las Vegas NV 89132",
+                                    "LIB_FEAT_ID": 78,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                            "LIB_FEAT_ID": 66,
+                            "USAGE_TYPE": "MAILING",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                                    "LIB_FEAT_ID": 66,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "ADDR_KEY":
+                    [
+                        {
+                            "FEAT_DESC": "123|MN||89132",
+                            "LIB_FEAT_ID": 72,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "123|MN||89132",
+                                    "LIB_FEAT_ID": 72,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "123|MN||LS FKS",
+                            "LIB_FEAT_ID": 71,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "123|MN||LS FKS",
+                                    "LIB_FEAT_ID": 71,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "1515|ATL||89111",
+                            "LIB_FEAT_ID": 98,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "1515|ATL||89111",
+                                    "LIB_FEAT_ID": 98,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "1515|ATL||89132",
+                            "LIB_FEAT_ID": 86,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "1515|ATL||89132",
+                                    "LIB_FEAT_ID": 86,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 3,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "1515|ATL||LS FKS",
+                            "LIB_FEAT_ID": 85,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "1515|ATL||LS FKS",
+                                    "LIB_FEAT_ID": 85,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "DOB":
+                    [
+                        {
+                            "FEAT_DESC": "11/12/1979",
+                            "LIB_FEAT_ID": 77,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "11/12/1979",
+                                    "LIB_FEAT_ID": 77,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "12/11/1978",
+                            "LIB_FEAT_ID": 2,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "12/11/1978",
+                                    "LIB_FEAT_ID": 2,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                },
+                                {
+                                    "FEAT_DESC": "11/12/1978",
+                                    "LIB_FEAT_ID": 90,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "EMAIL":
+                    [
+                        {
+                            "FEAT_DESC": "bsmith@work.com",
+                            "LIB_FEAT_ID": 3,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "bsmith@work.com",
+                                    "LIB_FEAT_ID": 3,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "EMAIL_KEY":
+                    [
+                        {
+                            "FEAT_DESC": "bsmith@WORK.COM",
+                            "LIB_FEAT_ID": 17,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "bsmith@WORK.COM",
+                                    "LIB_FEAT_ID": 17,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "NAME":
+                    [
+                        {
+                            "FEAT_DESC": "B Smith",
+                            "LIB_FEAT_ID": 76,
+                            "USAGE_TYPE": "PRIMARY",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B Smith",
+                                    "LIB_FEAT_ID": 76,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "Y"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "Robert Smith",
+                            "LIB_FEAT_ID": 65,
+                            "USAGE_TYPE": "PRIMARY",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "Robert Smith",
+                                    "LIB_FEAT_ID": 65,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                },
+                                {
+                                    "FEAT_DESC": "Bob J Smith",
+                                    "LIB_FEAT_ID": 1,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                },
+                                {
+                                    "FEAT_DESC": "Bob Smith",
+                                    "LIB_FEAT_ID": 89,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "Y"
+                                }
+                            ]
+                        }
+                    ],
+                    "NAMEADDR_KEY":
+                    [
+                        {
+                            "FEAT_DESC": "BB|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89111",
+                            "LIB_FEAT_ID": 102,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89111",
+                                    "LIB_FEAT_ID": 102,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                            "LIB_FEAT_ID": 99,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                                    "LIB_FEAT_ID": 99,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89132",
+                            "LIB_FEAT_ID": 87,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89132",
+                                    "LIB_FEAT_ID": 87,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                            "LIB_FEAT_ID": 88,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                                    "LIB_FEAT_ID": 88,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=123|MN||89132",
+                            "LIB_FEAT_ID": 75,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=123|MN||89132",
+                                    "LIB_FEAT_ID": 75,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=123|MN||LS FKS",
+                            "LIB_FEAT_ID": 74,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=123|MN||LS FKS",
+                                    "LIB_FEAT_ID": 74,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89111",
+                            "LIB_FEAT_ID": 100,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=1515|ATL||89111",
+                                    "LIB_FEAT_ID": 100,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                            "LIB_FEAT_ID": 101,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|ADDR_KEY.EXPRESSION=1515|ATL||LS FKS",
+                                    "LIB_FEAT_ID": 101,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "NAME_KEY":
+                    [
+                        {
+                            "FEAT_DESC": "BB|J|SM0",
+                            "LIB_FEAT_ID": 15,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|J|SM0",
+                                    "LIB_FEAT_ID": 15,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|J|SM0|DOB.MMDD_HASH=1211",
+                            "LIB_FEAT_ID": 4,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|J|SM0|DOB.MMDD_HASH=1211",
+                                    "LIB_FEAT_ID": 4,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|J|SM0|DOB.MMYY_HASH=1278",
+                            "LIB_FEAT_ID": 11,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|J|SM0|DOB.MMYY_HASH=1278",
+                                    "LIB_FEAT_ID": 11,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|J|SM0|DOB=71211",
+                            "LIB_FEAT_ID": 5,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|J|SM0|DOB=71211",
+                                    "LIB_FEAT_ID": 5,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0",
+                            "LIB_FEAT_ID": 8,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0",
+                                    "LIB_FEAT_ID": 8,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|ADDRESS.CITY_STD=LS FKS",
+                            "LIB_FEAT_ID": 94,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|ADDRESS.CITY_STD=LS FKS",
+                                    "LIB_FEAT_ID": 94,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|DOB.MMDD_HASH=1211",
+                            "LIB_FEAT_ID": 9,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|DOB.MMDD_HASH=1211",
+                                    "LIB_FEAT_ID": 9,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|DOB.MMYY_HASH=1178",
+                            "LIB_FEAT_ID": 96,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|DOB.MMYY_HASH=1178",
+                                    "LIB_FEAT_ID": 96,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|DOB.MMYY_HASH=1278",
+                            "LIB_FEAT_ID": 12,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|DOB.MMYY_HASH=1278",
+                                    "LIB_FEAT_ID": 12,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|DOB=71211",
+                            "LIB_FEAT_ID": 6,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|DOB=71211",
+                                    "LIB_FEAT_ID": 6,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|PHONE.PHONE_LAST_5=91300",
+                            "LIB_FEAT_ID": 97,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|PHONE.PHONE_LAST_5=91300",
+                                    "LIB_FEAT_ID": 97,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "BB|SM0|POST=89111",
+                            "LIB_FEAT_ID": 93,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "BB|SM0|POST=89111",
+                                    "LIB_FEAT_ID": 93,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0",
+                            "LIB_FEAT_ID": 79,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0",
+                                    "LIB_FEAT_ID": 79,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|ADDRESS.CITY_STD=LS FKS",
+                            "LIB_FEAT_ID": 82,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|ADDRESS.CITY_STD=LS FKS",
+                                    "LIB_FEAT_ID": 82,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|DOB.MMDD_HASH=1211",
+                            "LIB_FEAT_ID": 84,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|DOB.MMDD_HASH=1211",
+                                    "LIB_FEAT_ID": 84,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|DOB.MMYY_HASH=1179",
+                            "LIB_FEAT_ID": 81,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|DOB.MMYY_HASH=1179",
+                                    "LIB_FEAT_ID": 81,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|DOB=71211",
+                            "LIB_FEAT_ID": 80,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|DOB=71211",
+                                    "LIB_FEAT_ID": 80,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "B|SM0|POST=89132",
+                            "LIB_FEAT_ID": 83,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "B|SM0|POST=89132",
+                                    "LIB_FEAT_ID": 83,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0",
+                            "LIB_FEAT_ID": 10,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0",
+                                    "LIB_FEAT_ID": 10,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 3,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|ADDRESS.CITY_STD=LS FKS",
+                            "LIB_FEAT_ID": 68,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|ADDRESS.CITY_STD=LS FKS",
+                                    "LIB_FEAT_ID": 68,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|DOB.MMDD_HASH=1211",
+                            "LIB_FEAT_ID": 13,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|DOB.MMDD_HASH=1211",
+                                    "LIB_FEAT_ID": 13,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|DOB.MMYY_HASH=1178",
+                            "LIB_FEAT_ID": 92,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|DOB.MMYY_HASH=1178",
+                                    "LIB_FEAT_ID": 92,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|DOB.MMYY_HASH=1278",
+                            "LIB_FEAT_ID": 7,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|DOB.MMYY_HASH=1278",
+                                    "LIB_FEAT_ID": 7,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|DOB=71211",
+                            "LIB_FEAT_ID": 14,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|DOB=71211",
+                                    "LIB_FEAT_ID": 14,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|PHONE.PHONE_LAST_5=91300",
+                            "LIB_FEAT_ID": 70,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|PHONE.PHONE_LAST_5=91300",
+                                    "LIB_FEAT_ID": 70,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|POST=89111",
+                            "LIB_FEAT_ID": 95,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|POST=89111",
+                                    "LIB_FEAT_ID": 95,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "RBRT|SM0|POST=89132",
+                            "LIB_FEAT_ID": 69,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "RBRT|SM0|POST=89132",
+                                    "LIB_FEAT_ID": 69,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 2,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "PHONE":
+                    [
+                        {
+                            "FEAT_DESC": "702-919-1300",
+                            "LIB_FEAT_ID": 67,
+                            "USAGE_TYPE": "HOME",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "702-919-1300",
+                                    "LIB_FEAT_ID": 67,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        },
+                        {
+                            "FEAT_DESC": "702-919-1300",
+                            "LIB_FEAT_ID": 67,
+                            "USAGE_TYPE": "MOBILE",
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "702-919-1300",
+                                    "LIB_FEAT_ID": 67,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "PHONE_KEY":
+                    [
+                        {
+                            "FEAT_DESC": "7029191300",
+                            "LIB_FEAT_ID": 73,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "7029191300",
+                                    "LIB_FEAT_ID": 73,
+                                    "USED_FOR_CAND": "Y",
+                                    "USED_FOR_SCORING": "N",
+                                    "ENTITY_COUNT": 1,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ],
+                    "RECORD_TYPE":
+                    [
+                        {
+                            "FEAT_DESC": "PERSON",
+                            "LIB_FEAT_ID": 16,
+                            "FEAT_DESC_VALUES":
+                            [
+                                {
+                                    "FEAT_DESC": "PERSON",
+                                    "LIB_FEAT_ID": 16,
+                                    "USED_FOR_CAND": "N",
+                                    "USED_FOR_SCORING": "Y",
+                                    "ENTITY_COUNT": 200,
+                                    "CANDIDATE_CAP_REACHED": "N",
+                                    "SCORING_CAP_REACHED": "N",
+                                    "SUPPRESSED": "N"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "RECORD_SUMMARY":
+                [
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_COUNT": 4
+                    }
+                ],
+                "RECORDS":
+                [
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_ID": "1004",
+                        "INTERNAL_ID": 155,
+                        "MATCH_KEY": "",
+                        "MATCH_LEVEL_CODE": "",
+                        "ERRULE_CODE": "",
+                        "FIRST_SEEN_DT": "2024-06-06T20:38:13Z",
+                        "LAST_SEEN_DT": "2024-06-06T20:38:31Z"
+                    },
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_ID": "1003",
+                        "INTERNAL_ID": 1,
+                        "MATCH_KEY": "+NAME+DOB+EMAIL",
+                        "MATCH_LEVEL_CODE": "RESOLVED",
+                        "ERRULE_CODE": "SF1_PNAME_CSTAB",
+                        "FIRST_SEEN_DT": "2024-06-06T20:38:13Z",
+                        "LAST_SEEN_DT": "2024-06-06T20:38:13Z"
+                    },
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_ID": "1001",
+                        "INTERNAL_ID": 153,
+                        "MATCH_KEY": "+NAME+DOB+PHONE+EMAIL",
+                        "MATCH_LEVEL_CODE": "RESOLVED",
+                        "ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+                        "FIRST_SEEN_DT": "2024-06-06T20:38:13Z",
+                        "LAST_SEEN_DT": "2024-06-06T20:38:13Z"
+                    },
+                    {
+                        "DATA_SOURCE": "CUSTOMERS",
+                        "RECORD_ID": "1002",
+                        "INTERNAL_ID": 156,
+                        "MATCH_KEY": "+NAME+DOB+ADDRESS",
+                        "MATCH_LEVEL_CODE": "RESOLVED",
+                        "ERRULE_CODE": "CNAME_CFF_CEXCL",
+                        "FIRST_SEEN_DT": "2024-06-06T20:38:13Z",
+                        "LAST_SEEN_DT": "2024-06-06T20:38:30Z"
+                    }
+                ]
+            },
+            "RELATED_ENTITIES":
+            [
+                {
+                    "ENTITY_ID": 162,
+                    "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+                    "MATCH_KEY": "+NAME+ADDRESS-DOB",
+                    "ERRULE_CODE": "CNAME_CFF_DEXCL",
+                    "IS_DISCLOSED": 0,
+                    "IS_AMBIGUOUS": 0,
+                    "ENTITY_NAME": "Robert E Smith Sr",
+                    "RECORD_SUMMARY":
+                    [
+                        {
+                            "DATA_SOURCE": "CUSTOMERS",
+                            "RECORD_COUNT": 1
+                        },
+                        {
+                            "DATA_SOURCE": "WATCHLIST",
+                            "RECORD_COUNT": 1
+                        }
+                    ]
+                },
+                {
+                    "ENTITY_ID": 200001,
+                    "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+                    "MATCH_KEY": "+NAME",
+                    "ERRULE_CODE": "SNAME",
+                    "IS_DISCLOSED": 0,
+                    "IS_AMBIGUOUS": 0,
+                    "ENTITY_NAME": "Robert Smith",
+                    "RECORD_SUMMARY":
+                    [
+                        {
+                            "DATA_SOURCE": "WATCHLIST",
+                            "RECORD_COUNT": 1
+                        }
+                    ]
+                },
+                {
+                    "ENTITY_ID": 200060,
+                    "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+                    "MATCH_KEY": "+SURNAME+ADDRESS",
+                    "ERRULE_CODE": "CFF_SURNAME",
+                    "IS_DISCLOSED": 0,
+                    "IS_AMBIGUOUS": 0,
+                    "ENTITY_NAME": "Patricia Smith",
+                    "RECORD_SUMMARY":
+                    [
+                        {
+                            "DATA_SOURCE": "WATCHLIST",
+                            "RECORD_COUNT": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

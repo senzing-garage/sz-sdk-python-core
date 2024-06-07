@@ -2,14 +2,10 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-# TODO
 END_ENTITY_ID = 1
-# EXCLUSIONS = ""
-# EXCLUSIONS = None
 EXCLUSIONS = [100019]
 FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-# TODO Check Max_degrees are higher enough!
 MAX_DEGREES = 10
 SETTINGS = {
     "PIPELINE": {
@@ -19,9 +15,7 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-# REQUIRED_DATA_SOURCES = ""
 REQUIRED_DATA_SOURCES = None
-# REQUIRED_DATA_SOURCES = ["CUSTOMERS"]
 START_ENTITY_ID = 40
 
 try:

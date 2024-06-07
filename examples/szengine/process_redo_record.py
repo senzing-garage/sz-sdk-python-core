@@ -15,10 +15,11 @@ SETTINGS = {
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-    while sz_engine.count_redo_records() > 0:
+    while True:
         redo_record = sz_engine.get_redo_record()
+        if not redo_record:
+            break
         RESULT = sz_engine.process_redo_record(redo_record, FLAGS)
-        # TODO: Review this output
         print(RESULT)
 except SzError as err:
     print(f"\nError:\n{err}\n")
