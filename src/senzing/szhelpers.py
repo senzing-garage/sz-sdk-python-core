@@ -21,12 +21,15 @@ from ctypes import (
     c_char_p,
     c_uint,
     cast,
+    cdll,
 )
+from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
-from senzing import new_szexception
+# TODO Change names
+from senzing import new_szexception, sdk_exception
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -126,7 +129,30 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
 
 # -----------------------------------------------------------------------------
-# Helpers for ...
+# Helpers for ... # TODO
+# -----------------------------------------------------------------------------
+def load_sz_library() -> CDLL:
+    """# TODO"""
+    try:
+        if os.name == "nt":
+            # return cdll.LoadLibrary(find_file_in_path("G2.dll"))
+            win_path = find_library("G2")
+            return cdll.LoadLibrary(win_path if win_path else "")
+        else:
+            return cdll.LoadLibrary("libG2.so")
+    except OSError as err:
+        # TODO Change to Sz library when the libG2.so is changed in a build
+        # TODO Wording & links fo V4
+        print(
+            "ERROR: Unable to load G2 library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
+            "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n"
+        )
+        raise sdk_exception(1) from err
+
+
+# -----------------------------------------------------------------------------
+# Helpers for ... # TODO
 # -----------------------------------------------------------------------------
 
 

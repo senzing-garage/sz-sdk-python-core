@@ -3,8 +3,7 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-# DATA_SOURCE_CODE = "TEST"
-DATA_SOURCE_CODE = "éanty\r😂"
+DATA_SOURCE_CODE = "TEST"
 FLAGS = SzEngineFlags.SZ_WITH_INFO
 INSTANCE_NAME = "Example1"
 RECORD_DEFINITION = (

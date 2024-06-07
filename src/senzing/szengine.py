@@ -19,8 +19,6 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
-import os
-from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
@@ -30,12 +28,11 @@ from ctypes import (
     c_longlong,
     c_uint,
     c_void_p,
-    cdll,
 )
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing import SzEngineAbstract, SzEngineFlags, SzError, sdk_exception
+from senzing import SzEngineAbstract, SzEngineFlags, sdk_exception
 
 from .szhelpers import (
     FreeCResources,
@@ -49,7 +46,7 @@ from .szhelpers import (
     build_records_json,
     catch_ctypes_exceptions,
     check_result_rc,
-    find_file_in_path,
+    load_sz_library,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -300,28 +297,31 @@ class SzEngine(SzEngineAbstract):
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
+        # TODO Move to constants?
         # Empty response for methods where with info can optionally be
         # returned but was not requested
         self.no_info = "{}"
 
         # Determine if Senzing API version is acceptable.
-
         is_supported_senzingapi_version()
 
+        # TODO Move to helpers
+        # try:
+        #     if os.name == "nt":
+        #         self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
+        #     else:
+        #         self.library_handle = cdll.LoadLibrary("libG2.so")
+        # except OSError as err:
+        #     # TODO: Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
+        #     # TODO: Change to Sz library when the libG2.so is changed in a build
+        #     # TODO Use new sdk exceptions?
+        #     # raise SzError("Failed to load the G2 library") from err
+        #     raise SzError("Failed to load the G2 library") from err
+
         # Load binary library.
+        self.library_handle = load_sz_library()
 
-        try:
-            if os.name == "nt":
-                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            else:
-                self.library_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as err:
-            # TODO: Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
-            # TODO: Change to Sz library when the libG2.so is changed in a build
-            # TODO Use new sdk exceptions?
-            raise SzError("Failed to load the G2 library") from err
-
-        # TODO Document what partial is...
+        # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
             self.library_handle.G2_getLastException,
@@ -612,7 +612,7 @@ class SzEngine(SzEngineAbstract):
         #     self.auto_init = True
         if not self.instance_name or len(self.settings) == 0:
             # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-            raise sdk_exception(1)
+            raise sdk_exception(2)
 
         self._initialize(
             instance_name=self.instance_name,
@@ -624,8 +624,15 @@ class SzEngine(SzEngineAbstract):
     def __del__(self) -> None:
         """Destructor"""
         # if self.auto_init:
-        with suppress(SzError):
+        # with suppress(SzError):
+        #     self._destroy()
+        # NOTE This is to catch the G2 library not being available (AttributeError)
+        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
+        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
+        try:
             self._destroy()
+        except AttributeError:
+            return None
 
     # -------------------------------------------------------------------------
     # SzEngine methods
@@ -705,8 +712,11 @@ class SzEngine(SzEngineAbstract):
 
     # Private method
     def _destroy(self, **kwargs: Any) -> None:
-        result = self.library_handle.G2_destroy()
-        self.check_result(result)
+        # with suppress(SzError):
+        _ = self.library_handle.G2_destroy()
+        # result = self.library_handle.G2_destroy()
+        # print(f"{result = }")
+        # self.check_result(result)
 
     @catch_ctypes_exceptions
     def export_csv_entity_report(

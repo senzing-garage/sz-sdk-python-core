@@ -1,4 +1,4 @@
-from senzing_abstract import (  # TODO Why is this imported?
+from senzing_abstract import (  # TODO Why is EXCEPTION_MAP imported? Isn't it only used in SzError?
     EXCEPTION_MAP,
     SzBadInputError,
     SzConfigAbstract,

@@ -666,7 +666,8 @@ def new_szexception(
 # TODO SDK_ERROR_MAP?
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "instance_name and settings arguments must be specified",     # Check in module constructors
+    1: "failed to load the G2 library",     # TODO Check in module constructors
+    2: "instance_name and settings arguments must be specified",     # TODO Check in module constructors
 }
 # fmt: on
 

@@ -16,9 +16,8 @@ Example:
 
 # pylint: disable=R0903
 
-import os
 from contextlib import suppress
-from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, cdll
+from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -31,7 +30,7 @@ from .szhelpers import (
     as_str,
     catch_ctypes_exceptions,
     check_result_rc,
-    find_file_in_path,
+    load_sz_library,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -155,19 +154,22 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         is_supported_senzingapi_version()
 
+        # # Load binary library.
+
+        # try:
+        #     if os.name == "nt":
+        #         # TODO: See if find_file_in_path can be factored out.
+        #         self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
+        #     else:
+        #         self.library_handle = cdll.LoadLibrary("libG2.so")
+        # except OSError as err:
+        #     # TODO: Change to Sz library when the libG2.so is changed in a build
+        #     raise SzError("Failed to load the G2 library") from err
+
         # Load binary library.
+        self.library_handle = load_sz_library()
 
-        try:
-            if os.name == "nt":
-                # TODO: See if find_file_in_path can be factored out.
-                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            else:
-                self.library_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as err:
-            # TODO: Change to Sz library when the libG2.so is changed in a build
-            raise SzError("Failed to load the G2 library") from err
-
-        # TODO Document what partial is...
+        # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
             self.library_handle.G2Diagnostic_getLastException,
@@ -218,7 +220,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         if not self.instance_name or len(self.settings) == 0:
             # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-            raise sdk_exception(1)
+            raise sdk_exception(2)
 
         self._initialize(
             instance_name=self.instance_name,
