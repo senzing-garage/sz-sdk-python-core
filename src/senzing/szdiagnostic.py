@@ -16,12 +16,11 @@ Example:
 
 # pylint: disable=R0903
 
-from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnosticAbstract, SzError, sdk_exception
+from senzing import SzDiagnosticAbstract, sdk_exception
 
 from .szhelpers import (
     FreeCResources,
@@ -144,27 +143,13 @@ class SzDiagnostic(SzDiagnosticAbstract):
         """
         # pylint: disable=W0613
 
-        # self.auto_init = False
         self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
-
         is_supported_senzingapi_version()
-
-        # # Load binary library.
-
-        # try:
-        #     if os.name == "nt":
-        #         # TODO: See if find_file_in_path can be factored out.
-        #         self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-        #     else:
-        #         self.library_handle = cdll.LoadLibrary("libG2.so")
-        # except OSError as err:
-        #     # TODO: Change to Sz library when the libG2.so is changed in a build
-        #     raise SzError("Failed to load the G2 library") from err
 
         # Load binary library.
         self.library_handle = load_sz_library()
@@ -175,7 +160,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.library_handle.G2Diagnostic_getLastException,
             self.library_handle.G2Diagnostic_clearLastException,
             self.library_handle.G2Diagnostic_getLastExceptionCode,
-            # SENZING_PRODUCT_ID,
         )
 
         # Initialize C function input parameters and results.
@@ -210,18 +194,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.G2Diagnostic_reinit.restype = c_longlong
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        # # Initialize Senzing engine.
-
-        # if (len(self.instance_name) == 0) or (len(self.settings) == 0):
-        #     if len(self.instance_name) + len(self.settings) != 0:
-        #         raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-        # if len(self.instance_name) > 0:
-        #     self.auto_init = True
-
         if not self.instance_name or len(self.settings) == 0:
-            # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
             raise sdk_exception(2)
 
+        # Initialize Senzing engine.
         self._initialize(
             instance_name=self.instance_name,
             settings=self.settings,
@@ -231,9 +207,13 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.auto_init:
-        with suppress(SzError):
+        # NOTE This is to catch the G2 library not being available (AttributeError)
+        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
+        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
+        try:
             self._destroy()
+        except AttributeError:
+            ...
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
@@ -249,8 +229,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     # Private method
     def _destroy(self, **kwargs: Any) -> None:
-        result = self.library_handle.G2Diagnostic_destroy()
-        self.check_result(result)
+        _ = self.library_handle.G2Diagnostic_destroy()
 
     def get_datastore_info(self, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getDatastoreInfo_helper()

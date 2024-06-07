@@ -74,6 +74,7 @@ def supports_senzingapi_version(
     max_version = normalize_semantic_version(max_semantic_version)
     current_version = normalize_semantic_version(current_semantic_version)
 
+    # TODO Simplify message and use sdk_exception
     if (current_version < min_version) or (current_version >= max_version):
         message = {
             "time": datetime.datetime.utcnow().isoformat("T"),

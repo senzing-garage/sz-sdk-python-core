@@ -1,5 +1,4 @@
-from senzing_abstract import (  # TODO Why is EXCEPTION_MAP imported? Isn't it only used in SzError?
-    EXCEPTION_MAP,
+from senzing_abstract import (
     SzBadInputError,
     SzConfigAbstract,
     SzConfigManagerAbstract,
@@ -19,7 +18,7 @@ from senzing_abstract import (  # TODO Why is EXCEPTION_MAP imported? Isn't it o
     SzUnhandledError,
     SzUnknownDataSourceError,
     SzUnrecoverableError,
-    new_szexception,
+    engine_exception,
     sdk_exception,
 )
 
@@ -30,7 +29,6 @@ from .szengine import SzEngine
 from .szproduct import SzProduct
 
 __all__ = [
-    "EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfig",
     "SzConfigAbstract",
@@ -55,6 +53,6 @@ __all__ = [
     "SzUnhandledError",
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
-    "new_szexception",
+    "engine_exception",
     "sdk_exception",
 ]

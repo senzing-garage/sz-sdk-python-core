@@ -13,13 +13,13 @@ from __future__ import annotations
 
 import threading
 from ctypes import _Pointer, c_char, create_string_buffer, sizeof
-from typing import Any, Callable, Dict
+from typing import Callable
 
 # Metadata
 
 __all__ = [
     # TODO Still needed as in __init__.py
-    "EXCEPTION_MAP",
+    "ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
@@ -33,7 +33,7 @@ __all__ = [
     "SzUnhandledError",
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
-    "new_szexception",
+    "engine_exception",
 ]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
@@ -135,10 +135,9 @@ class SzUnhandledError(SzUnrecoverableError):
 # Reference: https://senzing.zendesk.com/hc/en-us/articles/360026678133-Engine-Error-codes
 # -----------------------------------------------------------------------------
 
-# TODO ENGINE_EXCEPTION_MAP ?
 # TODO Separate maps into files for generation?
 # fmt: off
-EXCEPTION_MAP = {
+ENGINE_EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"
     5: SzError,                             # EAS_ERR_EXCEEDED_MAX_RETRIES                                                          "Exceeded the Maximum Number of Retries Allowed"
     7: SzBadInputError,                     # EAS_ERR_EMPTY_MESSAGE                                                                 "Empty Message"
@@ -595,16 +594,6 @@ ERROR_BUFFER_TYPE = c_char * 65535
 # -----------------------------------------------------------------------------
 
 
-# TODO No longer used?
-def get_message_text(error_id: int, id_messages: Dict[int, str], *args: Any) -> str:
-    """
-    Format the message text from a template and variables.
-
-    :meta private:
-    """
-    return id_messages.get(error_id, f"No message for index {error_id}.").format(*args)
-
-
 def get_senzing_error_code(
     get_last_exception_code: Callable[[], int],
 ) -> int:
@@ -635,14 +624,10 @@ def get_senzing_error_text(
     return result
 
 
-# TDO engine_exception?
-def new_szexception(
-    # get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],
+def engine_exception(
     get_last_exception: Callable[[_Pointer[c_char], int], str],
     clear_last_exception: Callable[[], None],
     get_last_exception_code: Callable[[], int],
-    # product_id: str,
-    # error_id: int,
 ) -> Exception:
     """
     Generate a new Senzing Exception based on the SDK product_id & error_id.
@@ -651,10 +636,8 @@ def new_szexception(
     """
     sz_error_code = get_senzing_error_code(get_last_exception_code)
     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
-    senzing_error_class = EXCEPTION_MAP.get(sz_error_code, SzError)
+    senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
     return senzing_error_class(sz_error_text)
-    # f"{sz_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}"
-    # )
 
 
 # TODO
@@ -663,11 +646,10 @@ def new_szexception(
 # Helper functions to create an SDK Exception
 # -----------------------------------------------------------------------------
 
-# TODO SDK_ERROR_MAP?
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "failed to load the G2 library",     # TODO Check in module constructors
-    2: "instance_name and settings arguments must be specified",     # TODO Check in module constructors
+    1: "failed to load the G2 library",                                 # Engine module wasn't able to load the G2 library
+    2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
 }
 # fmt: on
 
@@ -675,8 +657,4 @@ SDK_EXCEPTION_MAP = {
 # def sdk_exception(product_id: str, error_id: int, msg_code: int) -> Exception:
 def sdk_exception(msg_code: int) -> Exception:
     """# TODO"""
-    # sdk_error_text = SDK_EXCEPTION_MAP.get(
-    #     msg_code, f"No message for index {msg_code}."
-    # )
-    # return SzError(f"{sdk_error_text} | Code: {SDK_ERROR_PREFIX}{product_id}{error_id}")
     return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

@@ -28,8 +28,7 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
-# TODO Change names
-from senzing import new_szexception, sdk_exception
+from senzing import engine_exception, sdk_exception
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -138,8 +137,8 @@ def load_sz_library() -> CDLL:
             # return cdll.LoadLibrary(find_file_in_path("G2.dll"))
             win_path = find_library("G2")
             return cdll.LoadLibrary(win_path if win_path else "")
-        else:
-            return cdll.LoadLibrary("libG2.so")
+
+        return cdll.LoadLibrary("libG2.so")
     except OSError as err:
         # TODO Change to Sz library when the libG2.so is changed in a build
         # TODO Wording & links fo V4
@@ -156,23 +155,18 @@ def load_sz_library() -> CDLL:
 # -----------------------------------------------------------------------------
 
 
-# TODO Remove and call directly from each module now other args removed?
 def check_result_rc(
     lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
     lib_clear_last_exception: Callable[[], None],
     lib_get_last_exception_code: Callable[[], int],
-    # product_id: str,
-    # error_id: int,
     result_return_code: int,
 ) -> None:
     """# TODO"""
     if result_return_code != 0:
-        raise new_szexception(
+        raise engine_exception(
             lib_get_last_exception,
             lib_clear_last_exception,
             lib_get_last_exception_code,
-            # product_id,
-            # error_id,
         )
 
 
@@ -341,7 +335,6 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
-    # TODO Is this an acceptable approach?
     # Test if candidate_value can be used with the ctype and is an int. If not a
     # TypeError is raised and caught by the catch_ctypes_exceptions decorator on
     # calling methods
@@ -386,23 +379,3 @@ def as_python_str(candidate_value: Any) -> str:
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result
-
-
-# -----------------------------------------------------------------------------
-# Helpers for working with files and directories.
-# -----------------------------------------------------------------------------
-
-
-# TODO ctypes has a function to do this I think I saw?
-def find_file_in_path(filename: str) -> str:
-    """
-    Find a file in the PATH environment variable.
-
-    :meta private:
-    """
-    path_dirs = os.environ["PATH"].split(os.pathsep)
-    for path_dir in path_dirs:
-        file_path = os.path.join(path_dir, filename)
-        if os.path.exists(file_path):
-            return file_path
-    return ""

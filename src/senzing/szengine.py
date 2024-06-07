@@ -59,7 +59,6 @@ __updated__ = "2023-11-15"
 
 # SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
-
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
 # -----------------------------------------------------------------------------
@@ -288,7 +287,6 @@ class SzEngine(SzEngineAbstract):
         """
         # pylint: disable=W0613
 
-        # self.auto_init = False
         self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
@@ -305,19 +303,6 @@ class SzEngine(SzEngineAbstract):
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
 
-        # TODO Move to helpers
-        # try:
-        #     if os.name == "nt":
-        #         self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-        #     else:
-        #         self.library_handle = cdll.LoadLibrary("libG2.so")
-        # except OSError as err:
-        #     # TODO: Additional explanation e.g. is LD_LIBRARY_PATH set, V3 provides more info
-        #     # TODO: Change to Sz library when the libG2.so is changed in a build
-        #     # TODO Use new sdk exceptions?
-        #     # raise SzError("Failed to load the G2 library") from err
-        #     raise SzError("Failed to load the G2 library") from err
-
         # Load binary library.
         self.library_handle = load_sz_library()
 
@@ -327,7 +312,6 @@ class SzEngine(SzEngineAbstract):
             self.library_handle.G2_getLastException,
             self.library_handle.G2_clearLastException,
             self.library_handle.G2_getLastExceptionCode,
-            # SENZING_PRODUCT_ID,
         )
 
         # Initialize C function input parameters and results.
@@ -603,17 +587,10 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_whyRecords_V2_helper.restype = G2WhyRecordsV2Result
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        # # Optionally, initialize Senzing engine.
-        # if (len(self.instance_name) == 0) or (len(self.settings) == 0):
-        #     if len(self.instance_name) + len(self.settings) != 0:
-        #         raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-
-        # if len(self.instance_name) > 0:
-        #     self.auto_init = True
         if not self.instance_name or len(self.settings) == 0:
-            # raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
             raise sdk_exception(2)
 
+        # Initialize Senzing engine.
         self._initialize(
             instance_name=self.instance_name,
             settings=self.settings,
@@ -623,16 +600,13 @@ class SzEngine(SzEngineAbstract):
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.auto_init:
-        # with suppress(SzError):
-        #     self._destroy()
         # NOTE This is to catch the G2 library not being available (AttributeError)
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
             self._destroy()
         except AttributeError:
-            return None
+            ...
 
     # -------------------------------------------------------------------------
     # SzEngine methods
@@ -648,10 +622,8 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
-            # base_flags = flags & self.sdk_flags_mask
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_addRecordWithInfo_helper(
-                # as_c_char_p(data_source_code),
                 # as_c_char_p(escape_json_str(data_source_code, strip_quotes=True)),
                 # as_c_char_p(escape_json_str(record_id, strip_quotes=True)),
                 as_c_char_p(data_source_code),
@@ -660,7 +632,6 @@ class SzEngine(SzEngineAbstract):
                 base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
-                # TODO Rename?
                 self.check_result(result.return_code)
                 return as_python_str(result.response)
 
@@ -712,11 +683,7 @@ class SzEngine(SzEngineAbstract):
 
     # Private method
     def _destroy(self, **kwargs: Any) -> None:
-        # with suppress(SzError):
         _ = self.library_handle.G2_destroy()
-        # result = self.library_handle.G2_destroy()
-        # print(f"{result = }")
-        # self.check_result(result)
 
     @catch_ctypes_exceptions
     def export_csv_entity_report(
@@ -777,8 +744,6 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def find_network_by_entity_id(
         self,
-        # entity_ids: str,
-        # entity_ids: list[int],
         entity_ids: List[int],
         max_degrees: int,
         build_out_degree: int,
@@ -800,7 +765,6 @@ class SzEngine(SzEngineAbstract):
     @catch_ctypes_exceptions
     def find_network_by_record_id(
         self,
-        # record_keys: list[tuple[str, str]],
         record_keys: List[Tuple[str, str]],
         max_degrees: int,
         build_out_degree: int,
@@ -826,11 +790,8 @@ class SzEngine(SzEngineAbstract):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
         # TODO Avoidances
-        # exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
         exclusions: Optional[List[int]] = None,
-        # required_data_sources: Optional[list[str]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -872,10 +833,7 @@ class SzEngine(SzEngineAbstract):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        # exclusions: Optional[Union[list[int], list[tuple[str, str]]]] = None,
-        # exclusions: Optional[Union[List[int], List[Tuple[str, str]]]] = None,
         exclusions: Optional[List[Tuple[str, str]]] = None,
-        # required_data_sources: Optional[list[str]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
