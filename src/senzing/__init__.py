@@ -1,4 +1,5 @@
 from senzing_abstract import (
+    ENGINE_EXCEPTION_MAP,
     SzBadInputError,
     SzConfigAbstract,
     SzConfigManagerAbstract,
@@ -29,6 +30,7 @@ from .szengine import SzEngine
 from .szproduct import SzProduct
 
 __all__ = [
+    "ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfig",
     "SzConfigAbstract",

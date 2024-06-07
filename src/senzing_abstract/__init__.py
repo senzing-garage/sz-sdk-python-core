@@ -4,6 +4,7 @@ from .szdiagnostic_abstract import SzDiagnosticAbstract
 from .szengine_abstract import SzEngineAbstract
 from .szengineflags import SzEngineFlags
 from .szerror import (
+    ENGINE_EXCEPTION_MAP,
     SzBadInputError,
     SzConfigurationError,
     SzDatabaseConnectionLostError,
@@ -23,6 +24,7 @@ from .szerror import (
 from .szproduct_abstract import SzProductAbstract
 
 __all__ = [
+    "ENGINE_EXCEPTION_MAP",
     "engine_exception",
     "sdk_exception",
     "SzBadInputError",
