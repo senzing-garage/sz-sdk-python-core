@@ -19,4 +19,4 @@ try:
     RESULT = sz_engine.reevaluate_entity(ENTITY_ID, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

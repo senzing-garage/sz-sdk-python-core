@@ -4,8 +4,6 @@ TODO: szengine_abstract.py
 
 # pylint: disable=C0302
 
-# Import from standard library. https://docs.python.org/3/library/
-
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Tuple
 

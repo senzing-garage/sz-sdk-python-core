@@ -37,4 +37,4 @@ try:
         current_default_config_id, new_default_config_id
     )
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

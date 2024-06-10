@@ -7,16 +7,7 @@ FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 MAX_DEGREES = 6
 MAX_ENTITIES = 10
-# RECORD_LIST = (
-#     "{"
-#     '"RECORDS": ['
-#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001"},'
-#     '    {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1009"}'
-#     "]"
-#     "}"
-# )
 RECORD_KEYS = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1009")]
-# RECORD_KEYS = []
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -33,4 +24,4 @@ try:
     )
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

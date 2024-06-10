@@ -4,9 +4,7 @@
 TODO: szversion.py
 """
 
-import datetime
 import json
-import traceback
 
 from senzing import SzError
 
@@ -14,16 +12,6 @@ from .szproduct import SzProduct
 
 SENZING_VERSION_MINIMUM = "3.8.0"
 SENZING_VERSION_MAXIMUM = "5.0.0"
-
-
-def get_location() -> str:
-    """
-    Determine caller.
-
-    :meta private:
-    """
-    stack = traceback.format_stack()
-    return stack[0].replace("\n   ", "", 1).rstrip()
 
 
 def normalize_semantic_version(semantic_version: str) -> int:
@@ -75,16 +63,9 @@ def supports_senzingapi_version(
     max_version = normalize_semantic_version(max_semantic_version)
     current_version = normalize_semantic_version(current_semantic_version)
 
-    # TODO Simplify message and use sdk_exception
+    # TODO Use sdk_exception instead of SzError?
     if (current_version < min_version) or (current_version >= max_version):
-        message = {
-            "time": datetime.datetime.utcnow().isoformat("T"),
-            "text": f"Current Senzing API version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}.",
-            "level": "FATAL",
-            "id": "senzing-50475001",
-            # "location": get_location(5),
-            "location": get_location(),
-        }
+        message = f"Current Senzing API version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}."
         raise SzError(json.dumps(message))
     return True
 

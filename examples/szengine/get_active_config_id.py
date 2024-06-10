@@ -17,4 +17,4 @@ try:
     RESULT = sz_engine.get_active_config_id()
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

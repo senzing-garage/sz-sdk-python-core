@@ -16,4 +16,4 @@ try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     sz_engine.prime_engine()
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

@@ -15,4 +15,4 @@ SETTINGS = {
 try:
     sz_config1 = SzConfig(INSTANCE_NAME, SETTINGS)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

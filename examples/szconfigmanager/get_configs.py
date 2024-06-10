@@ -17,4 +17,4 @@ try:
     CONFIG_LIST = sz_configmanager.get_configs()
     print(CONFIG_LIST)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

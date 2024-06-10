@@ -18,4 +18,4 @@ try:
     config_id = sz_engine.get_active_config_id()
     sz_engine.reinitialize(config_id)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

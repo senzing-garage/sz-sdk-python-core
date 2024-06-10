@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing_abstract.szengineflags import SZ_WITHOUT_INFO
+from senzing_abstract.szconstants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
@@ -35,4 +35,4 @@ try:
                 SZ_WITHOUT_INFO,
             )
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

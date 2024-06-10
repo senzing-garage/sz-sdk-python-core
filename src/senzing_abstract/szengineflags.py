@@ -151,8 +151,8 @@ class SzEngineFlags(IntFlag):
 
     SZ_EXPORT_DEFAULT_FLAGS = (
         SZ_EXPORT_INCLUDE_ALL_ENTITIES
-        # NOTE Check, was removed in 4.0.0.24095 - 2024_04_04__00_00
-        # NOTE There are changes in V4 to output messages and Jae is likely still working on them
+        # TODO Check, was removed in 4.0.0.24095 - 2024_04_04__00_00
+        # TODO There are changes in V4 to output messages and Jae is likely still working on them
         # | SZ_EXPORT_INCLUDE_ALL_HAVING_RELATIONSHIPS
         | SZ_ENTITY_DEFAULT_FLAGS
     )

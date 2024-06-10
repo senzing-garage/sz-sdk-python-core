@@ -19,4 +19,4 @@ try:
     RESULT = sz_engine.get_entity_by_entity_id(ENTITY_ID, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

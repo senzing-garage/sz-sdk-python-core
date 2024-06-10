@@ -17,4 +17,4 @@ try:
     config_id = sz_configmanager.get_default_config_id()
     sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS, config_id=config_id)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

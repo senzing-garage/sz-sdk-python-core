@@ -19,4 +19,4 @@ try:
     RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_KEYS, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

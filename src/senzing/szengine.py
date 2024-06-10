@@ -153,7 +153,6 @@ class G2FindPathIncludingSourceByRecordIDV2Result(G2ResponseReturnCodeResult):
     """In golang_helpers.h G2_findPathIncludingSourceByRecordID_V2_result"""
 
 
-# class G2GetActiveConfigIDResult(G2ResponseReturnCodeResult):
 class G2GetActiveConfigIDResult(G2ResponseLonglongReturnCodeResult):
     """In golang_helpers.h G2_getActiveConfigID_result"""
 
@@ -410,7 +409,6 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_findPathByEntityID_V2_helper.restype = (
             G2FindPathByEntityIDV2Result
         )
-        # self.library_handle.G2_findPathIncludingSourceByEntityID_V2_helper.argtypes = [
         self.library_handle.G2_findPathByEntityIDIncludingSource_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
@@ -932,7 +930,6 @@ class SzEngine(SzEngineAbstract):
     @catch_exceptions
     def get_virtual_entity_by_record_id(
         self,
-        # record_keys: list[tuple[str, str]],
         record_keys: List[Tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
         **kwargs: Any,

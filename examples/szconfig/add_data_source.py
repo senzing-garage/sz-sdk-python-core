@@ -22,4 +22,4 @@ try:
     sz_config.close_config(config_handle)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")
