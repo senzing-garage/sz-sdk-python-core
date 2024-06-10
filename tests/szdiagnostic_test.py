@@ -15,7 +15,7 @@ from senzing import SzConfigManager, SzDiagnostic, SzError
 def test_exception(sz_diagnostic: SzDiagnostic) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_diagnostic.check_result(4001, -1)
+        sz_diagnostic.check_result(-1)
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
