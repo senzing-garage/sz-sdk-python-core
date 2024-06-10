@@ -17,8 +17,6 @@ Example:
 # pylint: disable=R0903
 
 
-import os
-from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
@@ -28,13 +26,11 @@ from ctypes import (
     c_longlong,
     c_uint,
     c_void_p,
-    cdll,
 )
 from functools import partial
-from types import TracebackType
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Union
 
-from senzing import SzConfigAbstract, SzError, sdk_exception
+from senzing import SzConfigAbstract, sdk_exception
 
 from .szhelpers import (
     FreeCResources,
@@ -42,9 +38,10 @@ from .szhelpers import (
     as_python_str,
     as_str,
     as_uintptr_t,
+    build_dsrc_code_json,
     catch_ctypes_exceptions,
     check_result_rc,
-    find_file_in_path,
+    load_sz_library,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -55,7 +52,7 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
+# SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -173,34 +170,22 @@ class SzConfig(SzConfigAbstract):
         """
         # pylint: disable=W0613
 
-        self.auto_init = False
         self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
-
         is_supported_senzingapi_version()
 
         # Load binary library.
+        self.library_handle = load_sz_library()
 
-        try:
-            if os.name == "nt":
-                # TODO: See if find_file_in_path can be factored out.
-                self.library_handle = cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            else:
-                self.library_handle = cdll.LoadLibrary("libG2.so")
-        except OSError as err:
-            # TODO: Change to Sz library when the libG2.so is changed in a build
-            raise SzError("Failed to load the G2 library") from err
-
-        # TODO Document what partial is...
+        # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
             self.library_handle.G2Config_getLastException,
             self.library_handle.G2Config_clearLastException,
             self.library_handle.G2Config_getLastExceptionCode,
-            SENZING_PRODUCT_ID,
         )
 
         # Initialize C function input parameters and results.
@@ -236,36 +221,21 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.G2Config_save_helper.restype = G2ConfigSaveResult
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        # Optionally, initialize Senzing engine.
+        if (not self.instance_name) or (len(self.settings) == 0):
+            raise sdk_exception(2)
 
-        if (len(self.instance_name) == 0) or (len(self.settings) == 0):
-            if len(self.instance_name) + len(self.settings) != 0:
-                raise sdk_exception(SENZING_PRODUCT_ID, 4001, 1)
-        if len(self.instance_name) > 0:
-            self.auto_init = True
-            self.initialize(self.instance_name, self.settings, self.verbose_logging)
+        # Initialize Senzing engine.
+        self._initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.auto_init:
-            with suppress(SzError):
-                self.destroy()
-
-    def __enter__(
-        self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
-        """Context Manager method."""
-        return self
-
-    def __exit__(
-        self,
-        exc_type: Union[Type[BaseException], None],
-        exc_val: Union[BaseException, None],
-        exc_tb: Union[TracebackType, None],
-    ) -> None:
-        """Context Manager method."""
+        # NOTE This is to catch the G2 library not being available (AttributeError)
+        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
+        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
+        try:
+            self._destroy()
+        except AttributeError:
+            ...
 
     # -------------------------------------------------------------------------
     # SzConfig methods
@@ -278,24 +248,23 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> str:
-        json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_addDataSource_helper(
             as_uintptr_t(config_handle),
-            as_c_char_p(json_string),
+            as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
 
         with FreeCResources(self.library_handle, result.response):
-            self.check_result(4002, result.return_code)
+            self.check_result(result.return_code)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
-        self.check_result(4003, result)
+        self.check_result(result)
 
     def create_config(self, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_create_helper()
-        self.check_result(4004, result.return_code)
+        self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
     @catch_ctypes_exceptions
@@ -305,21 +274,21 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> None:
-        json_string = f'{{"DSRC_CODE": "{data_source_code}"}}'
         result = self.library_handle.G2Config_deleteDataSource_helper(
-            as_uintptr_t(config_handle), as_c_char_p(json_string)
+            as_uintptr_t(config_handle),
+            as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
-        self.check_result(4005, result)
+        self.check_result(result)
 
-    def destroy(self, **kwargs: Any) -> None:
-        result = self.library_handle.G2Config_destroy()
-        self.check_result(4006, result)
+    # Private method
+    def _destroy(self, **kwargs: Any) -> None:
+        _ = self.library_handle.G2Config_destroy()
 
     @catch_ctypes_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
-            self.check_result(4007, result.return_code)
+            self.check_result(result.return_code)
             return as_python_str(result.response)
 
     @catch_ctypes_exceptions
@@ -328,11 +297,12 @@ class SzConfig(SzConfigAbstract):
             as_uintptr_t(config_handle)
         )
         with FreeCResources(self.library_handle, result.response):
-            self.check_result(4008, result.return_code)
+            self.check_result(result.return_code)
             return as_python_str(result.response)
 
+    # Private method
     @catch_ctypes_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
@@ -344,12 +314,12 @@ class SzConfig(SzConfigAbstract):
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        self.check_result(4009, result)
+        self.check_result(result)
 
     @catch_ctypes_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_load_helper(
             as_c_char_p(config_definition)
         )
-        self.check_result(4010, result.return_code)
+        self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

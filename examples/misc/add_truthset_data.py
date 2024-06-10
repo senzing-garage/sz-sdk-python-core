@@ -1,12 +1,13 @@
 #! /usr/bin/env python3
 
+from senzing_abstract.szengineflags import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example1"
 SETTINGS = {
@@ -25,11 +26,13 @@ try:
         TRUTHSET_REFERENCE_RECORDS,
         TRUTHSET_WATCHLIST_RECORDS,
     ]
-    flags = SzEngineFlags.SZ_WITHOUT_INFO
     for record_set in record_sets:
         for record in record_set.values():
             sz_engine.add_record(
-                record.get("DataSource"), record.get("Id"), record.get("Json"), flags
+                record.get("DataSource"),
+                record.get("Id"),
+                record.get("Json"),
+                SZ_WITHOUT_INFO,
             )
 except SzError as err:
     print(f"\nError:\n{err}\n")

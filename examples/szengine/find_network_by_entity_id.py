@@ -2,14 +2,11 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-# TODO Clean up find network/path examples
 BUILD_OUT_DEGREE = 1
-# ENTITY_LIST = '{"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 4}]}'
 ENTITY_IDS = [1, 4]
-# ENTITY_LIST = []
 FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-MAX_DEGREES = 2
+MAX_DEGREES = 4
 MAX_ENTITIES = 10
 SETTINGS = {
     "PIPELINE": {

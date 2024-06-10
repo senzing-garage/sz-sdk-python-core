@@ -3,7 +3,7 @@
 from senzing import SzEngine, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE = "CUSTOMERS"
-FLAGS = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS
+FLAGS = SzEngineFlags.SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 RECORD_ID = "1001"
 SETTINGS = {

@@ -5,7 +5,7 @@ szconfigmanager_abstract.py is the abstract class for all implementations of szc
 # TODO: Determine specific SzErrors, Errors for "Raises:" documentation.
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import Any
 
 # Metadata
 
@@ -49,26 +49,6 @@ class SzConfigManagerAbstract(ABC):
         .. collapse:: Example:
 
             .. literalinclude:: ../../examples/szconfigmanager/add_config.py
-                :linenos:
-                :language: python
-        """
-
-    @abstractmethod
-    def destroy(self, **kwargs: Any) -> None:
-        """
-        The `destroy` method will destroy and perform cleanup for the Senzing SzConfigManager object.
-        It should be called after all other calls are complete.
-
-        **Note:** If the `SzConfigManager` constructor was called with parameters,
-        the destructor will automatically call the destroy() method.
-        In this case, a separate call to `destroy()` is not needed.
-
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_initialize_and_destroy.py
                 :linenos:
                 :language: python
         """
@@ -143,37 +123,6 @@ class SzConfigManagerAbstract(ABC):
         """
 
     @abstractmethod
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
-        **kwargs: Any
-    ) -> None:
-        """
-        The `initialize` method initializes the Senzing SzConfigManager object.
-        It must be called prior to any other calls.
-
-        **Note:** If the SzConfigManager constructor is called with parameters,
-        the constructor will automatically call the `initialize()` method.
-        In this case, a separate call to `initialize()` is not needed.
-
-        Args:
-            instance_name (str): A short name given to this instance of the SzProduct object, to help identify it within system logs.
-            settings (Union[str, Dict[Any, Any]]): A JSON string containing configuration parameters.
-            verbose_logging (int): `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
-
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_initialize_and_destroy.py
-                :linenos:
-                :language: python
-        """
-
-    @abstractmethod
     def replace_default_config_id(
         self, current_default_config_id: int, new_default_config_id: int, **kwargs: Any
     ) -> None:
@@ -215,7 +164,3 @@ class SzConfigManagerAbstract(ABC):
                 :linenos:
                 :language: python
         """
-
-    # -------------------------------------------------------------------------
-    # Convenience methods
-    # -------------------------------------------------------------------------

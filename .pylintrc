@@ -1,4 +1,5 @@
 [pylint]
+ignored-argument-names=args|kwargs
 disable=
     duplicate-code,
     line-too-long,

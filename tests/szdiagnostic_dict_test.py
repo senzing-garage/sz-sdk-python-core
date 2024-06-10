@@ -78,12 +78,12 @@ def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
         sz_diagnostic.reinitialize(999)
 
 
-def test_initialize_and_destroy(
-    sz_diagnostic: SzDiagnostic, engine_vars: Dict[Any, Any]
-) -> None:
-    """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
-    sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
-    sz_diagnostic.destroy()
+# def test_initialize_and_destroy(
+#     sz_diagnostic: SzDiagnostic, engine_vars: Dict[Any, Any]
+# ) -> None:
+#     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
+#     sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
+#     sz_diagnostic.destroy()
 
 
 # -----------------------------------------------------------------------------

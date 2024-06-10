@@ -22,8 +22,6 @@ except SzError as err:
 # Example 2
 
 try:
-    sz_configmanager_2 = SzConfigManager()
-    sz_configmanager_2.initialize(INSTANCE_NAME, SETTINGS)
-    sz_configmanager_2.destroy()
+    sz_configmanager_2 = SzConfigManager(INSTANCE_NAME, SETTINGS)
 except SzError as err:
     print(f"\nError:\n{err}\n")

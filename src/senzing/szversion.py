@@ -74,6 +74,7 @@ def supports_senzingapi_version(
     max_version = normalize_semantic_version(max_semantic_version)
     current_version = normalize_semantic_version(current_semantic_version)
 
+    # TODO Simplify message and use sdk_exception
     if (current_version < min_version) or (current_version >= max_version):
         message = {
             "time": datetime.datetime.utcnow().isoformat("T"),
@@ -101,8 +102,8 @@ def is_supported_senzingapi_version() -> bool:
     :meta private:
     """
 
-    sz_product = SzProduct()
-    version_dict = sz_product.version_as_dict()
+    sz_product = SzProduct("szversion", "{}")
+    version_dict = json.loads(sz_product.get_version())
     senzing_version_current = version_dict.get("VERSION", "0.0.0")
 
     result = supports_senzingapi_version(

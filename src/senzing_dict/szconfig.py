@@ -106,9 +106,10 @@ class SzConfig:
             config_handle, data_source_code, **kwargs
         )
 
-    def destroy(self, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_config.destroy(**kwargs)
+    # TODO
+    # def destroy(self, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_config.destroy(**kwargs)
 
     def export_config(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
@@ -120,17 +121,18 @@ class SzConfig:
             self.sz_config.get_data_sources(config_handle, **kwargs)
         )
 
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        """TODO: Create documentation"""
-        return self.sz_config.initialize(
-            instance_name, settings, verbose_logging, **kwargs
-        )
+    # TODO
+    # def initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_config.initialize(
+    #         instance_name, settings, verbose_logging, **kwargs
+    #     )
 
     def import_config(
         self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any

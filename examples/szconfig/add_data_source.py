@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 
+
 from senzing import SzConfig, SzError
 
-DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
+DATA_SOURCE_CODE = "TEST2"
 INSTANCE_NAME = "Example"
 settings = {
     "PIPELINE": {
@@ -16,6 +17,7 @@ settings = {
 try:
     sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.create_config()
+
     RESULT = sz_config.add_data_source(config_handle, DATA_SOURCE_CODE)
     sz_config.close_config(config_handle)
     print(RESULT)

@@ -21,12 +21,14 @@ from ctypes import (
     c_char_p,
     c_uint,
     cast,
+    cdll,
 )
+from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
-from senzing import new_szexception
+from senzing import engine_exception, sdk_exception
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -125,29 +127,46 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     return inner_function
 
 
-# TODO
 # -----------------------------------------------------------------------------
-# Helpers for ...
+# Helpers for ... # TODO
+# -----------------------------------------------------------------------------
+def load_sz_library() -> CDLL:
+    """# TODO"""
+    try:
+        if os.name == "nt":
+            # return cdll.LoadLibrary(find_file_in_path("G2.dll"))
+            win_path = find_library("G2")
+            return cdll.LoadLibrary(win_path if win_path else "")
+
+        return cdll.LoadLibrary("libG2.so")
+    except OSError as err:
+        # TODO Change to Sz library when the libG2.so is changed in a build
+        # TODO Wording & links fo V4
+        print(
+            "ERROR: Unable to load G2 library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
+            "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n"
+        )
+        raise sdk_exception(1) from err
+
+
+# -----------------------------------------------------------------------------
+# Helpers for ... # TODO
 # -----------------------------------------------------------------------------
 
 
-# TODO
 def check_result_rc(
     lib_get_last_exception: Callable[[_Pointer[c_char], int], str],
     lib_clear_last_exception: Callable[[], None],
     lib_get_last_exception_code: Callable[[], int],
-    product_id: str,
-    error_id: int,
     result_return_code: int,
 ) -> None:
     """# TODO"""
     if result_return_code != 0:
-        raise new_szexception(
+        raise engine_exception(
             lib_get_last_exception,
             lib_clear_last_exception,
             lib_get_last_exception_code,
-            product_id,
-            error_id,
         )
 
 
@@ -171,7 +190,22 @@ def check_type_is_list(to_check: Any) -> None:
         raise TypeError(f"Expected type list, got {type(to_check).__name__}")
 
 
-def build_dsrc_json(dsrc_codes: list[str]) -> str:
+def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
+    """# TODO"""
+    escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
+    # NOTE Remove first and last double quote added by json.dumps()
+    if strip_quotes:
+        return escaped[1:-1]
+    return escaped
+
+
+def build_dsrc_code_json(dsrc_code: str) -> str:
+    """# TODO"""
+    # return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
+    return f'{{"DSRC_CODE": "{dsrc_code}"}}'
+
+
+def build_data_sources_json(dsrc_codes: list[str]) -> str:
     """
     Build JSON string of data source codes.
 
@@ -203,6 +237,8 @@ def build_entities_json(entity_ids: list[int]) -> str:
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
+# TODO What if no ds or id is sent in
+# TODO Tests
 def build_records_json(record_keys: list[tuple[str, str]]) -> str:
     """# TODO
     Build JSON string of data source and record ids.
@@ -218,6 +254,7 @@ def build_records_json(record_keys: list[tuple[str, str]]) -> str:
     records = ", ".join(
         [
             f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
+            # f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
             for ds, rec_id in record_keys
         ]
     )
@@ -298,7 +335,6 @@ def as_uintptr_t(candidate_value: int) -> Any:
     :meta private:
     """
 
-    # TODO Is this an acceptable approach?
     # Test if candidate_value can be used with the ctype and is an int. If not a
     # TypeError is raised and caught by the catch_ctypes_exceptions decorator on
     # calling methods
@@ -339,28 +375,7 @@ def as_python_str(candidate_value: Any) -> str:
 
     :meta private:
     """
-    # TODO: Do these functions need try/except?
     # TODO catch_exceptions decorator would catch, need to check error type and that it's caught
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result
-
-
-# -----------------------------------------------------------------------------
-# Helpers for working with files and directories.
-# -----------------------------------------------------------------------------
-
-
-# TODO ctypes has a function to do this I think I saw?
-def find_file_in_path(filename: str) -> str:
-    """
-    Find a file in the PATH environment variable.
-
-    :meta private:
-    """
-    path_dirs = os.environ["PATH"].split(os.pathsep)
-    for path_dir in path_dirs:
-        file_path = os.path.join(path_dir, filename)
-        if os.path.exists(file_path):
-            return file_path
-    return ""

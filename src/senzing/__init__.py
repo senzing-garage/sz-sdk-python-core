@@ -1,5 +1,5 @@
-from senzing_abstract import (  # TODO Why is this imported?
-    EXCEPTION_MAP,
+from senzing_abstract import (
+    ENGINE_EXCEPTION_MAP,
     SzBadInputError,
     SzConfigAbstract,
     SzConfigManagerAbstract,
@@ -19,7 +19,7 @@ from senzing_abstract import (  # TODO Why is this imported?
     SzUnhandledError,
     SzUnknownDataSourceError,
     SzUnrecoverableError,
-    new_szexception,
+    engine_exception,
     sdk_exception,
 )
 
@@ -30,7 +30,7 @@ from .szengine import SzEngine
 from .szproduct import SzProduct
 
 __all__ = [
-    "EXCEPTION_MAP",
+    "ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfig",
     "SzConfigAbstract",
@@ -55,6 +55,6 @@ __all__ = [
     "SzUnhandledError",
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
-    "new_szexception",
+    "engine_exception",
     "sdk_exception",
 ]

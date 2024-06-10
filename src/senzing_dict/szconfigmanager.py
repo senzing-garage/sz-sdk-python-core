@@ -87,9 +87,10 @@ class SzConfigManager:
             as_str(config_definition), config_comment, **kwargs
         )
 
-    def destroy(self, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_configmanager.destroy(**kwargs)
+    # TODO
+    # def destroy(self, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_configmanager.destroy(**kwargs)
 
     def get_config(self, config_id: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
@@ -103,17 +104,18 @@ class SzConfigManager:
         """TODO: Create documentation"""
         return self.sz_configmanager.get_default_config_id(**kwargs)
 
-    def initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
-        **kwargs: Any,
-    ) -> None:
-        """TODO: Create documentation"""
-        return self.sz_configmanager.initialize(
-            instance_name, settings, verbose_logging, **kwargs
-        )
+    # TODO
+    # def initialize(
+    #     self,
+    #     instance_name: str,
+    #     settings: Union[str, Dict[Any, Any]],
+    #     verbose_logging: int = 0,
+    #     **kwargs: Any,
+    # ) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_configmanager.initialize(
+    #         instance_name, settings, verbose_logging, **kwargs
+    #     )
 
     def replace_default_config_id(
         self,

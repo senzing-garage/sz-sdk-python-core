@@ -34,17 +34,6 @@ def test_get_version(sz_product: SzProduct) -> None:
     assert schema(get_version_schema) == actual
 
 
-def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
-    """Test the use of SzProduct in context."""
-    with SzProductCore(
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    ) as sz_product_core:
-        with SzProduct(sz_product_core) as sz_product:
-            actual = sz_product.get_license()
-            assert schema(get_license_schema) == actual
-
-
 # -----------------------------------------------------------------------------
 # SzProduct fixtures
 # -----------------------------------------------------------------------------
