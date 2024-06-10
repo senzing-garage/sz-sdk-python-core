@@ -1,4 +1,5 @@
 # TODO: Move in szhelpers?
+# TODO AC - tried to move to helpers, got circular import issues
 """
 TODO: szversion.py
 """

@@ -20,7 +20,6 @@ from senzing_abstract import (
     SzUnknownDataSourceError,
     SzUnrecoverableError,
     engine_exception,
-    sdk_exception,
 )
 
 from .szconfig import SzConfig
@@ -56,5 +55,4 @@ __all__ = [
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
     "engine_exception",
-    "sdk_exception",
 ]

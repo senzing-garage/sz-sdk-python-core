@@ -19,14 +19,12 @@ from .szerror import (
     SzUnknownDataSourceError,
     SzUnrecoverableError,
     engine_exception,
-    sdk_exception,
 )
 from .szproduct_abstract import SzProductAbstract
 
 __all__ = [
     "ENGINE_EXCEPTION_MAP",
     "engine_exception",
-    "sdk_exception",
     "SzBadInputError",
     "SzConfigAbstract",
     "SzConfigManagerAbstract",

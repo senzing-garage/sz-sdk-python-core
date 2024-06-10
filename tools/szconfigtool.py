@@ -765,8 +765,8 @@ class SzCmdShell(cmd.Cmd, object):
 
         try:
             # TODO Change instance name in all tools
-            self.sz_configmgr._initialize("szG2ConfigMgr", self.engine_settings)
-            self.sz_config._initialize("szG2Config", self.engine_settings)
+            self.sz_configmgr.__initialize("szG2ConfigMgr", self.engine_settings)
+            self.sz_config.__initialize("szG2Config", self.engine_settings)
         # TODO Change all ex to err
         except SzError as err:
             colorize_msg(err, "error")
@@ -781,7 +781,7 @@ class SzCmdShell(cmd.Cmd, object):
     def destroy_engines(self):
         with suppress(Exception):
             self.sz_configmgr_destroy()
-            self.sz_config._destroy()
+            self.sz_config.__destroy()
 
     def load_config(self, default_config_id=None):
         # Get the current configuration from the Senzing database

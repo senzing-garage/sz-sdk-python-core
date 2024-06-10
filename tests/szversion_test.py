@@ -1,5 +1,6 @@
 import pytest
 
+# from senzing import SzError, szversion
 from senzing import SzError, szversion
 
 # -----------------------------------------------------------------------------

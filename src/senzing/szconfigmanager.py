@@ -20,16 +20,17 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigManagerAbstract, sdk_exception
+from senzing import SzConfigManagerAbstract
 
-from .szhelpers import (
+from .sdkhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_ctypes_exceptions,
+    catch_exceptions,
     check_result_rc,
     load_sz_library,
+    sdk_exception,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -209,7 +210,7 @@ class SzConfigManager(SzConfigManagerAbstract):
             raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        self.__initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -217,7 +218,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self._destroy()
+            self.__destroy()
         except AttributeError:
             ...
 
@@ -225,7 +226,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     # SzConfigManager methods
     # -------------------------------------------------------------------------
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def add_config(
         self,
         config_definition: str,
@@ -240,8 +241,7 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         return result.response  # type: ignore[no-any-return]
 
-    # Private method
-    def _destroy(self, **kwargs: Any) -> None:
+    def __destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2ConfigMgr_destroy()
 
     def get_config(self, config_id: int, **kwargs: Any) -> str:
@@ -261,9 +261,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    # Private method
-    @catch_ctypes_exceptions
-    def _initialize(
+    @catch_exceptions
+    def __initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],

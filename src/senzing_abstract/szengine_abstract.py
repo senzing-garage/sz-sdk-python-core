@@ -361,7 +361,7 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        exclusions: Optional[List[int]] = None,
+        avoided_entity_ids: Optional[List[int]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -376,8 +376,8 @@ class SzEngineAbstract(ABC):
             start_entity_id (int): The entity ID for the starting entity of the search path.
             end_entity_id (int): The entity ID for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            exclusions (str): TODO:
-            required_data_sources (str): TODO:
+            avoided_entity_ids (str): # TODO:
+            required_data_sources (str): # TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
         Returns:
@@ -406,7 +406,7 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        exclusions: Optional[List[Tuple[str, str]]] = None,
+        avoided_record_keys: Optional[List[Tuple[str, str]]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -425,7 +425,7 @@ class SzEngineAbstract(ABC):
             end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.
             end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            exclusions (str): TODO:
+            avoided_record_keys (str): TODO:
             required_data_sources (str): TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
@@ -805,8 +805,8 @@ class SzEngineAbstract(ABC):
     def search_by_attributes(
         self,
         attributes: str,
-        search_profile: str = "",
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
+        search_profile: str = "",
         **kwargs: Any,
     ) -> str:
         """
@@ -814,8 +814,8 @@ class SzEngineAbstract(ABC):
 
         Args:
             attributes (str):  A JSON document with the attribute data to search for.
-            search_profile (str): The name of a configured search profile. Defaults to SEARCH.
             flags (int, optional): _description_. Defaults to SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.
+            search_profile (str): The name of a configured search profile. Defaults to SEARCH.
 
         Returns:
             str: A JSON document.

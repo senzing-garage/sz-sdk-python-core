@@ -21,15 +21,16 @@ from ctypes import c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzProductAbstract, sdk_exception
+from senzing import SzProductAbstract
 
-from .szhelpers import (
+from .sdkhelpers import (
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_ctypes_exceptions,
+    catch_exceptions,
     check_result_rc,
     load_sz_library,
+    sdk_exception,
 )
 
 # Metadata
@@ -155,7 +156,7 @@ class SzProduct(SzProductAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self._destroy()
+            self.__destroy()
         except AttributeError:
             ...
 
@@ -163,12 +164,10 @@ class SzProduct(SzProductAbstract):
     # SzProduct methods
     # -------------------------------------------------------------------------
 
-    # Private method
-    def _destroy(self, **kwargs: Any) -> None:
+    def __destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2Product_destroy()
 
-    # Private method
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def _initialize(
         self,
         instance_name: str,

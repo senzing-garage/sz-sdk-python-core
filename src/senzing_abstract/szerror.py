@@ -18,7 +18,6 @@ from typing import Callable
 # Metadata
 
 __all__ = [
-    # TODO Still needed as in __init__.py
     "ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
@@ -135,7 +134,6 @@ class SzUnhandledError(SzUnrecoverableError):
 # Reference: https://senzing.zendesk.com/hc/en-us/articles/360026678133-Engine-Error-codes
 # -----------------------------------------------------------------------------
 
-# TODO Separate maps into files for generation?
 # fmt: off
 ENGINE_EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"
@@ -569,6 +567,7 @@ ENGINE_EXCEPTION_MAP = {
 }
 # fmt: on
 
+# TODO Move all below to szhelpers also? Only used by Python SDK
 # -----------------------------------------------------------------------------
 # ErrorBuffer class
 # -----------------------------------------------------------------------------
@@ -592,18 +591,6 @@ ERROR_BUFFER_TYPE = c_char * 65535
 # -----------------------------------------------------------------------------
 # Helper functions to create a senzing-specific Exception
 # -----------------------------------------------------------------------------
-
-
-def get_senzing_error_code(
-    get_last_exception_code: Callable[[], int],
-) -> int:
-    """
-    Get the last exception code from the Senzing engine.
-
-    :meta private:
-    """
-    # TODO Is it possible for None to come back? Would need to test for
-    return get_last_exception_code()
 
 
 def get_senzing_error_text(
@@ -634,27 +621,7 @@ def engine_exception(
 
     :meta private:
     """
-    sz_error_code = get_senzing_error_code(get_last_exception_code)
+    sz_error_code = get_last_exception_code()
     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
     senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
     return senzing_error_class(sz_error_text)
-
-
-# TODO
-# TODO Make non-error class objects - maps, funcs private with _ or __?
-# -----------------------------------------------------------------------------
-# Helper functions to create an SDK Exception
-# -----------------------------------------------------------------------------
-
-# fmt: off
-SDK_EXCEPTION_MAP = {
-    1: "failed to load the G2 library",                                 # Engine module wasn't able to load the G2 library
-    2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
-}
-# fmt: on
-
-
-# def sdk_exception(product_id: str, error_id: int, msg_code: int) -> Exception:
-def sdk_exception(msg_code: int) -> Exception:
-    """# TODO"""
-    return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

@@ -30,18 +30,19 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigAbstract, sdk_exception
+from senzing import SzConfigAbstract
 
-from .szhelpers import (
+from .sdkhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
     as_uintptr_t,
     build_dsrc_code_json,
-    catch_ctypes_exceptions,
+    catch_exceptions,
     check_result_rc,
     load_sz_library,
+    sdk_exception,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -225,7 +226,7 @@ class SzConfig(SzConfigAbstract):
             raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        self.__initialize(self.instance_name, self.settings, self.verbose_logging)
 
     def __del__(self) -> None:
         """Destructor"""
@@ -233,7 +234,7 @@ class SzConfig(SzConfigAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self._destroy()
+            self.__destroy()
         except AttributeError:
             ...
 
@@ -241,7 +242,7 @@ class SzConfig(SzConfigAbstract):
     # SzConfig methods
     # -------------------------------------------------------------------------
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def add_data_source(
         self,
         config_handle: int,
@@ -257,7 +258,7 @@ class SzConfig(SzConfigAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.G2Config_close_helper(as_uintptr_t(config_handle))
         self.check_result(result)
@@ -267,7 +268,7 @@ class SzConfig(SzConfigAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def delete_data_source(
         self,
         config_handle: int,
@@ -280,18 +281,17 @@ class SzConfig(SzConfigAbstract):
         )
         self.check_result(result)
 
-    # Private method
-    def _destroy(self, **kwargs: Any) -> None:
+    def __destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2Config_destroy()
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_save_helper(as_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Config_listDataSources_helper(
             as_uintptr_t(config_handle)
@@ -300,9 +300,8 @@ class SzConfig(SzConfigAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # Private method
-    @catch_ctypes_exceptions
-    def _initialize(
+    @catch_exceptions
+    def __initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
@@ -316,7 +315,7 @@ class SzConfig(SzConfigAbstract):
         )
         self.check_result(result)
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_load_helper(
             as_c_char_p(config_definition)

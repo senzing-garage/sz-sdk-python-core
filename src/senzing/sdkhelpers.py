@@ -1,5 +1,5 @@
 """
-TODO: szhelpers.py
+TODO: sdkhelpers.py
 """
 
 # NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
@@ -28,14 +28,15 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
-from senzing import engine_exception, sdk_exception
+from senzing import SzError, engine_exception
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
     from typing import ParamSpec
 
-uintptr_type = POINTER(c_uint)
+# TODO
+# uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
 P = ParamSpec("P")
 
@@ -74,14 +75,12 @@ class FreeCResources:
 
 
 # TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
-# TODO Change name
-def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
+def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """# TODO Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
     Also..."""
 
     @wraps(func_to_decorate)
-    # TODO Change name, looks a little odd in traceback
-    def inner_function(*args: P.args, **kwargs: P.kwargs) -> T:
+    def catch_inner(*args: P.args, **kwargs: P.kwargs) -> T:
         method_name = func_to_decorate.__name__
         module_name = func_to_decorate.__module__
         basic_msg = (
@@ -95,8 +94,7 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
             # If can locate what we are looking for from ctypes.ArgumentError, give a more detailed and useful exception message
             # Current message from ctypes: ctypes.ArgumentError: argument 2: TypeError: wrong type
             bad_arg_match = None
-            # TODO Change to if err.args: instead, more pythonic - need to test
-            if len(err.args) >= 1:
+            if err.args:
                 bad_arg_match = re.match(r"argument (\d+):", err.args[0])
 
             if bad_arg_match:
@@ -120,15 +118,15 @@ def catch_ctypes_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             raise TypeError(basic_msg) from err
         # # TODO Do we need to catch anything else? Has a code smell about it
-        # Catch TypeError from the test in as_uintptr_t()
+        # NOTE Catch TypeError from the test in as_uintptr_t()
         except TypeError as err:
             raise TypeError(f"{basic_msg} - {err}") from None
 
-    return inner_function
+    return catch_inner
 
 
 # -----------------------------------------------------------------------------
-# Helpers for ... # TODO
+# Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
 def load_sz_library() -> CDLL:
     """# TODO"""
@@ -141,9 +139,9 @@ def load_sz_library() -> CDLL:
         return cdll.LoadLibrary("libG2.so")
     except OSError as err:
         # TODO Change to Sz library when the libG2.so is changed in a build
-        # TODO Wording & links fo V4
+        # TODO Wording & links for V4
         print(
-            "ERROR: Unable to load G2 library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
+            "ERROR: Unable to load Senzing library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
             "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
             "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n"
         )
@@ -151,7 +149,7 @@ def load_sz_library() -> CDLL:
 
 
 # -----------------------------------------------------------------------------
-# Helpers for ... # TODO
+# Helpers for checking and handling results from C library calls
 # -----------------------------------------------------------------------------
 
 
@@ -175,7 +173,6 @@ def check_result_rc(
 # -----------------------------------------------------------------------------
 
 
-# TODO Improve upon Any?
 def check_type_is_list(to_check: Any) -> None:
     """
     Check the input type is a list, if not raise TypeError.
@@ -261,9 +258,7 @@ def build_records_json(record_keys: list[tuple[str, str]]) -> str:
     return f"{START_RECORDS_JSON}{records}{END_JSON}"
 
 
-# TODO Needs testing / tests
-# TODO Change name to build avoidances when Jira is complete
-def build_exclusions_json(
+def build_avoidances_json(
     input_list: Union[list[int], list[tuple[str, str]], None]
 ) -> str:
     """
@@ -326,8 +321,7 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
 # -----------------------------------------------------------------------------
 
 
-# TODO: Figure out better return type hint (e.g. POINTER[c_uint], _Pointer[c_uint])
-def as_uintptr_t(candidate_value: int) -> Any:
+def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     """
     Internal processing function.
     This converts many types of values to an integer.
@@ -336,7 +330,7 @@ def as_uintptr_t(candidate_value: int) -> Any:
     """
 
     # Test if candidate_value can be used with the ctype and is an int. If not a
-    # TypeError is raised and caught by the catch_ctypes_exceptions decorator on
+    # TypeError is raised and caught by the catch_exceptions decorator on
     # calling methods
     _ = c_uint(candidate_value)
 
@@ -379,3 +373,21 @@ def as_python_str(candidate_value: Any) -> str:
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result
+
+
+# TODO Make non-error class objects - maps, funcs private with _ or __?
+# -----------------------------------------------------------------------------
+# Helpers for creating SDK specific exceptions
+# -----------------------------------------------------------------------------
+
+# fmt: off
+SDK_EXCEPTION_MAP = {
+    1: "failed to load the G2 library",                                 # Engine module wasn't able to load the G2 library
+    2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
+}
+# fmt: on
+
+
+def sdk_exception(msg_code: int) -> Exception:
+    """# TODO"""
+    return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

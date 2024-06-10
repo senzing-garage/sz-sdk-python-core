@@ -12,27 +12,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-# -----------------------------------------------------------------------------
-# Constant helper values useful for flags
-# -----------------------------------------------------------------------------
-
-SZ_NO_FLAGS = 0
-SZ_WITHOUT_INFO = 0
-
-
-# TODO Move to separate file, szconsts.py
-# -----------------------------------------------------------------------------
-# Constant helper values
-# -----------------------------------------------------------------------------
-
-SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION = 0
-SZ_NO_ATTRIBUTES = ""
-SZ_NO_EXCLUSIONS = ""
-SZ_NO_LOGGING = 0
-SZ_NO_REQUIRED_DATASOURCES = ""
-SZ_NO_SEARCH_PROFILE = ""
-SZ_VERBOSE_LOGGING = 1
-
 
 # -----------------------------------------------------------------------------
 # SzEngineFlags class
@@ -123,7 +102,7 @@ class SzEngineFlags(IntFlag):
 
     # Flags for finding entity path & network data.
 
-    SZ_FIND_PATH_PREFER_EXCLUDE = 1 << 25
+    SZ_FIND_PATH_STRICT_AVOID = 1 << 25
     SZ_FIND_PATH_INCLUDE_MATCHING_INFO = 1 << 30
     SZ_FIND_NETWORK_INCLUDE_MATCHING_INFO = 1 << 33
 

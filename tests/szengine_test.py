@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_abstract.szconstants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_DATASOURCES,
@@ -953,6 +953,7 @@ def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngine) -> None:
     bad_entity_id = 0
     flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_entity(bad_entity_id, flags)
+    # TODO Should have check for exception
 
 
 def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
@@ -974,6 +975,7 @@ def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
     bad_entity_id = 0
     flags = SzEngineFlags.SZ_WITH_INFO
     _ = sz_engine.reevaluate_entity(bad_entity_id, flags)
+    # TODO Should have check for exception
 
 
 def test_reevaluate_record(sz_engine: SzEngine) -> None:
@@ -1058,7 +1060,7 @@ def test_search_by_attributes(sz_engine: SzEngine) -> None:
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
     actual = sz_engine.search_by_attributes(
-        json.dumps(attributes), search_profile, flags
+        json.dumps(attributes), flags, search_profile
     )
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
@@ -1072,7 +1074,7 @@ def test_search_by_attributes_bad_attributes(sz_engine: SzEngine) -> None:
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
     with pytest.raises(SzBadInputError):
-        _ = sz_engine.search_by_attributes(bad_attributes, search_profile, flags)
+        _ = sz_engine.search_by_attributes(bad_attributes, flags, search_profile)
 
 
 def test_why_entities(sz_engine: SzEngine) -> None:

@@ -5,7 +5,10 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+
+# TODO
+# from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_abstract.szconstants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_dict import SzConfig, SzConfigManager, SzEngine
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,

@@ -20,16 +20,17 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnosticAbstract, sdk_exception
+from senzing import SzDiagnosticAbstract
 
-from .szhelpers import (
+from .sdkhelpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_ctypes_exceptions,
+    catch_exceptions,
     check_result_rc,
     load_sz_library,
+    sdk_exception,
 )
 from .szversion import is_supported_senzingapi_version
 
@@ -198,7 +199,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(
+        self.__initialize(
             instance_name=self.instance_name,
             settings=self.settings,
             config_id=self.config_id,
@@ -211,7 +212,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self._destroy()
+            self.__destroy()
         except AttributeError:
             ...
 
@@ -227,8 +228,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # Private method
-    def _destroy(self, **kwargs: Any) -> None:
+    def __destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2Diagnostic_destroy()
 
     def get_datastore_info(self, **kwargs: Any) -> str:
@@ -244,9 +244,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # Private method
-    @catch_ctypes_exceptions
-    def _initialize(
+    @catch_exceptions
+    def __initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
