@@ -148,7 +148,6 @@ def load_sz_library(lib: str = "") -> CDLL:
             "ERROR: Unable to load Senzing library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
             "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
             "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
-            file=sys.stderr,
         )
         raise sdk_exception(1) from err
 

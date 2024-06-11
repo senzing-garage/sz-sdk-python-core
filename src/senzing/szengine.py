@@ -842,7 +842,6 @@ class SzEngine(SzEngineAbstract):
                 flags,
             )
         elif required_data_sources:
-            print(build_data_sources_json(required_data_sources))
             result = self.library_handle.G2_findPathByRecordIDIncludingSource_V2_helper(
                 as_c_char_p(start_data_source_code),
                 as_c_char_p(start_record_id),

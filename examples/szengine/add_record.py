@@ -22,7 +22,7 @@ RECORD_DEFINITION = (
     '"AMOUNT": "100"'
     "}"
 )
-RECORD_ID = "1\n😂"
+RECORD_ID = "1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",

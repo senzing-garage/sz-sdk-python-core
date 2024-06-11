@@ -100,6 +100,19 @@ def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     assert schema(get_datastore_info_schema) == actual_as_dict
 
 
+def test_get_feature(sz_diagnostic: SzDiagnostic) -> None:
+    """# TODO"""
+    actual = sz_diagnostic.get_feature(1)
+    actual_as_dict = json.loads(actual)
+    assert schema(get_feature_schema) == actual_as_dict
+
+
+def test_get_feature_unknown_id(sz_diagnostic: SzDiagnostic) -> None:
+    """# TODO"""
+    with pytest.raises(SzError):
+        _ = sz_diagnostic.get_feature(111111111111111111)
+
+
 def test_reinitialize(
     sz_diagnostic: SzDiagnostic, sz_configmanager: SzConfigManager
 ) -> None:
@@ -218,3 +231,6 @@ get_datastore_info_schema = {
 }
 
 check_datastore_performance_schema = {"numRecordsInserted": int, "insertTime": int}
+
+get_feature_schema = {"LIB_FEAT_ID": int, "FTYPE_CODE": str, "ELEMENTS": [{str: str}]}
+# '{"LIB_FEAT_ID":1,"FTYPE_CODE":"NAME","ELEMENTS":[{"FELEM_CODE":"TOKENIZED_NM","FELEM_VALUE":"ROBERT|SMITH"},{"FELEM_CODE":"CATEGORY","FELEM_VALUE":"PERSON"},{"FELEM_CODE":"CULTURE","FELEM_VALUE":"ANGLO"},{"FELEM_CODE":"GIVEN_NAME","FELEM_VALUE":"Robert"},{"FELEM_CODE":"SUR_NAME","FELEM_VALUE":"Smith"},{"FELEM_CODE":"FULL_NAME","FELEM_VALUE":"Robert Smith"}]}'
