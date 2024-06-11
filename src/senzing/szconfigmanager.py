@@ -155,7 +155,6 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # pylint: disable=W0613
 
         self.settings = settings
         self.instance_name = instance_name
