@@ -23,7 +23,7 @@ from typing import Any, Dict, Union
 
 from senzing import SzProductAbstract
 
-from .sdkhelpers import (
+from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
@@ -155,7 +155,7 @@ class SzProduct(SzProductAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self.__destroy()
+            self._destroy()
         except AttributeError:
             ...
 
@@ -163,7 +163,7 @@ class SzProduct(SzProductAbstract):
     # SzProduct methods
     # -------------------------------------------------------------------------
 
-    def __destroy(self, **kwargs: Any) -> None:
+    def _destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2Product_destroy()
 
     @catch_exceptions

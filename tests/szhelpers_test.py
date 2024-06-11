@@ -1,7 +1,7 @@
 import json
 
 # from senzing import as_str
-from senzing.sdkhelpers import as_str
+from senzing._helpers import as_str
 
 # -----------------------------------------------------------------------------
 # szhelpers testcases

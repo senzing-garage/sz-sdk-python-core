@@ -1,7 +1,7 @@
 import pytest
 
 # from senzing import SzError, szversion
-from senzing import SzError, szversion
+from senzing import SzError, _version
 
 # -----------------------------------------------------------------------------
 # szversion testcases
@@ -18,7 +18,7 @@ def test_normalize_semantic_version() -> None:
         "99.99.99": 999999,
     }
     for sem_ver, number in tests.items():
-        actual = szversion.normalize_semantic_version(sem_ver)
+        actual = _version.normalize_semantic_version(sem_ver)
         assert actual == number
 
 
@@ -30,7 +30,7 @@ def test_supports_senzingapi_version() -> None:
         ["10.10.10", "10.10.12", "10.10.11"],
     ]
     for test in tests:
-        actual = szversion.supports_senzingapi_version(test[0], test[1], test[2])
+        actual = _version.supports_senzingapi_version(test[0], test[1], test[2])
         assert actual
 
 
@@ -44,4 +44,4 @@ def test_supports_senzingapi_version_exceptions() -> None:
 
     for test in tests:
         with pytest.raises(SzError):
-            szversion.supports_senzingapi_version(test[0], test[1], test[2])
+            _version.supports_senzingapi_version(test[0], test[1], test[2])

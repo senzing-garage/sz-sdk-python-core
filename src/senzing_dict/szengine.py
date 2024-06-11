@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Optional, Type, Union
 from senzing_abstract import SzEngineAbstract
 
 from senzing import SzEngineFlags
-from senzing.sdkhelpers import as_str
+from senzing._helpers import as_str
 
 # Metadata
 

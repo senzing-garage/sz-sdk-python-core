@@ -34,7 +34,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from senzing import SzEngineAbstract, SzEngineFlags
 
-from .sdkhelpers import (
+from ._helpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
@@ -49,7 +49,7 @@ from .sdkhelpers import (
     load_sz_library,
     sdk_exception,
 )
-from .szversion import is_supported_senzingapi_version
+from ._version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -588,7 +588,7 @@ class SzEngine(SzEngineAbstract):
             raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self.__initialize(
+        self._initialize(
             instance_name=self.instance_name,
             settings=self.settings,
             config_id=self.config_id,
@@ -601,7 +601,7 @@ class SzEngine(SzEngineAbstract):
         # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
         # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
         try:
-            self.__destroy()
+            self._destroy()
         except AttributeError:
             ...
 
@@ -678,7 +678,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    def __destroy(self, **kwargs: Any) -> None:
+    def _destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2_destroy()
 
     @catch_exceptions
@@ -954,7 +954,7 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     @catch_exceptions
-    def __initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
