@@ -83,6 +83,16 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
 
 
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzDiagnostic(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()

@@ -128,22 +128,27 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 # -----------------------------------------------------------------------------
 # Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
-def load_sz_library() -> CDLL:
+def load_sz_library(lib: str = "") -> CDLL:
     """# TODO"""
+    # TODO Takes optional lib for testing
     try:
         if os.name == "nt":
             # return cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            win_path = find_library("G2")
+            # TODO
+            # win_path = find_library("G2")
+            win_path = find_library(lib if lib else "G2")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        return cdll.LoadLibrary("libG2.so")
+        # return cdll.LoadLibrary("libG2.so")
+        return cdll.LoadLibrary(lib if lib else "libG2.so")
     except OSError as err:
         # TODO Change to Sz library when the libG2.so is changed in a build
         # TODO Wording & links for V4
         print(
             "ERROR: Unable to load Senzing library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
             "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
-            "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n"
+            "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
+            file=sys.stderr,
         )
         raise sdk_exception(1) from err
 
@@ -187,13 +192,14 @@ def check_type_is_list(to_check: Any) -> None:
         raise TypeError(f"Expected type list, got {type(to_check).__name__}")
 
 
-def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
-    """# TODO"""
-    escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
-    # NOTE Remove first and last double quote added by json.dumps()
-    if strip_quotes:
-        return escaped[1:-1]
-    return escaped
+# TODO
+# def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
+#     """# TODO"""
+#     escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
+#     # NOTE Remove first and last double quote added by json.dumps()
+#     if strip_quotes:
+#         return escaped[1:-1]
+#     return escaped
 
 
 def build_dsrc_code_json(dsrc_code: str) -> str:
@@ -218,6 +224,8 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
 
+# TODO Additional checks on these functions
+# TODO Are the types in the list as expected
 def build_entities_json(entity_ids: list[int]) -> str:
     """
     Build JSON string of entity ids.

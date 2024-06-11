@@ -368,6 +368,16 @@ def test_delete_record_with_info_bad_record_id(sz_engine: SzEngine) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzEngine(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_export_csv_entity_report(sz_engine: SzEngine) -> None:
     """Test SzEngine().export_csv_entity_report()."""
     csv_column_list = "RESOLVED_ENTITY_ID,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA"

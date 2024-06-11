@@ -143,6 +143,16 @@ def test_delete_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
         )
 
 
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzConfig(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
+
+
 # TODO: Decide where an integer is a valid data_source_code.
 # def test_delete_data_source_bad_data_source_code_type(
 #     sz_config: SzConfig,
