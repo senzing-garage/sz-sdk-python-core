@@ -366,11 +366,11 @@ def as_python_bytes(candidate_value: str) -> bytes:
 
     :meta private:
     """
-    if not isinstance(candidate_value, str):
-        raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
-
     if not candidate_value:
         return b""
+
+    if not isinstance(candidate_value, str):
+        raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
 
     return candidate_value.encode()
 
