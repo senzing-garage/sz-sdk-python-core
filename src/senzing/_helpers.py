@@ -360,19 +360,22 @@ def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
 
 # TODO Are all these different types needed, we really expect a str?
 # TODO as_c_char_p? Returns bytes
-def as_python_bytes(candidate_value: str) -> bytes:
+def as_python_bytes(candidate_value: str) -> Any:
     """
     Convert a Python string to bytes.
 
     :meta private:
     """
+    # if not isinstance(candidate_value, str):
+    #     raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
+
     if not candidate_value:
         return b""
 
-    if not isinstance(candidate_value, str):
-        raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
+    if isinstance(candidate_value, str):
+        return candidate_value.encode()
 
-    return candidate_value.encode()
+    return candidate_value
 
 
 def as_python_str(candidate_value: Any) -> str:
