@@ -8,7 +8,11 @@ from senzing._helpers import (
     as_python_bytes,
     as_str,
     build_data_sources_json,
+    build_entities_json,
+    build_records_json,
+    check_list_types,
     check_type_is_list,
+    escape_json_str,
     load_sz_library,
 )
 
@@ -57,6 +61,29 @@ def test_build_data_sources_json() -> None:
     assert schema(build_data_sources_json_schema) == actual_as_dict
 
 
+def test_check_list_types_empty_list() -> None:
+    """# TODO"""
+    check_list_types([])
+
+
+def test_check_list_types_different_types() -> None:
+    """# TODO"""
+    with pytest.raises(TypeError):
+        check_list_types([1, 2, "3"])
+
+
+def test_check_list_types_different_tuple_lengths() -> None:
+    """# TODO"""
+    with pytest.raises(TypeError):
+        check_list_types([("test1", 1), "test2", 2, 3])
+
+
+def test_check_list_types_incorrect_number_of_tuple_elements() -> None:
+    """# TODO"""
+    with pytest.raises(TypeError):
+        check_list_types([("test1", 1, 2, 3), "test2", 2, 3])
+
+
 def test_check_type_is_list() -> None:
     """# TODO"""
     list_ = [1, 2, 3]
@@ -68,6 +95,26 @@ def test_check_type_is_list_bad_type() -> None:
     list_ = "not_a_list"
     with pytest.raises(TypeError):
         check_type_is_list(list_)
+
+
+def test_build_entities_json_empty_list() -> None:
+    """# TODO"""
+    actual = build_entities_json([])
+    assert isinstance(actual, str)
+    assert len(actual) == 0
+
+
+def test_build_records_json_empty_list() -> None:
+    """# TODO"""
+    actual = build_records_json([])
+    assert isinstance(actual, str)
+    assert len(actual) == 0
+
+
+def test_escape_json_str() -> None:
+    """# TODO"""
+    with pytest.raises(TypeError):
+        escape_json_str(1234)  # type: ignore[arg-type]
 
 
 # TODO Will need additional logic for Windows
