@@ -1,5 +1,5 @@
 """
-TODO: sdkhelpers.py
+TODO: _helpers.py
 """
 
 # NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
@@ -26,7 +26,7 @@ from ctypes import (
 from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
-from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
 from senzing import SzError, engine_exception
 
@@ -35,8 +35,6 @@ if sys.version_info < (3, 10):
 else:
     from typing import ParamSpec
 
-# TODO
-# uintptr_type = POINTER(c_uint)
 T = TypeVar("T")
 P = ParamSpec("P")
 
@@ -51,7 +49,13 @@ END_JSON = "]}"
 
 
 class FreeCResources:
-    """Free C resources"""
+    """
+    Free C resources when calling engine APIs
+
+    Args:
+        handle (CDLL): Senzing engine library handle
+        resource (_Pointer[c_char]): The C resource to free
+    """
 
     def __init__(self, handle: CDLL, resource: _Pointer[c_char]) -> None:
         self.handle = handle
@@ -129,17 +133,24 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 # Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
 def load_sz_library(lib: str = "") -> CDLL:
-    """# TODO"""
-    # TODO Takes optional lib for testing
+    """
+    Check the OS name and load the appropriate Senzing library.
+
+    Args:
+        lib (str, optional): Used for unit testing and passing incorrect filename. Defaults to "".
+
+    Raises:
+        SzError: failed to load the G2 library
+
+    Returns:
+        CDLL:
+
+    """
     try:
         if os.name == "nt":
-            # return cdll.LoadLibrary(find_file_in_path("G2.dll"))
-            # TODO
-            # win_path = find_library("G2")
             win_path = find_library(lib if lib else "G2")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        # return cdll.LoadLibrary("libG2.so")
         return cdll.LoadLibrary(lib if lib else "libG2.so")
     except OSError as err:
         # TODO Change to Sz library when the libG2.so is changed in a build
@@ -163,7 +174,18 @@ def check_result_rc(
     lib_get_last_exception_code: Callable[[], int],
     result_return_code: int,
 ) -> None:
-    """# TODO"""
+    """
+    Check the return code from calling the C API, raise an error if not 0.
+
+    Args:
+        lib_get_last_exception (Callable): G2_getLastException()
+        lib_clear_last_exception (Callable): G2_clearLastException()
+        lib_get_last_exception_code (Callable): G2_getLastExceptionCode()
+        result_return_code (int): Return code from calling a C API method
+
+    Raises:
+        SzError: Mapped to a specific code and message depending on exception code.
+    """
     if result_return_code != 0:
         raise engine_exception(
             lib_get_last_exception,
@@ -182,29 +204,57 @@ def check_type_is_list(to_check: Any) -> None:
     Check the input type is a list, if not raise TypeError.
 
     Args:
-        var_to_check (Any): _description_
+        to_check (Any): The input to check.
 
     Raises:
-        TypeError: _description_
-    """ """"""
+        TypeError:
+    """
+    # TODO Should these be SDK errors instead?
     if not isinstance(to_check, list):
-        raise TypeError(f"Expected type list, got {type(to_check).__name__}")
+        raise TypeError(f"expected type list, got {type(to_check).__name__}")
+
+
+def check_list_types(to_check: List[Any]) -> None:
+    """# TODO"""
+    if not to_check:
+        return
+
+    # Check all elements in the list are of the same type
+    types = all(isinstance(elem, type(to_check[0])) for elem in to_check[1:])
+    if not types:
+        raise TypeError(f"elements in the list are not of the same type - {to_check}")
+
+    # TODO Consider making the number_of_tuples check an input to function
+    # If elements are tuples check they are the same size and correct size
+    if isinstance(to_check[0], tuple):
+        num_elements = set(len(elem) for elem in to_check)
+        if len(num_elements) > 1:
+            raise TypeError(
+                f"number of tuple elements for each tuple are not of the same size - {to_check}"
+            )
+
+        number_of_tuples = num_elements.pop()
+        if number_of_tuples != 2:
+            raise TypeError(
+                f"number of elements in a tuple is {number_of_tuples}, expected 2 - {to_check}"
+            )
 
 
 # TODO
-# def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
-#     """# TODO"""
-#     escaped = json.dumps({"escaped": to_escape}["escaped"], ensure_ascii=False)
-#     # NOTE Remove first and last double quote added by json.dumps()
-#     if strip_quotes:
-#         return escaped[1:-1]
-#     return escaped
+def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
+    """# TODO"""
+    # TODO ensure_ascii=False = èAnt\\n👍
+    # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
+    escaped = json.dumps({"escaped": to_escape}["escaped"])
+    # Remove first and last double quote added by json.dumps() as needed
+    if strip_quotes:
+        return escaped[1:-1]
+    return escaped
 
 
 def build_dsrc_code_json(dsrc_code: str) -> str:
     """# TODO"""
-    # return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
-    return f'{{"DSRC_CODE": "{dsrc_code}"}}'
+    return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
 
 
 def build_data_sources_json(dsrc_codes: list[str]) -> str:
@@ -219,13 +269,14 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
              {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
     """
     check_type_is_list((dsrc_codes))
-    dsrcs = ", ".join([f'"{code}"' for code in dsrc_codes])
+    check_list_types(dsrc_codes)
+    dsrcs = ", ".join([f"{escape_json_str(code)}" for code in dsrc_codes])
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
 
 # TODO Additional checks on these functions
 # TODO Are the types in the list as expected
-def build_entities_json(entity_ids: list[int]) -> str:
+def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     """
     Build JSON string of entity ids.
 
@@ -236,14 +287,20 @@ def build_entities_json(entity_ids: list[int]) -> str:
         str: JSON string as expected by Senzing engine
              {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
     """
+    # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
+    # NOTE be set to None (default) or []
+    if not entity_ids or len(entity_ids) == 0:
+        return ""
+
     check_type_is_list(entity_ids)
+    check_list_types(entity_ids)
     entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
 # TODO What if no ds or id is sent in
 # TODO Tests
-def build_records_json(record_keys: list[tuple[str, str]]) -> str:
+def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     """# TODO
     Build JSON string of data source and record ids.
 
@@ -254,53 +311,20 @@ def build_records_json(record_keys: list[tuple[str, str]]) -> str:
         str: JSON string as expected by Senzing engine
              {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
     """
+    # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
+    # NOTE be set to None (default) or []
+    if not record_keys or len(record_keys) == 0:
+        return ""
+
     check_type_is_list(record_keys)
+    check_list_types(record_keys)
     records = ", ".join(
         [
-            f'{{"DATA_SOURCE": "{ds}", "RECORD_ID": "{rec_id}"}}'
-            # f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
+            f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
             for ds, rec_id in record_keys
         ]
     )
     return f"{START_RECORDS_JSON}{records}{END_JSON}"
-
-
-def build_avoidances_json(
-    input_list: Union[list[int], list[tuple[str, str]], None]
-) -> str:
-    """
-    Build JSON string of either entity ids or data source and record ids.
-    Find path exclusions accepts either entity ids or data source and record ids.
-
-    Args:
-        input_list (Union[list[int], list[tuple[str, str]], None]): _description_
-
-    Raises:
-        TypeError: _description_
-
-    Returns:
-        str: _description_
-    """ """"""
-
-    # NOTE Testing for None here instead of in szengine to keep szengine "neater" for now
-    # NOTE This is needed if required_data_sources is sent to find_path_*, exclusions could
-    # NOTE be set to None (default) or []
-    # TODO Can this be changed to only if not input_list, more pythonic - need to test
-    # TODO recall had to have the len() also to catch something specific?
-    if not input_list or len(input_list) == 0:
-        return ""
-
-    check_type_is_list(input_list)
-
-    if isinstance(input_list[0], tuple):
-        return build_records_json(input_list)  # type: ignore[arg-type]
-
-    if isinstance(input_list[0], int):
-        return build_entities_json(input_list)  # type: ignore[arg-type]
-
-    raise TypeError(
-        f"Expected a list of ints or tuples, got a list of {type(input_list[0])}"
-    )
 
 
 # -----------------------------------------------------------------------------
@@ -339,6 +363,7 @@ def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     # Test if candidate_value can be used with the ctype and is an int. If not a
     # TypeError is raised and caught by the catch_exceptions decorator on
     # calling methods
+    # TODO Better to raise here?
     _ = c_uint(candidate_value)
 
     return cast(candidate_value, POINTER(c_uint))

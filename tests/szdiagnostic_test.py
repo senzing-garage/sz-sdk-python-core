@@ -5,7 +5,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import schema
 
-from senzing import SzConfigManager, SzDiagnostic, SzError
+from senzing import SzConfigManager, SzDiagnostic, SzEngine, SzError
 
 # -----------------------------------------------------------------------------
 # SzDiagnostic testcases
@@ -100,8 +100,12 @@ def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
     assert schema(get_datastore_info_schema) == actual_as_dict
 
 
-def test_get_feature(sz_diagnostic: SzDiagnostic) -> None:
+def test_get_feature(sz_diagnostic: SzDiagnostic, sz_engine: SzEngine) -> None:
     """# TODO"""
+    data_source_code = "TEST"
+    record_id = "1"
+    record_definition: str = '{"NAME_FULL": "Joe Blogs", "DATE_OF_BIRTH": "07/07/1976"}'
+    sz_engine.add_record(data_source_code, record_id, record_definition)
     actual = sz_diagnostic.get_feature(1)
     actual_as_dict = json.loads(actual)
     assert schema(get_feature_schema) == actual_as_dict
@@ -207,6 +211,19 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
     """Single szdiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnostic(
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        config_id=0,
+        verbose_logging=0,
+    )
+    return result
+
+
+@pytest.fixture(name="sz_engine", scope="function")
+def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
+    """Single szengine object to use for all tests.
+    engine_vars is returned from conftest.pys"""
+    result = SzEngine(
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,

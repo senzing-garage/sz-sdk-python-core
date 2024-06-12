@@ -40,7 +40,6 @@ from ._helpers import (
     as_python_str,
     as_str,
     as_uintptr_t,
-    build_avoidances_json,
     build_data_sources_json,
     build_entities_json,
     build_records_json,
@@ -620,8 +619,6 @@ class SzEngine(SzEngineAbstract):
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_addRecordWithInfo_helper(
-                # as_c_char_p(escape_json_str(data_source_code, strip_quotes=True)),
-                # as_c_char_p(escape_json_str(record_id, strip_quotes=True)),
                 as_c_char_p(data_source_code),
                 as_c_char_p(record_id),
                 as_c_char_p(record_definition),
@@ -784,17 +781,17 @@ class SzEngine(SzEngineAbstract):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        avoided_entity_ids: Optional[List[int]] = None,
+        avoid_entity_ids: Optional[List[int]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        if avoided_entity_ids and not required_data_sources:
+        if avoid_entity_ids and not required_data_sources:
             result = self.library_handle.G2_findPathByEntityIDWithAvoids_V2_helper(
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(build_avoidances_json(avoided_entity_ids)),
+                as_c_char_p(build_entities_json(avoid_entity_ids)),
                 flags,
             )
         elif required_data_sources:
@@ -802,7 +799,7 @@ class SzEngine(SzEngineAbstract):
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(build_avoidances_json(avoided_entity_ids)),
+                as_c_char_p(build_entities_json(avoid_entity_ids)),
                 as_c_char_p(build_data_sources_json(required_data_sources)),
                 flags,
             )
@@ -826,19 +823,19 @@ class SzEngine(SzEngineAbstract):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        avoided_record_keys: Optional[List[Tuple[str, str]]] = None,
+        avoid_record_keys: Optional[List[Tuple[str, str]]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        if avoided_record_keys and not required_data_sources:
+        if avoid_record_keys and not required_data_sources:
             result = self.library_handle.G2_findPathByRecordIDWithAvoids_V2_helper(
                 as_c_char_p(start_data_source_code),
                 as_c_char_p(start_record_id),
                 as_c_char_p(end_data_source_code),
                 as_c_char_p(end_record_id),
                 max_degrees,
-                as_c_char_p(build_avoidances_json(avoided_record_keys)),
+                as_c_char_p(build_records_json(avoid_record_keys)),
                 flags,
             )
         elif required_data_sources:
@@ -848,7 +845,7 @@ class SzEngine(SzEngineAbstract):
                 as_c_char_p(end_data_source_code),
                 as_c_char_p(end_record_id),
                 max_degrees,
-                as_c_char_p(build_avoidances_json(avoided_record_keys)),
+                as_c_char_p(build_records_json(avoid_record_keys)),
                 as_c_char_p(build_data_sources_json(required_data_sources)),
                 flags,
             )

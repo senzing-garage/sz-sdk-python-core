@@ -574,18 +574,19 @@ class SzCmdShell(cmd.Cmd, object):
         reevaluateRecord_parser.add_argument("record_id")
         reevaluateRecord_parser.add_argument("-f", "--flags", required=False, type=int)
 
-        replaceRecord_parser = self.subparsers.add_parser(
-            "replaceRecord", usage=argparse.SUPPRESS
-        )
-        replaceRecord_parser.add_argument("data_source_code")
-        replaceRecord_parser.add_argument("record_id")
-        replaceRecord_parser.add_argument("record_definition")
-        replaceRecord_parser.add_argument("-f", "--flags", nargs="+", required=False)
+        # replaceRecord_parser = self.subparsers.add_parser(
+        #     "replaceRecord", usage=argparse.SUPPRESS
+        # )
+        # replaceRecord_parser.add_argument("data_source_code")
+        # replaceRecord_parser.add_argument("record_id")
+        # replaceRecord_parser.add_argument("record_definition")
+        # replaceRecord_parser.add_argument("-f", "--flags", nargs="+", required=False)
 
         searchByAttributes_parser = self.subparsers.add_parser(
             "searchByAttributes", usage=argparse.SUPPRESS
         )
         searchByAttributes_parser.add_argument("attributes")
+        # TODO Remove default
         searchByAttributes_parser.add_argument(
             "search_profile", default="SEARCH", nargs="?"
         )
@@ -965,14 +966,14 @@ class SzCmdShell(cmd.Cmd, object):
     # szconfigmgr commands
 
     @cmd_decorator(cmd_has_args=False)
-    def do_getConfigList(self, **kwargs):
+    def do_getConfigs(self, **kwargs):
         """
         Get a list of current configurations
 
         Syntax:
             getConfigList"""
 
-        response = self.sz_configmgr.get_config_list()
+        response = self.sz_configmgr.get_configs()
         self.print_response(response)
 
     @cmd_decorator(cmd_has_args=False)
@@ -1788,37 +1789,37 @@ class SzCmdShell(cmd.Cmd, object):
         else:
             self.print_response(response)
 
-    @cmd_decorator()
-    def do_replaceRecord(self, **kwargs):
-        """
-        Replace a record and optionally return information
+    # @cmd_decorator()
+    # def do_replaceRecord(self, **kwargs):
+    #     """
+    #     Replace a record and optionally return information
 
-        Syntax:
-            replaceRecord DSRC_CODE RECORD_ID RECORD_DEFINITION [-f FLAG ...]
+    #     Syntax:
+    #         replaceRecord DSRC_CODE RECORD_ID RECORD_DEFINITION [-f FLAG ...]
 
-        Examples:
-            replaceRecord test 1 '{"NAME_FULL":"John Smith", "DATE_OF_BIRTH":"7/4/1976", "PHONE_NUMBER":"787-767-2088"}'
-            replaceRecord test 1 '{"NAME_FULL":"John Smith", "DATE_OF_BIRTH":"7/4/1976", "PHONE_NUMBER":"787-767-2088"}' -f SZ_WITH_INFO
+    #     Examples:
+    #         replaceRecord test 1 '{"NAME_FULL":"John Smith", "DATE_OF_BIRTH":"7/4/1976", "PHONE_NUMBER":"787-767-2088"}'
+    #         replaceRecord test 1 '{"NAME_FULL":"John Smith", "DATE_OF_BIRTH":"7/4/1976", "PHONE_NUMBER":"787-767-2088"}' -f SZ_WITH_INFO
 
-        Arguments:
-            DSRC_CODE = Data source code
-            RECORD_ID = Record identifier
-            RECORD_DEFINITION = Senzing mapped JSON representation of a record
-            FLAG = Space separated list of engine flag(s) to determine output (don't specify for defaults)
+    #     Arguments:
+    #         DSRC_CODE = Data source code
+    #         RECORD_ID = Record identifier
+    #         RECORD_DEFINITION = Senzing mapped JSON representation of a record
+    #         FLAG = Space separated list of engine flag(s) to determine output (don't specify for defaults)
 
-        Notes:
-            - Engine flag details https://docs.senzing.com/flags/index.html"""
+    #     Notes:
+    #         - Engine flag details https://docs.senzing.com/flags/index.html"""
 
-        response = self.sz_engine.replace_record(
-            kwargs["parsed_args"].data_source_code,
-            kwargs["parsed_args"].record_id,
-            kwargs["parsed_args"].record_definition,
-            **kwargs["flags_dict"],
-        )
-        if response == "{}":
-            self.print_response("Record replaced.", "success")
-        else:
-            self.print_response(response)
+    #     response = self.sz_engine.replace_record(
+    #         kwargs["parsed_args"].data_source_code,
+    #         kwargs["parsed_args"].record_id,
+    #         kwargs["parsed_args"].record_definition,
+    #         **kwargs["flags_dict"],
+    #     )
+    #     if response == "{}":
+    #         self.print_response("Record replaced.", "success")
+    #     else:
+    #         self.print_response(response)
 
     @cmd_decorator()
     def do_searchByAttributes(self, **kwargs):
@@ -1840,10 +1841,15 @@ class SzCmdShell(cmd.Cmd, object):
         Notes:
             - Engine flag details https://docs.senzing.com/flags/index.html"""
 
+        print(type(kwargs["flags_dict"]))
+        print(kwargs["flags_dict"])
+        print(kwargs["flags_dict"]["flags"].value)
         response = self.sz_engine.search_by_attributes(
             kwargs["parsed_args"].attributes,
+            # TODO Using like this here due to order of args in szengine
+            kwargs["flags_dict"]["flags"].value,
             kwargs["parsed_args"].search_profile,
-            **kwargs["flags_dict"],
+            # **kwargs["flags_dict"],
         )
         self.print_response(response)
 

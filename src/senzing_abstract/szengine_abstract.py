@@ -359,7 +359,7 @@ class SzEngineAbstract(ABC):
         start_entity_id: int,
         end_entity_id: int,
         max_degrees: int,
-        avoided_entity_ids: Optional[List[int]] = None,
+        avoid_entity_ids: Optional[List[int]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -374,7 +374,7 @@ class SzEngineAbstract(ABC):
             start_entity_id (int): The entity ID for the starting entity of the search path.
             end_entity_id (int): The entity ID for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            avoided_entity_ids (str): # TODO:
+            avoid_entity_ids (str): # TODO:
             required_data_sources (str): # TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
@@ -404,7 +404,7 @@ class SzEngineAbstract(ABC):
         end_data_source_code: str,
         end_record_id: str,
         max_degrees: int,
-        avoided_record_keys: Optional[List[Tuple[str, str]]] = None,
+        avoid_record_keys: Optional[List[Tuple[str, str]]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -423,7 +423,7 @@ class SzEngineAbstract(ABC):
             end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.
             end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            avoided_record_keys (str): TODO:
+            avoid_record_keys (str): TODO:
             required_data_sources (str): TODO:
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
