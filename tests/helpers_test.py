@@ -1,5 +1,4 @@
 import json
-from typing import Any, List
 
 import pytest
 from pytest_schema import schema
@@ -8,7 +7,6 @@ from senzing import SzError
 from senzing._helpers import (
     as_c_char_p,
     as_str,
-    build_avoidances_json,
     build_data_sources_json,
     check_type_is_list,
     load_sz_library,
@@ -48,39 +46,6 @@ def test_as_str() -> None:
     result2 = as_str(actual)
     assert isinstance(result2, str)
     assert result2 == actual
-
-
-def test_build_avoidances_json_by_entity_ids() -> None:
-    """# TODO"""
-    entity_ids = [1, 2, 3]
-    actual = build_avoidances_json(entity_ids)
-    assert isinstance(actual, str)
-    actual_as_dict = json.loads(actual)
-    assert schema(build_avoidances_json_by_entity_id_schema) == actual_as_dict
-
-
-def test_build_avoidances_json_by_record_keys() -> None:
-    """# TODO"""
-    record_keys = [("TEST", "787"), ("CUSTOMERS", "787B")]
-    actual = build_avoidances_json(record_keys)
-    assert isinstance(actual, str)
-    actual_as_dict = json.loads(actual)
-    assert schema(build_avoidances_json_by_record_keys_schema) == actual_as_dict
-
-
-def test_build_avoidances_json_empty_list() -> None:
-    """# TODO"""
-    record_keys: List[Any] = []
-    actual = build_avoidances_json(record_keys)
-    assert isinstance(actual, str)
-    assert len(actual) == 0
-
-
-def test_build_avoidances_json_bad_list_type() -> None:
-    """# TODO"""
-    record_keys = [{"BAD_TYPE": 1}]
-    with pytest.raises(TypeError):
-        build_avoidances_json(record_keys)  # type: ignore
 
 
 def test_build_data_sources_json() -> None:

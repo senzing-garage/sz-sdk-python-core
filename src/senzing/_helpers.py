@@ -209,13 +209,24 @@ def check_type_is_list(to_check: Any) -> None:
     Raises:
         TypeError:
     """
-    # TODO Should these be SDK errors instead?
     if not isinstance(to_check, list):
         raise TypeError(f"expected type list, got {type(to_check).__name__}")
 
 
 def check_list_types(to_check: List[Any]) -> None:
-    """# TODO"""
+    """
+    Check the elements of a list for:
+        - All the same type
+        - If a list of tuples
+            - The number of elements in each tuple is the same
+            - The number of elements in each tuple is of the expected size
+
+    Args:
+        to_check (List[Any]): The input to check.
+
+    Raises:
+        TypeError:
+    """
     if not to_check:
         return
 
@@ -240,20 +251,35 @@ def check_list_types(to_check: List[Any]) -> None:
             )
 
 
-# TODO
-def escape_json_str(to_escape: str, strip_quotes: bool = False) -> str:
-    """# TODO"""
+def escape_json_str(to_escape: str) -> str:
+    """
+    Escape strings when building a new JSON string.
+
+    Args:
+        to_escape (str): The input to escape.
+
+    Returns:
+        str: Escaped JSON string.
+    """
+    if not isinstance(to_escape, str):
+        raise TypeError(f"expected a str, got{to_escape}")
     # TODO ensure_ascii=False = èAnt\\n👍
     # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
-    escaped = json.dumps({"escaped": to_escape}["escaped"])
-    # Remove first and last double quote added by json.dumps() as needed
-    if strip_quotes:
-        return escaped[1:-1]
-    return escaped
+    return json.dumps({"escaped": to_escape}["escaped"])
 
 
 def build_dsrc_code_json(dsrc_code: str) -> str:
-    """# TODO"""
+    """
+    Build JSON string of single data source code.
+
+    Args:
+        dsrc_code (str): Data source code.
+
+    Returns:
+        str: JSON string as expected by Senzing engine
+
+        {"DSRC_CODE": "CUSTOMERS"}
+    """
     return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
 
 
@@ -262,11 +288,12 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     Build JSON string of data source codes.
 
     Args:
-        dsrc_codes (list[str]): _description_
+        dsrc_codes (list[str]): List data source codes.
 
     Returns:
         str: JSON string as expected by Senzing engine
-             {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
+
+        {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
     """
     check_type_is_list((dsrc_codes))
     check_list_types(dsrc_codes)
@@ -275,17 +302,17 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
 
 
 # TODO Additional checks on these functions
-# TODO Are the types in the list as expected
 def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     """
     Build JSON string of entity ids.
 
     Args:
-        entity_ids (list): _description_
+        entity_ids (list): 1 or more entity ids.
 
     Returns:
         str: JSON string as expected by Senzing engine
-             {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
+
+        {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
     """
     # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
     # NOTE be set to None (default) or []
@@ -298,18 +325,18 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
-# TODO What if no ds or id is sent in
 # TODO Tests
 def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     """# TODO
     Build JSON string of data source and record ids.
 
     Args:
-        record_keys (list): _description_
+        record_keys (list): 1 or more tuples containing a data source code followed by record id.
 
     Returns:
         str: JSON string as expected by Senzing engine
-             {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
+
+        {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
     """
     # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
     # NOTE be set to None (default) or []
@@ -391,7 +418,7 @@ def as_c_char_p(candidate_value: Any) -> Any:
 
 def as_python_str(candidate_value: Any) -> str:
     """
-    From a c_char_p, return a true python str,
+    From a c_char_p, return a python str,
 
     Args:
         candidate_value (Any): A c_char_p value to be transformed.
@@ -421,5 +448,13 @@ SDK_EXCEPTION_MAP = {
 
 
 def sdk_exception(msg_code: int) -> Exception:
-    """# TODO"""
+    """
+    Raise general SzError for SDK issues.
+
+    Args:
+        msg_code (int): Code to map to in SDK_EXCEPTION_MAP to retrieve message.
+
+    Returns:
+        Exception: SzError
+    """
     return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))
