@@ -17,14 +17,14 @@ from senzing._helpers import (
 # -----------------------------------------------------------------------------
 
 
-def test_as_c_char_p() -> None:
+def test_as_python_bytes() -> None:
     """# TODO"""
     a_string = "This is a test string"
     actual = as_python_bytes(a_string)
     assert isinstance(actual, bytes)
 
 
-def test_as_c_char_p_none() -> None:
+def test_as_python_bytes_none() -> None:
     """# TODO"""
     actual = as_python_bytes(None)  # type: ignore[arg-type]
     assert isinstance(actual, bytes)

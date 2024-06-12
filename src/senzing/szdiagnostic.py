@@ -76,53 +76,52 @@ class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
 
 class SzDiagnostic(SzDiagnosticAbstract):
     """
-       The `initialize` method initializes the Senzing SzDiagnostic object.
-       It must be called prior to any other calls.
+    The `initialize` method initializes the Senzing SzDiagnostic object.
+    It must be called prior to any other calls.
 
-       **Note:** If the SzDiagnostic constructor is called with parameters,
-       the constructor will automatically call the `initialize()` method.
-    as_c_char_p,; as_python_str,; as_str,; catch_ctypes_exceptions,; find_file_in_path,
+    **Note:** If the SzDiagnostic constructor is called with parameters,
+    the constructor will automatically call the `initialize()` method.
 
-       Example:
+    Example:
 
-       .. code-block:: python
+    .. code-block:: python
 
-           sz_diagnostic = SzDiagnostic(instance_name, settings)
-
-
-       If the SzDiagnostic constructor is called without parameters,
-       the `initialize()` method must be called to initialize the use of G2Product.
-
-       Example:
-
-       .. code-block:: python
-
-           sz_diagnostic = SzDiagnostic()
-           sz_diagnostic.initialize(instance_name, settings)
-
-       Either `instance_name` and `settings` must both be specified or neither must be specified.
-       Just specifying one or the other results in a **G2Exception**.
-
-       Parameters:
-           instance_name:
-               `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-           settings:
-               `Optional:` A JSON string containing configuration parameters. Default: ""
-           config_id:
-               `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
-           verbose_logging:
-               `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
-
-       Raises:
-           TypeError: Incorrect datatype detected on input parameter.
-           SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        sz_diagnostic = SzDiagnostic(instance_name, settings)
 
 
-       .. collapse:: Example:
+    If the SzDiagnostic constructor is called without parameters,
+    the `initialize()` method must be called to initialize the use of G2Product.
 
-           .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_constructor.py
-               :linenos:
-               :language: python
+    Example:
+
+    .. code-block:: python
+
+        sz_diagnostic = SzDiagnostic()
+        sz_diagnostic.initialize(instance_name, settings)
+
+    Either `instance_name` and `settings` must both be specified or neither must be specified.
+    Just specifying one or the other results in a **G2Exception**.
+
+    Parameters:
+        instance_name:
+            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
+        settings:
+            `Optional:` A JSON string containing configuration parameters. Default: ""
+        config_id:
+            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
+        verbose_logging:
+            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+
+    Raises:
+        TypeError: Incorrect datatype detected on input parameter.
+        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+
+
+    .. collapse:: Example:
+
+        .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_constructor.py
+            :linenos:
+            :language: python
     """
 
     # -------------------------------------------------------------------------

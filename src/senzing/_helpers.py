@@ -35,9 +35,6 @@ from senzing_abstract.szerror import _ENGINE_EXCEPTION_MAP
 
 from senzing import SzError
 
-# TODO
-# from senzing import SzError, engine_exception
-
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
 else:
@@ -85,6 +82,7 @@ class FreeCResources:
 
 
 # TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
+# TODO Check functions without try/except are caught by this
 def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
     # TODO
@@ -295,7 +293,6 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
 
-# TODO Tests
 def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     """
     Build JSON string of data source and record ids.
@@ -358,17 +355,12 @@ def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     return cast(candidate_value, POINTER(c_uint))
 
 
-# TODO Are all these different types needed, we really expect a str?
-# TODO as_c_char_p? Returns bytes
 def as_python_bytes(candidate_value: str) -> Any:
     """
     Convert a Python string to bytes.
 
     :meta private:
     """
-    # if not isinstance(candidate_value, str):
-    #     raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
-
     if candidate_value is None:
         return b""
 
