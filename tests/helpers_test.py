@@ -26,7 +26,7 @@ def test_as_c_char_p() -> None:
 
 def test_as_c_char_p_none() -> None:
     """# TODO"""
-    actual = as_python_bytes(None)
+    actual = as_python_bytes(None)  # type: ignore[arg-type]
     assert isinstance(actual, bytes)
     assert len(actual) == 0
 
