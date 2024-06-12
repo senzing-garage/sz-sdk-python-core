@@ -5,7 +5,7 @@ from pytest_schema import schema
 
 from senzing import SzError
 from senzing._helpers import (
-    as_c_char_p,
+    as_python_bytes,
     as_str,
     build_data_sources_json,
     check_type_is_list,
@@ -20,13 +20,13 @@ from senzing._helpers import (
 def test_as_c_char_p() -> None:
     """# TODO"""
     a_string = "This is a test string"
-    actual = as_c_char_p(a_string)
+    actual = as_python_bytes(a_string)
     assert isinstance(actual, bytes)
 
 
 def test_as_c_char_p_none() -> None:
     """# TODO"""
-    actual = as_c_char_p(None)
+    actual = as_python_bytes(None)
     assert isinstance(actual, bytes)
     assert len(actual) == 0
 

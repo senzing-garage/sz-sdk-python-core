@@ -36,7 +36,7 @@ from senzing import SzEngineAbstract, SzEngineFlags
 
 from ._helpers import (
     FreeCResources,
-    as_c_char_p,
+    as_python_bytes,
     as_python_str,
     as_str,
     as_uintptr_t,
@@ -619,9 +619,9 @@ class SzEngine(SzEngineAbstract):
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_addRecordWithInfo_helper(
-                as_c_char_p(data_source_code),
-                as_c_char_p(record_id),
-                as_c_char_p(record_definition),
+                as_python_bytes(data_source_code),
+                as_python_bytes(record_id),
+                as_python_bytes(record_definition),
                 base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
@@ -629,10 +629,10 @@ class SzEngine(SzEngineAbstract):
                 return as_python_str(result.response)
 
         result = self.library_handle.G2_addRecord(
-            as_c_char_p(data_source_code),
-            as_c_char_p(record_id),
-            as_c_char_p(record_definition),
-            as_c_char_p(record_definition),
+            as_python_bytes(data_source_code),
+            as_python_bytes(record_id),
+            as_python_bytes(record_definition),
+            as_python_bytes(record_definition),
         )
         self.check_result(result)
         return self.no_info
@@ -659,8 +659,8 @@ class SzEngine(SzEngineAbstract):
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_deleteRecordWithInfo_helper(
-                as_c_char_p(data_source_code),
-                as_c_char_p(record_id),
+                as_python_bytes(data_source_code),
+                as_python_bytes(record_id),
                 base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
@@ -668,8 +668,8 @@ class SzEngine(SzEngineAbstract):
                 return as_python_str(result.response)
 
         result = self.library_handle.G2_deleteRecord(
-            as_c_char_p(data_source_code),
-            as_c_char_p(record_id),
+            as_python_bytes(data_source_code),
+            as_python_bytes(record_id),
         )
         self.check_result(result)
         return self.no_info
@@ -685,7 +685,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2_exportCSVEntityReport_helper(
-            as_c_char_p(csv_column_list), flags
+            as_python_bytes(csv_column_list), flags
         )
         self.check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
@@ -726,7 +726,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_findInterestingEntitiesByRecordID_helper(
-            as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+            as_python_bytes(data_source_code), as_python_bytes(record_id), flags
         )
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -743,7 +743,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_findNetworkByEntityID_V2_helper(
-            as_c_char_p(build_entities_json(entity_ids)),
+            as_python_bytes(build_entities_json(entity_ids)),
             max_degrees,
             build_out_degree,
             build_out_max_entities,
@@ -764,7 +764,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_findNetworkByRecordID_V2_helper(
-            as_c_char_p(build_records_json(record_keys)),
+            as_python_bytes(build_records_json(record_keys)),
             max_degrees,
             build_out_degree,
             build_out_max_entities,
@@ -791,7 +791,7 @@ class SzEngine(SzEngineAbstract):
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(build_entities_json(avoid_entity_ids)),
+                as_python_bytes(build_entities_json(avoid_entity_ids)),
                 flags,
             )
         elif required_data_sources:
@@ -799,8 +799,8 @@ class SzEngine(SzEngineAbstract):
                 start_entity_id,
                 end_entity_id,
                 max_degrees,
-                as_c_char_p(build_entities_json(avoid_entity_ids)),
-                as_c_char_p(build_data_sources_json(required_data_sources)),
+                as_python_bytes(build_entities_json(avoid_entity_ids)),
+                as_python_bytes(build_data_sources_json(required_data_sources)),
                 flags,
             )
         else:
@@ -830,31 +830,31 @@ class SzEngine(SzEngineAbstract):
     ) -> str:
         if avoid_record_keys and not required_data_sources:
             result = self.library_handle.G2_findPathByRecordIDWithAvoids_V2_helper(
-                as_c_char_p(start_data_source_code),
-                as_c_char_p(start_record_id),
-                as_c_char_p(end_data_source_code),
-                as_c_char_p(end_record_id),
+                as_python_bytes(start_data_source_code),
+                as_python_bytes(start_record_id),
+                as_python_bytes(end_data_source_code),
+                as_python_bytes(end_record_id),
                 max_degrees,
-                as_c_char_p(build_records_json(avoid_record_keys)),
+                as_python_bytes(build_records_json(avoid_record_keys)),
                 flags,
             )
         elif required_data_sources:
             result = self.library_handle.G2_findPathByRecordIDIncludingSource_V2_helper(
-                as_c_char_p(start_data_source_code),
-                as_c_char_p(start_record_id),
-                as_c_char_p(end_data_source_code),
-                as_c_char_p(end_record_id),
+                as_python_bytes(start_data_source_code),
+                as_python_bytes(start_record_id),
+                as_python_bytes(end_data_source_code),
+                as_python_bytes(end_record_id),
                 max_degrees,
-                as_c_char_p(build_records_json(avoid_record_keys)),
-                as_c_char_p(build_data_sources_json(required_data_sources)),
+                as_python_bytes(build_records_json(avoid_record_keys)),
+                as_python_bytes(build_data_sources_json(required_data_sources)),
                 flags,
             )
         else:
             result = self.library_handle.G2_findPathByRecordID_V2_helper(
-                as_c_char_p(start_data_source_code),
-                as_c_char_p(start_record_id),
-                as_c_char_p(end_data_source_code),
-                as_c_char_p(end_record_id),
+                as_python_bytes(start_data_source_code),
+                as_python_bytes(start_record_id),
+                as_python_bytes(end_data_source_code),
+                as_python_bytes(end_record_id),
                 max_degrees,
                 flags,
             )
@@ -887,7 +887,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_getEntityByRecordID_V2_helper(
-            as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+            as_python_bytes(data_source_code), as_python_bytes(record_id), flags
         )
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -902,8 +902,8 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_getRecord_V2_helper(
-            as_c_char_p(data_source_code),
-            as_c_char_p(record_id),
+            as_python_bytes(data_source_code),
+            as_python_bytes(record_id),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):
@@ -930,7 +930,7 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_getVirtualEntityByRecordID_V2_helper(
-            as_c_char_p(build_records_json(record_keys)),
+            as_python_bytes(build_records_json(record_keys)),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):
@@ -959,16 +959,16 @@ class SzEngine(SzEngineAbstract):
     ) -> None:
         if config_id == 0:
             result = self.library_handle.G2_init(
-                as_c_char_p(instance_name),
-                as_c_char_p(as_str(settings)),
+                as_python_bytes(instance_name),
+                as_python_bytes(as_str(settings)),
                 verbose_logging,
             )
             self.check_result(result)
             return
 
         result = self.library_handle.G2_initWithConfigID(
-            as_c_char_p(instance_name),
-            as_c_char_p(as_str(settings)),
+            as_python_bytes(instance_name),
+            as_python_bytes(as_str(settings)),
             config_id,
             verbose_logging,
         )
@@ -985,14 +985,14 @@ class SzEngine(SzEngineAbstract):
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_processRedoRecordWithInfo_helper(
-                as_c_char_p(redo_record), base_flags
+                as_python_bytes(redo_record), base_flags
             )
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)
                 return as_python_str(result.response)
 
         result = self.library_handle.G2_processRedoRecord(
-            as_c_char_p(redo_record),
+            as_python_bytes(redo_record),
         )
         self.check_result(result)
         return self.no_info
@@ -1024,8 +1024,8 @@ class SzEngine(SzEngineAbstract):
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.G2_reevaluateRecordWithInfo_helper(
-                as_c_char_p(data_source_code),
-                as_c_char_p(record_id),
+                as_python_bytes(data_source_code),
+                as_python_bytes(record_id),
                 base_flags,
             )
             with FreeCResources(self.library_handle, result.response):
@@ -1034,7 +1034,7 @@ class SzEngine(SzEngineAbstract):
                 return response_str if response_str else self.no_info
 
         result = self.library_handle.G2_reevaluateRecord(
-            as_c_char_p(data_source_code), as_c_char_p(record_id), flags
+            as_python_bytes(data_source_code), as_python_bytes(record_id), flags
         )
         self.check_result(result)
         return self.no_info
@@ -1052,8 +1052,8 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_searchByAttributes_V3_helper(
-            as_c_char_p(attributes),
-            as_c_char_p(search_profile),
+            as_python_bytes(attributes),
+            as_python_bytes(search_profile),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):
@@ -1088,10 +1088,10 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_whyRecords_V2_helper(
-            as_c_char_p(data_source_code_1),
-            as_c_char_p(record_id_1),
-            as_c_char_p(data_source_code_2),
-            as_c_char_p(record_id_2),
+            as_python_bytes(data_source_code_1),
+            as_python_bytes(record_id_1),
+            as_python_bytes(data_source_code_2),
+            as_python_bytes(record_id_2),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):
@@ -1107,8 +1107,8 @@ class SzEngine(SzEngineAbstract):
         **kwargs: Any,
     ) -> str:
         result = self.library_handle.G2_whyRecordInEntity_V2_helper(
-            as_c_char_p(data_source_code),
-            as_c_char_p(record_id),
+            as_python_bytes(data_source_code),
+            as_python_bytes(record_id),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):

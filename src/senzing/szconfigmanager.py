@@ -24,7 +24,7 @@ from senzing import SzConfigManagerAbstract
 
 from ._helpers import (
     FreeCResources,
-    as_c_char_p,
+    as_python_bytes,
     as_python_str,
     as_str,
     catch_exceptions,
@@ -233,8 +233,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(config_definition),
-            as_c_char_p(config_comment),
+            as_python_bytes(config_definition),
+            as_python_bytes(config_comment),
         )
         self.check_result(result.return_code)
 
@@ -269,8 +269,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2ConfigMgr_init(
-            as_c_char_p(instance_name),
-            as_c_char_p(as_str(settings)),
+            as_python_bytes(instance_name),
+            as_python_bytes(as_str(settings)),
             verbose_logging,
         )
         self.check_result(result)

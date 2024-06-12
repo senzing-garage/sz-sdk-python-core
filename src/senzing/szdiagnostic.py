@@ -24,7 +24,7 @@ from senzing import SzDiagnosticAbstract
 
 from ._helpers import (
     FreeCResources,
-    as_c_char_p,
+    as_python_bytes,
     as_python_str,
     as_str,
     catch_exceptions,
@@ -254,16 +254,16 @@ class SzDiagnostic(SzDiagnosticAbstract):
     ) -> None:
         if config_id == 0:
             result = self.library_handle.G2Diagnostic_init(
-                as_c_char_p(instance_name),
-                as_c_char_p(as_str(settings)),
+                as_python_bytes(instance_name),
+                as_python_bytes(as_str(settings)),
                 verbose_logging,
             )
             self.check_result(result)
             return
 
         result = self.library_handle.G2Diagnostic_initWithConfigID(
-            as_c_char_p(instance_name),
-            as_c_char_p(as_str(settings)),
+            as_python_bytes(instance_name),
+            as_python_bytes(as_str(settings)),
             config_id,
             verbose_logging,
         )

@@ -11,14 +11,15 @@ Generated date: 2024-05-02T19:46:40.745960+00:00
 # import is necessary - or string annotation ("_Pointer[c_char]") .
 from __future__ import annotations
 
-import threading
-from ctypes import _Pointer, c_char, create_string_buffer, sizeof
-from typing import Callable
+# TODO Clean up commented out
+# import threading
+# from ctypes import _Pointer, c_char, create_string_buffer, sizeof
+# from typing import Callable
 
 # Metadata
 
 __all__ = [
-    "ENGINE_EXCEPTION_MAP",
+    "_ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
@@ -32,7 +33,7 @@ __all__ = [
     "SzUnhandledError",
     "SzUnknownDataSourceError",
     "SzUnrecoverableError",
-    "engine_exception",
+    # "engine_exception",
 ]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
@@ -135,7 +136,7 @@ class SzUnhandledError(SzUnrecoverableError):
 # -----------------------------------------------------------------------------
 
 # fmt: off
-ENGINE_EXCEPTION_MAP = {
+_ENGINE_EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"
     5: SzError,                             # EAS_ERR_EXCEEDED_MAX_RETRIES                                                          "Exceeded the Maximum Number of Retries Allowed"
     7: SzBadInputError,                     # EAS_ERR_EMPTY_MESSAGE                                                                 "Empty Message"
@@ -567,61 +568,61 @@ ENGINE_EXCEPTION_MAP = {
 }
 # fmt: on
 
-# TODO Move all below to szhelpers also? Only used by Python SDK
-# -----------------------------------------------------------------------------
-# ErrorBuffer class
-# -----------------------------------------------------------------------------
+# # TODO Move all below to szhelpers also? Only used by Python SDK
+# # -----------------------------------------------------------------------------
+# # ErrorBuffer class
+# # -----------------------------------------------------------------------------
 
 
-class ErrorBuffer(threading.local):
-    """Buffer to call C"""
+# class ErrorBuffer(threading.local):
+#     """Buffer to call C"""
 
-    # pylint: disable=R0903
+#     # pylint: disable=R0903
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.string_buffer = create_string_buffer(65535)
-        self.string_buffer_size = sizeof(self.string_buffer)
-
-
-ERROR_BUFFER = ErrorBuffer()
-ERROR_BUFFER_TYPE = c_char * 65535
+#     def __init__(self) -> None:
+#         super().__init__()
+#         self.string_buffer = create_string_buffer(65535)
+#         self.string_buffer_size = sizeof(self.string_buffer)
 
 
-# -----------------------------------------------------------------------------
-# Helper functions to create a senzing-specific Exception
-# -----------------------------------------------------------------------------
+# ERROR_BUFFER = ErrorBuffer()
+# ERROR_BUFFER_TYPE = c_char * 65535
 
 
-def get_senzing_error_text(
-    get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
-    clear_last_exception: Callable[[], None],
-) -> str:
-    """
-    Get the last exception from the Senzing engine.
-
-    :meta private:
-    """
-    get_last_exception(
-        ERROR_BUFFER.string_buffer,
-        sizeof(ERROR_BUFFER.string_buffer),
-    )
-    clear_last_exception()
-    result = ERROR_BUFFER.string_buffer.value.decode()
-    return result
+# # -----------------------------------------------------------------------------
+# # Helper functions to create a senzing-specific Exception
+# # -----------------------------------------------------------------------------
 
 
-def engine_exception(
-    get_last_exception: Callable[[_Pointer[c_char], int], str],
-    clear_last_exception: Callable[[], None],
-    get_last_exception_code: Callable[[], int],
-) -> Exception:
-    """
-    Generate a new Senzing Exception based on the SDK product_id & error_id.
+# def get_senzing_error_text(
+#     get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
+#     clear_last_exception: Callable[[], None],
+# ) -> str:
+#     """
+#     Get the last exception from the Senzing engine.
 
-    :meta private:
-    """
-    sz_error_code = get_last_exception_code()
-    sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
-    senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
-    return senzing_error_class(sz_error_text)
+#     :meta private:
+#     """
+#     get_last_exception(
+#         ERROR_BUFFER.string_buffer,
+#         sizeof(ERROR_BUFFER.string_buffer),
+#     )
+#     clear_last_exception()
+#     result = ERROR_BUFFER.string_buffer.value.decode()
+#     return result
+
+
+# def engine_exception(
+#     get_last_exception: Callable[[_Pointer[c_char], int], str],
+#     clear_last_exception: Callable[[], None],
+#     get_last_exception_code: Callable[[], int],
+# ) -> Exception:
+#     """
+#     Generate a new Senzing Exception based on the SDK product_id & error_id.
+
+#     :meta private:
+#     """
+#     sz_error_code = get_last_exception_code()
+#     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
+#     senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
+#     return senzing_error_class(sz_error_text)

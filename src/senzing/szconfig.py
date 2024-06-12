@@ -34,7 +34,7 @@ from senzing import SzConfigAbstract
 
 from ._helpers import (
     FreeCResources,
-    as_c_char_p,
+    as_python_bytes,
     as_python_str,
     as_str,
     as_uintptr_t,
@@ -250,7 +250,7 @@ class SzConfig(SzConfigAbstract):
     ) -> str:
         result = self.library_handle.G2Config_addDataSource_helper(
             as_uintptr_t(config_handle),
-            as_c_char_p(build_dsrc_code_json(data_source_code)),
+            as_python_bytes(build_dsrc_code_json(data_source_code)),
         )
 
         with FreeCResources(self.library_handle, result.response):
@@ -276,7 +276,7 @@ class SzConfig(SzConfigAbstract):
     ) -> None:
         result = self.library_handle.G2Config_deleteDataSource_helper(
             as_uintptr_t(config_handle),
-            as_c_char_p(build_dsrc_code_json(data_source_code)),
+            as_python_bytes(build_dsrc_code_json(data_source_code)),
         )
         self.check_result(result)
 
@@ -308,8 +308,8 @@ class SzConfig(SzConfigAbstract):
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Config_init(
-            as_c_char_p(instance_name),
-            as_c_char_p(as_str(settings)),
+            as_python_bytes(instance_name),
+            as_python_bytes(as_str(settings)),
             verbose_logging,
         )
         self.check_result(result)
@@ -317,7 +317,7 @@ class SzConfig(SzConfigAbstract):
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.G2Config_load_helper(
-            as_c_char_p(config_definition)
+            as_python_bytes(config_definition)
         )
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import threading
 from ctypes import (
     CDLL,
     POINTER,
@@ -22,13 +23,20 @@ from ctypes import (
     c_uint,
     cast,
     cdll,
+    create_string_buffer,
+    sizeof,
 )
 from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing import SzError, engine_exception
+from senzing_abstract.szerror import _ENGINE_EXCEPTION_MAP
+
+from senzing import SzError
+
+# TODO
+# from senzing import SzError, engine_exception
 
 if sys.version_info < (3, 10):
     from typing_extensions import ParamSpec
@@ -52,9 +60,7 @@ class FreeCResources:
     """
     Free C resources when calling engine APIs
 
-    Args:
-        handle (CDLL): Senzing engine library handle
-        resource (_Pointer[c_char]): The C resource to free
+    :meta private:
     """
 
     def __init__(self, handle: CDLL, resource: _Pointer[c_char]) -> None:
@@ -80,8 +86,11 @@ class FreeCResources:
 
 # TODO Not just catching ctypes exceptions, now also catching entity/record json building exceptions
 def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
-    """# TODO Modify a ctypes.ArgumentError to a TypeError with additional information if exception occurs.
-    Also..."""
+    """
+    # TODO
+
+    :meta private:
+    """
 
     @wraps(func_to_decorate)
     def catch_inner(*args: P.args, **kwargs: P.kwargs) -> T:
@@ -136,15 +145,7 @@ def load_sz_library(lib: str = "") -> CDLL:
     """
     Check the OS name and load the appropriate Senzing library.
 
-    Args:
-        lib (str, optional): Used for unit testing and passing incorrect filename. Defaults to "".
-
-    Raises:
-        SzError: failed to load the G2 library
-
-    Returns:
-        CDLL:
-
+    :meta private:
     """
     try:
         if os.name == "nt":
@@ -177,14 +178,7 @@ def check_result_rc(
     """
     Check the return code from calling the C API, raise an error if not 0.
 
-    Args:
-        lib_get_last_exception (Callable): G2_getLastException()
-        lib_clear_last_exception (Callable): G2_clearLastException()
-        lib_get_last_exception_code (Callable): G2_getLastExceptionCode()
-        result_return_code (int): Return code from calling a C API method
-
-    Raises:
-        SzError: Mapped to a specific code and message depending on exception code.
+    :meta private:
     """
     if result_return_code != 0:
         raise engine_exception(
@@ -203,11 +197,7 @@ def check_type_is_list(to_check: Any) -> None:
     """
     Check the input type is a list, if not raise TypeError.
 
-    Args:
-        to_check (Any): The input to check.
-
-    Raises:
-        TypeError:
+    :meta private:
     """
     if not isinstance(to_check, list):
         raise TypeError(f"expected type list, got {type(to_check).__name__}")
@@ -221,11 +211,7 @@ def check_list_types(to_check: List[Any]) -> None:
             - The number of elements in each tuple is the same
             - The number of elements in each tuple is of the expected size
 
-    Args:
-        to_check (List[Any]): The input to check.
-
-    Raises:
-        TypeError:
+    :meta private:
     """
     if not to_check:
         return
@@ -255,11 +241,7 @@ def escape_json_str(to_escape: str) -> str:
     """
     Escape strings when building a new JSON string.
 
-    Args:
-        to_escape (str): The input to escape.
-
-    Returns:
-        str: Escaped JSON string.
+    :meta private:
     """
     if not isinstance(to_escape, str):
         raise TypeError(f"expected a str, got{to_escape}")
@@ -272,13 +254,9 @@ def build_dsrc_code_json(dsrc_code: str) -> str:
     """
     Build JSON string of single data source code.
 
-    Args:
-        dsrc_code (str): Data source code.
+    {"DSRC_CODE": "CUSTOMERS"}
 
-    Returns:
-        str: JSON string as expected by Senzing engine
-
-        {"DSRC_CODE": "CUSTOMERS"}
+    :meta private:
     """
     return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
 
@@ -287,13 +265,9 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     """
     Build JSON string of data source codes.
 
-    Args:
-        dsrc_codes (list[str]): List data source codes.
+    {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
 
-    Returns:
-        str: JSON string as expected by Senzing engine
-
-        {"DATA_SOURCES": ["REFERENCE", "CUSTOMERS"]}'
+    :meta private:
     """
     check_type_is_list((dsrc_codes))
     check_list_types(dsrc_codes)
@@ -306,13 +280,9 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     """
     Build JSON string of entity ids.
 
-    Args:
-        entity_ids (list): 1 or more entity ids.
+    {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
 
-    Returns:
-        str: JSON string as expected by Senzing engine
-
-        {"ENTITIES": [{"ENTITY_ID": 1}, {"ENTITY_ID": 100002}]}
+    :meta private:
     """
     # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
     # NOTE be set to None (default) or []
@@ -327,16 +297,12 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
 
 # TODO Tests
 def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
-    """# TODO
+    """
     Build JSON string of data source and record ids.
 
-    Args:
-        record_keys (list): 1 or more tuples containing a data source code followed by record id.
+    {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
 
-    Returns:
-        str: JSON string as expected by Senzing engine
-
-        {"RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}
+    :meta private:
     """
     # NOTE This is needed if required_data_sources is sent to find_path_*, avoid_* could
     # NOTE be set to None (default) or []
@@ -363,14 +329,11 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     """
     Given a string or dict, return a str.
 
-    Args:
-        candidate_value Union[str, Dict[Any, Any]]: _description_
-
-    Returns:
-        str: The string representation of the candidate_value
+    :meta private:
     """
     if isinstance(candidate_value, dict):
         return json.dumps(candidate_value)
+
     return candidate_value
 
 
@@ -381,7 +344,6 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
 
 def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     """
-    Internal processing function.
     This converts many types of values to an integer.
 
     :meta private:
@@ -398,33 +360,24 @@ def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
 
 # TODO Are all these different types needed, we really expect a str?
 # TODO as_c_char_p? Returns bytes
-def as_c_char_p(candidate_value: Any) -> Any:
+def as_python_bytes(candidate_value: str) -> bytes:
     """
-    Internal processing function.
+    Convert a Python string to bytes.
 
     :meta private:
     """
+    if not isinstance(candidate_value, str):
+        raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
 
-    if isinstance(candidate_value, str):
-        return candidate_value.encode()
-    if candidate_value is None:
+    if not candidate_value:
         return b""
-    # if isinstance(candidate_value, bytearray):
-    #     return candidate_value.decode().encode()
-    # if isinstance(candidate_value, bytes):
-    #     return str(candidate_value).encode()
-    return candidate_value
+
+    return candidate_value.encode()
 
 
 def as_python_str(candidate_value: Any) -> str:
     """
-    From a c_char_p, return a python str,
-
-    Args:
-        candidate_value (Any): A c_char_p value to be transformed.
-
-    Returns:
-        str: The python string representation.
+    From a c_char_p, return a python str.
 
     :meta private:
     """
@@ -434,7 +387,68 @@ def as_python_str(candidate_value: Any) -> str:
     return result
 
 
-# TODO Make non-error class objects - maps, funcs private with _ or __?
+# -----------------------------------------------------------------------------
+# Helpers to create Senzing specific exceptions
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# ErrorBuffer class
+# -----------------------------------------------------------------------------
+
+
+class ErrorBuffer(threading.local):
+    """
+    Buffer to call C
+
+    :meta private:
+    """
+
+    # pylint: disable=R0903
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.string_buffer = create_string_buffer(65535)
+        self.string_buffer_size = sizeof(self.string_buffer)
+
+
+ERROR_BUFFER = ErrorBuffer()
+ERROR_BUFFER_TYPE = c_char * 65535
+
+
+def get_senzing_error_text(
+    get_last_exception: Callable[[ERROR_BUFFER_TYPE, int], str],  # type: ignore
+    clear_last_exception: Callable[[], None],
+) -> str:
+    """
+    Get the last exception from the Senzing engine.
+
+    :meta private:
+    """
+    get_last_exception(
+        ERROR_BUFFER.string_buffer,
+        sizeof(ERROR_BUFFER.string_buffer),
+    )
+    clear_last_exception()
+    result = ERROR_BUFFER.string_buffer.value.decode()
+    return result
+
+
+def engine_exception(
+    get_last_exception: Callable[[_Pointer[c_char], int], str],
+    clear_last_exception: Callable[[], None],
+    get_last_exception_code: Callable[[], int],
+) -> Exception:
+    """
+    Generate a new Senzing Exception based on the SDK product_id & error_id.
+
+    :meta private:
+    """
+    sz_error_code = get_last_exception_code()
+    sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
+    senzing_error_class = _ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
+    return senzing_error_class(sz_error_text)
+
+
 # -----------------------------------------------------------------------------
 # Helpers for creating SDK specific exceptions
 # -----------------------------------------------------------------------------
@@ -451,10 +465,6 @@ def sdk_exception(msg_code: int) -> Exception:
     """
     Raise general SzError for SDK issues.
 
-    Args:
-        msg_code (int): Code to map to in SDK_EXCEPTION_MAP to retrieve message.
-
-    Returns:
-        Exception: SzError
+    :meta private:
     """
     return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

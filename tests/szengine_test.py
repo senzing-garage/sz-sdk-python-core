@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.szconstants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_DATASOURCES,
