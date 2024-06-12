@@ -369,7 +369,7 @@ def as_python_bytes(candidate_value: str) -> Any:
     # if not isinstance(candidate_value, str):
     #     raise TypeError(f"expected type str, got {type(candidate_value).__name__}")
 
-    if not candidate_value:
+    if candidate_value is None:
         return b""
 
     if isinstance(candidate_value, str):
