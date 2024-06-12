@@ -19,6 +19,7 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
+from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
@@ -282,7 +283,7 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
+        self.initialized = False
         self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
@@ -592,16 +593,13 @@ class SzEngine(SzEngineAbstract):
             config_id=self.config_id,
             verbose_logging=self.verbose_logging,
         )
+        self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        # NOTE This is to catch the G2 library not being available (AttributeError)
-        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
-        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
-        try:
-            self._destroy()
-        except AttributeError:
-            ...
+        if self.initialized:
+            with suppress(Exception):
+                self._destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods

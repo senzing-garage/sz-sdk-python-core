@@ -75,13 +75,13 @@ def test_check_list_types_different_types() -> None:
 def test_check_list_types_different_tuple_lengths() -> None:
     """# TODO"""
     with pytest.raises(TypeError):
-        check_list_types([("test1", 1), "test2", 2, 3])
+        check_list_types([("test1", 1), ("test2", 2, 3)])
 
 
 def test_check_list_types_incorrect_number_of_tuple_elements() -> None:
     """# TODO"""
     with pytest.raises(TypeError):
-        check_list_types([("test1", 1, 2, 3), "test2", 2, 3])
+        check_list_types([("test1", 1, 2), ("test2", 3, 4)])
 
 
 def test_check_type_is_list() -> None:

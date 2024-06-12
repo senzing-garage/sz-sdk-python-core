@@ -16,7 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-
+from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
@@ -169,7 +169,7 @@ class SzConfig(SzConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
+        self.initialized = False
         self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -226,16 +226,13 @@ class SzConfig(SzConfigAbstract):
 
         # Initialize Senzing engine.
         self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        # NOTE This is to catch the G2 library not being available (AttributeError)
-        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
-        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
-        try:
-            self._destroy()
-        except AttributeError:
-            ...
+        if self.initialized:
+            with suppress(Exception):
+                self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfig methods

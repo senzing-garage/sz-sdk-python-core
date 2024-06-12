@@ -16,6 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
+from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
@@ -142,6 +143,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
+        self.initialized = False
         self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
@@ -203,16 +205,13 @@ class SzDiagnostic(SzDiagnosticAbstract):
             config_id=self.config_id,
             verbose_logging=self.verbose_logging,
         )
+        self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        # NOTE This is to catch the G2 library not being available (AttributeError)
-        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
-        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
-        try:
-            self._destroy()
-        except AttributeError:
-            ...
+        if self.initialized:
+            with suppress(Exception):
+                self._destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
