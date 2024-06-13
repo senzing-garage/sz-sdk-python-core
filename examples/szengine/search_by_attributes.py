@@ -5,7 +5,6 @@ from senzing import SzEngine, SzEngineFlags, SzError
 ATTRIBUTES = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
 FLAGS = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
-SEARCH_PROFILE = ""
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -17,7 +16,7 @@ SETTINGS = {
 
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-    RESULT = sz_engine.search_by_attributes(ATTRIBUTES, SEARCH_PROFILE, FLAGS)
+    RESULT = sz_engine.search_by_attributes(ATTRIBUTES, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

@@ -19,4 +19,4 @@ try:
     # WARNING
     sz_diagnostic.purge_repository()
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

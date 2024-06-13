@@ -5,7 +5,10 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+
+# TODO
+# from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_dict import SzConfig, SzConfigManager, SzEngine
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
@@ -73,7 +76,7 @@ def test_add_truthset_datasources(
 #     sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_bad_data_source_code_type(sz_engine: SzEngine):
 #     """Test add_record with incorrect data source code type."""
@@ -197,7 +200,7 @@ def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
     assert schema(add_record_with_info_schema) == actual
 
 
-# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 def test_add_record_with_info_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = 1

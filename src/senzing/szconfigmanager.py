@@ -15,23 +15,24 @@ Example:
 """
 
 # pylint: disable=R0903
-
+from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigManagerAbstract, sdk_exception
+from senzing import SzConfigManagerAbstract
 
-from .szhelpers import (
+from ._helpers import (
     FreeCResources,
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_ctypes_exceptions,
+    catch_exceptions,
     check_result_rc,
     load_sz_library,
+    sdk_exception,
 )
-from .szversion import is_supported_senzingapi_version
+from ._version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -154,8 +155,8 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # pylint: disable=W0613
 
+        self.initialized = False
         self.settings = settings
         self.instance_name = instance_name
         self.verbose_logging = verbose_logging
@@ -210,22 +211,19 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         # Initialize Senzing engine.
         self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        # NOTE This is to catch the G2 library not being available (AttributeError)
-        # NOTE and prevent 'Exception ignored in:' messages __del__ can produce
-        # NOTE https://docs.python.org/3/reference/datamodel.html#object.__del__
-        try:
-            self._destroy()
-        except AttributeError:
-            ...
+        if self.initialized:
+            with suppress(Exception):
+                self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods
     # -------------------------------------------------------------------------
 
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def add_config(
         self,
         config_definition: str,
@@ -240,7 +238,6 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         return result.response  # type: ignore[no-any-return]
 
-    # Private method
     def _destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.G2ConfigMgr_destroy()
 
@@ -261,8 +258,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    # Private method
-    @catch_ctypes_exceptions
+    @catch_exceptions
     def _initialize(
         self,
         instance_name: str,

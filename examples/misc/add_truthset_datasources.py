@@ -35,4 +35,4 @@ try:
     sz_engine.reinitialize(new_default_config_id)
     sz_diagnostic.reinitialize(new_default_config_id)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

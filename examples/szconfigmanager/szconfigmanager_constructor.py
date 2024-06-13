@@ -17,11 +17,11 @@ SETTINGS = {
 try:
     sz_configmanager_1 = SzConfigManager(INSTANCE_NAME, SETTINGS)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")
 
 # Example 2
 
 try:
     sz_configmanager_2 = SzConfigManager(INSTANCE_NAME, SETTINGS)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

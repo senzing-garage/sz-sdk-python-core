@@ -12,27 +12,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-# -----------------------------------------------------------------------------
-# Constant helper values useful for flags
-# -----------------------------------------------------------------------------
-
-SZ_NO_FLAGS = 0
-SZ_WITHOUT_INFO = 0
-
-
-# TODO Move to separate file, szconsts.py
-# -----------------------------------------------------------------------------
-# Constant helper values
-# -----------------------------------------------------------------------------
-
-SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION = 0
-SZ_NO_ATTRIBUTES = ""
-SZ_NO_EXCLUSIONS = ""
-SZ_NO_LOGGING = 0
-SZ_NO_REQUIRED_DATASOURCES = ""
-SZ_NO_SEARCH_PROFILE = ""
-SZ_VERBOSE_LOGGING = 1
-
 
 # -----------------------------------------------------------------------------
 # SzEngineFlags class
@@ -109,6 +88,7 @@ class SzEngineFlags(IntFlag):
     SZ_ENTITY_INCLUDE_RELATED_ENTITY_NAME = 1 << 19
     SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO = 1 << 20
     SZ_ENTITY_INCLUDE_RELATED_RECORD_SUMMARY = 1 << 21
+    SZ_ENTITY_INCLUDE_RELATED_RECORD_TYPES = 1 << 29
     SZ_ENTITY_INCLUDE_RELATED_RECORD_DATA = 1 << 22
 
     # Flags for extra feature data.
@@ -123,7 +103,7 @@ class SzEngineFlags(IntFlag):
 
     # Flags for finding entity path & network data.
 
-    SZ_FIND_PATH_PREFER_EXCLUDE = 1 << 25
+    SZ_FIND_PATH_STRICT_AVOID = 1 << 25
     SZ_FIND_PATH_INCLUDE_MATCHING_INFO = 1 << 30
     SZ_FIND_NETWORK_INCLUDE_MATCHING_INFO = 1 << 33
 
@@ -170,13 +150,7 @@ class SzEngineFlags(IntFlag):
         | SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO
     )
 
-    SZ_EXPORT_DEFAULT_FLAGS = (
-        SZ_EXPORT_INCLUDE_ALL_ENTITIES
-        # NOTE Check, was removed in 4.0.0.24095 - 2024_04_04__00_00
-        # NOTE There are changes in V4 to output messages and Jae is likely still working on them
-        # | SZ_EXPORT_INCLUDE_ALL_HAVING_RELATIONSHIPS
-        | SZ_ENTITY_DEFAULT_FLAGS
-    )
+    SZ_EXPORT_DEFAULT_FLAGS = SZ_EXPORT_INCLUDE_ALL_ENTITIES | SZ_ENTITY_DEFAULT_FLAGS
 
     SZ_FIND_PATH_DEFAULT_FLAGS = (
         SZ_FIND_PATH_INCLUDE_MATCHING_INFO

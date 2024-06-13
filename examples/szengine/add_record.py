@@ -22,7 +22,7 @@ RECORD_DEFINITION = (
     '"AMOUNT": "100"'
     "}"
 )
-RECORD_ID = "1\n😂"
+RECORD_ID = "1"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -37,4 +37,4 @@ try:
     RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

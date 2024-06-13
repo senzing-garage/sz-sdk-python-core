@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.szengineflags import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_DATASOURCES,
@@ -114,7 +114,7 @@ def test_add_truthset_datasources(
 #     sz_engine.add_record(data_source_code, record_id, json_data)
 
 
-# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
 # def test_add_record_bad_data_source_code_type(sz_engine: SzEngine):
 #     """Test add_record with incorrect data source code type."""
@@ -241,7 +241,7 @@ def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-# TODO: Modify as_c_char_p to convert int to str? More robust and allows mistakes to continue
+# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 def test_add_record_with_info_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = 1
@@ -366,6 +366,16 @@ def test_delete_record_with_info_bad_record_id(sz_engine: SzEngine) -> None:
     actual = sz_engine.delete_record(data_source_code, bad_record_id, flags)
     actual_as_dict = json.loads(actual)
     assert schema(add_record_with_info_schema) == actual_as_dict
+
+
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzEngine(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
 
 
 def test_export_csv_entity_report(sz_engine: SzEngine) -> None:
@@ -953,6 +963,7 @@ def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngine) -> None:
     bad_entity_id = 0
     flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_entity(bad_entity_id, flags)
+    # TODO Should have check for exception
 
 
 def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
@@ -974,6 +985,7 @@ def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
     bad_entity_id = 0
     flags = SzEngineFlags.SZ_WITH_INFO
     _ = sz_engine.reevaluate_entity(bad_entity_id, flags)
+    # TODO Should have check for exception
 
 
 def test_reevaluate_record(sz_engine: SzEngine) -> None:
@@ -1058,7 +1070,7 @@ def test_search_by_attributes(sz_engine: SzEngine) -> None:
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
     actual = sz_engine.search_by_attributes(
-        json.dumps(attributes), search_profile, flags
+        json.dumps(attributes), flags, search_profile
     )
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
@@ -1072,7 +1084,7 @@ def test_search_by_attributes_bad_attributes(sz_engine: SzEngine) -> None:
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
     with pytest.raises(SzBadInputError):
-        _ = sz_engine.search_by_attributes(bad_attributes, search_profile, flags)
+        _ = sz_engine.search_by_attributes(bad_attributes, flags, search_profile)
 
 
 def test_why_entities(sz_engine: SzEngine) -> None:

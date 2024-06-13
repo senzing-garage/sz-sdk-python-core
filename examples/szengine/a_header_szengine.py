@@ -2,7 +2,7 @@
 
 from typing import List, Tuple
 
-from senzing_abstract.szengineflags import SZ_WITHOUT_INFO
+from senzing_abstract.constants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,

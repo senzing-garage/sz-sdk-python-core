@@ -119,6 +119,16 @@ def test_add_config_bad_config_comment_type(
         )
 
 
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzConfigManager(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_get_config(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     config_id = sz_configmanager.get_default_config_id()

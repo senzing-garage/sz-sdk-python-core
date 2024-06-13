@@ -24,4 +24,4 @@ try:
     sz_config = SzConfig(INSTANCE_NAME, settings)
     config_handle = sz_config.import_config(config_definition)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

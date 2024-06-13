@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Optional, Type, Union
 from senzing_abstract import SzEngineAbstract
 
 from senzing import SzEngineFlags
-from senzing.szhelpers import as_str
+from senzing._helpers import as_str
 
 # Metadata
 
@@ -217,6 +217,7 @@ class SzEngine:
         max_degrees: int,
         # exclusions: Union[str, Dict[Any, Any]] = "",
         # required_data_sources: Union[str, Dict[Any, Any]] = "",
+        # TODO avoid_entity_ids, change by record too
         exclusions: Optional[list[int]] = None,
         required_data_sources: Optional[list[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
@@ -436,8 +437,8 @@ class SzEngine:
         return self.dict_function(
             self.sz_engine.search_by_attributes(
                 as_str(attributes),
-                search_profile,
                 flags,
+                search_profile,
                 **kwargs,
             )
         )

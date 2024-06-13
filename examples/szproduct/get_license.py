@@ -17,4 +17,4 @@ try:
     RESULT = sz_product.get_license()
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

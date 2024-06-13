@@ -17,4 +17,4 @@ try:
     RESULT = sz_engine.get_redo_record()
     print(RESULT)
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nError: {err}\n")
