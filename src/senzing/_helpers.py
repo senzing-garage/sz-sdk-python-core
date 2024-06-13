@@ -339,7 +339,7 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
 # -----------------------------------------------------------------------------
 
 
-def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
+def as_c_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     """
     This converts many types of values to an integer.
 
@@ -355,7 +355,7 @@ def as_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     return cast(candidate_value, POINTER(c_uint))
 
 
-def as_python_bytes(candidate_value: str) -> Any:
+def as_c_char_p(candidate_value: str) -> Any:
     """
     Convert a Python string to bytes.
 

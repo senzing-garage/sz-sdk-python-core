@@ -24,7 +24,7 @@ from typing import Any, Dict, Union
 from senzing import SzProductAbstract
 
 from ._helpers import (
-    as_python_bytes,
+    as_c_char_p,
     as_python_str,
     as_str,
     catch_exceptions,
@@ -173,8 +173,8 @@ class SzProduct(SzProductAbstract):
         **kwargs: Any,
     ) -> None:
         result = self.library_handle.G2Product_init(
-            as_python_bytes(instance_name),
-            as_python_bytes(as_str(settings)),
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
             verbose_logging,
         )
         self.check_result(result)
