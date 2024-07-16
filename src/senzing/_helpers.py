@@ -30,9 +30,11 @@ from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
-from typing_extensions import Self
 
 from senzing_abstract.szerror import ENGINE_EXCEPTION_MAP
+
+# NOTE Temp pylint disable, isort and pylint conflicting
+from typing_extensions import Self  # pylint: disable=wrong-import-order
 
 from senzing import SzError
 
