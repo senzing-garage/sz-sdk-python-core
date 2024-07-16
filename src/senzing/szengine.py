@@ -595,6 +595,7 @@ class SzEngine(SzEngineAbstract):
         )
         self.initialized = True
 
+    # TODO Add garbage collection to ensure destruction
     def __del__(self) -> None:
         """Destructor"""
         if self.initialized:
@@ -749,6 +750,7 @@ class SzEngine(SzEngineAbstract):
             build_out_max_entities,
             flags,
         )
+
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)

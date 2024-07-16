@@ -14,7 +14,7 @@ from __future__ import annotations
 # Metadata
 
 __all__ = [
-    "_ENGINE_EXCEPTION_MAP",
+    "ENGINE_EXCEPTION_MAP",
     "SzBadInputError",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
@@ -130,7 +130,7 @@ class SzUnhandledError(SzUnrecoverableError):
 # -----------------------------------------------------------------------------
 
 # fmt: off
-_ENGINE_EXCEPTION_MAP = {
+ENGINE_EXCEPTION_MAP = {
     2: SzBadInputError,                     # EAS_ERR_INVALID_MESSAGE                                                               "Invalid Message"
     5: SzError,                             # EAS_ERR_EXCEEDED_MAX_RETRIES                                                          "Exceeded the Maximum Number of Retries Allowed"
     7: SzBadInputError,                     # EAS_ERR_EMPTY_MESSAGE                                                                 "Empty Message"
