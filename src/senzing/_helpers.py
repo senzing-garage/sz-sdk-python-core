@@ -33,15 +33,13 @@ from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
 from senzing_abstract.szerror import ENGINE_EXCEPTION_MAP
 
-# NOTE Temp pylint disable, isort and pylint conflicting
-from typing_extensions import Self  # pylint: disable=wrong-import-order
-
 from senzing import SzError
 
-if sys.version_info < (3, 10):
-    from typing_extensions import ParamSpec
+# if sys.version_info < (3, 10):
+if sys.version_info < (3, 11):
+    from typing_extensions import ParamSpec, Self
 else:
-    from typing import ParamSpec
+    from typing import ParamSpec, Self
 
 # TODO Add metadata, should use __all__ ?
 
