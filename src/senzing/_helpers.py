@@ -70,6 +70,7 @@ class FreeCResources:
     def __enter__(self) -> Self:
         return self
 
+
     def __exit__(
         self,
         exc_type: Optional[Type[BaseException]],
@@ -264,7 +265,6 @@ def build_dsrc_code_json(dsrc_code: str) -> str:
 
     :meta private:
     """
-    print("1")
     return f'{{"DSRC_CODE": {escape_json_str(dsrc_code)}}}'
 
 

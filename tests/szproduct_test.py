@@ -59,6 +59,16 @@ def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._destroy()  # pylint: disable=W0212
 
 
+def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test calling destroy twice."""
+    actual = SzProduct(
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_get_license(sz_product: SzProduct) -> None:
     """Test Senzing license."""
     actual = sz_product.get_license()
