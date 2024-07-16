@@ -5,14 +5,14 @@
 | Name                           |    Stmts |     Miss |   Cover |   Missing |
 |------------------------------- | -------: | -------: | ------: | --------: |
 | src/senzing/\_\_init\_\_.py    |        7 |        0 |    100% |           |
-| src/senzing/\_helpers.py       |      148 |        6 |     96% |120-121, 124, 130, 150-151 |
+| src/senzing/\_helpers.py       |      151 |        6 |     96% |123-124, 127, 133, 153-154 |
 | src/senzing/\_version.py       |       23 |        0 |    100% |           |
 | src/senzing/szconfig.py        |       97 |        0 |    100% |           |
 | src/senzing/szconfigmanager.py |       83 |        0 |    100% |           |
-| src/senzing/szdiagnostic.py    |       80 |        4 |     95% |262-268, 271-272 |
-| src/senzing/szengine.py        |      354 |       16 |     95% |648, 790, 798, 832, 842, 969-975, 986-992, 1109-1116 |
-| src/senzing/szproduct.py       |       45 |        0 |    100% |           |
-|                      **TOTAL** |  **837** |   **26** | **97%** |           |
+| src/senzing/szdiagnostic.py    |       80 |        4 |     95% |263-269, 272-273 |
+| src/senzing/szengine.py        |      354 |       16 |     95% |649, 792, 800, 834, 844, 971-977, 988-994, 1111-1118 |
+| src/senzing/szproduct.py       |       43 |        0 |    100% |           |
+|                      **TOTAL** |  **838** |   **26** | **97%** |           |
 
 
 ## Setup coverage badge
