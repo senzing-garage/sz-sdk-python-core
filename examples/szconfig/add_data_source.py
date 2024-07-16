@@ -3,7 +3,7 @@
 
 from senzing import SzConfig, SzError
 
-DATA_SOURCE_CODE = "TEST2"
+DATA_SOURCE_CODE = "test2"
 INSTANCE_NAME = "Example"
 settings = {
     "PIPELINE": {

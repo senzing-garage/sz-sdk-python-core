@@ -235,6 +235,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented
+    # NOTE Is used by sz_explorer
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
         result = self.library_handle.G2Diagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):

@@ -31,14 +31,17 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing_abstract.szerror import _ENGINE_EXCEPTION_MAP
+from senzing_abstract.szerror import ENGINE_EXCEPTION_MAP
 
 from senzing import SzError
 
-if sys.version_info < (3, 10):
-    from typing_extensions import ParamSpec
+# if sys.version_info < (3, 10):
+if sys.version_info < (3, 11):
+    from typing_extensions import ParamSpec, Self
 else:
-    from typing import ParamSpec
+    from typing import ParamSpec, Self
+
+# TODO Add metadata, should use __all__ ?
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -64,8 +67,8 @@ class FreeCResources:
         self.handle = handle
         self.resource = resource
 
-    def __enter__(self) -> None:
-        pass
+    def __enter__(self) -> Self:
+        return self
 
     def __exit__(
         self,
@@ -155,9 +158,10 @@ def load_sz_library(lib: str = "") -> CDLL:
         # TODO Change to Sz library when the libG2.so is changed in a build
         # TODO Wording & links for V4
         print(
-            "ERROR: Unable to load Senzing library. Did you remember to setup your environment by sourcing the setupEnv file?\n"
-            "ERROR: For more information see https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
-            "ERROR: If you are running Ubuntu or Debian please also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
+            f"ERROR: Unable to load the Senzing library: {err}\n"
+            "ERROR: Did you remember to setup your environment by sourcing the setupEnv file?\n"
+            "ERROR: For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            "ERROR: If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
         )
         raise sdk_exception(1) from err
 
@@ -235,6 +239,7 @@ def check_list_types(to_check: List[Any]) -> None:
             )
 
 
+# TODO - Ant - And Jira
 def escape_json_str(to_escape: str) -> str:
     """
     Escape strings when building a new JSON string.
@@ -245,6 +250,9 @@ def escape_json_str(to_escape: str) -> str:
         raise TypeError(f"expected a str, got{to_escape}")
     # TODO ensure_ascii=False = èAnt\\n👍
     # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
+    print(f"{to_escape = }")
+    jdumps = json.dumps({"escaped": to_escape}["escaped"])
+    print(f"{jdumps = }")
     return json.dumps({"escaped": to_escape}["escaped"])
 
 
@@ -440,7 +448,7 @@ def engine_exception(
     """
     sz_error_code = get_last_exception_code()
     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
-    senzing_error_class = _ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
+    senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
     return senzing_error_class(sz_error_text)
 
 

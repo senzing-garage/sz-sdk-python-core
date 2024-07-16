@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzError, SzProduct
+from senzing import SzProduct
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -26,26 +26,27 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     assert isinstance(actual, SzProduct)
 
 
-def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_instance_name = ""
-    with pytest.raises(SzError):
-        actual = SzProduct(
-            bad_instance_name,
-            engine_vars["SETTINGS"],
-        )
-        assert isinstance(actual, SzProduct)
+# NOTE szproduct can be initialized without an instance name
+# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_instance_name = ""
+#     with pytest.raises(SzError):
+#         actual = SzProduct(
+#             bad_instance_name,
+#             engine_vars["SETTINGS"],
+#         )
+#         assert isinstance(actual, SzProduct)
 
-
-def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_settings = ""
-    with pytest.raises(SzError):
-        actual = SzProduct(
-            engine_vars["INSTANCE_NAME"],
-            bad_settings,
-        )
-        assert isinstance(actual, SzProduct)
+# NOTE szproduct can be initialized without settings
+# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_settings = ""
+#     with pytest.raises(SzError):
+#         actual = SzProduct(
+#             engine_vars["INSTANCE_NAME"],
+#             bad_settings,
+#         )
+#         assert isinstance(actual, SzProduct)
 
 
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:

@@ -3,7 +3,9 @@ TODO: szengineflags.py
 """
 
 from enum import IntFlag
-from typing import Any, List
+from typing import List, Union
+
+from senzing_abstract.szerror import SzError
 
 # Metadata
 
@@ -18,25 +20,57 @@ __updated__ = "2023-10-30"
 # -----------------------------------------------------------------------------
 
 
+# TODO - Ant - Flag instead? https://realpython.com/python-enum/#exploring-other-enumeration-classes
 class SzEngineFlags(IntFlag):
-    """Engine Flags ..."""
+    """Engine Flags"""
 
     @classmethod
-    def combine_flags(
-        cls, list_of_strings: List[str], *args: Any, **kwargs: Any
-    ) -> int:
-        """OR together all strings in list_of_strings"""
-        # pylint: disable=unused-argument
+    def combine_flags(cls, flags: Union[List[IntFlag], List[str]]) -> int:
+        """
+        The `combine_flags` method ORs together all flags in a list of strings.
 
+        Args:
+            flags (List[str]): A list of strings each representing an engine flag.
+
+        Returns:
+            int: Value of ORing flags together.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/misc/engine_flags_combine_flags.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/misc/engine_flags_combine_flags.txt
+                :linenos:
+                :language: json
+        """
         result = 0
-        for string in list_of_strings:
-            result = result | SzEngineFlags[string]
+        try:
+            for flag in flags:
+                if isinstance(flag, str):
+                    result = result | cls[flag.upper()]
+                else:
+                    result = result | flag
+        except (AttributeError, KeyError) as err:
+            raise SzError(f"{err} is not a valid engine flag") from err
         return result
 
     @classmethod
-    def get_flag_int(cls, flag: IntFlag) -> int:
+    # TODO - Ant - Correct type?
+    def get_flag_int(cls, flag: Union[IntFlag, str]) -> int:
         """# TODO"""
-        return flag.value
+        try:
+            if isinstance(flag, str):
+                flag = cls[flag.upper()]
+            flag_int = flag.value
+        except (AttributeError, KeyError) as err:
+            raise SzError(f"{err} is not a valid engine flag") from err
+        return flag_int
 
     # Flags for exporting entity data.
 

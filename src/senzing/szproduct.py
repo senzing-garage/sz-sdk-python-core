@@ -30,7 +30,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 
 # Metadata
@@ -104,7 +103,9 @@ class SzProduct(SzProductAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        settings: Union[str, Dict[Any, Any]] = "",
+        # TODO
+        # settings: Union[str, Dict[Any, Any]] = "",
+        settings: Union[str, Dict[Any, Any]] = "{}",
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -144,8 +145,9 @@ class SzProduct(SzProductAbstract):
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
-        if not self.instance_name or len(self.settings) == 0:
-            raise sdk_exception(2)
+        # TODO
+        # if not self.instance_name or len(self.settings) == 0:
+        #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
         self._initialize(self.instance_name, self.settings, self.verbose_logging)
