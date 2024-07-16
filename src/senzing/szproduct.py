@@ -30,7 +30,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 
 # Metadata

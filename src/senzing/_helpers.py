@@ -70,7 +70,6 @@ class FreeCResources:
     def __enter__(self) -> Self:
         return self
 
-
     def __exit__(
         self,
         exc_type: Optional[Type[BaseException]],
