@@ -154,7 +154,9 @@ def load_sz_library(lib: str = "") -> CDLL:
             return cdll.LoadLibrary(win_path if win_path else "")
 
         return cdll.LoadLibrary(lib if lib else "libSz.so")
-    except OSError as err:
+    # TODO - Ant -
+    # except OSError as err:
+    except Exception as err:
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
