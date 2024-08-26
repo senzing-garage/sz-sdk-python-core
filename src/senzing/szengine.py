@@ -19,7 +19,6 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
-import sys
 
 # TODO - Ant -
 from ctypes import (
@@ -591,10 +590,10 @@ class SzEngine(SzEngineAbstract):
             raise sdk_exception(2)
 
         # TODO - Ant -
-        print(
-            f"\tszengine.__init__() before calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
-            flush=True,
-        )
+        # print(
+        #     f"\tszengine.__init__() before calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
+        #     flush=True,
+        # )
         # input("\nPress a key to complete...")
 
         # Initialize Senzing engine.
@@ -607,11 +606,11 @@ class SzEngine(SzEngineAbstract):
         self.initialized = True
 
         # TODO - Ant -
-        print(
-            f"\tszengine.__init__() after calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
-            flush=True,
-        )
-        print(f"\t\t{id(self) = }", flush=True)
+        # print(
+        #     f"\tszengine.__init__() after calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
+        #     flush=True,
+        # )
+        # print(f"\t\t{id(self) = }", flush=True)
         # input("\nPress a key to complete...")
 
         # # TODO - Ant -
@@ -734,10 +733,10 @@ class SzEngine(SzEngineAbstract):
     # TODO - Ant - @catch_exceptions or don't care?
     def _destroy(self, **kwargs: Any) -> None:
         # TODO - Ant -
-        print(
-            f"\tszengine._destroy(): \n\t\t{self.library_handle = }\n\t\t{self.initialized = }\n\t\t{id(self) = }\n\t\t{sys.getrefcount(self) - 1 = }",
-            flush=True,
-        )
+        # print(
+        #     f"\tszengine._destroy(): \n\t\t{self.library_handle = }\n\t\t{self.initialized = }\n\t\t{id(self) = }\n\t\t{sys.getrefcount(self) - 1 = }",
+        #     flush=True,
+        # )
         # _ = self.library_handle.Sz_destroy()
         # TODO - Ant -
         if self.initialized:
