@@ -6,7 +6,7 @@ INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
         "SUPPORTPATH": "/opt/senzing/data/4.1.0",
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},

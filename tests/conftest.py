@@ -25,9 +25,9 @@ def engine_vars_fixture() -> Dict[Any, Any]:
     # TODO - Ant - Correct paths?
     darwin_config = {
         "PIPELINE": {
-            "CONFIGPATH": "/opt/senzing/g2/etc",
-            "RESOURCEPATH": "/opt/senzing/g2/resources",
-            "SUPPORTPATH": "/opt/senzing/g2/data",
+            "CONFIGPATH": "/opt/senzing/er/etc",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/er/data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     }

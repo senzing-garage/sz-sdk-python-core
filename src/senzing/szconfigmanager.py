@@ -11,7 +11,7 @@ Example:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
+    export LD_LIBRARY_PATH=/opt/senzing/er/lib
 """
 
 # pylint: disable=R0903

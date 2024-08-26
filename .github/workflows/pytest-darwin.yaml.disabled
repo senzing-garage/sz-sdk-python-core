@@ -47,19 +47,19 @@ jobs:
           senzingapi-version: ${{ matrix.senzingapi-version }}
 
       - name: copy /etc files
-        run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/g2/etc/g2.lic
+        run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/er/etc/g2.lic
 
       - name: copy test database files
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: run pytest on tests
         run: |
-          export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+          export DYLD_LIBRARY_PATH=/opt/senzing/er/lib:/opt/senzing/er/lib/macos
           pytest tests/ --verbose --capture=no --cov=src/senzing
 
       # - name: Run pytest on examples
       #  run: |
-      #    export DYLD_LIBRARY_PATH=/opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+      #    export DYLD_LIBRARY_PATH=/opt/senzing/er/lib:/opt/senzing/er/lib/macos
       #    pytest examples/ --verbose --capture=no
 
       - name: rename coverage file
