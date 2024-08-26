@@ -1,6 +1,6 @@
 """
 The `szconfig` package is used to modify the in-memory representation of a Senzing configuration.
-It is a wrapper over Senzing's G2Config C binding.
+It is a wrapper over Senzing's SzConfig C binding.
 It conforms to the interface specified in
 `szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
 
@@ -60,7 +60,7 @@ __updated__ = "2023-11-07"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseAsCharPointerResult(Structure):
+class SzResponseAsCharPointerResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -69,7 +69,7 @@ class G2ResponseAsCharPointerResult(Structure):
     ]
 
 
-class G2ResponseAsVoidPointerResult(Structure):
+class SzResponseAsVoidPointerResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -78,23 +78,23 @@ class G2ResponseAsVoidPointerResult(Structure):
     ]
 
 
-class G2ConfigAddDataSourceResult(G2ResponseAsCharPointerResult):
+class SzConfigAddDataSourceResult(SzResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_addDataSource_result"""
 
 
-class G2ConfigCreateResult(G2ResponseAsVoidPointerResult):
+class SzConfigCreateResult(SzResponseAsVoidPointerResult):
     """In golang_helpers.h G2Config_create_result"""
 
 
-class G2ConfigListDataSourcesResult(G2ResponseAsCharPointerResult):
+class SzConfigListDataSourcesResult(SzResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_listDataSources_result"""
 
 
-class G2ConfigLoadResult(G2ResponseAsVoidPointerResult):
+class SzConfigLoadResult(SzResponseAsVoidPointerResult):
     """In golang_helpers.h G2Config_load_result"""
 
 
-class G2ConfigSaveResult(G2ResponseAsCharPointerResult):
+class SzConfigSaveResult(SzResponseAsCharPointerResult):
     """In golang_helpers.h G2Config_save_result"""
 
 
@@ -141,7 +141,7 @@ class SzConfig(SzConfigAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Sz library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -150,8 +150,8 @@ class SzConfig(SzConfigAbstract):
             :language: python
     """
 
-    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
-    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
+    # TODO: Consider making usual constructor private (`szconfig.SzConfig()`)
+    # and replacing it with static constructor (i.e. `szconfig.NewABC(str,str)`, `szconfig.NewDEF(str,dict))
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -183,43 +183,44 @@ class SzConfig(SzConfigAbstract):
         # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
-            self.library_handle.G2Config_getLastException,
-            self.library_handle.G2Config_clearLastException,
-            self.library_handle.G2Config_getLastExceptionCode,
+            self.library_handle.SzConfig_getLastException,
+            self.library_handle.SzConfig_clearLastException,
+            self.library_handle.SzConfig_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results.
+        # TODO - Ant - What is correct path for V4?
         # Must be synchronized with g2/sdk/c/libg2config.h
 
-        self.library_handle.G2Config_addDataSource_helper.argtypes = [
+        self.library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
         ]
-        self.library_handle.G2Config_addDataSource_helper.restype = (
-            G2ConfigAddDataSourceResult
+        self.library_handle.SzConfig_addDataSource_helper.restype = (
+            SzConfigAddDataSourceResult
         )
-        self.library_handle.G2Config_close_helper.argtypes = [POINTER(c_uint)]
-        self.library_handle.G2Config_close_helper.restype = c_longlong
-        self.library_handle.G2Config_create_helper.argtypes = []
-        self.library_handle.G2Config_create_helper.restype = G2ConfigCreateResult
-        self.library_handle.G2Config_deleteDataSource_helper.argtypes = [
+        self.library_handle.SzConfig_close_helper.argtypes = [POINTER(c_uint)]
+        self.library_handle.SzConfig_close_helper.restype = c_longlong
+        self.library_handle.SzConfig_create_helper.argtypes = []
+        self.library_handle.SzConfig_create_helper.restype = SzConfigCreateResult
+        self.library_handle.SzConfig_deleteDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
         ]
-        self.library_handle.G2Config_deleteDataSource_helper.restype = c_longlong
-        self.library_handle.G2Config_destroy.argtypes = []
-        self.library_handle.G2Config_destroy.restype = c_longlong
-        self.library_handle.G2Config_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.G2Config_init.restype = c_longlong
-        self.library_handle.G2Config_listDataSources_helper.argtypes = [POINTER(c_uint)]
-        self.library_handle.G2Config_listDataSources_helper.restype = (
-            G2ConfigListDataSourcesResult
+        self.library_handle.SzConfig_deleteDataSource_helper.restype = c_longlong
+        self.library_handle.SzConfig_destroy.argtypes = []
+        self.library_handle.SzConfig_destroy.restype = c_longlong
+        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzConfig_init.restype = c_longlong
+        self.library_handle.SzConfig_listDataSources_helper.argtypes = [POINTER(c_uint)]
+        self.library_handle.SzConfig_listDataSources_helper.restype = (
+            SzConfigListDataSourcesResult
         )
-        self.library_handle.G2Config_load_helper.argtypes = [c_char_p]
-        self.library_handle.G2Config_load_helper.restype = G2ConfigLoadResult
-        self.library_handle.G2Config_save_helper.argtypes = [POINTER(c_uint)]
-        self.library_handle.G2Config_save_helper.restype = G2ConfigSaveResult
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzConfig_load_helper.argtypes = [c_char_p]
+        self.library_handle.SzConfig_load_helper.restype = SzConfigLoadResult
+        self.library_handle.SzConfig_save_helper.argtypes = [POINTER(c_uint)]
+        self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
         if (not self.instance_name) or (len(self.settings) == 0):
             raise sdk_exception(2)
@@ -245,7 +246,7 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> str:
-        result = self.library_handle.G2Config_addDataSource_helper(
+        result = self.library_handle.SzConfig_addDataSource_helper(
             as_c_uintptr_t(config_handle),
             as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
@@ -256,13 +257,13 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
-        result = self.library_handle.G2Config_close_helper(
+        result = self.library_handle.SzConfig_close_helper(
             as_c_uintptr_t(config_handle)
         )
         self.check_result(result)
 
     def create_config(self, **kwargs: Any) -> int:
-        result = self.library_handle.G2Config_create_helper()
+        result = self.library_handle.SzConfig_create_helper()
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
@@ -273,25 +274,25 @@ class SzConfig(SzConfigAbstract):
         data_source_code: str,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2Config_deleteDataSource_helper(
+        result = self.library_handle.SzConfig_deleteDataSource_helper(
             as_c_uintptr_t(config_handle),
             as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
         self.check_result(result)
 
     def _destroy(self, **kwargs: Any) -> None:
-        _ = self.library_handle.G2Config_destroy()
+        _ = self.library_handle.SzConfig_destroy()
 
     @catch_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2Config_save_helper(as_c_uintptr_t(config_handle))
+        result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     @catch_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2Config_listDataSources_helper(
+        result = self.library_handle.SzConfig_listDataSources_helper(
             as_c_uintptr_t(config_handle)
         )
         with FreeCResources(self.library_handle, result.response):
@@ -306,7 +307,7 @@ class SzConfig(SzConfigAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2Config_init(
+        result = self.library_handle.SzConfig_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
@@ -315,7 +316,7 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
-        result = self.library_handle.G2Config_load_helper(
+        result = self.library_handle.SzConfig_load_helper(
             as_c_char_p(config_definition)
         )
         self.check_result(result.return_code)

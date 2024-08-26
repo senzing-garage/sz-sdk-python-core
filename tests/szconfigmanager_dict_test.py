@@ -8,7 +8,7 @@ from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import SzConfig as SzConfigCore
 from senzing import SzConfigManager as SzConfigManagerCore
-from senzing import SzConfigurationError
+from senzing import SzConfigurationError, SzReplaceConflictError
 
 # -----------------------------------------------------------------------------
 # SzConfigManager testcases
@@ -195,7 +195,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(
     new_default_config_id = sz_configmanager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(SzConfigurationError):
+    with pytest.raises(SzReplaceConflictError):
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id
         )

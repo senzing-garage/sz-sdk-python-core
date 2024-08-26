@@ -76,7 +76,7 @@ class FreeCResources:
         exc_value: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.handle.G2GoHelper_free(self.resource)
+        self.handle.SzHelper_free(self.resource)
 
 
 # -----------------------------------------------------------------------------
@@ -150,17 +150,18 @@ def load_sz_library(lib: str = "") -> CDLL:
     """
     try:
         if os.name == "nt":
-            win_path = find_library(lib if lib else "G2")
+            win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        return cdll.LoadLibrary(lib if lib else "libG2.so")
+        return cdll.LoadLibrary(lib if lib else "libSz.so")
     except OSError as err:
-        # TODO Change to Sz library when the libG2.so is changed in a build
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
             "ERROR: Did you remember to setup your environment by sourcing the setupEnv file?\n"
-            "ERROR: For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            # TODO Change to Sz library when the libG2.so is changed in a build
+            # "ERROR: For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            "ERROR: For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-Sz-Quickstart\n"
             "ERROR: If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
         )
         raise sdk_exception(1) from err
@@ -458,7 +459,7 @@ def engine_exception(
 
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "failed to load the G2 library",                                 # Engine module wasn't able to load the G2 library
+    1: "failed to load the Sz library",                                 # Engine module wasn't able to load the G2 library
     2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
 }
 # fmt: on

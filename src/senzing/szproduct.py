@@ -1,6 +1,6 @@
 """
 The `szproduct` package is used to inspect the Senzing product.
-It is a wrapper over Senzing's G2Product C binding.
+It is a wrapper over Senzing's SzProduct C binding.
 It conforms to the interface specified in
 `szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
 
@@ -93,8 +93,8 @@ class SzProduct(SzProductAbstract):
             :language: python
     """
 
-    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
-    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
+    # TODO: Consider making usual constructor private (`szproduct.SzProduct()`)
+    # and replacing it with static constructor (i.e. `szproduct.NewABC(str,str)`, `szproduct.NewDEF(str,dict))
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -126,23 +126,23 @@ class SzProduct(SzProductAbstract):
         # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
-            self.library_handle.G2Product_getLastException,
-            self.library_handle.G2Product_clearLastException,
-            self.library_handle.G2Product_getLastExceptionCode,
+            self.library_handle.SzProduct_getLastException,
+            self.library_handle.SzProduct_clearLastException,
+            self.library_handle.SzProduct_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results
         # Must be synchronized with g2/sdk/c/libg2product.h
 
-        self.library_handle.G2Product_destroy.argtypes = []
-        self.library_handle.G2Product_destroy.restype = c_longlong
-        self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.G2Product_init.restype = c_longlong
-        self.library_handle.G2Product_license.argtypes = []
-        self.library_handle.G2Product_license.restype = c_char_p
-        self.library_handle.G2Product_version.argtypes = []
-        self.library_handle.G2Product_version.restype = c_char_p
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzProduct_destroy.argtypes = []
+        self.library_handle.SzProduct_destroy.restype = c_longlong
+        self.library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzProduct_init.restype = c_longlong
+        self.library_handle.SzProduct_license.argtypes = []
+        self.library_handle.SzProduct_license.restype = c_char_p
+        self.library_handle.SzProduct_version.argtypes = []
+        self.library_handle.SzProduct_version.restype = c_char_p
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
         # TODO
@@ -164,7 +164,7 @@ class SzProduct(SzProductAbstract):
     # -------------------------------------------------------------------------
 
     def _destroy(self, **kwargs: Any) -> None:
-        _ = self.library_handle.G2Product_destroy()
+        _ = self.library_handle.SzProduct_destroy()
 
     @catch_exceptions
     def _initialize(
@@ -174,7 +174,7 @@ class SzProduct(SzProductAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2Product_init(
+        result = self.library_handle.SzProduct_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
@@ -182,7 +182,7 @@ class SzProduct(SzProductAbstract):
         self.check_result(result)
 
     def get_license(self, **kwargs: Any) -> str:
-        return as_python_str(self.library_handle.G2Product_license())
+        return as_python_str(self.library_handle.SzProduct_license())
 
     def get_version(self, **kwargs: Any) -> str:
-        return as_python_str(self.library_handle.G2Product_version())
+        return as_python_str(self.library_handle.SzProduct_version())
