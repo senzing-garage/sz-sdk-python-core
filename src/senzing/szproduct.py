@@ -142,7 +142,9 @@ class SzProduct(SzProductAbstract):
         self.library_handle.SzProduct_license.restype = c_char_p
         self.library_handle.SzProduct_version.argtypes = []
         self.library_handle.SzProduct_version.restype = c_char_p
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # TODO - Ant -
+        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
         # TODO

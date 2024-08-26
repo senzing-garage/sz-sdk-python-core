@@ -19,7 +19,6 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
-
 # TODO - Ant -
 from ctypes import (
     POINTER,
@@ -584,7 +583,9 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # TODO - Ant -
+        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)

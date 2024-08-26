@@ -194,7 +194,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_reinit.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # TODO - Ant -
+        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)

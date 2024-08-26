@@ -205,7 +205,9 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
         self.library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # TODO - Ant -
+        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)

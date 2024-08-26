@@ -220,7 +220,9 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_load_helper.restype = SzConfigLoadResult
         self.library_handle.SzConfig_save_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # TODO - Ant -
+        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
         if (not self.instance_name) or (len(self.settings) == 0):
             raise sdk_exception(2)
