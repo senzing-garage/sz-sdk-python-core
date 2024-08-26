@@ -620,10 +620,10 @@ class SzEngine(SzEngineAbstract):
     def __del__(self) -> None:
         """Destructor"""
         # TODO - Ant -
-        print(
-            f"\tszengine.__del__(): \n\t\t{self.initialized = } \n\t\t{self.library_handle = }",
-            flush=True,
-        )
+        # print(
+        #     f"\tszengine.__del__(): \n\t\t{self.initialized = } \n\t\t{self.library_handle = }",
+        #     flush=True,
+        # )
         # # if self.initialized:
         # # with suppress(Exception):
         # self._destroy()
