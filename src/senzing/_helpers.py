@@ -76,7 +76,9 @@ class FreeCResources:
         exc_value: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.handle.SzHelper_free(self.resource)
+        # TODO - Ant -
+        # self.handle.SzHelper_free(self.resource)
+        self.handle.G2GoHelper_free(self.resource)
 
 
 # -----------------------------------------------------------------------------
