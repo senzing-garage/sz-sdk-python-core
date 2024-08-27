@@ -67,19 +67,19 @@ class SzResponseLonglongReturnCodeResult(Structure):
 
 
 class SzConfigMgrAddConfigResult(SzResponseLonglongReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_addConfig_result"""
+    """In SzLang_helpers.h SzConfigMgr_addConfig_result"""
 
 
 class SzConfigMgrGetConfigListResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getConfigList_result"""
+    """In SzLang_helpers.h SzConfigMgr_getConfigList_result"""
 
 
 class SzConfigMgrGetConfigResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getConfig_result"""
+    """In SzLang_helpers.h SzConfigMgr_getConfig_result"""
 
 
 class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getDefaultConfigID_result"""
+    """In SzLang_helpers.h SzConfigMgr_getDefaultConfigID_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -175,9 +175,8 @@ class SzConfigManager(SzConfigManagerAbstract):
             self.library_handle.SzConfigMgr_getLastExceptionCode,
         )
 
-        # TODO - Ant -
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libg2configmgr.h
+        # Synchronized with er/sdk/c/libSzConfigMgr.h
 
         self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
         self.library_handle.SzConfigMgr_addConfig_helper.restype = (
@@ -205,9 +204,9 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
         self.library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
-        # TODO - Ant -
-        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        # TODO - Ant - What is correct?
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)

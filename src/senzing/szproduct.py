@@ -17,7 +17,7 @@ Example:
 # pylint: disable=R0903
 
 from contextlib import suppress
-from ctypes import c_char_p, c_int, c_longlong
+from ctypes import c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -131,20 +131,20 @@ class SzProduct(SzProductAbstract):
             self.library_handle.SzProduct_getLastExceptionCode,
         )
 
-        # Initialize C function input parameters and results
-        # Must be synchronized with g2/sdk/c/libg2product.h
+        # Initialize C function input parameters and results.
+        # Synchronized with er/sdk/c/libSzCProduct.h
 
         self.library_handle.SzProduct_destroy.argtypes = []
         self.library_handle.SzProduct_destroy.restype = c_longlong
-        self.library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzProduct_init.restype = c_longlong
         self.library_handle.SzProduct_license.argtypes = []
         self.library_handle.SzProduct_license.restype = c_char_p
         self.library_handle.SzProduct_version.argtypes = []
         self.library_handle.SzProduct_version.restype = c_char_p
-        # TODO - Ant -
-        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        # TODO - Ant - What is correct?
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
         # TODO

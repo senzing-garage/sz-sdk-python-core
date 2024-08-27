@@ -17,16 +17,7 @@ Example:
 # pylint: disable=R0903
 
 from contextlib import suppress
-from ctypes import (
-    POINTER,
-    Structure,
-    c_char,
-    c_char_p,
-    c_int,
-    c_longlong,
-    c_uint,
-    c_void_p,
-)
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_uint, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -79,23 +70,23 @@ class SzResponseAsVoidPointerResult(Structure):
 
 
 class SzConfigAddDataSourceResult(SzResponseAsCharPointerResult):
-    """In golang_helpers.h G2Config_addDataSource_result"""
+    """In SzLang_helpers.h SzConfig_addDataSource_result"""
 
 
 class SzConfigCreateResult(SzResponseAsVoidPointerResult):
-    """In golang_helpers.h G2Config_create_result"""
+    """In SzLang_helpers.h SzConfig_create_result"""
 
 
 class SzConfigListDataSourcesResult(SzResponseAsCharPointerResult):
-    """In golang_helpers.h G2Config_listDataSources_result"""
+    """In SzLang_helpers.h SzConfig_listDataSources_result"""
 
 
 class SzConfigLoadResult(SzResponseAsVoidPointerResult):
-    """In golang_helpers.h G2Config_load_result"""
+    """In SzLang_helpers.h SzConfig_load_result"""
 
 
 class SzConfigSaveResult(SzResponseAsCharPointerResult):
-    """In golang_helpers.h G2Config_save_result"""
+    """In SzLang_helpers.h SzConfig_save_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -189,8 +180,7 @@ class SzConfig(SzConfigAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # TODO - Ant - What is correct path for V4?
-        # Must be synchronized with g2/sdk/c/libg2config.h
+        # Synchronized with er/sdk/c/libSzConfig.h
 
         self.library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),
@@ -210,7 +200,7 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_deleteDataSource_helper.restype = c_longlong
         self.library_handle.SzConfig_destroy.argtypes = []
         self.library_handle.SzConfig_destroy.restype = c_longlong
-        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzConfig_init.restype = c_longlong
         self.library_handle.SzConfig_listDataSources_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_listDataSources_helper.restype = (
@@ -220,9 +210,9 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_load_helper.restype = SzConfigLoadResult
         self.library_handle.SzConfig_save_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
-        # TODO - Ant -
-        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        # TODO - Ant - What is correct?
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         if (not self.instance_name) or (len(self.settings) == 0):
             raise sdk_exception(2)

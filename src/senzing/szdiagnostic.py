@@ -17,7 +17,7 @@ Example:
 # pylint: disable=R0903
 
 from contextlib import suppress
-from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -59,15 +59,15 @@ class SzResponseReturnCodeResult(Structure):
 
 
 class SzDiagnosticCheckDatastorePerformanceResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_checkDatastorePerformance_result"""
+    """In SzLang_helpers.h SzDiagnostic_checkDatastorePerformance_result"""
 
 
 class SzDiagnosticGetDatastoreInfoResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_getDatastoreInfo_result"""
+    """In SzLang_helpers.h SzDiagnostic_getDatastoreInfo_result"""
 
 
 class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_getFeature_result"""
+    """In SzLang_helpers.h SzDiagnostic_getFeature_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -165,7 +165,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libg2diagnostic.h
+        # Synchronized with er/sdk/c/libSzDiagnostic.h
 
         self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [
             c_longlong
@@ -183,7 +183,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_getFeature_helper.restype = (
             SzDiagnosticGetFeatureResult
         )
-        self.library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzDiagnostic_init.argtypes = [
+            c_char_p,
+            c_char_p,
+            c_longlong,
+        ]
         self.library_handle.SzDiagnostic_init.restype = c_longlong
         self.library_handle.SzDiagnostic_initWithConfigID.argtypes = [
             c_char_p,
@@ -194,9 +198,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_reinit.restype = c_longlong
-        # TODO - Ant -
-        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        # TODO - Ant - What is correct?
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)

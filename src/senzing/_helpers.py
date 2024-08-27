@@ -76,9 +76,7 @@ class FreeCResources:
         exc_value: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        # TODO - Ant -
-        # self.handle.SzHelper_free(self.resource)
-        self.handle.G2GoHelper_free(self.resource)
+        self.handle.SzHelper_free(self.resource)
 
 
 # -----------------------------------------------------------------------------
@@ -156,9 +154,7 @@ def load_sz_library(lib: str = "") -> CDLL:
             return cdll.LoadLibrary(win_path if win_path else "")
 
         return cdll.LoadLibrary(lib if lib else "libSz.so")
-    # TODO - Ant -
-    # except OSError as err:
-    except Exception as err:
+    except OSError as err:
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
@@ -463,7 +459,7 @@ def engine_exception(
 
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "failed to load the Sz library",                                 # Engine module wasn't able to load the G2 library
+    1: "failed to load the Sz library",                                 # Engine module wasn't able to load the Sz library
     2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
 }
 # fmt: on

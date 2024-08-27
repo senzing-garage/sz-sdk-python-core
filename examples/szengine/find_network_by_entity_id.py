@@ -2,7 +2,7 @@
 
 from senzing import SzEngine, SzEngineFlags, SzError
 
-BUILD_OUT_DEGREE = 1
+BUILD_OUT_DEGREES = 1
 ENTITY_IDS = [1, 4]
 FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
@@ -20,7 +20,7 @@ SETTINGS = {
 try:
     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
     RESULT = sz_engine.find_network_by_entity_id(
-        ENTITY_IDS, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES, FLAGS
+        ENTITY_IDS, MAX_DEGREES, BUILD_OUT_DEGREES, MAX_ENTITIES, FLAGS
     )
     print(RESULT)
 except SzError as err:

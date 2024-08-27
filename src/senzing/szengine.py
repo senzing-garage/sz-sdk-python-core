@@ -1,3 +1,5 @@
+# TODO: Recheck all restypes & argtypes in all modules
+
 """
 The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's SzEngine C binding.
@@ -19,13 +21,12 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
-# TODO - Ant -
+from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
     c_char,
     c_char_p,
-    c_int,
     c_longlong,
     c_uint,
     c_void_p,
@@ -85,16 +86,15 @@ class SzResponseLonglongReturnCodeResult(Structure):
 
 
 class SzAddRecordWithInfoResult(SzResponseReturnCodeResult):
-    # TODO - Ant - correct golang_helpers.h and check other modules
-    """In golang_helpers.h Sz_addRecordWithInfo_result"""
+    """In SzLang_helpers.h Sz_addRecordWithInfo_result"""
 
 
 class SzDeleteRecordWithInfoResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_deleteRecordWithInfo_result"""
+    """In SzLang_helpers.h Sz_deleteRecordWithInfo_result"""
 
 
 class SzExportCSVEntityReportResult(Structure):
-    """In golang_helpers.h Sz_exportCSVEntityReport_result"""
+    """In SzLang_helpers.h Sz_exportCSVEntityReport_result"""
 
     _fields_ = [
         ("export_handle", c_void_p),
@@ -103,7 +103,7 @@ class SzExportCSVEntityReportResult(Structure):
 
 
 class SzExportJSONEntityReportResult(Structure):
-    """In golang_helpers.h Sz_exportJSONEntityReport_result"""
+    """In SzLang_helpers.h Sz_exportJSONEntityReport_result"""
 
     _fields_ = [
         ("export_handle", c_void_p),
@@ -112,107 +112,107 @@ class SzExportJSONEntityReportResult(Structure):
 
 
 class SzFetchNextResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_fetchNext_result"""
+    """In SzLang_helpers.h Sz_fetchNext_result"""
 
 
 class SzFindInterestingEntitiesByEntityIDResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findInterestingEntitiesByEntityID_result"""
+    """In SzLang_helpers.h Sz_findInterestingEntitiesByEntityID_result"""
 
 
 class SzFindInterestingEntitiesByRecordIDResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findInterestingEntitiesByRecordID_result"""
+    """In SzLang_helpers.h Sz_findInterestingEntitiesByRecordID_result"""
 
 
 class SzFindNetworkByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findNetworkByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_findNetworkByEntityID_V2_result"""
 
 
 class SzFindNetworkByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findNetworkByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_findNetworkByRecordID_V2_result"""
 
 
 class SzFindPathByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathByEntityID_V2_result"""
 
 
 class SzFindPathByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathByRecordID_V2_result"""
 
 
 class SzFindPathExcludingByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathExcludingByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathExcludingByEntityID_V2_result"""
 
 
 class SzFindPathExcludingByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathExcludingByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathExcludingByRecordID_V2_result"""
 
 
 class SzFindPathIncludingSourceByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathIncludingSourceByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathIncludingSourceByEntityID_V2_result"""
 
 
 class SzFindPathIncludingSourceByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_findPathIncludingSourceByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_findPathIncludingSourceByRecordID_V2_result"""
 
 
 class SzGetActiveConfigIDResult(SzResponseLonglongReturnCodeResult):
-    """In golang_helpers.h Sz_getActiveConfigID_result"""
+    """In SzLang_helpers.h Sz_getActiveConfigID_result"""
 
 
 class SzGetEntityByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_getEntityByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_getEntityByEntityID_V2_result"""
 
 
 class SzGetEntityByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_getEntityByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_getEntityByRecordID_V2_result"""
 
 
 class SzGetRecordV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_getRecord_V2_result"""
+    """In SzLang_helpers.h Sz_getRecord_V2_result"""
 
 
 class SzGetRedoRecordResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_getRedoRecord_result"""
+    """In SzLang_helpers.h Sz_getRedoRecord_result"""
 
 
 class SzGetVirtualEntityByRecordIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_getVirtualEntityByRecordID_V2_result"""
+    """In SzLang_helpers.h Sz_getVirtualEntityByRecordID_V2_result"""
 
 
 class SzHowEntityByEntityIDV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_howEntityByEntityID_V2_result"""
+    """In SzLang_helpers.h Sz_howEntityByEntityID_V2_result"""
 
 
 class SzProcessRedoRecordWithInfoResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_processRedoRecordWithInfo_result"""
+    """In SzLang_helpers.h Sz_processRedoRecordWithInfo_result"""
 
 
 class SzReevaluateEntityWithInfoResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_reevaluateEntityWithInfo_result"""
+    """In SzLang_helpers.h Sz_reevaluateEntityWithInfo_result"""
 
 
 class SzReevaluateRecordWithInfoResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_reevaluateRecordWithInfo_result"""
+    """In SzLang_helpers.h Sz_reevaluateRecordWithInfo_result"""
 
 
 class SzSearchByAttributesV3Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_searchByAttributes_V2_result"""
+    """In SzLang_helpers.h Sz_searchByAttributes_V2_result"""
 
 
 class SzStatsResult(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_stats_result"""
+    """In SzLang_helpers.h Sz_stats_result"""
 
 
 class SzWhyEntitiesV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_whyEntities_V2_result"""
+    """In SzLang_helpers.h Sz_whyEntities_V2_result"""
 
 
 class SzWhyRecordInEntityV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_whyRecordInEntity_V2_result"""
+    """In SzLang_helpers.h Sz_whyRecordInEntity_V2_result"""
 
 
 class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
-    """In golang_helpers.h Sz_whyRecords_V2_result"""
+    """In SzLang_helpers.h Sz_whyRecords_V2_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -313,7 +313,7 @@ class SzEngine(SzEngineAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libg2engine.h
+        # Synchronized with er/sdk/c/libSzC.h
 
         self.library_handle.Sz_addRecord.argtypes = [
             c_char_p,
@@ -508,7 +508,7 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.Sz_howEntityByEntityID_V2_helper.restype = (
             SzHowEntityByEntityIDV2Result
         )
-        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.Sz_init.restype = c_longlong
         self.library_handle.Sz_initWithConfigID.argtypes = [
             c_char_p,
@@ -583,19 +583,12 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
-        # TODO - Ant -
-        # self.library_handle.SzHelper_free.argtypes = [c_char_p]
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        # TODO - Ant - What is correct?
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         if not self.instance_name or len(self.settings) == 0:
             raise sdk_exception(2)
-
-        # TODO - Ant -
-        # print(
-        #     f"\tszengine.__init__() before calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
-        #     flush=True,
-        # )
-        # input("\nPress a key to complete...")
 
         # Initialize Senzing engine.
         self._initialize(
@@ -606,31 +599,15 @@ class SzEngine(SzEngineAbstract):
         )
         self.initialized = True
 
-        # TODO - Ant -
-        # print(
-        #     f"\tszengine.__init__() after calling _initialize: \n\t\t{self.initialized = } \n\t\t{self.library_handle = }\n\t\t{sys.getrefcount(self) - 1 = }",
-        #     flush=True,
-        # )
-        # print(f"\t\t{id(self) = }", flush=True)
-        # input("\nPress a key to complete...")
+        # TODO - Ant - Re-consider context manager, it is more pythonic and better control. All modules
+        #              over create/destroy
 
-        # # TODO - Ant -
-        # weakref.finalize(self, self._destroy)
-
+    # # TODO - Ant - Would weakref.finalize be better?
     def __del__(self) -> None:
         """Destructor"""
-        # TODO - Ant -
-        # print(
-        #     f"\tszengine.__del__(): \n\t\t{self.initialized = } \n\t\t{self.library_handle = }",
-        #     flush=True,
-        # )
-        # # if self.initialized:
-        # # with suppress(Exception):
-        # self._destroy()
-
-        # if self.initialized:
-        # with suppress(Exception):
-        self._destroy()
+        if self.initialized:
+            with suppress(Exception):
+                self._destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods
@@ -733,31 +710,7 @@ class SzEngine(SzEngineAbstract):
 
     # TODO - Ant - @catch_exceptions or don't care?
     def _destroy(self, **kwargs: Any) -> None:
-        # TODO - Ant -
-        # print(
-        #     f"\tszengine._destroy(): \n\t\t{self.library_handle = }\n\t\t{self.initialized = }\n\t\t{id(self) = }\n\t\t{sys.getrefcount(self) - 1 = }",
-        #     flush=True,
-        # )
-        # _ = self.library_handle.Sz_destroy()
-        # TODO - Ant -
-        if self.initialized:
-            _ = self.library_handle.Sz_destroy()
-            # print(f"\tBack from Sz_destroy(): \n\t\t{r = }", flush=True)
-            # print("\nCollecting garbage")
-            # gc.collect()
-            self.initialized = False
-        else:
-            print("\t\tNot destroying, not initialized...", flush=True)
-        # print(f"\n{gc.get_objects() = }")
-
-    # # TODO - Ant - @catch_exceptions or don't care?
-    # def _destroy(self, **kwargs: Any) -> None:
-    #     # TODO - Ant -
-    #     print(
-    #         f"\tszengine._destroy(): \n\t\t{self.library_handle = }\n\t\t{self.initialized = }\n\t\t{id(self) = }\n\t\t{sys.getrefcount(self) - 1 = }",
-    #         flush=True,
-    #     )
-    #     _ = self.library_handle.Sz_destroy()
+        _ = self.library_handle.Sz_destroy()
 
     @catch_exceptions
     def export_csv_entity_report(
@@ -819,7 +772,7 @@ class SzEngine(SzEngineAbstract):
         self,
         entity_ids: List[int],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -827,7 +780,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByEntityID_V2_helper(
             as_c_char_p(build_entities_json(entity_ids)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -841,7 +794,7 @@ class SzEngine(SzEngineAbstract):
         self,
         record_keys: List[Tuple[str, str]],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -849,7 +802,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByRecordID_V2_helper(
             as_c_char_p(build_records_json(record_keys)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -1057,7 +1010,6 @@ class SzEngine(SzEngineAbstract):
         )
         self.check_result(result)
 
-    # TODO - Ant - @catch_exceptions?
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.Sz_primeEngine()
         self.check_result(result)
