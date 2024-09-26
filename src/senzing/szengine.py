@@ -315,6 +315,10 @@ class SzEngine(SzEngineAbstract):
         # Initialize C function input parameters and results.
         # Synchronized with er/sdk/c/libSzC.h
 
+        # TODO - Ant - Macy method, needed in final?
+        self.library_handle.Szinternal_bulkLoad.argtypes = [POINTER(POINTER(c_char))]
+        self.library_handle.Szinternal_bulkLoad.restype = c_longlong
+
         self.library_handle.Sz_addRecord.argtypes = [
             c_char_p,
             c_char_p,
