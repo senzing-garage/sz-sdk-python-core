@@ -19,7 +19,6 @@ Example:
 # NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
-from contextlib import suppress
 from ctypes import (
     POINTER,
     Structure,
@@ -283,7 +282,7 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        self.initialized = False
+        # self.initialized = False
         self.instance_name = instance_name
         self.settings = settings
         self.config_id = config_id
@@ -587,20 +586,20 @@ class SzEngine(SzEngineAbstract):
             raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            config_id=self.config_id,
-            verbose_logging=self.verbose_logging,
-        )
-        self.initialized = True
+        # self._initialize(
+        #     instance_name=self.instance_name,
+        #     settings=self.settings,
+        #     config_id=self.config_id,
+        #     verbose_logging=self.verbose_logging,
+        # )
+        # self.initialized = True
 
     # TODO Add garbage collection to ensure destruction
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods
@@ -975,6 +974,20 @@ class SzEngine(SzEngineAbstract):
             verbose_logging,
         )
         self.check_result(result)
+
+
+    def preprocess_record(
+        self,
+        record_definition: str,
+        flags: int = 0,
+        **kwargs: Any,
+    ) -> str:
+        _ = kwargs
+        _ = record_definition
+        _ = flags
+        # TODO: Implement function.
+        return "Not implemented"
+
 
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.G2_primeEngine()

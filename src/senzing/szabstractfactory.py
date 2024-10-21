@@ -7,9 +7,9 @@ TODO: szabstractfactory.py
 # pylint: disable=E1101
 
 from types import TracebackType
-from typing import Any, Type, Union
+from typing import Any, Dict, Type, Union
 
-import grpc
+
 from senzing_abstract import (
     SzAbstractFactoryAbstract,
     SzConfigAbstract,
@@ -49,14 +49,24 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
     def __init__(
         self,
-        grpc_channel: grpc.Channel,
+        instance_name: str = "",
+        config_id: int = 0,
+        settings: Union[str, Dict[Any, Any]] = "",
+        verbose_logging: int = 0,
+        **kwargs: Any,
     ) -> None:
         """
         Constructor
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        self.channel = grpc_channel
+        self.instance_name = instance_name
+        self.config_id = config_id
+        self.settings = settings
+        self.verbose_logging = verbose_logging
+        self.is_szengine_initialized = False
+        self.is_szdiagnostic_initialized = False
+
 
     def __enter__(
         self,
@@ -73,22 +83,53 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
+        if not self.is_szengine_initialized or not self.is_szdiagnostic_initialized:
+            # TODO: destroy  (Ant, can you see what's wrong with destroying?  Hint: scope)
+            pass
+
+
 
     # -------------------------------------------------------------------------
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
     def create_sz_config(self) -> SzConfigAbstract:
-        return SzConfig(grpc_channel=self.channel)
+        result = SzConfig(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        return result
+
 
     def create_sz_configmanager(self) -> SzConfigManagerAbstract:
-        return SzConfigManager(grpc_channel=self.channel)
+        result = SzConfigManager(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        return result
+
 
     def create_sz_diagnostic(self) -> SzDiagnosticAbstract:
-        return SzDiagnostic(grpc_channel=self.channel)
+        result =  SzDiagnostic(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        return result
 
     def create_sz_engine(self) -> SzEngineAbstract:
-        return SzEngine(grpc_channel=self.channel)
+        result =  SzEngine()
+        if not self.is_szengine_initialized:
+            result._initialize(
+                instance_name=self.instance_name,
+                settings=self.settings,
+                config_id=self.config_id,
+                verbose_logging=self.verbose_logging,
+            )
+            self.is_szengine_initialized = True
+        return result
+
 
     def create_sz_product(self) -> SzProductAbstract:
-        return SzProduct(grpc_channel=self.channel)
+        result =  SzProduct(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        return result
+
+    def destroy(self) -> None:
+        pass
+
+
+
+
+
+    def reinitialize(self) -> None:
+        pass
