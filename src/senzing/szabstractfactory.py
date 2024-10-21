@@ -65,7 +65,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         self.settings = settings
         self.verbose_logging = verbose_logging
         self.is_szengine_initialized = False
-        self.is_szdiagnostic_initialized = False
+        self.is_szdiagnostic_initialized = False # TODO:  Not sure if individual flags are needed.
 
 
     def __enter__(
@@ -84,7 +84,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     ) -> None:
         """Context Manager method."""
         if not self.is_szengine_initialized or not self.is_szdiagnostic_initialized:
-            # TODO: destroy  (Ant, can you see what's wrong with destroying?  Hint: scope)
+            # TODO: destroy  (Ant, can you see what's wrong with destroying Senzing process?  Hint: scope)
             pass
 
 
@@ -94,16 +94,19 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     # -------------------------------------------------------------------------
 
     def create_sz_config(self) -> SzConfigAbstract:
+        # TODO: Do parameters need to be passed in?
         result = SzConfig(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
         return result
 
 
     def create_sz_configmanager(self) -> SzConfigManagerAbstract:
+        # TODO: Do parameters need to be passed in?
         result = SzConfigManager(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
         return result
 
 
     def create_sz_diagnostic(self) -> SzDiagnosticAbstract:
+        # TODO: Do parameters need to be passed in?
         result =  SzDiagnostic(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
         return result
 
@@ -121,15 +124,17 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
 
     def create_sz_product(self) -> SzProductAbstract:
+        # TODO: Do parameters need to be passed in?
         result =  SzProduct(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
         return result
 
+
     def destroy(self) -> None:
+        # TODO: Implement function.
         pass
 
 
-
-
-
-    def reinitialize(self) -> None:
+    def reinitialize(self, config_id: int = 0) -> None:
+        # TODO: Implement function.
+        _ = config_id
         pass

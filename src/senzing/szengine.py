@@ -46,7 +46,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 from ._version import is_supported_senzingapi_version
 
@@ -271,10 +270,10 @@ class SzEngine(SzEngineAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
-        settings: Union[str, Dict[Any, Any]] = "",
-        config_id: int = 0,
-        verbose_logging: int = 0,
+        # instance_name: str = "",
+        # settings: Union[str, Dict[Any, Any]] = "",
+        # config_id: int = 0,
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -582,8 +581,8 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.G2_whyRecords_V2_helper.restype = G2WhyRecordsV2Result
         self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
 
-        if not self.instance_name or len(self.settings) == 0:
-            raise sdk_exception(2)
+        # if not self.instance_name or len(self.settings) == 0:
+        #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
         # self._initialize(
