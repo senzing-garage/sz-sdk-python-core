@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 """
 TODO: szengineflags.py
 """
@@ -5,7 +7,12 @@ TODO: szengineflags.py
 from enum import IntFlag
 from typing import List, Union
 
-from senzing_abstract.szerror import SzError
+from .engine_exception_map import SzError
+
+try:
+    from typing_extensions import Self  # type: ignore[attr-defined,no-redef]
+except ImportError:
+    from typing import Self  # type: ignore[attr-defined,no-redef]
 
 # Metadata
 
@@ -14,18 +21,16 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-10-30"
 
-
 # -----------------------------------------------------------------------------
 # SzEngineFlags class
 # -----------------------------------------------------------------------------
 
 
-# TODO - Ant - Flag instead? https://realpython.com/python-enum/#exploring-other-enumeration-classes
 class SzEngineFlags(IntFlag):
     """Engine Flags"""
 
     @classmethod
-    def combine_flags(cls, flags: Union[List[IntFlag], List[str]]) -> int:
+    def combine_flags(cls, flags: Union[List[Self], List[str]]) -> int:
         """
         The `combine_flags` method ORs together all flags in a list of strings.
 
@@ -62,7 +67,7 @@ class SzEngineFlags(IntFlag):
 
     @classmethod
     # TODO - Ant - Correct type?
-    def get_flag_int(cls, flag: Union[IntFlag, str]) -> int:
+    def get_flag_int(cls, flag: Union[Self, str]) -> int:
         """# TODO"""
         try:
             if isinstance(flag, str):
@@ -118,18 +123,19 @@ class SzEngineFlags(IntFlag):
     SZ_ENTITY_INCLUDE_RECORD_MATCHING_INFO = 1 << 15
     SZ_ENTITY_INCLUDE_RECORD_JSON_DATA = 1 << 16
     SZ_ENTITY_INCLUDE_RECORD_UNMAPPED_DATA = 1 << 31
-    SZ_ENTITY_INCLUDE_RECORD_FEATURE_IDS = 1 << 18
+    SZ_ENTITY_INCLUDE_RECORD_FEATURES = 1 << 18
     SZ_ENTITY_INCLUDE_RELATED_ENTITY_NAME = 1 << 19
     SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO = 1 << 20
     SZ_ENTITY_INCLUDE_RELATED_RECORD_SUMMARY = 1 << 21
     SZ_ENTITY_INCLUDE_RELATED_RECORD_TYPES = 1 << 29
     SZ_ENTITY_INCLUDE_RELATED_RECORD_DATA = 1 << 22
+    SZ_ENTITY_INCLUDE_RECORD_FEATURE_DETAILS = 1 << 35
+    SZ_ENTITY_INCLUDE_RECORD_FEATURE_STATS = 1 << 36
 
     # Flags for extra feature data.
 
     SZ_ENTITY_INCLUDE_INTERNAL_FEATURES = 1 << 23
     SZ_ENTITY_INCLUDE_FEATURE_STATS = 1 << 24
-    SZ_ENTITY_INCLUDE_FEATURE_ELEMENTS = 1 << 32
 
     # Flags for extra matching data.
 

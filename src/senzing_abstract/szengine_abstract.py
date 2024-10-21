@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 """
 TODO: szengine_abstract.py
 """
@@ -8,6 +10,7 @@ from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Tuple
 
 from .szengineflags import SzEngineFlags
+from .szhelpers import construct_help
 
 # Metadata
 
@@ -26,6 +29,71 @@ class SzEngineAbstract(ABC):
     """
     Senzing engine module access library
     """
+
+    # -------------------------------------------------------------------------
+    # Messages
+    # -------------------------------------------------------------------------
+
+    PREFIX = "szengine."
+    """ :meta private: """
+
+    ID_MESSAGES = {
+        4001: PREFIX + "add_record({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4002: PREFIX + "close_export() failed. Return code: {0}",
+        4003: PREFIX + "count_redo_records() failed. Return code: {0}",
+        4004: PREFIX + "delete_record({0}, {1}, {2}) failed. Return code: {3}",
+        4005: PREFIX + "destroy() failed. Return code: {0}",
+        4006: PREFIX + "export_csv_entity_report({0}, {1}) failed. Return code: {2}",
+        4007: PREFIX + "export_json_entity_report({0}) failed. Return code: {1}",
+        4008: PREFIX + "fetch_next({0}) failed. Return code: {1}",
+        # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+        4009: PREFIX
+        + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}",
+        # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+        4010: (
+            PREFIX
+            + "find_interesting_entities_by_record_id({0}, {1}, {2}) failed. Return"
+            " code: {3}"
+        ),
+        4011: (
+            PREFIX
+            + "find_network_by_entity_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
+        ),
+        4012: (
+            PREFIX
+            + "find_network_by_record_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
+        ),
+        4013: PREFIX
+        + "find_path_by_entity_id({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
+        4014: PREFIX
+        + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}",
+        4015: PREFIX + "get_active_config_id() failed. Return code: {0}",
+        4016: PREFIX + "get_entity_by_entity_id({0}, {1}) failed. Return code: {2}",
+        4017: PREFIX
+        + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
+        4018: PREFIX + "get_record({0}, {1}, {2}) failed. Return code: {3}",
+        4019: PREFIX + "get_redo_record() failed. Return code: {0}",
+        4021: PREFIX + "get_stats() failed. Return code: {0}",
+        4022: PREFIX + "get_virtual_entity_by_record_id({0}) failed. Return code: {1}",
+        4023: PREFIX + "how_entity_by_entity_id({0}) failed. Return code: {1}",
+        4024: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4025: PREFIX + "prime_engine() failed. Return code: {0}",
+        4026: PREFIX + "process_redo_record({0}, {1}) failed. Return code: {2}",
+        4027: PREFIX + "reevaluate_entity({0}, {1}) failed. Return code: {2}",
+        4028: PREFIX + "reevaluate_record({0}, {1}, {2}) failed. Return code: {3}",
+        4029: PREFIX + "reinitialize({0}) failed. Return code: {1}",
+        4030: PREFIX + "search_by_attributes({0}) failed. Return code: {1}",
+        4031: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
+        4032: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
+        4033: PREFIX + "why_record_in_entity({0}, {1}, {2}) failed. Return code: {3}",
+        4034: (
+            PREFIX
+            + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or"
+            " both be empty"
+        ),
+        4035: PREFIX + "preprocess_record({0}, {1}) failed. Return code: {2}",
+    }
+    """ :meta private: """
 
     # -------------------------------------------------------------------------
     # Interface definition
@@ -47,7 +115,7 @@ class SzEngineAbstract(ABC):
         Args:
             data_source_code (str): Identifies the provenance of the data.
             record_id (str): The unique identifier within the records of the same data source.
-            record_definition (str | Dict): A JSON document containing the record to be added to the Senzing repository.
+            record_definition (str): A JSON document containing the record to be added to the Senzing repository.
             flags (int, optional): Flags used to control information returned. Defaults to 0.
 
         Returns:
@@ -688,6 +756,38 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
+    def preprocess_record(
+        self,
+        record_definition: str,
+        flags: int = 0,
+        **kwargs: Any,
+    ) -> str:
+        """
+        The `preprocess_record` method tests adding a record into the Senzing datastore.
+
+        Args:
+            record_definition (str): A JSON document containing the record to be tested.
+            flags (int, optional): Flags used to control information returned. Defaults to 0.
+
+        Returns:
+            str: A JSON document containing metadata as specified by the flags.
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/szengine/preprocess_record.py
+                :linenos:
+                :language: python
+
+            **Output:**
+
+            .. literalinclude:: ../../examples/szengine/preprocess_record.txt
+                :linenos:
+                :language: json
+        """
+
+    @abstractmethod
     def prime_engine(self, **kwargs: Any) -> None:
         """
         The `prime_engine` method initializes high resource consumption components of Senzing
@@ -783,7 +883,7 @@ class SzEngineAbstract(ABC):
         """
         The `reinitialize` method reinitializes the Senzing SzEngine object using a specific configuration
         identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmanager.get_config_list`.
+        `szconfigmanager.get_configs`.
 
         Args:
             config_id (int): The configuration ID used for the initialization
@@ -938,3 +1038,19 @@ class SzEngineAbstract(ABC):
                     :linenos:
                     :language: json
         """
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
+
+    def help(self, method_name: str = "") -> str:
+        """
+        Return the help for a particular message.
+
+        Args:
+            method_name (str): The name of the method. (e.g. "init"). If empty, a list of methods and descriptions is returned.
+
+        Returns:
+            str: The Help information about the requested method
+        """
+        return construct_help(self, method_name=method_name)
