@@ -64,7 +64,8 @@ dependencies-for-development:
 
 
 .PHONY: dependencies
-dependencies: dependencies-osarch-specific
+dependencies:
+	@python3 -m pip install --requirement requirements.txt
 
 # -----------------------------------------------------------------------------
 # Setup

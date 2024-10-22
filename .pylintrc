@@ -5,7 +5,9 @@ disable=
     line-too-long,
     missing-module-docstring,
     too-many-arguments,
+    too-many-function-args,
     too-many-instance-attributes,
+    too-many-positional-arguments,
     too-many-public-methods,
 ignore=
     __init__.py,

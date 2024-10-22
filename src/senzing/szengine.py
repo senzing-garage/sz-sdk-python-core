@@ -282,10 +282,10 @@ class SzEngine(SzEngineAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
         # self.initialized = False
-        self.instance_name = instance_name
-        self.settings = settings
-        self.config_id = config_id
-        self.verbose_logging = verbose_logging
+        # self.instance_name = instance_name
+        # self.settings = settings
+        # self.config_id = config_id
+        # self.verbose_logging = verbose_logging
 
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
@@ -974,7 +974,6 @@ class SzEngine(SzEngineAbstract):
         )
         self.check_result(result)
 
-
     def preprocess_record(
         self,
         record_definition: str,
@@ -986,7 +985,6 @@ class SzEngine(SzEngineAbstract):
         _ = flags
         # TODO: Implement function.
         return "Not implemented"
-
 
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.G2_primeEngine()
@@ -1053,7 +1051,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.G2_reinit(config_id)
         self.check_result(result)
 
