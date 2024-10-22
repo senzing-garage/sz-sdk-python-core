@@ -1,64 +1,76 @@
 # sz-sdk-python development
 
+The following instructions are useful during development.
+
+**Note:** This has been tested on Linux and Darwin/macOS.
+It has not been tested on Windows.
+
 ## Prerequisites for development
 
 :thinking: The following tasks need to be complete before proceeding.
 These are "one-time tasks" which may already have been completed.
 
 1. The following software programs need to be installed:
-    1. [git](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md)
-    1. [make](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md)
+    1. [git]
+    1. [make]
+    1. [docker]
+    1. [sphinx]
 
-## Clone repository
+## Install Senzing C library
 
-For more information on environment variables,
-see [Environment Variables](https://github.com/senzing-garage/knowledge-base/blob/main/lists/environment-variables.md).
+Since the Senzing library is a prerequisite, it must be installed first.
 
-1. Set these environment variable values:
+1. Verify Senzing C shared objects, configuration, and SDK header files are installed.
+    1. `/opt/senzing/g2/lib`
+    1. `/opt/senzing/g2/sdk/c`
+    1. `/etc/opt/senzing`
+
+1. If not installed, see [How to Install Senzing for Python Development].
+
+## Install Git repository
+
+1. Identify git repository.
 
     ```console
     export GIT_ACCOUNT=senzing-garage
     export GIT_REPOSITORY=sz-sdk-python
     export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
+
     ```
 
-1. Using the environment variables values just set, follow steps in [clone-repository](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
+1. Using the environment variables values just set, follow
+   steps in [clone-repository] to install the Git repository.
 
-## Install python test tools
+## Dependencies
 
-1. Individual tools
+1. A one-time command to install dependencies needed for `make` targets.
+   Example:
 
     ```console
-    python3 -m pip install \
-        bandit \
-        coverage \
-        black \
-        flake8 \
-        mypy \
-        pylint \
-        pytest
+    cd ${GIT_REPOSITORY_DIR}
+    make dependencies-for-development
+
     ```
 
-1. [Sphinx](https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/sphinx.md) tools
+1. Install dependencies needed for [Python] code.
+   Example:
 
     ```console
-    python3 -m pip install \
-        sphinx \
-        sphinx-autodoc-typehints \
-        sphinx-gallery \
-        sphinx-jinja2-compat \
-        sphinx-prompt \
-        sphinx-rtd-theme \
-        sphinx-tabs \
-        sphinx-toolbox \
-        sphinxcontrib-applehelp \
-        sphinxcontrib-devhelp \
-        sphinxcontrib-htmlhelp \
-        sphinxcontrib-jquery \
-        sphinxcontrib-jsmath \
-        sphinxcontrib-qthelp \
-        sphinxcontrib-serializinghtml
+    cd ${GIT_REPOSITORY_DIR}
+    make dependencies
+
+    ```
+
+## Lint
+
+1. Run linting.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make lint
+
     ```
 
 ## Running tests
