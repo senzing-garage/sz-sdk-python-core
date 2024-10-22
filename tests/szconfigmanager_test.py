@@ -4,9 +4,9 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import SzConfig, SzConfigManager, SzConfigurationError, SzError
+from senzing_truthset import TRUTHSET_DATASOURCES
 
 # -----------------------------------------------------------------------------
 # SzConfigManager testcases

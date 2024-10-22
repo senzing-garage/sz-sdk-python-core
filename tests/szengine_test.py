@@ -12,13 +12,6 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
-from senzing_truthset import (
-    TRUTHSET_CUSTOMER_RECORDS,
-    TRUTHSET_DATASOURCES,
-    TRUTHSET_REFERENCE_RECORDS,
-    TRUTHSET_WATCHLIST_RECORDS,
-)
 
 from senzing import (
     SzBadInputError,
@@ -29,6 +22,13 @@ from senzing import (
     SzEngineFlags,
     SzError,
     SzNotFoundError,
+)
+from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing_truthset import (
+    TRUTHSET_CUSTOMER_RECORDS,
+    TRUTHSET_DATASOURCES,
+    TRUTHSET_REFERENCE_RECORDS,
+    TRUTHSET_WATCHLIST_RECORDS,
 )
 
 # -----------------------------------------------------------------------------

@@ -2,14 +2,13 @@
 
 from typing import List, Tuple
 
+from senzing import SzEngine
 from senzing_abstract.constants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
-
-from senzing import SzEngine
 
 data_sources = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,

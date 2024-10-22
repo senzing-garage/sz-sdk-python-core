@@ -172,32 +172,31 @@ print-make-variables:
 .PHONY: bandit
 bandit:
 	$(info --- bandit ---------------------------------------------------------------------)
-	@bandit $(shell git ls-files '*.py' ':!:tests/*' ':!:docs/source/*' ':!:tools/*')
+	@$(activate-venv); bandit -c pyproject.toml $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: black
 black:
 	$(info --- black ----------------------------------------------------------------------)
-	@black $(shell git ls-files '*.py' ':!:tests/*' ':!:docs/source/*' ':!:tools/*')
+	@$(activate-venv); black $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: flake8
 flake8:
 	$(info --- flake8 ---------------------------------------------------------------------)
-	@flake8 $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	@$(activate-venv); flake8 $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: isort
 isort:
 	$(info --- isort ----------------------------------------------------------------------)
-	@isort $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	@$(activate-venv); isort $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: mypy
 mypy:
 	$(info --- mypy -----------------------------------------------------------------------)
-	# @mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
-	@$(activate-venv); @mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*' ':!:examples/*')
+	@$(activate-venv); mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:examples/*')
 
 
 .PHONY: pydoc
@@ -215,7 +214,7 @@ pydoc-web:
 .PHONY: pylint
 pylint:
 	$(info --- pylint ---------------------------------------------------------------------)
-	@$(activate-venv); @pylint $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	@$(activate-venv); pylint $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: pytest

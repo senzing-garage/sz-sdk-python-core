@@ -1,13 +1,12 @@
 #! /usr/bin/env python3
 
+from senzing import SzEngine, SzError
 from senzing_abstract.constants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
-
-from senzing import SzEngine, SzError
 
 INSTANCE_NAME = "Example1"
 SETTINGS = {

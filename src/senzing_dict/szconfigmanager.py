@@ -9,10 +9,9 @@ import json
 from types import TracebackType
 from typing import Any, Callable, Dict, Type, Union
 
-from senzing_abstract import SzConfigManagerAbstract
-
 # from senzing import as_str
 from senzing._helpers import as_str
+from senzing_abstract import SzConfigManagerAbstract
 
 # Metadata
 
