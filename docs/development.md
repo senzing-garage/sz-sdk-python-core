@@ -21,8 +21,8 @@ These are "one-time tasks" which may already have been completed.
 Since the Senzing library is a prerequisite, it must be installed first.
 
 1. Verify Senzing C shared objects, configuration, and SDK header files are installed.
-    1. `/opt/senzing/g2/lib`
-    1. `/opt/senzing/g2/sdk/c`
+    1. `/opt/senzing/er/lib`
+    1. `/opt/senzing/er/sdk/c`
     1. `/etc/opt/senzing`
 
 1. If not installed, see [How to Install Senzing for Python Development].
@@ -215,10 +215,4 @@ Create a code coverage map.
 [pytest]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pytest.md
 [Python]: https://www.python.org/
 [sphinx]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/sphinx.md
-[szconfig_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szconfig_pb2_grpc.py
-[szconfigmanager_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szconfigmanager_pb2_grpc.py
-[szdiagnostic_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szdiagnostic_pb2_grpc.py
-[szengine_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szengine_pb2_grpc.py
-[szproduct_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szproduct_pb2_grpc.py
-[sz-sdk-proto/example_generated_source_code/python]: https://github.com/senzing-garage/sz-sdk-proto/tree/main/example_generated_source_code/python
 [Test PyPi]: https://test.pypi.org/
