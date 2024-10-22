@@ -38,7 +38,7 @@ class SzAbstractFactoryAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def create_sz_config(self) -> SzConfigAbstract:
+    def create_sz_config(self, **kwargs: Any) -> SzConfigAbstract:
         """
         The `create_sz_config` method creates a new implementation of an `SzConfigAbstract` object.
 
@@ -63,7 +63,7 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def create_sz_configmanager(self) -> SzConfigManagerAbstract:
+    def create_sz_configmanager(self, **kwargs: Any) -> SzConfigManagerAbstract:
         """
         The `create_sz_configmanager` method creates a new implementation of an `SzConfigManagerAbstract` object.
 
@@ -88,7 +88,7 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def create_sz_diagnostic(self) -> SzDiagnosticAbstract:
+    def create_sz_diagnostic(self, **kwargs: Any) -> SzDiagnosticAbstract:
         """
         The `create_sz_diagnostic` method creates a new implementation of an `SzDiagnosticAbstract` object.
 
@@ -113,7 +113,7 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def create_sz_engine(self) -> SzEngineAbstract:
+    def create_sz_engine(self, **kwargs: Any) -> SzEngineAbstract:
         """
         The `create_sz_engine` method creates a new implementation of an `SzEngineAbstract` object.
 
@@ -138,7 +138,7 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def create_sz_product(self) -> SzProductAbstract:
+    def create_sz_product(self, **kwargs: Any) -> SzProductAbstract:
         """
         The `create_sz_product` method creates a new implementation of an `SzProductAbstract` object.
 
@@ -163,7 +163,7 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         """
         The `destroy` method ...FIXME: .
 

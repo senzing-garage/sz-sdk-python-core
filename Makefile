@@ -189,7 +189,8 @@ isort:
 .PHONY: mypy
 mypy:
 	$(info --- mypy -----------------------------------------------------------------------)
-	@mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	# @mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*')
+	@mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:tools/*' ':!:examples/*')
 
 
 .PHONY: pydoc

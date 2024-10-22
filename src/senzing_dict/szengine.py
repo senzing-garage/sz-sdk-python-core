@@ -422,10 +422,6 @@ class SzEngine:
             )
         )
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_engine.reinitialize(config_id, **kwargs)
-
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],

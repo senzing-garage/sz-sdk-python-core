@@ -49,8 +49,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     def __init__(
         self,
         instance_name: str = "",
-        config_id: int = 0,
         settings: Union[str, Dict[Any, Any]] = "",
+        config_id: int = 0,
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
@@ -60,13 +60,14 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
         self.instance_name = instance_name
-        self.config_id = config_id
         self.settings = settings
+        self.config_id = config_id
         self.verbose_logging = verbose_logging
+        self.is_szconfig_initialized = False
+        self.is_szconfigmanager_initialized = False
+        self.is_szdiagnostic_initialized = False
         self.is_szengine_initialized = False
-        self.is_szdiagnostic_initialized = (
-            False  # TODO:  Not sure if individual flags are needed.
-        )
+        self.is_szproduct_initialized = False
 
     def __enter__(
         self,
@@ -91,38 +92,45 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
-    def create_sz_config(self) -> SzConfigAbstract:
+    def create_sz_config(self, **kwargs: Any) -> SzConfigAbstract:
         # TODO: Do parameters need to be passed in?
-        result = SzConfig(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            verbose_logging=self.verbose_logging,
-        )
+        result = SzConfig()
+        if not self.is_szconfig_initialized:
+            result._initialize(  # pylint: disable=W0212
+                instance_name=self.instance_name,
+                settings=self.settings,
+                verbose_logging=self.verbose_logging,
+            )
+            self.is_szconfig_initialized = True
         return result
 
-    def create_sz_configmanager(self) -> SzConfigManagerAbstract:
-        # TODO: Do parameters need to be passed in?
-        result = SzConfigManager(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            verbose_logging=self.verbose_logging,
-        )
+    def create_sz_configmanager(self, **kwargs: Any) -> SzConfigManagerAbstract:
+        result = SzConfigManager()
+        if not self.is_szconfigmanager_initialized:
+            result._initialize(  # pylint: disable=W0212
+                instance_name=self.instance_name,
+                settings=self.settings,
+                verbose_logging=self.verbose_logging,
+            )
+            self.is_szconfigmanager_initialized = True
         return result
 
-    def create_sz_diagnostic(self) -> SzDiagnosticAbstract:
-        # TODO: Do parameters need to be passed in?
-        result = SzDiagnostic(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            verbose_logging=self.verbose_logging,
-        )
+    def create_sz_diagnostic(self, **kwargs: Any) -> SzDiagnosticAbstract:
+        result = SzDiagnostic()
+        if not self.is_szdiagnostic_initialized:
+            result._initialize(  # pylint: disable=W0212
+                instance_name=self.instance_name,
+                settings=self.settings,
+                verbose_logging=self.verbose_logging,
+            )
+            self.is_szdiagnostic_initialized = True
         return result
 
-    def create_sz_engine(self) -> SzEngineAbstract:
+    def create_sz_engine(self, **kwargs: Any) -> SzEngineAbstract:
         # TODO: Determine if atomic is needed.
         result = SzEngine()
         if not self.is_szengine_initialized:
-            result._initialize(
+            result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 config_id=self.config_id,
@@ -131,16 +139,18 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szengine_initialized = True
         return result
 
-    def create_sz_product(self) -> SzProductAbstract:
-        # TODO: Do parameters need to be passed in?
-        result = SzProduct(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            verbose_logging=self.verbose_logging,
-        )
+    def create_sz_product(self, **kwargs: Any) -> SzProductAbstract:
+        result = SzProduct()
+        if not self.is_szproduct_initialized:
+            result._initialize(  # pylint: disable=W0212
+                instance_name=self.instance_name,
+                settings=self.settings,
+                verbose_logging=self.verbose_logging,
+            )
+            self.is_szproduct_initialized = True
         return result
 
-    def destroy(self) -> None:
+    def destroy(self, **kwargs: Any) -> None:
         # TODO: Implement function.
         # TODO: Determine if atomic
 
@@ -152,9 +162,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
         pass
 
-    def reinitialize(self, config_id: int = 0) -> None:
+    def reinitialize(self, config_id: int = 0, **kwargs: Any) -> None:
         # TODO: Implement function.
         # TODO: Determine if atomic
 
         _ = config_id
-        pass
