@@ -9,7 +9,6 @@ TODO: szabstractfactory.py
 from types import TracebackType
 from typing import Any, Dict, Type, Union
 
-
 from senzing_abstract import (
     SzAbstractFactoryAbstract,
     SzConfigAbstract,
@@ -65,8 +64,9 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         self.settings = settings
         self.verbose_logging = verbose_logging
         self.is_szengine_initialized = False
-        self.is_szdiagnostic_initialized = False # TODO:  Not sure if individual flags are needed.
-
+        self.is_szdiagnostic_initialized = (
+            False  # TODO:  Not sure if individual flags are needed.
+        )
 
     def __enter__(
         self,
@@ -87,31 +87,40 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             # TODO: destroy  (Ant, can you see what's wrong with destroying Senzing process?  Hint: scope)
             pass
 
-
-
     # -------------------------------------------------------------------------
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
     def create_sz_config(self) -> SzConfigAbstract:
         # TODO: Do parameters need to be passed in?
-        result = SzConfig(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        result = SzConfig(
+            instance_name=self.instance_name,
+            settings=self.settings,
+            verbose_logging=self.verbose_logging,
+        )
         return result
-
 
     def create_sz_configmanager(self) -> SzConfigManagerAbstract:
         # TODO: Do parameters need to be passed in?
-        result = SzConfigManager(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        result = SzConfigManager(
+            instance_name=self.instance_name,
+            settings=self.settings,
+            verbose_logging=self.verbose_logging,
+        )
         return result
-
 
     def create_sz_diagnostic(self) -> SzDiagnosticAbstract:
         # TODO: Do parameters need to be passed in?
-        result =  SzDiagnostic(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        result = SzDiagnostic(
+            instance_name=self.instance_name,
+            settings=self.settings,
+            verbose_logging=self.verbose_logging,
+        )
         return result
 
     def create_sz_engine(self) -> SzEngineAbstract:
-        result =  SzEngine()
+        # TODO: Determine if atomic is needed.
+        result = SzEngine()
         if not self.is_szengine_initialized:
             result._initialize(
                 instance_name=self.instance_name,
@@ -122,19 +131,30 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szengine_initialized = True
         return result
 
-
     def create_sz_product(self) -> SzProductAbstract:
         # TODO: Do parameters need to be passed in?
-        result =  SzProduct(instance_name=self.instance_name, settings= self.settings, verbose_logging=self.verbose_logging)
+        result = SzProduct(
+            instance_name=self.instance_name,
+            settings=self.settings,
+            verbose_logging=self.verbose_logging,
+        )
         return result
-
 
     def destroy(self) -> None:
         # TODO: Implement function.
-        pass
+        # TODO: Determine if atomic
 
+        # if not self.is_szengine_initialized:
+        #     xxx
+        #     sz_engine = self.create_sz_engine()
+        #     sz_engine._destroy()
+        #     self.is_szengine_initialized = False
+
+        pass
 
     def reinitialize(self, config_id: int = 0) -> None:
         # TODO: Implement function.
+        # TODO: Determine if atomic
+
         _ = config_id
         pass

@@ -1,18 +1,22 @@
 #! /usr/bin/env python3
 
-from senzing import SzError, SzProduct
+from senzing import SzAbstractFactory, SzError
 
-INSTANCE_NAME = "Example"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
+
 try:
-    sz_product1 = SzProduct(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_product = sz_abstract_factory.create_sz_product()
 except SzError as err:
     print(f"\nError: {err}\n")

@@ -2,23 +2,26 @@
 
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-from senzing import SzConfig, SzConfigManager, SzDiagnostic, SzEngine, SzError
+from senzing import SzAbstractFactory, SzError
 
-INSTANCE_NAME = "Example1"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example1",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_config = SzConfig(INSTANCE_NAME, SETTINGS)
-    sz_configmanager = SzConfigManager(INSTANCE_NAME, SETTINGS)
-    sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_config = sz_abstract_factory.create_sz_config()
+    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
+    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
+    sz_engine = sz_abstract_factory.create_sz_engine()
 
     current_default_config_id = sz_configmanager.get_default_config_id()
     OLD_CONFIG_DEFINITION = sz_configmanager.get_config(current_default_config_id)
@@ -32,7 +35,6 @@ try:
     sz_configmanager.replace_default_config_id(
         current_default_config_id, new_default_config_id
     )
-    sz_engine.reinitialize(new_default_config_id)
-    sz_diagnostic.reinitialize(new_default_config_id)
+    sz_abstract_factory.reinitialize(new_default_config_id)
 except SzError as err:
     print(f"\nError: {err}\n")

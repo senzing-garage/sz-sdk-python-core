@@ -1,27 +1,22 @@
 #! /usr/bin/env python3
 
-from senzing import SzConfigManager, SzError
+from senzing import SzAbstractFactory, SzError
 
-INSTANCE_NAME = "Example"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-# Example 1
 
 try:
-    sz_configmanager_1 = SzConfigManager(INSTANCE_NAME, SETTINGS)
-except SzError as err:
-    print(f"\nError: {err}\n")
-
-# Example 2
-
-try:
-    sz_configmanager_2 = SzConfigManager(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_diagnostic = sz_abstract_factory.create_sz_configmanager()
 except SzError as err:
     print(f"\nError: {err}\n")
