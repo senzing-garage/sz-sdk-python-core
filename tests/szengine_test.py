@@ -1300,7 +1300,6 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     #     )
     # return global_sz_engine
 
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> create engine")
     result = SzEngine()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
