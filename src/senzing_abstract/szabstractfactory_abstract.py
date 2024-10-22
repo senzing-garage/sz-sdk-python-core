@@ -6,6 +6,7 @@ szabstractfactory_abstract.py is the abstract class for all implementations of s
 
 
 from abc import ABC, abstractmethod
+from typing import Any
 
 from .szconfig_abstract import SzConfigAbstract
 from .szconfigmanager_abstract import SzConfigManagerAbstract
@@ -159,6 +160,41 @@ class SzAbstractFactoryAbstract(ABC):
             .. literalinclude:: ../../examples/szabstractfactory/create_sz_product.txt
                 :linenos:
                 :language: json
+        """
+
+    @abstractmethod
+    def destroy(self) -> None:
+        """
+        The `destroy` method ...FIXME: .
+
+        Raises:
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/szabstractfactory/destroy.py
+                :linenos:
+                :language: python
+        """
+
+    @abstractmethod
+    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        """
+        The `reinitialize` method reinitializes the Senzing objects using a specific configuration
+        identifier. A list of available configuration identifiers can be retrieved using
+        `szconfigmanager.get_configs`.
+
+        Args:
+            config_id (int): The configuration ID used for the initialization
+
+        Raises:
+            TypeError: Incorrect datatype of input parameter.
+            szexception.SzError: config_id does not exist.
+
+        .. collapse:: Example:
+
+            .. literalinclude:: ../../examples/szabstractfactory/reinitialize.py
+                :linenos:
+                :language: python
         """
 
     # -------------------------------------------------------------------------

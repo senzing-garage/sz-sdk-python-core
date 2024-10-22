@@ -879,27 +879,6 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """
-        The `reinitialize` method reinitializes the Senzing SzEngine object using a specific configuration
-        identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmanager.get_configs`.
-
-        Args:
-            config_id (int): The configuration ID used for the initialization
-
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-            szexception.SzError: config_id does not exist.
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szengine/szengine_reinitialize.py
-                :linenos:
-                :language: python
-        """
-
-    @abstractmethod
     def search_by_attributes(
         self,
         attributes: str,
