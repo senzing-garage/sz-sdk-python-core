@@ -16,7 +16,8 @@ from senzing import SzError
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    sz_diagnostic = SzDiagnosticCore(
+    sz_diagnostic = SzDiagnosticCore()
+    sz_diagnostic._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

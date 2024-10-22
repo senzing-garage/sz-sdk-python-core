@@ -422,6 +422,10 @@ class SzEngine:
             )
         )
 
+    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        # TODO:
+        pass
+
     def search_by_attributes(
         self,
         attributes: Union[str, Dict[Any, Any]],

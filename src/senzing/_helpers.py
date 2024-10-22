@@ -250,9 +250,9 @@ def escape_json_str(to_escape: str) -> str:
         raise TypeError(f"expected a str, got{to_escape}")
     # TODO ensure_ascii=False = èAnt\\n👍
     # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
-    print(f"{to_escape = }")
+    print(f"{to_escape=}")
     jdumps = json.dumps({"escaped": to_escape}["escaped"])
-    print(f"{jdumps = }")
+    print(f"{jdumps=}")
     return json.dumps({"escaped": to_escape}["escaped"])
 
 

@@ -20,7 +20,8 @@ def test_exception(sz_diagnostic: SzDiagnostic) -> None:
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzDiagnostic(
+    actual = SzDiagnostic()
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -29,7 +30,8 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzDiagnostic(
+    actual = SzDiagnostic()
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -40,7 +42,8 @@ def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
-        actual = SzDiagnostic(
+        actual = SzDiagnostic()
+        actual._initialize(  # pylint: disable=W0212
             bad_instance_name,
             engine_vars["SETTINGS"],
         )
@@ -51,7 +54,8 @@ def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
-        actual = SzDiagnostic(
+        actual = SzDiagnostic()
+        actual._initialize(  # pylint: disable=W0212
             engine_vars["INSTANCE_NAME"],
             bad_settings,
         )
@@ -85,7 +89,8 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
 
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
-    actual = SzDiagnostic(
+    actual = SzDiagnostic()
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )

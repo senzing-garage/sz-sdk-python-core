@@ -57,7 +57,8 @@ def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_instance_name = ""
     with pytest.raises(SzError):
-        SzEngine(
+        test_object = SzEngine()
+        test_object._initialize(  # pylint: disable=W0212
             bad_instance_name,
             engine_vars["SETTINGS"],
         )
@@ -67,7 +68,8 @@ def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     bad_settings = ""
     with pytest.raises(SzError):
-        SzEngine(
+        test_object = SzEngine()
+        test_object._initialize(  # pylint: disable=W0212
             engine_vars["INSTANCE_NAME"],
             bad_settings,
         )
@@ -88,7 +90,7 @@ def test_add_truthset_datasources(
     config_definition = sz_config.export_config(config_handle)
     config_id = sz_configmanager.add_config(config_definition, "Test")
     sz_configmanager.set_default_config_id(config_id)
-    sz_engine.reinitialize(config_id)
+    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -370,7 +372,9 @@ def test_delete_record_with_info_bad_record_id(sz_engine: SzEngine) -> None:
 
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
-    actual = SzEngine(
+    actual = SzEngine()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -1170,7 +1174,8 @@ def test_why_records_bad_record_id(sz_engine: SzEngine) -> None:
 
 def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
     """Add truthset data for tests"""
-    sz_engine = SzEngine(
+    sz_engine = SzEngine()
+    sz_engine._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
         engine_vars["VERBOSE_LOGGING"],
@@ -1217,7 +1222,7 @@ def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
 def test_reinitialize(sz_engine: SzEngine) -> None:
     """Test SzEngine().reinitialize()."""
     config_id = sz_engine.get_active_config_id()
-    sz_engine.reinitialize(config_id)
+    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 
 
 def test_reinitialize_bad_config_id(
@@ -1253,10 +1258,12 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return SzConfig(
+    result = SzConfig()
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    return result
 
 
 # @pytest.fixture(name="sz_configmanager", scope="module")
@@ -1266,10 +1273,12 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return SzConfigManager(
+    result = SzConfigManager()
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    return result
 
 
 # @pytest.fixture(name="sz_engine", scope="module")
@@ -1279,10 +1288,12 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     Single szengine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    return SzEngine(
+    result = SzEngine()
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    return result
 
 
 # -----------------------------------------------------------------------------
