@@ -1,25 +1,24 @@
-name: pytest windows
+name: pytest darwin
 
 on: [pull_request, workflow_dispatch]
 
 env:
-  LD_LIBRARY_PATH: 'C:\Program Files\Senzing\er\lib'
-  PYTHONPATH: 'D:\a\sz-sdk-python\sz-sdk-python\src'
-  SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db'
+  PYTHONPATH: /Users/runner/work/template-python/template-python/src
+  SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 
 permissions:
   contents: read
 
 jobs:
-  pytest-windows:
+  pytest-darwin:
     name: "pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        # python-version: ["3.8", "3.9", "3.10", "3.11"]
-        python-version: ["3.8", "3.11"]
+        os: [macos-13]
+        # 3.8 and 3.9 are unsupported on the darwin runner
+        python-version: ["3.10", "3.11"]
         senzingapi-version: [staging-v4]
 
     steps:
@@ -33,8 +32,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv .\\venv
-          .\\venv\\Scripts\\activate
+          python -m venv ./venv
+          source ./venv/bin/activate
+          echo "PATH=${PATH}" >> "${GITHUB_ENV}"
           python -m pip install --upgrade pip
           python -m pip install --requirement requirements.txt
           python -m pip install psutil pytest pytest-cov pytest-schema
@@ -48,25 +48,22 @@ jobs:
         with:
           senzingapi-version: ${{ matrix.senzingapi-version }}
 
-      - name: Add to "Path" environment variable
-        run: printf "C:\Program Files\Senzing\er\lib" | Out-File -FilePath "$env:GITHUB_PATH" -Encoding utf8 -Append
-
       - name: Copy /etc files
-        run: copy testdata/senzing-license/g2.lic "C:\Program Files\Senzing\er\etc\g2.lic"
+        run: sudo cp testdata/senzing-license/g2.lic /opt/senzing/er/etc/g2.lic
 
       - name: Copy test database files
-        run: mkdir "C:\Temp\sqlite" && copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
+        run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: Run pytest on tests
         run: |
-          .\\venv\\Scripts\\activate
+          export DYLD_LIBRARY_PATH=/opt/senzing/er/lib:/opt/senzing/er/lib/macos
           pytest tests/ --verbose --capture=no --cov=src
 
       - name: Rename coverage file
         env:
           COVERAGE_FILE: "coverage.${{ matrix.python-version }}"
         run: |
-          Rename-Item -Path.coverage -NewName "$env:COVERAGE_FILE"
+          mv .coverage "$COVERAGE_FILE"
 
       - name: Store coverage file
         uses: actions/upload-artifact@v4
@@ -76,7 +73,7 @@ jobs:
 
   coverage:
     name: Coverage
-    needs: pytest-windows
+    needs: pytest-darwin
     permissions:
       pull-requests: write
       contents: write

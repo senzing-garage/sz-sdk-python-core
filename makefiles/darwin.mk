@@ -18,7 +18,7 @@ SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
 
 .PHONY: clean-osarch-specific
 clean-osarch-specific:
-	@rm -fr /tmp/sqlite || true	
+	@rm -fr /tmp/sqlite || true
 	@rm -f  $(MAKEFILE_DIRECTORY)/.coverage || true
 	@rm -f  $(MAKEFILE_DIRECTORY)/coverage.xml || true
 	@rm -fr $(DIST_DIRECTORY) || true
@@ -37,6 +37,10 @@ coverage-osarch-specific:
 	@pytest --cov=src --cov-report=xml $(shell git ls-files '*.py')
 	@coverage html
 	@open $(MAKEFILE_DIRECTORY)/htmlcov/index.html
+
+
+.PHONY: dependencies-for-development-osarch-specific
+dependencies-for-development-osarch-specific:
 
 
 .PHONY: documentation-osarch-specific
@@ -68,6 +72,10 @@ test-osarch-specific:
 	@echo "--- Test examples ----------------------------------------------------"
 	@pytest examples/ --verbose --capture=no --cov=src/senzing
 
+
+.PHONY: venv-osarch-specific
+venv-osarch-specific:
+	@python3 -m venv .venv
 
 # -----------------------------------------------------------------------------
 # Makefile targets supported only by this platform.

@@ -76,7 +76,7 @@ class FreeCResources:
         exc_value: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.handle.G2GoHelper_free(self.resource)
+        self.handle.SzHelper_free(self.resource)
 
 
 # -----------------------------------------------------------------------------
@@ -153,9 +153,9 @@ def load_sz_library(lib: str = "") -> CDLL:
             win_path = find_library(lib if lib else "G2")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        return cdll.LoadLibrary(lib if lib else "libG2.so")
+        return cdll.LoadLibrary(lib if lib else "libSz.so")
     except OSError as err:
-        # TODO Change to Sz library when the libG2.so is changed in a build
+        # TODO Change to Sz library when the libSz.so is changed in a build
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"

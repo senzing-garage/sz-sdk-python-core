@@ -67,6 +67,11 @@ test-osarch-specific:
 	@echo "--- Test examples ----------------------------------------------------"
 	@pytest examples/ --verbose --capture=no --cov=src/senzing
 
+
+.PHONY: venv-osarch-specific
+venv-osarch-specific:
+	@python -m venv .venv
+
 # -----------------------------------------------------------------------------
 # Makefile targets supported only by this platform.
 # -----------------------------------------------------------------------------
