@@ -16,7 +16,6 @@ Example:
 
 # pylint: disable=R0903
 
-from contextlib import suppress
 from ctypes import c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
@@ -102,11 +101,11 @@ class SzProduct(SzProductAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
+        # instance_name: str = "",
         # TODO
         # settings: Union[str, Dict[Any, Any]] = "",
-        settings: Union[str, Dict[Any, Any]] = "{}",
-        verbose_logging: int = 0,
+        # settings: Union[str, Dict[Any, Any]] = "{}",
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -115,10 +114,10 @@ class SzProduct(SzProductAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
-        self.initialized = False
-        self.instance_name = instance_name
-        self.settings = settings
-        self.verbose_logging = verbose_logging
+        # self.initialized = False
+        # self.instance_name = instance_name
+        # self.settings = settings
+        # self.verbose_logging = verbose_logging
 
         # Load binary library.
         self.library_handle = load_sz_library()
@@ -150,14 +149,14 @@ class SzProduct(SzProductAbstract):
         #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        self.initialized = True
+        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        # self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzProduct methods

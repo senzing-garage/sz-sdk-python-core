@@ -15,7 +15,6 @@ Example:
 """
 
 # pylint: disable=R0903
-from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
@@ -30,7 +29,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 from ._version import is_supported_senzingapi_version
 
@@ -145,9 +143,9 @@ class SzConfigManager(SzConfigManagerAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
-        settings: Union[str, Dict[Any, Any]] = "",
-        verbose_logging: int = 0,
+        # instance_name: str = "",
+        # settings: Union[str, Dict[Any, Any]] = "",
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -156,10 +154,10 @@ class SzConfigManager(SzConfigManagerAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
-        self.initialized = False
-        self.settings = settings
-        self.instance_name = instance_name
-        self.verbose_logging = verbose_logging
+        # self.initialized = False
+        # self.settings = settings
+        # self.instance_name = instance_name
+        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -206,18 +204,18 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
         self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
-        if not self.instance_name or len(self.settings) == 0:
-            raise sdk_exception(2)
+        # if not self.instance_name or len(self.settings) == 0:
+        #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        self.initialized = True
+        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        # self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods

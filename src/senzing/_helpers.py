@@ -31,8 +31,9 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing import SzError
 from senzing_abstract import ENGINE_EXCEPTION_MAP
+
+from senzing import SzError
 
 # if sys.version_info < (3, 10):
 if sys.version_info < (3, 11):

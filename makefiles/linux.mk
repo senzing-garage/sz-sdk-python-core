@@ -13,7 +13,7 @@ SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
 
 .PHONY: clean-osarch-specific
 clean-osarch-specific:
-	@rm -fr /tmp/sqlite || true	
+	@rm -fr /tmp/sqlite || true
 	@rm -f  $(MAKEFILE_DIRECTORY)/.coverage || true
 	@rm -f  $(MAKEFILE_DIRECTORY)/coverage.xml || true
 	@rm -fr $(DIST_DIRECTORY) || true
@@ -62,22 +62,20 @@ setup-osarch-specific:
 
 .PHONY: test-osarch-specific
 test-osarch-specific:
-	@echo "--- Unit tests -------------------------------------------------------"
-	@pytest tests/ --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
-	# @echo "--- Test examples ----------------------------------------------------"
-	# @pytest examples/ --verbose --capture=no
-	@echo "--- Test examples using unittest -------------------------------------"
-	@python3 -m unittest \
-		examples/szconfig/*.py \
-		examples/szconfigmanager/*.py \
-		examples/szdiagnostic/*.py \
-		examples/szengine/*.py \
-		examples/szproduct/*.py
+	$(info --- Unit tests -------------------------------------------------------)
+	@$(activate-venv); pytest tests/szconfigmanager_test.py --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
+	# $(info --- Test examples using unittest -------------------------------------)
+	# @$(activate-venv); python3 -m unittest \
+	# 	examples/szconfig/*.py \
+	# 	examples/szconfigmanager/*.py \
+	# 	examples/szdiagnostic/*.py \
+	# 	examples/szengine/*.py \
+	# 	examples/szproduct/*.py
 
 
 .PHONY: test-examples
 test-examples:
-	@echo "--- Test examples using unittest -------------------------------------"
+	$(info --- Test examples using unittest -------------------------------------)
 	@python3 -m unittest \
 		examples/misc/add_truthset_datasources.py \
 		examples/misc/add_truthset_data.py

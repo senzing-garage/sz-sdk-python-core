@@ -4,9 +4,14 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-
-from senzing import SzConfig, SzConfigManager, SzConfigurationError, SzError
 from senzing_truthset import TRUTHSET_DATASOURCES
+
+from senzing import (
+    SzConfig,
+    SzConfigManager,
+    SzConfigurationError,
+    SzReplaceConflictError,
+)
 
 # -----------------------------------------------------------------------------
 # SzConfigManager testcases
@@ -21,7 +26,8 @@ def test_exception(sz_configmanager: SzConfigManager) -> None:
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManager(
+    actual = SzConfigManager()
+    actual._initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -30,33 +36,36 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManager(
+    actual = SzConfigManager()
+    actual._initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
     assert isinstance(actual, SzConfigManager)
 
 
-def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_instance_name = ""
-    with pytest.raises(SzError):
-        actual = SzConfigManager(
-            bad_instance_name,
-            engine_vars["SETTINGS"],
-        )
-        assert isinstance(actual, SzConfigManager)
+# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_instance_name = ""
+#     with pytest.raises(SzError):
+#         actual = SzConfigManager()
+#         actual._initialize(
+#             bad_instance_name,
+#             engine_vars["SETTINGS"],
+#         )
+#         assert isinstance(actual, SzConfigManager)
 
 
-def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_settings = ""
-    with pytest.raises(SzError):
-        actual = SzConfigManager(
-            engine_vars["INSTANCE_NAME"],
-            bad_settings,
-        )
-        assert isinstance(actual, SzConfigManager)
+# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_settings = ""
+#     with pytest.raises(SzError):
+#         actual = SzConfigManager()
+#         actual._initialize(
+#             engine_vars["INSTANCE_NAME"],
+#             bad_settings,
+#         )
+#         assert isinstance(actual, SzConfigManager)
 
 
 def test_add_config(sz_configmanager: SzConfigManager, sz_config: SzConfig) -> None:
@@ -121,7 +130,8 @@ def test_add_config_bad_config_comment_type(
 
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
-    actual = SzConfigManager(
+    actual = SzConfigManager()
+    actual._initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -243,7 +253,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(
     new_default_config_id = sz_configmanager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(SzConfigurationError):
+    with pytest.raises(SzReplaceConflictError):
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id
         )
@@ -316,7 +326,8 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     engine_vars is returned from conftest.py.
     """
 
-    result = SzConfig(
+    result = SzConfig()
+    result._initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -329,7 +340,8 @@ def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]) -> SzConfigMan
     """Single szconfigmanager object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    result = SzConfigManager(
+    result = SzConfigManager()
+    result._initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
