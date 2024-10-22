@@ -73,71 +73,59 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```
 
-## Running tests
+## Build
 
-1. [Bandit]
+Not applicable.
 
-    ```console
-    clear; make clean setup bandit
-    ```
+# Run
 
-1. [Black]
+Not applicable.
 
-    ```console
-    clear; make clean setup black
-    ```
+## Test
 
-1. [Flake8]
+1. Run tests.
+   Example:
 
     ```console
-    clear; make clean setup flake8
-    ```
-
-1. [Isort]
-
-    ```console
-    clear; make clean setup isort
-    ```
-
-1. [Mypy]
-
-    ```console
-    clear; make clean setup mypy
-    ```
-
-1. [Pylint]
-
-    ```console
-    clear; make clean setup pylint
-    ```
-
-1. [Pytest] and [Coverage]
-
-    ```console
-    clear; make clean setup pytest coverage
-    ```
-
-1. Test
-
-    ```console
-    clear; make clean setup test
-    ```
-
-1. (Optional) Run all
-
-    ```console
-    clear
-    make clean setup bandit
-    make clean setup black
-    make clean setup flake8
-    make clean setup isort
-    make clean setup mypy
-    make clean setup pylint
-    make clean setup pytest coverage
+    cd ${GIT_REPOSITORY_DIR}
     make clean setup test
+
     ```
 
-## Working with Python wheel file
+## Coverage
+
+Create a code coverage map.
+
+1. Run Go tests.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make clean setup coverage
+
+    ```
+
+   A web-browser will show the results of the coverage.
+   The goal is to have over 80% coverage.
+
+## Documentation
+
+1. View documentation.
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make clean documentation
+
+    ```
+
+1. If a web page doesn't appear, run the following command and paste the results into a web browser's address bar.
+
+    ```console
+    echo "file://${GIT_REPOSITORY_DIR}/docs/build/html/index.html"
+    ```
+
+## Package
 
 1. Build the `wheel` file for distribution.
    Example:
@@ -145,6 +133,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
     ```console
     cd ${GIT_REPOSITORY_DIR}
     make package
+
     ```
 
 1. Verify that `senzing` is not installed.
@@ -152,6 +141,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```console
     python3 -m pip freeze | grep -e senzing
+
     ```
 
    Nothing is returned.
@@ -161,6 +151,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```console
     python3 -m pip install ${GIT_REPOSITORY_DIR}/dist/*.whl
+
     ```
 
 1. Verify that `senzing` is installed.
@@ -168,6 +159,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```console
     python3 -m pip freeze | grep -e senzing
+
     ```
 
     Example return:
@@ -178,26 +170,55 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```console
     python3 -m pip uninstall senzing
+
     ```
+
+## Test publish
+
+:warning:  This test can only be performed once per versioned release.
+
+1. Test publishing `wheel` file to [Test PyPi].
+   Example:
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    make publish-test
+
+    ```
+
+1. Visit [Test PyPi] and search for package.
 
 ## References
 
-1. [Bandit]
-1. [Black]
-1. [Coverage]
-1. [Flake8]
-1. [Isort]
-1. [Mypy]
-1. [Pylint]
-1. [Pytest]
-1. [Sphinx]
+1. [bandit]
+1. [black]
+1. [coverage]
+1. [flake8]
+1. [isort]
+1. [mypy]
+1. [pylint]
+1. [pytest]
+1. [sphinx]
 
-[Bandit]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/bandit.md
-[Black]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/black.md
-[Coverage]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/coverage.md
-[Flake8]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/flake8.md
-[Isort]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/isort.md
-[Mypy]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/mypy.md
-[Pylint]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pylint.md
-[Pytest]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pytest.md
-[Sphinx]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/sphinx.md
+[bandit]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/bandit.md
+[black]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/black.md
+[clone-repository]: https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md
+[coverage]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/coverage.md
+[docker]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md
+[flake8]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/flake8.md
+[git]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md
+[How to Install Senzing for Python Development]: https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/install-senzing-for-python-development.md
+[isort]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/isort.md
+[make]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md
+[mypy]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/mypy.md
+[pylint]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pylint.md
+[pytest]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/pytest.md
+[Python]: https://www.python.org/
+[sphinx]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/sphinx.md
+[szconfig_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szconfig_pb2_grpc.py
+[szconfigmanager_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szconfigmanager_pb2_grpc.py
+[szdiagnostic_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szdiagnostic_pb2_grpc.py
+[szengine_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szengine_pb2_grpc.py
+[szproduct_pb2_grpc.py]: ../src/senzing_grpc/pb2_grpc/szproduct_pb2_grpc.py
+[sz-sdk-proto/example_generated_source_code/python]: https://github.com/senzing-garage/sz-sdk-proto/tree/main/example_generated_source_code/python
+[Test PyPi]: https://test.pypi.org/
