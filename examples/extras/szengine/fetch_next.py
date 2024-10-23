@@ -27,4 +27,4 @@ try:
 
     sz_engine.close_export(export_handle)
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

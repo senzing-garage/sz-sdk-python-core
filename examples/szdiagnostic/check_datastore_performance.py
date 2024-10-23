@@ -19,6 +19,6 @@ try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
     RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
-    print(RESULT)
+    print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

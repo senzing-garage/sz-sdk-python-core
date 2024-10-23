@@ -22,4 +22,4 @@ try:
     config_definition = sz_configmanager.get_config(config_id)
     config_handle = sz_config.import_config(config_definition)
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

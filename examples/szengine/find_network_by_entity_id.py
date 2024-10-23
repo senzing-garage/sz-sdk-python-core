@@ -30,6 +30,6 @@ try:
     RESULT = sz_engine.find_network_by_entity_id(
         ENTITY_IDS, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES, FLAGS
     )
-    print(RESULT)
+    print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

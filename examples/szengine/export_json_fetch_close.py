@@ -31,6 +31,6 @@ try:
             break
         RESULT += fragment
     sz_engine.close_export(export_handle)
-    print(RESULT)
+    print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

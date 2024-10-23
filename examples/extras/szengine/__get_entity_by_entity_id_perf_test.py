@@ -25,7 +25,7 @@
 # try:
 #     sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
 # except SzError as err:
-#     print(f"\nError in {__file__}: {err}\n")
+#     print(f"\nError in {__file__}:\n{err}\n")
 
 #     sys.exit()
 

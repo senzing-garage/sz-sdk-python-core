@@ -28,6 +28,6 @@ try:
         if not redo_record:
             break
         RESULT = sz_engine.process_redo_record(redo_record, FLAGS)
-        print(RESULT)
+        print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")
