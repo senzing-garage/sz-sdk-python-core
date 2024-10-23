@@ -31,7 +31,7 @@ from senzing_abstract import (
     SzUnrecoverableError,
 )
 
-from .szabstractfactory import SzAbstractFactory
+from .szabstractfactory import SzAbstractFactory, SzAbstractFactoryParameters
 from .szconfig import SzConfig
 from .szconfigmanager import SzConfigManager
 from .szdiagnostic import SzDiagnostic
@@ -51,6 +51,7 @@ __all__ = [
     "SZ_VERBOSE_LOGGING",
     "SZ_WITHOUT_INFO",
     "SzAbstractFactory",
+    "SzAbstractFactoryParameters",
     "SzBadInputError",
     "SzConfig",
     "SzConfigAbstract",

@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example1",
     "settings": {
         "PIPELINE": {
@@ -36,4 +36,4 @@ try:
     )
     sz_abstract_factory.reinitialize(new_default_config_id)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

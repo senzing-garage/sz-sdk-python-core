@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -19,4 +19,4 @@ try:
     sz_engine = sz_abstract_factory.create_sz_engine()
     # Do Work
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

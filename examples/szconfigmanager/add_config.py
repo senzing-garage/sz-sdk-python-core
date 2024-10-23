@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an empty example"
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -23,4 +23,4 @@ try:
     CONFIG_DEFINITION = sz_config.export_config(config_handle)
     config_id = sz_configmanager.add_config(CONFIG_DEFINITION, CONFIG_COMMENT)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

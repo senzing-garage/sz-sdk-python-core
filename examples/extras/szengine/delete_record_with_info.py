@@ -2,10 +2,15 @@
 
 import json
 
-from senzing import SzAbstractFactory, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 DATA_SOURCE_CODE = "TEST"
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -26,4 +31,4 @@ try:
     )
     print(json.dumps(RESULT))
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

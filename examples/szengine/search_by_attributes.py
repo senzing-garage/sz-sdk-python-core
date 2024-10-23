@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 ATTRIBUTES = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -22,4 +27,4 @@ try:
     RESULT = sz_engine.search_by_attributes(ATTRIBUTES, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

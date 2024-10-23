@@ -2,11 +2,11 @@
 
 import time
 
-from senzing import SzAbstractFactory, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = f"REPLACE_DEFAULT_CONFIG_ID_{time.time()}"
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -36,4 +36,4 @@ try:
 
     sz_configmanager.set_default_config_id(config_id)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

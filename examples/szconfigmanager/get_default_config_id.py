@@ -1,8 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -20,4 +20,4 @@ try:
     CONFIG_ID = sz_configmanager.get_default_config_id()
     print(CONFIG_ID)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

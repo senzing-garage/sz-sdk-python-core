@@ -2,7 +2,7 @@
 
 from typing import List, Tuple
 
-from senzing import SzAbstractFactory
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters
 from senzing_abstract.constants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
@@ -15,7 +15,7 @@ data_sources = {
     "REFERENCE": TRUTHSET_REFERENCE_RECORDS,
     "WATCHLIST": TRUTHSET_WATCHLIST_RECORDS,
 }
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example1",
     "settings": {
         "PIPELINE": {

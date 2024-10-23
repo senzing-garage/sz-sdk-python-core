@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 BUILD_OUT_DEGREE = 1
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -27,4 +32,4 @@ try:
     )
     print(RESULT)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")

@@ -7,7 +7,7 @@ TODO: szabstractfactory.py
 # pylint: disable=E1101
 
 from types import TracebackType
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Type, TypedDict, Union
 
 from senzing_abstract import (
     SzAbstractFactoryAbstract,
@@ -30,6 +30,22 @@ __all__ = ["SzAbstractFactoryAbstract"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-10-21"
 __updated__ = "2024-10-24"
+
+
+# -----------------------------------------------------------------------------
+# SzAbstractFactoryParameters class
+# -----------------------------------------------------------------------------
+
+
+class SzAbstractFactoryParameters(TypedDict, total=False):
+    """
+    SzAbstractFactoryParameters is used to create a dictionary that can be unpacked when creating an SzAbstractFactory.
+    """
+
+    instance_name: str
+    settings: Union[str, Dict[Any, Any]]
+    config_id: int
+    verbose_logging: int
 
 
 # -----------------------------------------------------------------------------

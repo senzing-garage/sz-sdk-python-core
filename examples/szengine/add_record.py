@@ -1,9 +1,14 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 DATA_SOURCE_CODE = "TEST"
-FACTORY_PARAMETERS = {
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -40,4 +45,4 @@ try:
     RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, FLAGS)
     print(RESULT)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}: {err}\n")
