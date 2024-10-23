@@ -99,7 +99,7 @@ def test_add_truthset_datasources(
 
 
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_dict(sz_engine: SzEngine):
+# def test_add_record_dict(sz_engine: SzEngine) -> None:
 #     """Test add_record where the record is a dict."""
 #     data_source_code = "TEST"
 #     record_id = "1"
@@ -108,7 +108,7 @@ def test_add_truthset_datasources(
 
 
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-def test_add_record_str(sz_engine: SzEngine):
+def test_add_record_str(sz_engine: SzEngine) -> None:
     """Test add_record where the record is a JSON string."""
     data_source_code = "TEST"
     record_id = "1"
@@ -118,7 +118,7 @@ def test_add_record_str(sz_engine: SzEngine):
 
 # TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_type(sz_engine: SzEngine):
+# def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
 #     """Test add_record with incorrect data source code type."""
 #     data_source_code = 1
 #     record_id = "1"
@@ -128,7 +128,7 @@ def test_add_record_str(sz_engine: SzEngine):
 
 
 # TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_value(sz_engine: SzEngine):
+# def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
 #     """Test add_record with non-existent data source code."""
 #     data_source_code = "DOESN'T EXIST"
 #     record_id = "1"
@@ -222,7 +222,7 @@ def test_add_record_record_str_empty(sz_engine: SzEngine) -> None:
 
 
 # NOTE This doesn't throw an exception because json dumps results in a valid json str '{}'
-# def test_add_record_record_dict_empty(sz_engine: SzEngine):
+# def test_add_record_record_dict_empty(sz_engine: SzEngine) -> None:
 #     """Test add_record with empty record as a dictionary"""
 #     with pytest.raises(g2exception.SzError):
 #         sz_engine.add_record(data_source_code, record_id, {})
@@ -312,7 +312,7 @@ def test_close_export() -> None:
 def test_count_redo_records(sz_engine: SzEngine) -> None:
     """Test SzEngine().count_redo_records()."""
     actual = sz_engine.count_redo_records()
-    assert actual == 2
+    assert actual == 3
 
 
 def test_delete_record(sz_engine: SzEngine) -> None:

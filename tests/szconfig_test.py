@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import SZ_NO_LOGGING, SzConfig, SzConfigurationError
+from senzing import SzConfig, SzConfigurationError
 
 # -----------------------------------------------------------------------------
 # SzConfig testcases
@@ -267,7 +267,7 @@ def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
 #     """Test SzConfig().init() and SzConfig.destroy()."""
 #     instance_name = "Example"
 #     settings: Dict[Any, Any] = {}
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     verbose_logging = SZ_NO_LOGGING
 #     sz_config.initialize(instance_name, settings, verbose_logging)
 #     sz_config.destroy()
 
@@ -276,7 +276,7 @@ def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
 #     """Test SzConfig().init() and SzConfig.destroy()."""
 #     instance_name = "Example"
 #     settings = "{}"
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     verbose_logging = SZ_NO_LOGGING
 #     sz_config.initialize(instance_name, settings, verbose_logging)
 #     sz_config.destroy()
 
@@ -323,6 +323,7 @@ export_config_schema = {
     "G2_CONFIG": {
         "CFG_ATTR": [
             {
+                Optional("ADVANCED"): Or(str, None),
                 "ATTR_ID": int,
                 "ATTR_CODE": str,
                 "ATTR_CLASS": str,
@@ -330,7 +331,6 @@ export_config_schema = {
                 "FELEM_CODE": Or(str, None),
                 "FELEM_REQ": str,
                 "DEFAULT_VALUE": Or(str, None),
-                Optional("ADVANCED"): Or(str, None),
                 "INTERNAL": Or(str, None),
             },
         ],

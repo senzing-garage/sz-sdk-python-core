@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SZ_NO_LOGGING, SzProduct
+from senzing import SzProduct
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -81,7 +81,7 @@ def test_get_version(sz_product: SzProduct) -> None:
 #     """Test init/destroy cycle."""
 #     instance_name = "Example"
 #     settings: Dict[Any, Any] = {}
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     verbose_logging = SZ_NO_LOGGING
 #     sz_product.initialize(instance_name, settings, verbose_logging)
 #     sz_product.destroy()
 
@@ -90,7 +90,7 @@ def test_get_version(sz_product: SzProduct) -> None:
 #     """Test init/destroy cycle a second time."""
 #     instance_name = "Example"
 #     settings = "{}"
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
+#     verbose_logging = SZ_NO_LOGGING
 #     sz_product.initialize(instance_name, settings, verbose_logging)
 #     sz_product.destroy()
 

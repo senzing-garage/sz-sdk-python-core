@@ -4,8 +4,6 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing_abstract import SZ_NO_LOGGING
-from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import (
     SzConfig,
@@ -13,6 +11,7 @@ from senzing import (
     SzConfigurationError,
     SzReplaceConflictError,
 )
+from senzing_truthset import TRUTHSET_DATASOURCES
 
 # -----------------------------------------------------------------------------
 # SzConfigManager testcases
@@ -151,7 +150,9 @@ def test_get_config(sz_configmanager: SzConfigManager) -> None:
 def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -204,7 +205,9 @@ def test_replace_default_config_id_bad_new_default_config_id_type(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -235,7 +238,9 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
     new_default_config_id = sz_configmanager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(TypeError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -282,7 +287,9 @@ def test_set_default_config_id_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -385,6 +392,7 @@ config_schema = {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_ID": int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_CFRTN": [
@@ -406,6 +414,8 @@ config_schema = {
                 "CFUNC_ID": int,
                 "CFUNC_CODE": str,
                 "CFUNC_DESC": str,
+                Optional("FUNC_LIB"): str,
+                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
@@ -424,6 +434,7 @@ config_schema = {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
                 "DFUNC_ID": int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_DFUNC": [
@@ -431,6 +442,8 @@ config_schema = {
                 "DFUNC_ID": int,
                 "DFUNC_CODE": str,
                 "DFUNC_DESC": str,
+                Optional("FUNC_LIB"): str,
+                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
                 "LANGUAGE": Or(str, None),
@@ -441,10 +454,20 @@ config_schema = {
                 "DSRC_ID": int,
                 "DSRC_CODE": str,
                 "DSRC_DESC": str,
+                Optional("DSRC_RELY"): int,
                 "RETENTION_LEVEL": str,
+                Optional("CONVERSATIONAL"): str,
             },
         ],
         "CFG_DSRC_INTEREST": [],
+        Optional("CFG_ECLASS"): [
+            {
+                Optional("ECLASS_ID"): int,
+                "ECLASS_CODE": str,
+                "ECLASS_DESC": str,
+                "RESOLVE": str,
+            },
+        ],
         "CFG_EFBOM": [
             {
                 "EFCALL_ID": int,
@@ -470,6 +493,8 @@ config_schema = {
                 "EFUNC_ID": int,
                 "EFUNC_CODE": str,
                 "EFUNC_DESC": str,
+                Optional("FUNC_LIB"): str,
+                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
             },
@@ -487,12 +512,22 @@ config_schema = {
             {
                 "ERRULE_ID": int,
                 "ERRULE_CODE": str,
+                Optional("ERRULE_DESC"): str,
                 "RESOLVE": str,
                 "RELATE": str,
+                Optional("REF_SCORE"): int,
                 "RTYPE_ID": int,
                 "QUAL_ERFRAG_CODE": str,
                 "DISQ_ERFRAG_CODE": Or(str, None),
                 "ERRULE_TIER": Or(int, None),
+            },
+        ],
+        Optional("CFG_ETYPE"): [
+            {
+                "ETYPE_ID": int,
+                "ETYPE_CODE": str,
+                "ETYPE_DESC": str,
+                Optional("ECLASS_ID"): int,
             },
         ],
         "CFG_FBOM": [
@@ -508,6 +543,7 @@ config_schema = {
         "CFG_FBOVR": [
             {
                 "FTYPE_ID": int,
+                Optional("ECLASS_ID"): int,
                 "UTYPE_CODE": str,
                 "FTYPE_FREQ": str,
                 "FTYPE_EXCL": str,
@@ -526,6 +562,7 @@ config_schema = {
                 Optional("FELEM_ID"): int,
                 "FELEM_CODE": str,
                 "FELEM_DESC": str,
+                Optional("TOKENIZE"): str,
                 "DATA_TYPE": str,
             },
         ],
@@ -541,6 +578,7 @@ config_schema = {
                 "PERSIST_HISTORY": str,
                 "USED_FOR_CAND": str,
                 "DERIVED": str,
+                Optional("DERIVATION"): Or(str, None),
                 "RTYPE_ID": int,
                 "ANONYMIZE": str,
                 "VERSION": int,
@@ -564,6 +602,14 @@ config_schema = {
                 "GPLAN_DESC": str,
             },
         ],
+        Optional("CFG_LENS"): [
+            {
+                Optional("LENS_ID"): int,
+                "LENS_CODE": str,
+                "LENS_DESC": str,
+            },
+        ],
+        Optional("CFG_LENSRL"): [],
         "CFG_RCLASS": [
             {
                 "RCLASS_ID": int,
@@ -578,6 +624,7 @@ config_schema = {
                 "RTYPE_CODE": str,
                 "RTYPE_DESC": str,
                 "RCLASS_ID": int,
+                Optional("REL_STRENGTH"): int,
                 "BREAK_RES": str,
             },
         ],
@@ -595,6 +642,8 @@ config_schema = {
                 "SFUNC_ID": int,
                 "SFUNC_CODE": str,
                 "SFUNC_DESC": str,
+                Optional("FUNC_LIB"): str,
+                Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "LANGUAGE": Or(str, None),
             },
@@ -603,7 +652,11 @@ config_schema = {
             {
                 "OOM_TYPE": str,
                 "OOM_LEVEL": str,
+                Optional("LENS_ID"): int,
                 "FTYPE_ID": int,
+                Optional("LIB_FEAT_ID"): int,
+                Optional("FELEM_ID"): int,
+                Optional("LIB_FELEM_ID"): int,
                 "THRESH1_CNT": int,
                 "THRESH1_OOM": int,
                 "NEXT_THRESH": int,
