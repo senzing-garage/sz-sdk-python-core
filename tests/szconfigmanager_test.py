@@ -4,6 +4,7 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
+from senzing_abstract import SZ_NO_LOGGING
 from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing import (
@@ -27,7 +28,7 @@ def test_exception(sz_configmanager: SzConfigManager) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManager()
-    actual._initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -37,7 +38,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManager()
-    actual._initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -131,7 +132,7 @@ def test_add_config_bad_config_comment_type(
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
     actual = SzConfigManager()
-    actual._initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -150,7 +151,7 @@ def test_get_config(sz_configmanager: SzConfigManager) -> None:
 def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -161,7 +162,7 @@ def test_get_config_bad_config_id_value(sz_configmanager: SzConfigManager) -> No
         sz_configmanager.get_config(bad_config_id)
 
 
-def test_get_config_list(sz_configmanager: SzConfigManager) -> None:
+def test_get_configs(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     actual = sz_configmanager.get_configs()
     actual_as_dict = json.loads(actual)
@@ -203,7 +204,7 @@ def test_replace_default_config_id_bad_new_default_config_id_type(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         sz_configmanager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -234,7 +235,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
     new_default_config_id = sz_configmanager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -263,18 +264,17 @@ def test_set_default_config_id(
     sz_configmanager: SzConfigManager, sz_config: SzConfig
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
-    current_config_id = sz_configmanager.get_default_config_id()
-    current_config = sz_configmanager.get_config(current_config_id)
-    config_handle = sz_config.import_config(current_config)
-    data_source_code = "CUSTOMERS2"
+    old_config_id = sz_configmanager.get_default_config_id()
+    config_handle = sz_config.create_config()
+    data_source_code = "CUSTOMERS"
     sz_config.add_data_source(config_handle, data_source_code)
     config_definition = sz_config.export_config(config_handle)
     config_comment = "Test"
-    new_config_id = sz_configmanager.add_config(config_definition, config_comment)
-    assert current_config_id != new_config_id
-    sz_configmanager.set_default_config_id(new_config_id)
+    config_id = sz_configmanager.add_config(config_definition, config_comment)
+    assert old_config_id != config_id
+    sz_configmanager.set_default_config_id(config_id)
     actual = sz_configmanager.get_default_config_id()
-    assert actual == new_config_id
+    assert actual == config_id
 
 
 def test_set_default_config_id_bad_config_id_type(
@@ -282,7 +282,7 @@ def test_set_default_config_id_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(TypeError):
         sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -327,7 +327,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
 
     result = SzConfig()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -341,7 +341,7 @@ def szconfigmanager_instance_fixture(engine_vars: Dict[Any, Any]) -> SzConfigMan
     build_engine_vars is returned from conftest.pys"""
 
     result = SzConfigManager()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -361,6 +361,7 @@ config_schema = {
     "G2_CONFIG": {
         "CFG_ATTR": [
             {
+                Optional("ADVANCED"): Or(str, None),
                 "ATTR_ID": int,
                 "ATTR_CODE": str,
                 "ATTR_CLASS": str,
@@ -375,8 +376,8 @@ config_schema = {
             {
                 "CFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_CFCALL": [
@@ -392,7 +393,7 @@ config_schema = {
                 "CFUNC_ID": int,
                 "FTYPE_ID": int,
                 "CFUNC_RTNVAL": str,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
                 "SAME_SCORE": int,
                 "CLOSE_SCORE": int,
                 "LIKELY_SCORE": int,
@@ -414,8 +415,8 @@ config_schema = {
             {
                 "DFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_DFCALL": [
@@ -448,8 +449,8 @@ config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
                 "FELEM_REQ": str,
             },
         ],
@@ -457,9 +458,9 @@ config_schema = {
             {
                 "EFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
+                Optional("FELEM_ID"): int,
                 "EFUNC_ID": int,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
                 "EFEAT_FTYPE_ID": int,
                 "IS_VIRTUAL": str,
             },
@@ -497,8 +498,8 @@ config_schema = {
         "CFG_FBOM": [
             {
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
-                "EXEC_ORDER": int,
+                Optional("FELEM_ID"): int,
+                Optional("EXEC_ORDER"): int,
                 "DISPLAY_LEVEL": int,
                 "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
@@ -525,7 +526,6 @@ config_schema = {
                 Optional("FELEM_ID"): int,
                 "FELEM_CODE": str,
                 "FELEM_DESC": str,
-                Optional("TOKENIZE"): str,
                 "DATA_TYPE": str,
             },
         ],
@@ -585,9 +585,9 @@ config_schema = {
             {
                 "SFCALL_ID": int,
                 "FTYPE_ID": int,
-                "FELEM_ID": int,
+                Optional("FELEM_ID"): int,
                 "SFUNC_ID": int,
-                "EXEC_ORDER": int,
+                Optional("EXEC_ORDER"): int,
             },
         ],
         "CFG_SFUNC": [

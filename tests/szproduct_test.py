@@ -4,7 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzProduct
+from senzing import SZ_NO_LOGGING, SzProduct
 
 # -----------------------------------------------------------------------------
 # SzProduct testcases
@@ -20,7 +20,7 @@ def test_exception(sz_product: SzProduct) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProduct()
-    actual._initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -53,7 +53,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
     actual = SzProduct()
-    actual._initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -107,7 +107,7 @@ def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     engine_vars is returned from conftest.py.
     """
     result = SzProduct()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
