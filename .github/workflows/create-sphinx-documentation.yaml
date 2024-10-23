@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src'
-      - 'examples'
+      - "src"
+      - "examples"
   workflow_dispatch:
 
 permissions:
