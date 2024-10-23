@@ -120,25 +120,6 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
-    @abstractmethod
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """
-        The `reinitialize` method re-initializes the Senzing SzDiagnostic object.
-
-        Args:
-            config_id (int): The configuration ID used for the initialization
-
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-            szexception.SzError: config_id does not exist.
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_reinitialize.py
-                :linenos:
-                :language: python
-        """
-
     # -------------------------------------------------------------------------
     # Convenience methods
     # -------------------------------------------------------------------------

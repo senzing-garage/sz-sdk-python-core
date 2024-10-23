@@ -14,9 +14,8 @@ FACTORY_PARAMETERS = {
     },
 }
 
-
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_diagnostic = sz_abstract_factory.create_sz_configmanager()
+    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
 except SzError as err:
     print(f"\nError: {err}\n")

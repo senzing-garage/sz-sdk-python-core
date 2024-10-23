@@ -1,19 +1,22 @@
 #! /usr/bin/env python3
 
-from senzing import SzConfig, SzError
+from senzing import SzAbstractFactory, SzError
 
-INSTANCE_NAME = "Example"
-settings = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/er/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_config = SzConfig(INSTANCE_NAME, settings)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_config = sz_abstract_factory.create_sz_config()
     config_handle = sz_config.create_config()
 
     # Do work.

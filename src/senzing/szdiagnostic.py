@@ -270,6 +270,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         result = self.library_handle.SzDiagnostic_purgeRepository()
         self.check_result(result)
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

@@ -93,7 +93,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     # -------------------------------------------------------------------------
 
     def create_sz_config(self, **kwargs: Any) -> SzConfigAbstract:
-        # TODO: Do parameters need to be passed in?
+        _ = kwargs
         result = SzConfig()
         if not self.is_szconfig_initialized:
             result._initialize(  # pylint: disable=W0212
@@ -105,6 +105,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         return result
 
     def create_sz_configmanager(self, **kwargs: Any) -> SzConfigManagerAbstract:
+        _ = kwargs
         result = SzConfigManager()
         if not self.is_szconfigmanager_initialized:
             result._initialize(  # pylint: disable=W0212
@@ -116,18 +117,21 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         return result
 
     def create_sz_diagnostic(self, **kwargs: Any) -> SzDiagnosticAbstract:
+        _ = kwargs
         result = SzDiagnostic()
         if not self.is_szdiagnostic_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
+                config_id=self.config_id,
                 verbose_logging=self.verbose_logging,
             )
             self.is_szdiagnostic_initialized = True
         return result
 
     def create_sz_engine(self, **kwargs: Any) -> SzEngineAbstract:
-        # TODO: Determine if atomic is needed.
+        _ = kwargs
+        # TODO: Determine if atomic operation is needed.
         result = SzEngine()
         if not self.is_szengine_initialized:
             result._initialize(  # pylint: disable=W0212
@@ -140,6 +144,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         return result
 
     def create_sz_product(self, **kwargs: Any) -> SzProductAbstract:
+        _ = kwargs
         result = SzProduct()
         if not self.is_szproduct_initialized:
             result._initialize(  # pylint: disable=W0212
@@ -151,19 +156,46 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         return result
 
     def destroy(self, **kwargs: Any) -> None:
-        # TODO: Implement function.
-        # TODO: Determine if atomic
+        _ = kwargs
 
-        # if not self.is_szengine_initialized:
-        #     xxx
-        #     sz_engine = self.create_sz_engine()
-        #     sz_engine._destroy()
-        #     self.is_szengine_initialized = False
+        # TODO: Determine if atomic operation is needed.
 
-        pass
+        if self.is_szconfig_initialized:
+            sz_config = SzConfig()
+            sz_config._destroy()  # pylint: disable=W0212
+            self.is_szconfig_initialized = False
+
+        if self.is_szconfigmanager_initialized:
+            sz_configmanager = SzConfigManager()
+            sz_configmanager._destroy()  # pylint: disable=W0212
+            self.is_szconfigmanager_initialized = False
+
+        if self.is_szdiagnostic_initialized:
+            sz_diagnostic = SzDiagnostic()
+            sz_diagnostic._destroy()  # pylint: disable=W0212
+            self.is_szdiagnostic_initialized = False
+
+        if self.is_szengine_initialized:
+            sz_engine = SzEngine()
+            sz_engine._destroy()  # pylint: disable=W0212
+            self.is_szengine_initialized = False
+
+        if self.is_szproduct_initialized:
+            sz_product = SzProduct()
+            sz_product._destroy()  # pylint: disable=W0212
+            self.is_szproduct_initialized = False
 
     def reinitialize(self, config_id: int = 0, **kwargs: Any) -> None:
-        # TODO: Implement function.
-        # TODO: Determine if atomic
+        _ = kwargs
 
-        _ = config_id
+        # TODO: Determine if atomic operation is needed.
+
+        self.config_id = config_id
+
+        if self.is_szengine_initialized:
+            sz_engine = SzEngine()
+            sz_engine._reinitialize(config_id=config_id)  # pylint: disable=W0212
+
+        if self.is_szdiagnostic_initialized:
+            sz_diagnostic = SzDiagnostic()
+            sz_diagnostic._reinitialize(config_id=config_id)  # pylint: disable=W0212

@@ -1,21 +1,24 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import SzAbstractFactory, SzEngineFlags, SzError
 
 ATTRIBUTES = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
-FLAGS = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
-INSTANCE_NAME = "Example"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/er/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+FLAGS = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     RESULT = sz_engine.search_by_attributes(ATTRIBUTES, FLAGS)
     print(RESULT)
 except SzError as err:

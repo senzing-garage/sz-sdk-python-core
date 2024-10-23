@@ -64,13 +64,13 @@ setup-osarch-specific:
 test-osarch-specific:
 	$(info --- Unit tests -------------------------------------------------------)
 	@$(activate-venv); pytest tests/ --verbose --capture=no --cov=src/senzing --cov-report xml:coverage.xml
-	# $(info --- Test examples using unittest -------------------------------------)
-	# @$(activate-venv); python3 -m unittest \
-	# 	examples/szconfig/*.py \
-	# 	examples/szconfigmanager/*.py \
-	# 	examples/szdiagnostic/*.py \
-	# 	examples/szengine/*.py \
-	# 	examples/szproduct/*.py
+	$(info --- Test examples using unittest -------------------------------------)
+	@$(activate-venv); python3 -m unittest \
+		examples/szconfig/*.py \
+		examples/szconfigmanager/*.py \
+		examples/szdiagnostic/*.py \
+		examples/szengine/*.py \
+		examples/szproduct/*.py
 
 
 .PHONY: test-examples

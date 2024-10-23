@@ -133,7 +133,7 @@ def test_reinitialize(
     """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
-        sz_diagnostic.reinitialize(default_config_id)
+        sz_diagnostic._reinitialize(default_config_id)
     except SzError:
         assert False
 
@@ -142,13 +142,13 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
     with pytest.raises(ArgumentError):
-        sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
-        sz_diagnostic.reinitialize(999)
+        sz_diagnostic._reinitialize(999)
 
 
 # def test_initialize_and_destroy(
