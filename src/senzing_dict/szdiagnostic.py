@@ -111,6 +111,8 @@ class SzDiagnostic:
         """TODO: Create documentation"""
         return self.sz_diagnostic.purge_repository(**kwargs)
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_diagnostic.reinitialize(config_id, **kwargs)
+    # def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_diagnostic.reinitialize(
+    #         config_id, **kwargs
+    #     )

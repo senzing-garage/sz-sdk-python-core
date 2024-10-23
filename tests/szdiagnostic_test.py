@@ -50,16 +50,16 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 #         assert isinstance(actual, SzDiagnostic)
 
 
-def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_settings = ""
-    with pytest.raises(SzError):
-        actual = SzDiagnostic()
-        actual._initialize(  # pylint: disable=W0212
-            engine_vars["INSTANCE_NAME"],
-            bad_settings,
-        )
-        assert isinstance(actual, SzDiagnostic)
+# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_settings = ""
+#     with pytest.raises(SzError):
+#         actual = SzDiagnostic()
+#         actual._initialize(  # pylint: disable=W0212
+#             engine_vars["INSTANCE_NAME"],
+#             bad_settings,
+#         )
+#         assert isinstance(actual, SzDiagnostic)
 
 
 def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:

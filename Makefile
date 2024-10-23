@@ -196,7 +196,7 @@ isort:
 .PHONY: mypy
 mypy:
 	$(info --- mypy -----------------------------------------------------------------------)
-	@$(activate-venv); mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*' ':!:examples/*')
+	@$(activate-venv); mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: pydoc

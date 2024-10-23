@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzError
+from senzing import SzAbstractFactory, SzError
 from senzing_abstract.constants import SZ_WITHOUT_INFO
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
@@ -8,18 +8,21 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-INSTANCE_NAME = "Example1"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/er/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     record_sets = [
         TRUTHSET_CUSTOMER_RECORDS,
         TRUTHSET_REFERENCE_RECORDS,

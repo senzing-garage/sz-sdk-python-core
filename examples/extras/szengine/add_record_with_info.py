@@ -1,9 +1,19 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import SzAbstractFactory, SzEngineFlags, SzError
 
 DATA_SOURCE_CODE = "CUSTOMERS"
-INSTANCE_NAME = "Example"
+FACTORY_PARAMETERS = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    },
+}
 RECORD_DEFINITION = (
     "{"
     '"RECORD_DEFINITION_TYPE": "PERSON",'
@@ -21,17 +31,10 @@ RECORD_DEFINITION = (
     "}"
 )
 RECORD_ID = "1001"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/er/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
-    },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-}
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     RESULT = sz_engine.add_record(
         DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, SzEngineFlags.SZ_WITH_INFO
     )
