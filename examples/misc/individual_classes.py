@@ -24,6 +24,11 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 }
 
 
+def try_sz_abstract_factory(sz_abstract_factory_local: SzAbstractFactory) -> None:
+    """Just a test of parameter typing."""
+    _ = sz_abstract_factory_local
+
+
 def try_sz_config(sz_config_local: SzConfig) -> None:
     """Just a test of parameter typing."""
     _ = sz_config_local
@@ -57,6 +62,7 @@ try:
     sz_engine = sz_abstract_factory.create_sz_engine()
     sz_product = sz_abstract_factory.create_sz_product()
 
+    try_sz_abstract_factory(sz_abstract_factory)
     try_sz_config(sz_config)
     try_sz_configmanager(sz_configmanager)
     try_sz_diagnostic(sz_diagnostic)
