@@ -177,31 +177,31 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         # TODO: Determine if atomic operation is needed.
 
         if self.is_szconfig_initialized:
+            self.is_szconfig_initialized = False
             sz_config = SzConfig()
             sz_config._destroy()  # pylint: disable=W0212
-            self.is_szconfig_initialized = False
 
         if self.is_szconfigmanager_initialized:
+            self.is_szconfigmanager_initialized = False
             sz_configmanager = SzConfigManager()
             sz_configmanager._destroy()  # pylint: disable=W0212
-            self.is_szconfigmanager_initialized = False
 
         if self.is_szdiagnostic_initialized:
+            self.is_szdiagnostic_initialized = False
             sz_diagnostic = SzDiagnostic()
             sz_diagnostic._destroy()  # pylint: disable=W0212
-            self.is_szdiagnostic_initialized = False
 
         if self.is_szengine_initialized:
+            self.is_szengine_initialized = False
             sz_engine = SzEngine()
             sz_engine._destroy()  # pylint: disable=W0212
-            self.is_szengine_initialized = False
 
         if self.is_szproduct_initialized:
+            self.is_szproduct_initialized = False
             sz_product = SzProduct()
             sz_product._destroy()  # pylint: disable=W0212
-            self.is_szproduct_initialized = False
 
-    def reinitialize(self, config_id: int = 0, **kwargs: Any) -> None:
+    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         _ = kwargs
 
         # TODO: Determine if atomic operation is needed.

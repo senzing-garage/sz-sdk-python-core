@@ -2,8 +2,12 @@
 
 from typing import List, Tuple
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters
-from senzing_abstract.constants import SZ_WITHOUT_INFO
+from senzing import (
+    SZ_WITHOUT_INFO,
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngine,
+)
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
@@ -39,16 +43,15 @@ test_records: List[Tuple[str, str]] = [
 
 
 def add_records(
-    sz_abstract_factory_local: SzAbstractFactory, record_id_list: List[Tuple[str, str]]
+    sz_engine_local: SzEngine, record_id_list: List[Tuple[str, str]]
 ) -> None:
     """Add all of the records in the list."""
-    sz_engine = sz_abstract_factory_local.create_sz_engine()
     flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
         datasource = record_identification[0]
         record_id = record_identification[1]
         record = data_sources.get(datasource, {}).get(record_id, {})
-        sz_engine.add_record(
+        sz_engine_local.add_record(
             record.get("DataSource", ""),
             record.get("Id", ""),
             record.get("Json", ""),
@@ -63,4 +66,5 @@ def add_records(
 print("\n---- szengine --------------------------------------------------------\n")
 
 sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-add_records(sz_abstract_factory, test_records)
+sz_engine = sz_engine = sz_abstract_factory.create_sz_engine()
+add_records(sz_engine, test_records)

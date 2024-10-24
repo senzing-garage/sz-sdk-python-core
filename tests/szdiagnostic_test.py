@@ -5,14 +5,14 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import schema
 
-from senzing import SzConfigManager, SzDiagnostic, SzEngine, SzError
+from senzing import SzConfigManagerCore, SzDiagnosticCore, SzEngineCore, SzError
 
 # -----------------------------------------------------------------------------
 # SzDiagnostic testcases
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_diagnostic: SzDiagnostic) -> None:
+def test_exception(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_diagnostic.check_result(-1)
@@ -20,22 +20,22 @@ def test_exception(sz_diagnostic: SzDiagnostic) -> None:
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzDiagnostic()
+    actual = SzDiagnosticCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzDiagnostic)
+    assert isinstance(actual, SzDiagnosticCore)
 
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzDiagnostic()
+    actual = SzDiagnosticCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzDiagnostic)
+    assert isinstance(actual, SzDiagnosticCore)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -62,7 +62,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 #         assert isinstance(actual, SzDiagnostic)
 
 
-def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
+def test_check_datastore_performance(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     seconds_to_run = 3
     actual = sz_diagnostic.check_datastore_performance(seconds_to_run)
@@ -71,7 +71,7 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
 
 
 def test_check_datastore_performance_bad_seconds_to_run_type(
-    sz_diagnostic: SzDiagnostic,
+    sz_diagnostic: SzDiagnosticCore,
 ) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = "string"
@@ -82,7 +82,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 
 
 def test_check_datastore_performance_bad_seconds_to_run_value(
-    sz_diagnostic: SzDiagnostic,
+    sz_diagnostic: SzDiagnosticCore,
 ) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = -1
@@ -94,7 +94,7 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
 
 def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test calling destroy twice."""
-    actual = SzDiagnostic()
+    actual = SzDiagnosticCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
@@ -103,14 +103,14 @@ def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._destroy()  # pylint: disable=W0212
 
 
-def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
+def test_get_datastore_info(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnostic().get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()
     actual_as_dict = json.loads(actual)
     assert schema(get_datastore_info_schema) == actual_as_dict
 
 
-def test_get_feature(sz_diagnostic: SzDiagnostic, sz_engine: SzEngine) -> None:
+def test_get_feature(sz_diagnostic: SzDiagnosticCore, sz_engine: SzEngineCore) -> None:
     """# TODO"""
     data_source_code = "TEST"
     record_id = "1"
@@ -121,14 +121,14 @@ def test_get_feature(sz_diagnostic: SzDiagnostic, sz_engine: SzEngine) -> None:
     assert schema(get_feature_schema) == actual_as_dict
 
 
-def test_get_feature_unknown_id(sz_diagnostic: SzDiagnostic) -> None:
+def test_get_feature_unknown_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """# TODO"""
     with pytest.raises(SzError):
         _ = sz_diagnostic.get_feature(111111111111111111)
 
 
 def test_reinitialize(
-    sz_diagnostic: SzDiagnostic, sz_configmanager: SzConfigManager
+    sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfigManagerCore
 ) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
@@ -138,14 +138,14 @@ def test_reinitialize(
         assert False
 
 
-def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnostic) -> None:
+def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
     with pytest.raises(ArgumentError):
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
-def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
+def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
         sz_diagnostic._reinitialize(999)
@@ -204,10 +204,10 @@ def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnostic) -> None:
 
 # @pytest.fixture(name="sz_configmanager", scope="module")
 @pytest.fixture(name="sz_configmanager", scope="function")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManagerCore:
     """Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    result = SzConfigManager()
+    result = SzConfigManagerCore()
     result._initialize(
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
@@ -218,10 +218,10 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
 
 # @pytest.fixture(name="sz_diagnostic", scope="module")
 @pytest.fixture(name="sz_diagnostic", scope="function")
-def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
+def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnosticCore:
     """Single szdiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    result = SzDiagnostic()
+    result = SzDiagnosticCore()
     result._initialize(
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
@@ -232,10 +232,10 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
 
 
 @pytest.fixture(name="sz_engine", scope="function")
-def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
+def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngineCore:
     """Single szengine object to use for all tests.
     engine_vars is returned from conftest.pys"""
-    result = SzEngine()
+    result = SzEngineCore()
     result._initialize(
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],

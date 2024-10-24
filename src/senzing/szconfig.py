@@ -29,7 +29,7 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigAbstract
+from senzing_abstract import SzConfigAbstract
 
 from ._helpers import (
     FreeCResources,

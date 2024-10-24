@@ -20,7 +20,7 @@ from ctypes import c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzProductAbstract
+from senzing_abstract import SzProductAbstract
 
 from ._helpers import (
     as_c_char_p,
