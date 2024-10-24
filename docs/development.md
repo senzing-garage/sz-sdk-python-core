@@ -11,19 +11,20 @@ It has not been tested on Windows.
 These are "one-time tasks" which may already have been completed.
 
 1. The following software programs need to be installed:
-    1. [git]
-    1. [make]
-    1. [docker]
-    1. [sphinx]
+   1. [git]
+   1. [make]
+   1. [docker]
+   1. [sphinx]
 
 ## Install Senzing C library
 
 Since the Senzing library is a prerequisite, it must be installed first.
 
 1. Verify Senzing C shared objects, configuration, and SDK header files are installed.
-    1. `/opt/senzing/er/lib`
-    1. `/opt/senzing/er/sdk/c`
-    1. `/etc/opt/senzing`
+
+   1. `/opt/senzing/er/lib`
+   1. `/opt/senzing/er/sdk/c`
+   1. `/etc/opt/senzing`
 
 1. If not installed, see [How to Install Senzing for Python Development].
 
@@ -31,13 +32,13 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
 1. Identify git repository.
 
-    ```console
-    export GIT_ACCOUNT=senzing-garage
-    export GIT_REPOSITORY=sz-sdk-python
-    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
-    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
+   ```console
+   export GIT_ACCOUNT=senzing-garage
+   export GIT_REPOSITORY=template-python
+   export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
+   export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
 
-    ```
+   ```
 
 1. Using the environment variables values just set, follow
    steps in [clone-repository] to install the Git repository.
@@ -47,31 +48,31 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. A one-time command to install dependencies needed for `make` targets.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make dependencies-for-development
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make dependencies-for-development
 
-    ```
+   ```
 
 1. Install dependencies needed for [Python] code.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make dependencies
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make dependencies
 
-    ```
+   ```
 
 ## Lint
 
 1. Run linting.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make lint
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make lint
 
-    ```
+   ```
 
 ## Build
 
@@ -86,11 +87,11 @@ Not applicable.
 1. Run tests.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make clean setup test
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make clean setup test
 
-    ```
+   ```
 
 ## Coverage
 
@@ -99,11 +100,11 @@ Create a code coverage map.
 1. Run Go tests.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make clean setup coverage
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make clean setup coverage
 
-    ```
+   ```
 
    A web-browser will show the results of the coverage.
    The goal is to have over 80% coverage.
@@ -113,93 +114,94 @@ Create a code coverage map.
 1. View documentation.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make clean documentation
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make clean documentation
 
-    ```
+   ```
 
 1. If a web page doesn't appear, run the following command and paste the results into a web browser's address bar.
 
-    ```console
-    echo "file://${GIT_REPOSITORY_DIR}/docs/build/html/index.html"
-    ```
+   ```console
+   echo "file://${GIT_REPOSITORY_DIR}/docs/build/html/index.html"
+   ```
 
 ## Package
 
 1. Build the `wheel` file for distribution.
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make package
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make package
 
-    ```
+   ```
 
 1. Activate virtual environment.
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    source .venv/bin/activate
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   source .venv/bin/activate
 
-    ```
+   ```
 
 1. Verify that `senzing` is not installed.
    Example:
 
-    ```console
-    python3 -m pip freeze | grep -e senzing
+   ```console
+   python3 -m pip freeze | grep -e senzing
 
-    ```
+   ```
 
    Nothing is returned.
 
 1. Install directly from `wheel` file.
    Example:
 
-    ```console
-    python3 -m pip install ${GIT_REPOSITORY_DIR}/dist/*.whl
+   ```console
+   python3 -m pip install ${GIT_REPOSITORY_DIR}/dist/*.whl
 
-    ```
+   ```
 
 1. Verify that `senzing` is installed.
    Example:
 
-    ```console
-    python3 -m pip freeze | grep -e senzing
+   ```console
+   python3 -m pip freeze | grep -e senzing
 
-    ```
+   ```
 
-    Example return:
-    > senzing @ file:///home/senzing/senzing-garage.git/sz-sdk-python-/dist/senzing-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
+   Example return:
+
+   > senzing @ file:///home/senzing/senzing-garage.git/sz-sdk-python-/dist/senzing-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
 
 1. Uninstall the `senzing` python package.
    Example:
 
-    ```console
-    python3 -m pip uninstall senzing
+   ```console
+   python3 -m pip uninstall senzing
 
-    ```
+   ```
 
 1. Deactivate virtual environment.
 
-    ```console
-    deactivate
+   ```console
+   deactivate
 
-    ```
+   ```
 
 ## Test publish
 
-:warning:  This test can only be performed once per versioned release.
+:warning: This test can only be performed once per versioned release.
 
 1. Test publishing `wheel` file to [Test PyPi].
    Example:
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make publish-test
+   ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make publish-test
 
-    ```
+   ```
 
 1. Visit [Test PyPi] and search for package.
 

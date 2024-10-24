@@ -1,11 +1,11 @@
-name: create sphinx documentation
+name: Create sphinx documentation
 
 on:
   push:
     branches: [main]
     paths:
-      - "src"
       - "examples"
+      - "src"
   workflow_dispatch:
 
 permissions:
@@ -16,19 +16,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
 
-      - name: install dependencies
+      - name: Install dependencies
         run: |
-          pip install sphinx sphinx_rtd_theme myst_parser autodocsumm sphinx-toolbox
+          python -m pip install --upgrade pip
+          python -m pip install sphinx sphinx_rtd_theme myst_parser autodocsumm sphinx-toolbox
 
       - name: Sphinx build
         run: |
           sphinx-build docs/source _build
 
-      - name: deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:

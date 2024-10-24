@@ -62,7 +62,7 @@ jobs:
           source ./venv/bin/activate
           pytest tests/ --verbose --capture=no --cov=src --cov-append
 
-      - name: run unittest on examples
+      - name: Run unittest on examples
         run: |
           source ./venv/bin/activate
           python3 -m unittest \
@@ -72,9 +72,6 @@ jobs:
             examples/szengine/*.py \
             examples/szproduct/*.py \
             examples/misc/*.py
-
-      # - name: Run pytest on examples
-      #   run: pytest examples/ --verbose --capture=no
 
       - name: Rename coverage file
         env:
