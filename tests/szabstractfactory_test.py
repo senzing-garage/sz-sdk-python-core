@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any, Dict
 
 import pytest
 
@@ -105,7 +104,7 @@ def test_destroy(sz_abstract_factory: SzAbstractFactory) -> None:
 
 
 @pytest.fixture(name="sz_abstract_factory", scope="function")
-def sz_abstract_factory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
+def sz_abstract_factory_fixture() -> SzAbstractFactory:
     """
     Single szconfig object to use for all tests.
     engine_vars is returned from conftest.py.
