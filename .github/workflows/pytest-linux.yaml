@@ -58,10 +58,13 @@ jobs:
         run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: Run pytest on tests
-        run: pytest tests/ --verbose --capture=no --cov=src --cov-append
+        run: |
+          source ./venv/bin/activate
+          pytest tests/ --verbose --capture=no --cov=src --cov-append
 
       - name: run unittest on examples
         run: |
+          source ./venv/bin/activate
           python3 -m unittest \
             examples/szconfig/*.py \
             examples/szconfigmanager/*.py \
