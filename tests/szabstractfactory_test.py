@@ -63,7 +63,7 @@ def test_create_sz_product(sz_abstract_factory: SzAbstractFactory) -> None:
 def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzConfig."""
 
-    DATASOURCES = [f"TEST_DATASOURCE_{datetime.now().timestamp()}"]
+    datasources = [f"TEST_DATASOURCE_{datetime.now().timestamp()}"]
 
     # Create Senzing objects.
 
@@ -73,18 +73,18 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
     # Get existing Senzing configuration.
 
     old_config_id = sz_configmanager.get_default_config_id()
-    OLD_JSON_CONFIG = sz_configmanager.get_config(old_config_id)
-    config_handle = sz_config.import_config(OLD_JSON_CONFIG)
+    old_json_config = sz_configmanager.get_config(old_config_id)
+    config_handle = sz_config.import_config(old_json_config)
 
     # Add DataSources to existing Senzing configuration.
 
-    for datasource in DATASOURCES:
+    for datasource in datasources:
         sz_config.add_data_source(config_handle, datasource)
 
     # Persist new Senzing configuration.
 
-    NEW_JSON_CONFIG = sz_config.export_config(config_handle)
-    new_config_id = sz_configmanager.add_config(NEW_JSON_CONFIG, "Add My datasources")
+    new_json_config = sz_config.export_config(config_handle)
+    new_config_id = sz_configmanager.add_config(new_json_config, "Add My datasources")
     sz_configmanager.replace_default_config_id(old_config_id, new_config_id)
 
     # Update other Senzing objects.
