@@ -24,27 +24,27 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 }
 
 
-def test_sz_config(sz_config_local: SzConfig) -> None:
+def try_sz_config(sz_config_local: SzConfig) -> None:
     """Just a test of parameter typing."""
     _ = sz_config_local
 
 
-def test_sz_configmanager(sz_configmanager_local: SzConfigManager) -> None:
+def try_sz_configmanager(sz_configmanager_local: SzConfigManager) -> None:
     """Just a test of parameter typing."""
     _ = sz_configmanager_local
 
 
-def test_sz_diagnostic(sz_diagnostic_local: SzDiagnostic) -> None:
+def try_sz_diagnostic(sz_diagnostic_local: SzDiagnostic) -> None:
     """Just a test of parameter typing."""
     _ = sz_diagnostic_local
 
 
-def test_sz_engine(sz_engine_local: SzEngine) -> None:
+def try_sz_engine(sz_engine_local: SzEngine) -> None:
     """Just a test of parameter typing."""
     _ = sz_engine_local
 
 
-def test_sz_product(sz_product_local: SzProduct) -> None:
+def try_sz_product(sz_product_local: SzProduct) -> None:
     """Just a test of parameter typing."""
     _ = sz_product_local
 
@@ -57,11 +57,11 @@ try:
     sz_engine = sz_abstract_factory.create_sz_engine()
     sz_product = sz_abstract_factory.create_sz_product()
 
-    test_sz_config(sz_config)
-    test_sz_configmanager(sz_configmanager)
-    test_sz_diagnostic(sz_diagnostic)
-    test_sz_engine(sz_engine)
-    test_sz_product(sz_product)
+    try_sz_config(sz_config)
+    try_sz_configmanager(sz_configmanager)
+    try_sz_diagnostic(sz_diagnostic)
+    try_sz_engine(sz_engine)
+    try_sz_product(sz_product)
 
 except SzError as err:
     print(f"\nError in {__file__}:\n{err}\n")

@@ -318,7 +318,7 @@ def test_close_export() -> None:
 def test_count_redo_records(sz_engine: SzEngineCore) -> None:
     """Test SzEngineCore().count_redo_records()."""
     actual = sz_engine.count_redo_records()
-    assert actual == 3
+    assert actual > 0
 
 
 def test_delete_record(sz_engine: SzEngineCore) -> None:

@@ -66,9 +66,9 @@ class SzEngineFlags(IntFlag):
         return result
 
     @classmethod
-    # TODO - Ant - Correct type?
     def get_flag_int(cls, flag: Union[Self, str]) -> int:
-        """# TODO"""
+        """TODO:"""
+        # TODO - Ant - Correct type?
         try:
             if isinstance(flag, str):
                 flag = cls[flag.upper()]
