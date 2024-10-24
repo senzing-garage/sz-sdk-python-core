@@ -76,7 +76,7 @@ test-osarch-specific:
 .PHONY: test-examples
 test-examples:
 	$(info --- Test examples using unittest -------------------------------------)
-	@python3 -m unittest \
+	@$(activate-venv); python3 -m unittest \
 		examples/misc/add_truthset_datasources.py \
 		examples/misc/add_truthset_data.py
 

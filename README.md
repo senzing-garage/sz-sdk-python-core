@@ -46,17 +46,17 @@ Under the covers, Python makes calls to the functions in the Senzing C libraries
 [Coverage badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=coverage&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsenzing-garage%2Fsz-sdk-python%2Fpython-coverage-comment-action-data%2Fendpoint.json
 [Coverage]: https://htmlpreview.github.io/?https://github.com/senzing-garage/sz-sdk-python/blob/python-coverage-comment-action-data/htmlcov/index.html
 [Development]: docs/development.md
-[DockerHub]: https://hub.docker.com/r/senzing/template-python
-[Downloads Badge]: https://static.pepy.tech/badge/template-python
-[Downloads]: https://pepy.tech/project/template-python
+[DockerHub]: https://hub.docker.com/r/senzing/sz-sdk-python
+[Downloads Badge]: https://static.pepy.tech/badge/sz-sdk-python
+[Downloads]: https://pepy.tech/project/sz-sdk-python
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
 [License Badge]: https://img.shields.io/badge/License-Apache2-brightgreen.svg
 [License]: https://github.com/senzing-garage/sz-sdk-python/blob/main/LICENSE
 [PEP8 Badge]: https://img.shields.io/badge/code%20style-pep8-orange.svg
 [PEP8]: https://www.python.org/dev/peps/pep-0008/
-[PyPI version Badge]: https://badge.fury.io/py/template-python.svg
-[PyPi version]: https://badge.fury.io/py/template-python
+[PyPI version Badge]: https://badge.fury.io/py/sz-sdk-python.svg
+[PyPi version]: https://badge.fury.io/py/sz-sdk-python
 [Python 3.11 Badge]: https://img.shields.io/badge/python-3.11-blue.svg
 [Python 3.11]: https://www.python.org/downloads/release/python-3110/
 [Python]: https://www.python.org/

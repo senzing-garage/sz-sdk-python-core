@@ -32,16 +32,16 @@ coverage-osarch-specific:
 	@explorer $(MAKEFILE_DIRECTORY)/htmlcov/index.html
 
 
-.PHONY: documentation-osarch-specific
-documentation-osarch-specific:
-	# @cd docs; rm -rf build; make html
-	@explorer file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
-
-
 .PHONY: dependencies-osarch-specific
 dependencies-osarch-specific:
 	python3 -m pip install --upgrade pip
 	pip install psutil pytest pytest-cov pytest-schema
+
+
+.PHONY: documentation-osarch-specific
+documentation-osarch-specific:
+	# @cd docs; rm -rf build; make html
+	@explorer file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
 
 
 .PHONY: hello-world-osarch-specific

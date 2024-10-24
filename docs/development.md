@@ -34,7 +34,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
    ```console
    export GIT_ACCOUNT=senzing-garage
-   export GIT_REPOSITORY=template-python
+   export GIT_REPOSITORY=sz-sdk-python
    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
 
