@@ -32,7 +32,6 @@ clean-osarch-specific:
 
 
 .PHONY: coverage-osarch-specific
-coverage-osarch-specific: export SENZING_LOG_LEVEL=TRACE
 coverage-osarch-specific:
 	@pytest --cov=src --cov-report=xml $(shell git ls-files '*.py')
 	@coverage html
@@ -67,9 +66,9 @@ setup-osarch-specific:
 
 .PHONY: test-osarch-specific
 test-osarch-specific:
-	@echo "--- Unit tests -------------------------------------------------------"
+	$(info --- Unit tests -------------------------------------------------------)
 	@pytest tests/ --verbose --capture=no --cov=src/senzing
-	@echo "--- Test examples ----------------------------------------------------"
+	$(info --- Test examples ----------------------------------------------------)
 	@pytest examples/ --verbose --capture=no --cov=src/senzing
 
 
