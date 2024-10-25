@@ -7,7 +7,7 @@ from senzing import (
     SzError,
 )
 
-ATTRIBUTES = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
+ATTRIBUTES = json.dumps({"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"})
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -20,11 +20,12 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     },
 }
 FLAGS = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
+SEARCH_PROFILE = ""
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_engine = sz_abstract_factory.create_sz_engine()
-    RESULT = sz_engine.search_by_attributes(ATTRIBUTES, FLAGS)
+    RESULT = sz_engine.search_by_attributes(ATTRIBUTES, FLAGS, SEARCH_PROFILE)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
     print(f"\nError in {__file__}:\n{err}\n")

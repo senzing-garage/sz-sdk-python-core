@@ -7,8 +7,8 @@ from senzing import (
     SzError,
 )
 
-END_ENTITY_ID = 1
-EXCLUSIONS = [100019]
+AVOID_ENTITY_IDS: List[int] = []
+END_ENTITY_ID = 100004
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -21,9 +21,9 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     },
 }
 FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
-MAX_DEGREES = 10
-REQUIRED_DATA_SOURCES = None
-START_ENTITY_ID = 40
+MAX_DEGREES = 2
+REQUIRED_DATA_SOURCES: List[str] = []
+START_ENTITY_ID = 1
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
@@ -32,7 +32,7 @@ try:
         START_ENTITY_ID,
         END_ENTITY_ID,
         MAX_DEGREES,
-        EXCLUSIONS,
+        AVOID_ENTITY_IDS,
         REQUIRED_DATA_SOURCES,
         FLAGS,
     )

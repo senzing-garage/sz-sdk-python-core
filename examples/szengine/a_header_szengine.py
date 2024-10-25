@@ -1,5 +1,9 @@
 #! /usr/bin/env python3
 
+"""
+Simply a header used in development.
+"""
+
 from typing import List, Tuple
 
 from senzing import (

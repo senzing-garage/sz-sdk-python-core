@@ -7,9 +7,9 @@ from senzing import (
     SzError,
 )
 
+AVOID_RECORD_KEYS: List[Tuple[str, str]] = []
 END_DATA_SOURCE_CODE = "CUSTOMERS"
 END_RECORD_ID = "1009"
-EXCLUSIONS = None
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -22,8 +22,8 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     },
 }
 FLAGS = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
-MAX_DEGREES = 10
-REQUIRED_DATA_SOURCES = None
+MAX_DEGREES = 2
+REQUIRED_DATA_SOURCES: List[str] = []
 START_DATA_SOURCE_CODE = "CUSTOMERS"
 START_RECORD_ID = "1001"
 
@@ -36,7 +36,7 @@ try:
         END_DATA_SOURCE_CODE,
         END_RECORD_ID,
         MAX_DEGREES,
-        EXCLUSIONS,
+        AVOID_RECORD_KEYS,
         REQUIRED_DATA_SOURCES,
         FLAGS,
     )

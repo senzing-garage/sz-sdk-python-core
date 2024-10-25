@@ -19,7 +19,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
 }
-FLAGS = SzEngineFlags.SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS
+FLAGS = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS
 RECORD_ID = "1001"
 
 try:

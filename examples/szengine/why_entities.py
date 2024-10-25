@@ -8,7 +8,7 @@ from senzing import (
 )
 
 ENTITY_ID_1 = 1
-ENTITY_ID_2 = 4
+ENTITY_ID_2 = 100004
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
