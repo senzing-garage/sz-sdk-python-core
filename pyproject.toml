@@ -8,25 +8,6 @@ build-backend = "setuptools.build_meta"
 [dependency-groups]
 test = ["pytest", "coverage"]
 
-
-[project]
-name = "senzing-core"
-authors = [
-    {name = "Senzing", email = "support@senzing.com"},
-]
-readme = "README.md"
-requires-python = ">=3.8"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent"
-]
-dynamic = ["version", "description"]
-
-dependencies = [
-    "orjson==3.10.9",
-]
-
 [tool.bandit]
 skips = ["B101"]
 
