@@ -16,10 +16,8 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_config = sz_abstract_factory.create_sz_config()
-    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
-    config_id = sz_configmanager.get_default_config_id()
-    config_definition = sz_configmanager.get_config(config_id)
-    config_handle = sz_config.import_config(config_definition)
+    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
+    RESULT = sz_diagnostic.get_feature(1)
+    print(RESULT)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nError:\n{err}\n")

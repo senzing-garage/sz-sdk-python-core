@@ -3,7 +3,7 @@
 
 from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-DATA_SOURCE_CODE = "test2"
+DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
