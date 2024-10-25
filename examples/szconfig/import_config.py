@@ -19,7 +19,7 @@ try:
     sz_config = sz_abstract_factory.create_sz_config()
     sz_configmanager = sz_abstract_factory.create_sz_configmanager()
     config_id = sz_configmanager.get_default_config_id()
-    config_definition = sz_configmanager.get_config(config_id)
-    config_handle = sz_config.import_config(config_definition)
+    CONFIG_DEFINITION = sz_configmanager.get_config(config_id)
+    config_handle = sz_config.import_config(CONFIG_DEFINITION)
 except SzError as err:
     print(f"\nError in {__file__}:\n{err}\n")

@@ -26,10 +26,10 @@ try:
     export_handle = sz_engine.export_json_entity_report(FLAGS)
     RESULT = ""
     while True:
-        fragment = sz_engine.fetch_next(export_handle)
-        if len(fragment) == 0:
+        FRAGMENT = sz_engine.fetch_next(export_handle)
+        if len(FRAGMENT) == 0:
             break
-        RESULT += fragment
+        RESULT += FRAGMENT
     sz_engine.close_export(export_handle)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:

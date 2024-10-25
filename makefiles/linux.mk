@@ -56,7 +56,7 @@ package-osarch-specific:
 
 .PHONY: setup-osarch-specific
 setup-osarch-specific:
-	@mkdir  /tmp/sqlite
+	@mkdir /tmp/sqlite
 	@cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
 

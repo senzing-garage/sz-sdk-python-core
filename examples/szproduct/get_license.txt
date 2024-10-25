@@ -3,10 +3,10 @@
 {
     "customer": "Senzing Public Test License",
     "contract": "EVALUATION - support@senzing.com",
-    "issueDate": "2022-11-29",
+    "issueDate": "2024-10-15",
     "licenseType": "EVAL (Solely for non-productive use)",
     "licenseLevel": "STANDARD",
     "billing": "MONTHLY",
-    "expireDate": "2023-11-29",
-    "recordLimit": 50000
+    "expireDate": "2025-10-16",
+    "recordLimit": 500
 }

@@ -5,7 +5,7 @@
     "RECORD_ID": "1",
     "AFFECTED_ENTITIES": [
         {
-            "ENTITY_ID": 1
+            "ENTITY_ID": 35
         }
     ],
     "INTERESTING_ENTITIES": {

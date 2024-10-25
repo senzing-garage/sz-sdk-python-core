@@ -3,9 +3,9 @@
 {
     "PRODUCT_NAME": "Senzing API",
     "VERSION": "4.0.0",
-    "BUILD_VERSION": "4.0.0.24103",
-    "BUILD_DATE": "2024-04-12",
-    "BUILD_NUMBER": "2024_04_12__12_50",
+    "BUILD_VERSION": "4.0.0.24289",
+    "BUILD_DATE": "2024-10-15",
+    "BUILD_NUMBER": "2024_10_15__14_21",
     "COMPATIBILITY_VERSION": {
         "CONFIG_VERSION": "11"
     },

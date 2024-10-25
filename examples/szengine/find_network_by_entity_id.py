@@ -8,7 +8,7 @@ from senzing import (
 )
 
 BUILD_OUT_DEGREE = 1
-ENTITY_LIST = [1, 100004]
+ENTITY_LIST = [1, 35]
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {

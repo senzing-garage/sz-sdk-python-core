@@ -2,7 +2,7 @@
 
 {
     "RESOLVED_ENTITY": {
-        "ENTITY_ID": 200001,
+        "ENTITY_ID": 35,
         "ENTITY_NAME": "Robert Smith",
         "FEATURES": {
             "ADDRESS": [
@@ -101,11 +101,11 @@
             "RECORD_TYPE": [
                 {
                     "FEAT_DESC": "PERSON",
-                    "LIB_FEAT_ID": 16,
+                    "LIB_FEAT_ID": 10,
                     "FEAT_DESC_VALUES": [
                         {
                             "FEAT_DESC": "PERSON",
-                            "LIB_FEAT_ID": 16
+                            "LIB_FEAT_ID": 10
                         }
                     ]
                 }
@@ -121,16 +121,16 @@
             {
                 "DATA_SOURCE": "CUSTOMERS",
                 "RECORD_ID": "1001",
-                "INTERNAL_ID": 200001,
-                "FIRST_SEEN_DT": "2024-04-29T15:04:04Z",
-                "LAST_SEEN_DT": "2024-04-29T15:04:04Z"
+                "INTERNAL_ID": 35,
+                "FIRST_SEEN_DT": "2024-10-25T17:39:00Z",
+                "LAST_SEEN_DT": "2024-10-25T17:39:00Z"
             },
             {
                 "DATA_SOURCE": "CUSTOMERS",
                 "RECORD_ID": "1002",
-                "INTERNAL_ID": 200002,
-                "FIRST_SEEN_DT": "2024-04-29T15:04:04Z",
-                "LAST_SEEN_DT": "2024-04-29T15:04:04Z"
+                "INTERNAL_ID": 36,
+                "FIRST_SEEN_DT": "2024-10-25T17:39:00Z",
+                "LAST_SEEN_DT": "2024-10-25T17:39:00Z"
             }
         ]
     }

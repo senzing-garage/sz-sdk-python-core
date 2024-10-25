@@ -7,7 +7,7 @@ from senzing import (
     SzError,
 )
 
-DATA_SOURCE_CODE = "TEST"
+DATA_SOURCE_CODE = "CUSTOMERS"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {

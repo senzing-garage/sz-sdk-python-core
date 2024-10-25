@@ -8,7 +8,7 @@ from senzing import (
 )
 
 AVOID_ENTITY_IDS: List[int] = []
-END_ENTITY_ID = 100004
+END_ENTITY_ID = 35
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
