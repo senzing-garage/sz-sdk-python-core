@@ -1,11 +1,18 @@
 #! /usr/bin/env python3
 
-import grpc
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-from senzing_grpc import SzAbstractFactory, SzAbstractFactoryParameters, SzError
-
+DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
-    "grpc_channel": grpc.insecure_channel("localhost:8261"),
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    },
 }
 
 try:

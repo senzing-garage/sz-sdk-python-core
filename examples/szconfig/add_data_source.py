@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-
 from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
