@@ -6,6 +6,7 @@ import pytest
 from pytest_schema import schema
 
 from senzing import SzConfigManagerCore as SzConfigManagerTest
+from senzing import SzDiagnostic
 from senzing import SzDiagnosticCore as SzDiagnosticTest
 from senzing import SzEngineCore as SzEngineTest
 from senzing import SzError
@@ -82,7 +83,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzDiagnosticTest)
+    assert isinstance(actual, SzDiagnostic)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -116,7 +117,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzDiagnosticTest)
+    assert isinstance(actual, SzDiagnostic)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
@@ -149,7 +150,9 @@ def test_reinitialize(
 def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticTest) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 

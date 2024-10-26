@@ -17,6 +17,7 @@ from pytest_schema import Optional, Or, schema
 from senzing import SZ_NO_FLAGS, SZ_WITHOUT_INFO, SzBadInputError
 from senzing import SzConfigCore as SzConfigTest
 from senzing import SzConfigManagerCore as SzConfigManagerTest
+from senzing import SzEngine
 from senzing import SzEngineCore as SzEngineTest
 from senzing import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
 from senzing_truthset import (
@@ -1117,7 +1118,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         settings=engine_vars["SETTINGS"],
         verbose_logging=engine_vars["VERBOSE_LOGGING"],
     )
-    assert isinstance(actual, SzEngineTest)
+    assert isinstance(actual, SzEngine)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -1175,7 +1176,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzEngineTest)
+    assert isinstance(actual, SzEngine)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
@@ -1203,7 +1204,9 @@ def test_reinitialize(sz_engine: SzEngineTest) -> None:
 def test_reinitialize_bad_config_id(sz_engine: SzEngineTest) -> None:
     """Test SzEngine().reinitialize()."""
     bad_default_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 

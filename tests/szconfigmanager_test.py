@@ -286,7 +286,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzConfigManagerTest)
+    assert isinstance(actual, SzConfigManager)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
