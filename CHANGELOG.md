@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
-## [0.0.10] - 2024-10-28
+## [0.1.0] - 2024-10-27
 
-### Added to 0.0.8
+### Added to 0.1.0
 
 - `SzAbstractFactory`
 - Updated examples
