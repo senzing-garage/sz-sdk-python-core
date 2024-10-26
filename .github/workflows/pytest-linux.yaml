@@ -52,10 +52,14 @@ jobs:
           senzingapi-version: ${{ matrix.senzingapi-version }}
 
       - name: Copy /etc files
-        run: sudo cp testdata/senzing-license/g2.lic /etc/opt/senzing/g2.lic
+        run: |
+          sudo mkdir -p /etc/opt/senzing
+          sudo cp testdata/senzing-license/g2.lic /etc/opt/senzing/g2.lic
 
       - name: Copy test database files
-        run: mkdir /tmp/sqlite && cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+        run: |
+          mkdir -p /tmp/sqlite
+          cp testdata/sqlite/G2C.db /tmp/sqlite/
 
       - name: Run pytest on tests
         run: |
