@@ -8,6 +8,7 @@
 # TODO: value/type tests and handling ctype exceptions from szhelpers - needs thought
 
 import json
+from ctypes import ArgumentError
 from typing import Any, Dict, List, Tuple
 
 import pytest
@@ -1109,13 +1110,6 @@ def test_add_record_str(sz_engine: SzEngineTest) -> None:
 #     add_records_truthset(sz_engine)
 
 
-def test_exception(sz_engine: SzEngineTest) -> None:
-    """Test exceptions."""
-
-    with pytest.raises(Exception):
-        sz_engine.check_result(-1)
-
-
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzEngineTest(
@@ -1152,15 +1146,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 # def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
 #     """Test constructor."""
 
-# TODO: Add testing bad args
-# def test_initialize_and_destroy(engine_vars: Dict[Any, Any]) -> None:
-#     """Test init and destroy."""
-#     instance_name = engine_vars["INSTANCE_NAME"]
-#     settings = engine_vars["SETTINGS"]
-#     sz_engine_init_destroy = SzEngineTest()
-#     sz_engine_init_destroy.initialize(instance_name, settings)
-#     sz_engine_init_destroy.destroy()
-
 
 # def test_initialize_with_config_id(engine_vars: Dict[Any, Any]) -> None:
 #     """Test init_with_config_id."""
@@ -1183,31 +1168,50 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #     sz_engine.initialize(instance_name, settings, config_id)
 
 
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzEngineTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    assert isinstance(actual, SzEngineTest)
+
+
+def test_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzEngineTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    actual._destroy()
+
+
+def test_exception(sz_engine: SzEngineTest) -> None:
+    """Test exceptions."""
+    with pytest.raises(Exception):
+        sz_engine.check_result(-1)
+
+
 def test_reinitialize(sz_engine: SzEngineTest) -> None:
     """Test SzEngine().reinitialize()."""
     config_id = sz_engine.get_active_config_id()
     sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 
 
-def test_reinitialize_bad_config_id(
-    sz_engine: SzEngineTest, sz_configmanager: SzConfigManagerTest
-) -> None:
+def test_reinitialize_bad_config_id(sz_engine: SzEngineTest) -> None:
     """Test SzEngine().reinitialize()."""
-    _ = sz_engine
-    _ = sz_configmanager
-    # TODO: Uncomment once fixed in engine GDEV-3739
-    # bad_config_id = 0
-    # try:
-    #     with pytest.raises(SzNotInitializedError):
-    #         sz_engine.reinitialize(bad_config_id)
-    # finally:
-    #     config_id = sz_configmanager.get_default_config_id()
-    #     sz_engine.reinitialize(config_id)
+    bad_default_config_id = "string"
+    with pytest.raises(ArgumentError):
+        sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
-# def test_destroy(sz_engine: SzEngineTest) -> None:
-#     """Test SzEngine().destroy()."""
-#     sz_engine.destroy()
+def test_reinitialize_missing_config_id(sz_engine: SzEngineTest) -> None:
+    """Test SzDiagnostic().reinit() raising error."""
+    with pytest.raises(SzError):
+        sz_engine._reinitialize(999)
+
 
 # -----------------------------------------------------------------------------
 # Utilities

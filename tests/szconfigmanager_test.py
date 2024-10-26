@@ -6,6 +6,7 @@ import pytest
 from pytest_schema import Optional, Or, schema
 
 from senzing import SzConfigCore as SzConfigTest
+from senzing import SzConfigManager
 from senzing import SzConfigManagerCore as SzConfigManagerTest
 from senzing import SzConfigurationError, SzReplaceConflictError
 from senzing_truthset import TRUTHSET_DATASOURCES
@@ -251,7 +252,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzConfigManagerTest)
+    assert isinstance(actual, SzConfigManager)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -288,28 +289,21 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     assert isinstance(actual, SzConfigManagerTest)
 
 
+def test_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzConfigManagerTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_exception(sz_configmanager: SzConfigManagerTest) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_configmanager.check_result(-1)
 
-
-# def test_initialize_and_destroy(sz_configmanager: SzConfigManager) -> None:
-#     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
-#     instance_name = "Example"
-#     settings = "{}"
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-#     sz_configmanager.initialize(instance_name, settings, verbose_logging)
-#     sz_configmanager.destroy()
-
-
-# def test_initialize_and_destroy_again(sz_configmanager: SzConfigManager) -> None:
-#     """Test SzConfigManager().initialize() and SzConfigManager.destroy()."""
-#     instance_name = "Example"
-#     settings: Dict[Any, Any] = {}
-#     verbose_logging = SzEngineFlags.SZ_NO_LOGGING
-#     sz_configmanager.initialize(instance_name, settings, verbose_logging)
-#     sz_configmanager.destroy()
 
 # -----------------------------------------------------------------------------
 # Fixtures

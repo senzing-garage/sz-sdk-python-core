@@ -4,6 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
+from senzing import SzConfig
 from senzing import SzConfigCore as SzConfigTest
 from senzing import SzConfigurationError
 
@@ -193,7 +194,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzConfigTest)
+    assert isinstance(actual, SzConfig)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -230,28 +231,20 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     assert isinstance(actual, SzConfigTest)
 
 
+def test_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzConfigTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_exception(sz_config: SzConfigTest) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_config.check_result(-1)
-
-
-# def test_initialize_and_destroy(sz_config: SzConfig) -> None:
-#     """Test SzConfig().initialize() and SzConfig.destroy()."""
-#     instance_name = "Example"
-#     settings = "{}"
-#     verbose_logging = SZ_NO_LOGGING
-#     sz_config.initialize(instance_name, settings, verbose_logging)
-#     sz_config.destroy()
-
-
-# def test_initialize_and_destroy_dict(sz_config: SzConfig) -> None:
-#     """Test SzConfig().init() and SzConfig.destroy()."""
-#     instance_name = "Example"
-#     settings: Dict[Any, Any] = {}
-#     verbose_logging = SZ_NO_LOGGING
-#     sz_config.initialize(instance_name, settings, verbose_logging)
-#     sz_config.destroy()
 
 
 # -----------------------------------------------------------------------------

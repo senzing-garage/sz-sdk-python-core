@@ -4,6 +4,7 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
+from senzing import SzProduct
 from senzing import SzProductCore as SzProductTest
 
 # -----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzProductTest)
+    assert isinstance(actual, SzProduct)
 
 
 # NOTE szproduct can be initialized without an instance name
@@ -65,28 +66,30 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #         assert isinstance(actual, SzProductTest)
 
 
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzProductTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    assert isinstance(actual, SzProductTest)
+
+
+def test_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzProductTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    actual._destroy()  # pylint: disable=W0212
+
+
 def test_exception(sz_product: SzProductTest) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_product.check_result(-1)
-
-
-# def test_initialize_and_destroy(sz_product: SzProductTest) -> None:
-#     """Test init/destroy cycle."""
-#     instance_name = "Example"
-#     settings: Dict[Any, Any] = {}
-#     verbose_logging = SZ_NO_LOGGING
-#     sz_product.initialize(instance_name, settings, verbose_logging)
-#     sz_product.destroy()
-
-
-# def test_initialize_and_destroy_again(sz_product: SzProductTest) -> None:
-#     """Test init/destroy cycle a second time."""
-#     instance_name = "Example"
-#     settings = "{}"
-#     verbose_logging = SZ_NO_LOGGING
-#     sz_product.initialize(instance_name, settings, verbose_logging)
-#     sz_product.destroy()
 
 
 # -----------------------------------------------------------------------------

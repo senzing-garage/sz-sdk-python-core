@@ -85,16 +85,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     assert isinstance(actual, SzDiagnosticTest)
 
 
-def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    actual = SzDiagnosticTest()
-    actual._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS_DICT"],
-    )
-    assert isinstance(actual, SzDiagnosticTest)
-
-
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
 #     """Test constructor."""
 #     bad_instance_name = ""
@@ -119,56 +109,30 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 #         assert isinstance(actual, SzDiagnostic)
 
 
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_context_managment(engine_vars: Dict[Any, Any]) -> None:
-#     """Test the use of SzDiagnostic in context."""
-#     with SzDiagnostic(
-#         instance_name=engine_vars["INSTANCE_NAME"],
-#         settings=engine_vars["SETTINGS"],
-#         verbose_logging=1,
-#     ) as sz_diagnostic:
-#         actual = sz_diagnostic.get_datastore_info()
-#         actual_json = json.loads(actual)
-#         assert schema(get_datastore_info_schema) == actual_json
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzDiagnosticTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS_DICT"],
+    )
+    assert isinstance(actual, SzDiagnosticTest)
 
 
-def test_exception(sz_diagnostic: SzDiagnosticTest) -> None:
+def test_destroy(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzDiagnosticTest()
+    actual._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    actual._destroy()
+
+
+def test_exception(sz_configmanager: SzConfigManagerTest) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_diagnostic.check_result(-1)
-
-
-# def test_initialize_and_destroy(
-#     sz_diagnostic: SzDiagnostic, engine_vars: Dict[Any, Any]
-# ) -> None:
-#     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
-#     instance_name = engine_vars["INSTANCE_NAME"]
-#     settings = engine_vars["SETTINGS"]
-#     verbose_logging = SZ_NO_LOGGING
-#     sz_diagnostic.initialize(instance_name, settings, verbose_logging)
-#     sz_diagnostic.destroy()
-
-
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_init_and_destroy_again(sz_diagnostic, engine_vars):
-#     """Test SzDiagnostic().init() and SzDiagnostic.destroy()."""
-#     sz_diagnostic.initialize(engine_vars["INSTANCE_NAME"], engine_vars["SETTINGS"], 0)
-#     sz_diagnostic.destroy()
-
-
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_initialize_with_config_id_and_destroy(sz_configmanager, engine_vars):
-#     """Test SzDiagnostic().init_with_config_id() and SzDiagnostic.destroy()."""
-#     # TODO: This has the same issue as test_init_and_destroy_2
-#     default_config_id = sz_configmanager.get_default_config_id()
-#     sz_diagnostic = SzDiagnostic()
-#     sz_diagnostic.initialize(
-#         instance_name=engine_vars["INSTANCE_NAME"],
-#         settings=engine_vars["SETTINGS"],
-#         config_id=default_config_id,
-#         verbose_logging=0,
-#     )
-#     sz_diagnostic.destroy()
+        sz_configmanager.check_result(-1)
 
 
 def test_reinitialize(
