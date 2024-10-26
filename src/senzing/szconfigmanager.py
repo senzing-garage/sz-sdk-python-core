@@ -229,7 +229,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.SzConfigMgr_addConfig_helper(
-            as_c_char_p(config_definition),
+            as_c_char_p(as_str(config_definition)),
             as_c_char_p(config_comment),
         )
         self.check_result(result.return_code)

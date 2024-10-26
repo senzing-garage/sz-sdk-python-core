@@ -314,7 +314,7 @@ class SzConfig(SzConfigAbstract):
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.SzConfig_load_helper(
-            as_c_char_p(config_definition)
+            as_c_char_p(as_str(config_definition))
         )
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

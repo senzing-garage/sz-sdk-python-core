@@ -5,43 +5,253 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import (
-    SzConfigCore,
-    SzConfigManagerCore,
-    SzConfigurationError,
-    SzReplaceConflictError,
-)
+from senzing import SzConfigCore as SzConfigTest
+from senzing import SzConfigManagerCore as SzConfigManagerTest
+from senzing import SzConfigurationError, SzReplaceConflictError
 from senzing_truthset import TRUTHSET_DATASOURCES
 
 # -----------------------------------------------------------------------------
-# SzConfigManager testcases
+# Testcases
 # -----------------------------------------------------------------------------
 
 
-def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test exceptions."""
-    with pytest.raises(Exception):
-        sz_configmanager.check_result(-1)
+def test_add_config(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().add_config()."""
+    config_handle = sz_config.create_config()
+    config_definition = sz_config.export_config(config_handle)
+    config_comment = "Test"
+    actual = sz_configmanager.add_config(config_definition, config_comment)
+    assert isinstance(actual, int)
+    assert actual > 0
+
+
+def test_add_config_dict(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().add_config()."""
+    config_handle = sz_config.create_config()
+    config_definition = sz_config.export_config(config_handle)
+    config_definition_as_dict = json.loads(config_definition)
+    config_comment = "Test"
+    actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
+    assert isinstance(actual, int)
+    assert actual > 0
+
+
+def test_add_config_bad_config_definition_type(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().add_config()."""
+    bad_config_definition = 0
+    config_comment = "Test"
+    with pytest.raises(TypeError):
+        sz_configmanager.add_config(
+            bad_config_definition, config_comment  # type: ignore[arg-type]
+        )
+
+
+def test_add_config_bad_config_definition_value(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().add_config()."""
+    bad_config_definition = '{"just": "junk"}'
+    config_comment = "Test"
+    actual = sz_configmanager.add_config(bad_config_definition, config_comment)
+    assert isinstance(actual, int)
+    assert actual > 0
+
+
+def test_add_config_bad_config_comment_type(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().add_config()."""
+    config_handle = sz_config.create_config()
+    config_definition = sz_config.export_config(config_handle)
+    bad_config_comment = 0
+    with pytest.raises(TypeError):
+        sz_configmanager.add_config(
+            config_definition, bad_config_comment  # type: ignore[arg-type]
+        )
+
+
+def test_get_config(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    config_id = sz_configmanager.get_default_config_id()
+    actual = sz_configmanager.get_config(config_id)
+    actual_as_dict = json.loads(actual)
+    assert schema(config_schema) == actual_as_dict
+
+
+def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    bad_config_id = "string"
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+        sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
+
+
+def test_get_config_bad_config_id_value(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    bad_config_id = 1234
+    with pytest.raises(SzConfigurationError):
+        sz_configmanager.get_config(bad_config_id)
+
+
+def test_get_configs(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    actual = sz_configmanager.get_configs()
+    actual_as_dict = json.loads(actual)
+    assert schema(config_list_schema) == actual_as_dict
+
+
+def test_get_default_config_id(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    actual = sz_configmanager.get_default_config_id()
+    assert isinstance(actual, int)
+
+
+def test_replace_default_config_id(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    current_default_config_id = sz_configmanager.get_default_config_id()
+    config_handle = sz_config.create_config()
+    for data_source_code in TRUTHSET_DATASOURCES:
+        sz_config.add_data_source(config_handle, data_source_code)
+    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
+    sz_config.add_data_source(config_handle, data_source_code)
+    config_definition = sz_config.export_config(config_handle)
+    config_comment = "Test"
+    new_default_config_id = sz_configmanager.add_config(
+        config_definition, config_comment
+    )
+    assert current_default_config_id != new_default_config_id
+    sz_configmanager.replace_default_config_id(
+        current_default_config_id, new_default_config_id
+    )
+    actual = sz_configmanager.get_default_config_id()
+    assert actual == new_default_config_id
+
+
+def test_replace_default_config_id_bad_new_default_config_id_type(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    current_default_config_id = sz_configmanager.get_default_config_id()
+    bad_new_default_config_id = "string"
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+        sz_configmanager.replace_default_config_id(
+            current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
+        )
+
+
+def test_replace_default_config_id_bad_new_default_config_id_value(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    current_default_config_id = sz_configmanager.get_default_config_id()
+    bad_new_default_config_id = 1234
+    with pytest.raises(SzConfigurationError):
+        sz_configmanager.replace_default_config_id(
+            current_default_config_id, bad_new_default_config_id
+        )
+
+
+def test_replace_default_config_id_bad_current_default_config_id_type(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    bad_current_default_config_id = "string"
+    config_handle = sz_config.create_config()
+    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
+    sz_config.add_data_source(config_handle, data_source_code)
+    config_definition = sz_config.export_config(config_handle)
+    config_comment = "Test"
+    new_default_config_id = sz_configmanager.add_config(
+        config_definition, config_comment
+    )
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+        sz_configmanager.replace_default_config_id(
+            bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
+        )
+
+
+def test_replace_default_config_id_bad_current_default_config_id_value(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    bad_current_default_config_id = 1234
+    config_handle = sz_config.create_config()
+    data_source_code = "CUSTOMERS"
+    sz_config.add_data_source(config_handle, data_source_code)
+    config_definition = sz_config.export_config(config_handle)
+    config_comment = "Test"
+    new_default_config_id = sz_configmanager.add_config(
+        config_definition, config_comment
+    )
+    with pytest.raises(SzReplaceConflictError):
+        sz_configmanager.replace_default_config_id(
+            bad_current_default_config_id, new_default_config_id
+        )
+
+
+def test_set_default_config_id(
+    sz_configmanager: SzConfigManagerTest, sz_config: SzConfigTest
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    old_config_id = sz_configmanager.get_default_config_id()
+    config_handle = sz_config.create_config()
+    data_source_code = "CUSTOMERS"
+    sz_config.add_data_source(config_handle, data_source_code)
+    config_definition = sz_config.export_config(config_handle)
+    config_comment = "Test"
+    config_id = sz_configmanager.add_config(config_definition, config_comment)
+    assert old_config_id != config_id
+    sz_configmanager.set_default_config_id(config_id)
+    actual = sz_configmanager.get_default_config_id()
+    assert actual == config_id
+
+
+def test_set_default_config_id_bad_config_id_type(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().get_default_config_id()."""
+    bad_config_id = "string"
+    with pytest.raises(
+        ArgumentError
+    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+        sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
+
+
+def test_set_default_config_id_bad_config_id_value(
+    sz_configmanager: SzConfigManagerTest,
+) -> None:
+    """Test SzConfigManager().set_default_config_id()."""
+    bad_config_id = 1
+    with pytest.raises(SzConfigurationError):
+        sz_configmanager.set_default_config_id(bad_config_id)
+
+
+# -----------------------------------------------------------------------------
+# Unique testcases
+# -----------------------------------------------------------------------------
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManagerCore()
+    actual = SzConfigManagerTest()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzConfigManagerCore)
-
-
-def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    actual = SzConfigManagerCore()
-    actual._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS_DICT"],
-    )
-    assert isinstance(actual, SzConfigManagerCore)
+    assert isinstance(actual, SzConfigManagerTest)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -68,240 +278,20 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 #         assert isinstance(actual, SzConfigManager)
 
 
-def test_add_config(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().add_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    config_comment = "Test"
-    actual = sz_configmanager.add_config(config_definition, config_comment)
-    assert isinstance(actual, int)
-    assert actual > 0
-
-
-# TODO Not needed in core SDK
-# def test_add_config_dict(
-#     sz_configmanager: SzConfigManager, sz_config: SzConfig
-# ) -> None:
-#     """Test SzConfigManager().add_config()."""
-#     config_handle = sz_config.create_config()
-#     config_definition = sz_config.export_config(config_handle)
-#     config_definition_as_dict = json.loads(config_definition)
-#     config_comment = "Test"
-#     actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
-#     assert isinstance(actual, int)
-#     assert actual > 0
-
-
-def test_add_config_bad_config_definition_type(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().add_config()."""
-    bad_config_definition = 0
-    config_comment = "Test"
-    with pytest.raises(TypeError):
-        sz_configmanager.add_config(
-            bad_config_definition, config_comment  # type: ignore[arg-type]
-        )
-
-
-def test_add_config_bad_config_definition_value(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().add_config()."""
-    bad_config_definition = '{"just": "junk"}'
-    config_comment = "Test"
-    actual = sz_configmanager.add_config(bad_config_definition, config_comment)
-    assert isinstance(actual, int)
-    assert actual > 0
-
-
-def test_add_config_bad_config_comment_type(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().add_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    bad_config_comment = 0
-    with pytest.raises(TypeError):
-        sz_configmanager.add_config(
-            config_definition, bad_config_comment  # type: ignore[arg-type]
-        )
-
-
-def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
-    """Test calling destroy twice."""
-    actual = SzConfigManagerCore()
+def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzConfigManagerTest()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    actual._destroy()  # pylint: disable=W0212
-    actual._destroy()  # pylint: disable=W0212
+    assert isinstance(actual, SzConfigManagerTest)
 
 
-def test_get_config(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    config_id = sz_configmanager.get_default_config_id()
-    actual = sz_configmanager.get_config(config_id)
-    actual_as_dict = json.loads(actual)
-    assert schema(config_schema) == actual_as_dict
-
-
-def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    bad_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
-        sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
-
-
-def test_get_config_bad_config_id_value(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    bad_config_id = 1234
-    with pytest.raises(SzConfigurationError):
-        sz_configmanager.get_config(bad_config_id)
-
-
-def test_get_configs(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    actual = sz_configmanager.get_configs()
-    actual_as_dict = json.loads(actual)
-    assert schema(config_list_schema) == actual_as_dict
-
-
-def test_get_default_config_id(sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    actual = sz_configmanager.get_default_config_id()
-    assert isinstance(actual, int)
-
-
-def test_replace_default_config_id(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    current_default_config_id = sz_configmanager.get_default_config_id()
-    config_handle = sz_config.create_config()
-    for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(config_handle, data_source_code)
-    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
-    sz_config.add_data_source(config_handle, data_source_code)
-    config_definition = sz_config.export_config(config_handle)
-    config_comment = "Test"
-    new_default_config_id = sz_configmanager.add_config(
-        config_definition, config_comment
-    )
-    assert current_default_config_id != new_default_config_id
-    sz_configmanager.replace_default_config_id(
-        current_default_config_id, new_default_config_id
-    )
-    actual = sz_configmanager.get_default_config_id()
-    assert actual == new_default_config_id
-
-
-def test_replace_default_config_id_bad_new_default_config_id_type(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    current_default_config_id = sz_configmanager.get_default_config_id()
-    bad_new_default_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
-        sz_configmanager.replace_default_config_id(
-            current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
-        )
-
-
-def test_replace_default_config_id_bad_new_default_config_id_value(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    current_default_config_id = sz_configmanager.get_default_config_id()
-    bad_new_default_config_id = 1234
-    with pytest.raises(SzConfigurationError):
-        sz_configmanager.replace_default_config_id(
-            current_default_config_id, bad_new_default_config_id
-        )
-
-
-def test_replace_default_config_id_bad_current_default_config_id_type(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    bad_current_default_config_id = "string"
-    config_handle = sz_config.create_config()
-    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
-    sz_config.add_data_source(config_handle, data_source_code)
-    config_definition = sz_config.export_config(config_handle)
-    config_comment = "Test"
-    new_default_config_id = sz_configmanager.add_config(
-        config_definition, config_comment
-    )
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
-        sz_configmanager.replace_default_config_id(
-            bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
-        )
-
-
-def test_replace_default_config_id_bad_current_default_config_id_value(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    bad_current_default_config_id = 1234
-    config_handle = sz_config.create_config()
-    data_source_code = "CUSTOMERS"
-    sz_config.add_data_source(config_handle, data_source_code)
-    config_definition = sz_config.export_config(config_handle)
-    config_comment = "Test"
-    new_default_config_id = sz_configmanager.add_config(
-        config_definition, config_comment
-    )
-    with pytest.raises(SzReplaceConflictError):
-        sz_configmanager.replace_default_config_id(
-            bad_current_default_config_id, new_default_config_id
-        )
-
-
-def test_set_default_config_id(
-    sz_configmanager: SzConfigManagerCore, sz_config: SzConfigCore
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    old_config_id = sz_configmanager.get_default_config_id()
-    config_handle = sz_config.create_config()
-    data_source_code = "CUSTOMERS"
-    sz_config.add_data_source(config_handle, data_source_code)
-    config_definition = sz_config.export_config(config_handle)
-    config_comment = "Test"
-    config_id = sz_configmanager.add_config(config_definition, config_comment)
-    assert old_config_id != config_id
-    sz_configmanager.set_default_config_id(config_id)
-    actual = sz_configmanager.get_default_config_id()
-    assert actual == config_id
-
-
-def test_set_default_config_id_bad_config_id_type(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().get_default_config_id()."""
-    bad_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
-        sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
-
-
-def test_set_default_config_id_bad_config_id_value(
-    sz_configmanager: SzConfigManagerCore,
-) -> None:
-    """Test SzConfigManager().set_default_config_id()."""
-    bad_config_id = 1
-    with pytest.raises(SzConfigurationError):
-        sz_configmanager.set_default_config_id(bad_config_id)
+def test_exception(sz_configmanager: SzConfigManagerTest) -> None:
+    """Test exceptions."""
+    with pytest.raises(Exception):
+        sz_configmanager.check_result(-1)
 
 
 # def test_initialize_and_destroy(sz_configmanager: SzConfigManager) -> None:
@@ -321,21 +311,19 @@ def test_set_default_config_id_bad_config_id_value(
 #     sz_configmanager.initialize(instance_name, settings, verbose_logging)
 #     sz_configmanager.destroy()
 
-
 # -----------------------------------------------------------------------------
-# SzConfigManager fixtures
+# Fixtures
 # -----------------------------------------------------------------------------
 
 
-# @pytest.fixture(name="sz_config", scope="module")
 @pytest.fixture(name="sz_config", scope="function")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigCore:
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigTest:
     """
     Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.py.
     """
 
-    result = SzConfigCore()
+    result = SzConfigTest()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -343,15 +331,12 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigCore:
     return result
 
 
-# @pytest.fixture(name="sz_configmanager", scope="module")
 @pytest.fixture(name="sz_configmanager", scope="function")
-def szconfigmanager_instance_fixture(
-    engine_vars: Dict[Any, Any]
-) -> SzConfigManagerCore:
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManagerTest:
     """Single szconfigmanager object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    result = SzConfigManagerCore()
+    result = SzConfigManagerTest()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -360,7 +345,7 @@ def szconfigmanager_instance_fixture(
 
 
 # -----------------------------------------------------------------------------
-# SzConfigManager schemas
+# Schemas
 # -----------------------------------------------------------------------------
 
 

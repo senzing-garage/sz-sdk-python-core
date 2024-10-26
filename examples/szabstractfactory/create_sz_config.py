@@ -14,6 +14,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
 }
+
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_config = sz_abstract_factory.create_sz_config()

@@ -11,19 +11,13 @@ import json
 from typing import Any, Dict, List, Tuple
 
 import pytest
-from pytest_schema import Optional, schema
+from pytest_schema import Optional, Or, schema
 
-from senzing import (
-    SzBadInputError,
-    SzConfigCore,
-    SzConfigManagerCore,
-    SzEngineCore,
-    SzEngineFlags,
-    SzError,
-    SzNotFoundError,
-    SzUnknownDataSourceError,
-)
-from senzing_abstract.constants import SZ_NO_FLAGS, SZ_WITHOUT_INFO
+from senzing import SZ_NO_FLAGS, SZ_WITHOUT_INFO, SzBadInputError
+from senzing import SzConfigCore as SzConfigTest
+from senzing import SzConfigManagerCore as SzConfigManagerTest
+from senzing import SzEngineCore as SzEngineTest
+from senzing import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_DATASOURCES,
@@ -31,59 +25,52 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
+DATA_SOURCES = {
+    "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
+    "REFERENCE": TRUTHSET_REFERENCE_RECORDS,
+    "WATCHLIST": TRUTHSET_WATCHLIST_RECORDS,
+}
+
+RECORD_DICT = {
+    "RECORD_TYPE": "PERSON",
+    "PRIMARY_NAME_LAST": "Smith",
+    "PRIMARY_NAME_FIRST": "Robert",
+    "DATE_OF_BIRTH": "12/11/1978",
+    "ADDR_TYPE": "MAILING",
+    "ADDR_LINE1": "123 Main Street, Las Vegas NV 89132",
+    "PHONE_TYPE": "HOME",
+    "PHONE_NUMBER": "702-919-1300",
+    "EMAIL_ADDRESS": "bsmith@work.com",
+    "DATE": "1/2/18",
+    "STATUS": "Active",
+    "AMOUNT": "100",
+}
+
+RECORD_STR = (
+    '{"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST":'
+    ' "Robert", "DATE_OF_BIRTH": "12/11/1978", "ADDR_TYPE": "MAILING", "ADDR_LINE1":'
+    ' "123 Main Street, Las Vegas NV 89132","PHONE_TYPE": "HOME", "PHONE_NUMBER":'
+    ' "702-919-1300", "EMAIL_ADDRESS": "bsmith@work.com", "DATE": "1/2/18", "STATUS":'
+    ' "Active", "AMOUNT": "100"}'
+)
+
+RECORD_STR_BAD = (
+    '{"RECORD_TYPE": "PERSON" "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST":'
+    ' "Robert", "DATE_OF_BIRTH": "12/11/1978", "ADDR_TYPE": "MAILING", "ADDR_LINE1":'
+    ' "123 Main Street, Las Vegas NV 89132","PHONE_TYPE": "HOME", "PHONE_NUMBER":'
+    ' "702-919-1300", "EMAIL_ADDRESS": "bsmith@work.com", "DATE": "1/2/18", "STATUS":'
+    ' "Active", "AMOUNT": "100"}'
+)
+
 # -----------------------------------------------------------------------------
-# SzEngineCore pre tests
+# Pre testcases
 # -----------------------------------------------------------------------------
-
-
-def test_exception(sz_engine: SzEngineCore) -> None:
-    """Test exceptions."""
-
-    with pytest.raises(Exception):
-        sz_engine.check_result(-1)
-
-
-def test_constructor(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    actual = SzEngineCore(
-        instance_name=engine_vars["INSTANCE_NAME"],
-        settings=engine_vars["SETTINGS"],
-        verbose_logging=engine_vars["VERBOSE_LOGGING"],
-    )
-    assert isinstance(actual, SzEngineCore)
-
-
-# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_instance_name = ""
-#     with pytest.raises(SzError):
-#         test_object = SzEngineCore()
-#         test_object._initialize(  # pylint: disable=W0212
-#             bad_instance_name,
-#             engine_vars["SETTINGS"],
-#         )
-
-
-def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test constructor."""
-    bad_settings = ""
-    with pytest.raises(SzError):
-        test_object = SzEngineCore()
-        test_object._initialize(  # pylint: disable=W0212
-            engine_vars["INSTANCE_NAME"],
-            bad_settings,
-        )
-
-
-# TODO: Was having issues with the as_c_ini in init
-# def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
-#     """Test constructor."""
 
 
 def test_add_truthset_datasources(
-    sz_engine: SzEngineCore,
-    sz_configmanager: SzConfigManagerCore,
-    sz_config: SzConfigCore,
+    sz_engine: SzEngineTest,
+    sz_configmanager: SzConfigManagerTest,
+    sz_config: SzConfigTest,
 ) -> None:
     """Add needed datasources for tests."""
     config_handle = sz_config.create_config()
@@ -96,51 +83,12 @@ def test_add_truthset_datasources(
 
 
 # -----------------------------------------------------------------------------
-# SzEngineCore testcases
+# Testcases
 # -----------------------------------------------------------------------------
 
 
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_dict(sz_engine: SzEngineCore) -> None:
-#     """Test add_record where the record is a dict."""
-#     data_source_code = "TEST"
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     sz_engine.add_record(data_source_code, record_id, json_data)
-
-
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-def test_add_record_str(sz_engine: SzEngineCore) -> None:
-    """Test add_record where the record is a JSON string."""
-    data_source_code = "TEST"
-    record_id = "1"
-    json_data = RECORD_STR
-    sz_engine.add_record(data_source_code, record_id, json_data)
-
-
-# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_type(sz_engine: SzEngineCore) -> None:
-#     """Test add_record with incorrect data source code type."""
-#     data_source_code = 1
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     with pytest.raises(TypeError):
-#         sz_engine.add_record(data_source_code, record_id, json_data)
-
-
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_value(sz_engine: SzEngineCore) -> None:
-#     """Test add_record with non-existent data source code."""
-#     data_source_code = "DOESN'T EXIST"
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     with pytest.raises(SzError):
-#         sz_engine.add_record(data_source_code, record_id, json_data)
-
-
-def test_add_record(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().add_record()."""
+def test_add_record(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().add_record()."""
     data_source_code = "TEST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -150,8 +98,8 @@ def test_add_record(sz_engine: SzEngineCore) -> None:
     )
 
 
-def test_add_record_bad_data_source_code_type(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().add_record()."""
+def test_add_record_bad_data_source_code_type(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().add_record()."""
     bad_data_source_code = 1
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -162,8 +110,8 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngineCore) -> None:
         )
 
 
-def test_add_record_bad_data_source_code_value(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().add_record()."""
+def test_add_record_bad_data_source_code_value(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().add_record()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -174,8 +122,8 @@ def test_add_record_bad_data_source_code_value(sz_engine: SzEngineCore) -> None:
         )
 
 
-def test_add_record_with_info(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().add_record_with_info()."""
+def test_add_record_with_info(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().add_record_with_info()."""
     data_source_code = "TEST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -187,7 +135,7 @@ def test_add_record_with_info(sz_engine: SzEngineCore) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-def test_add_record_bad_record(sz_engine: SzEngineCore) -> None:
+def test_add_record_bad_record(sz_engine: SzEngineTest) -> None:
     """Test add_record with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
@@ -196,7 +144,7 @@ def test_add_record_bad_record(sz_engine: SzEngineCore) -> None:
         sz_engine.add_record(data_source_code, record_id, bad_record_definition)
 
 
-def test_add_record_bad_record_id_type(sz_engine: SzEngineCore) -> None:
+def test_add_record_bad_record_id_type(sz_engine: SzEngineTest) -> None:
     """Test add_record with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
@@ -205,7 +153,7 @@ def test_add_record_bad_record_id_type(sz_engine: SzEngineCore) -> None:
         sz_engine.add_record(data_source_code, bad_record_id, record_definition)  # type: ignore[arg-type]
 
 
-def test_add_record_data_source_code_empty(sz_engine: SzEngineCore) -> None:
+def test_add_record_data_source_code_empty(sz_engine: SzEngineTest) -> None:
     """Test add_record with empty data source code."""
     bad_data_source_code = ""
     record_id = "1"
@@ -214,7 +162,7 @@ def test_add_record_data_source_code_empty(sz_engine: SzEngineCore) -> None:
         sz_engine.add_record(bad_data_source_code, record_id, record_definition)
 
 
-def test_add_record_record_str_empty(sz_engine: SzEngineCore) -> None:
+def test_add_record_record_str_empty(sz_engine: SzEngineTest) -> None:
     """Test add_record with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
@@ -224,13 +172,13 @@ def test_add_record_record_str_empty(sz_engine: SzEngineCore) -> None:
 
 
 # NOTE This doesn't throw an exception because json dumps results in a valid json str '{}'
-# def test_add_record_record_dict_empty(sz_engine: SzEngineCore) -> None:
+# def test_add_record_record_dict_empty(sz_engine: SzEngineTest) -> None:
 #     """Test add_record with empty record as a dictionary"""
 #     with pytest.raises(g2exception.SzError):
 #         sz_engine.add_record(data_source_code, record_id, {})
 
 
-def x_test_add_record_with_info_dict(sz_engine: SzEngineCore) -> None:
+def x_test_add_record_with_info_dict(sz_engine: SzEngineTest) -> None:
     """Test add_record with flag to return with_info where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
@@ -241,7 +189,7 @@ def x_test_add_record_with_info_dict(sz_engine: SzEngineCore) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-def test_add_record_with_info_str(sz_engine: SzEngineCore) -> None:
+def test_add_record_with_info_str(sz_engine: SzEngineTest) -> None:
     """Test add_record with flag to return with_info where the record is a JSON string."""
     data_source_code = "TEST"
     record_id = "1"
@@ -254,9 +202,9 @@ def test_add_record_with_info_str(sz_engine: SzEngineCore) -> None:
 
 # TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 def test_add_record_with_info_bad_data_source_code_type(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().add_record_with_info()."""
+    """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = 1
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -268,9 +216,9 @@ def test_add_record_with_info_bad_data_source_code_type(
 
 
 def test_add_record_with_info_bad_data_source_code_value(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().add_record_with_info()."""
+    """Test SzEngine().add_record_with_info()."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -281,7 +229,7 @@ def test_add_record_with_info_bad_data_source_code_value(
         )
 
 
-def test_add_record_with_info_bad_record(sz_engine: SzEngineCore) -> None:
+def test_add_record_with_info_bad_record(sz_engine: SzEngineTest) -> None:
     """Test add_record with flag to return with_info with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
@@ -291,7 +239,7 @@ def test_add_record_with_info_bad_record(sz_engine: SzEngineCore) -> None:
         sz_engine.add_record(data_source_code, record_id, bad_record_definition, flags)
 
 
-def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngineCore) -> None:
+def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngineTest) -> None:
     """Test add_record with flag to return with_info with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
@@ -301,7 +249,7 @@ def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngineCore) -> Non
         sz_engine.add_record(data_source_code, bad_record_id, record_definition, flags)  # type: ignore[arg-type]
 
 
-def test_add_record_with_info_record_str_empty(sz_engine: SzEngineCore) -> None:
+def test_add_record_with_info_record_str_empty(sz_engine: SzEngineTest) -> None:
     """Test add_record_with_info with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
@@ -311,18 +259,18 @@ def test_add_record_with_info_record_str_empty(sz_engine: SzEngineCore) -> None:
 
 
 def test_close_export() -> None:
-    """Test SzEngineCore().close_export()."""
+    """Test SzEngine().close_export()."""
     # TODO: implement.
 
 
-def test_count_redo_records(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().count_redo_records()."""
+def test_count_redo_records(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().count_redo_records()."""
     actual = sz_engine.count_redo_records()
     assert actual > 0
 
 
-def test_delete_record(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record()."""
+def test_delete_record(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -333,8 +281,8 @@ def test_delete_record(sz_engine: SzEngineCore) -> None:
     sz_engine.delete_record(data_source_code, record_id, flags)
 
 
-def test_delete_record_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record()."""
+def test_delete_record_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SZ_WITHOUT_INFO
@@ -342,16 +290,16 @@ def test_delete_record_bad_data_source_code(sz_engine: SzEngineCore) -> None:
         sz_engine.delete_record(bad_data_source_code, record_id, flags)
 
 
-def test_delete_record_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record()."""
+def test_delete_record_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SZ_WITHOUT_INFO
     sz_engine.delete_record(data_source_code, bad_record_id, flags)
 
 
-def test_delete_record_with_info(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record_with_info()."""
+def test_delete_record_with_info(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record_with_info()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -364,8 +312,8 @@ def test_delete_record_with_info(sz_engine: SzEngineCore) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-def test_delete_record_with_info_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record_with_info()."""
+def test_delete_record_with_info_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record_with_info()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
@@ -373,8 +321,8 @@ def test_delete_record_with_info_bad_data_source_code(sz_engine: SzEngineCore) -
         _ = sz_engine.delete_record(bad_data_source_code, record_id, flags)
 
 
-def test_delete_record_with_info_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().delete_record_with_info()."""
+def test_delete_record_with_info_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().delete_record_with_info()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
@@ -383,19 +331,8 @@ def test_delete_record_with_info_bad_record_id(sz_engine: SzEngineCore) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-def test_double_destroy(engine_vars: Dict[Any, Any]) -> None:
-    """Test calling destroy twice."""
-    actual = SzEngineCore()
-    actual._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS_DICT"],
-    )
-    actual._destroy()  # pylint: disable=W0212
-    actual._destroy()  # pylint: disable=W0212
-
-
-def test_export_csv_entity_report(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().export_csv_entity_report()."""
+def test_export_csv_entity_report(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().export_csv_entity_report()."""
     csv_column_list = "RESOLVED_ENTITY_ID,RESOLVED_ENTITY_NAME,RELATED_ENTITY_ID,MATCH_LEVEL,MATCH_KEY,IS_DISCLOSED,IS_AMBIGUOUS,DATA_SOURCE,RECORD_ID,JSON_DATA"
     flags = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS
     export_handle = sz_engine.export_csv_entity_report(csv_column_list, flags)
@@ -409,8 +346,8 @@ def test_export_csv_entity_report(sz_engine: SzEngineCore) -> None:
     assert len(actual) > 0
 
 
-def test_export_json_entity_report(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().export_json_entity_report()."""
+def test_export_json_entity_report(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().export_json_entity_report()."""
     handle = sz_engine.export_json_entity_report()
     actual = ""
     while True:
@@ -426,12 +363,12 @@ def test_export_json_entity_report(sz_engine: SzEngineCore) -> None:
 
 
 def test_fetch_next() -> None:
-    """Test SzEngineCore().fetch_next."""
+    """Test SzEngine().fetch_next."""
     # TODO: implement test_fetch_next.
 
 
-def test_find_interesting_entities_by_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_interesting_entities_by_entity_id()."""
+def test_find_interesting_entities_by_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_interesting_entities_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -446,17 +383,17 @@ def test_find_interesting_entities_by_entity_id(sz_engine: SzEngineCore) -> None
 
 
 def test_find_interesting_entities_by_entity_id_bad_entity_id(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().find_interesting_entities_by_entity_id()."""
+    """Test SzEngine().find_interesting_entities_by_entity_id()."""
     bad_entity_id = 0
     flags = SZ_NO_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_interesting_entities_by_entity_id(bad_entity_id, flags)
 
 
-def test_find_interesting_entities_by_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_interesting_entities_by_record_id()."""
+def test_find_interesting_entities_by_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_interesting_entities_by_record_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -474,9 +411,9 @@ def test_find_interesting_entities_by_record_id(sz_engine: SzEngineCore) -> None
 
 
 def test_find_interesting_entities_by_record_id_bad_data_source_code(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().find_interesting_entities_by_record_id()."""
+    """Test SzEngine().find_interesting_entities_by_record_id()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SZ_NO_FLAGS
@@ -487,9 +424,9 @@ def test_find_interesting_entities_by_record_id_bad_data_source_code(
 
 
 def test_find_interesting_entities_by_record_id_bad_record_id(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().find_interesting_entities_by_record_id()."""
+    """Test SzEngine().find_interesting_entities_by_record_id()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SZ_NO_FLAGS
@@ -499,8 +436,8 @@ def test_find_interesting_entities_by_record_id_bad_record_id(
         )
 
 
-def test_find_network_by_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_network_by_entity_id()."""
+def test_find_network_by_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_network_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -523,8 +460,8 @@ def test_find_network_by_entity_id(sz_engine: SzEngineCore) -> None:
     assert schema(network_schema) == actual_as_dict
 
 
-def test_find_network_by_entity_id_bad_entity_ids(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_network_by_entity_id()."""
+def test_find_network_by_entity_id_bad_entity_ids(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_network_by_entity_id()."""
     bad_entity_list = [0, 1]
     max_degrees = 2
     build_out_degree = 1
@@ -536,8 +473,8 @@ def test_find_network_by_entity_id_bad_entity_ids(sz_engine: SzEngineCore) -> No
         )
 
 
-def test_find_network_by_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_network_by_record_id()."""
+def test_find_network_by_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_network_by_record_id()."""
     record_list: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -556,9 +493,9 @@ def test_find_network_by_record_id(sz_engine: SzEngineCore) -> None:
 
 
 def test_find_network_by_record_id_bad_data_source_code(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().find_network_by_record_id()."""
+    """Test SzEngine().find_network_by_record_id()."""
     bad_record_list: List[Tuple[str, str]] = [
         ("XXXX", "9999"),
         ("XXXX", "9998"),
@@ -573,8 +510,8 @@ def test_find_network_by_record_id_bad_data_source_code(
         )
 
 
-def test_find_network_by_record_id_bad_record_ids(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_network_by_record_id()."""
+def test_find_network_by_record_id_bad_record_ids(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_network_by_record_id()."""
     bad_record_list: List[Tuple[str, str]] = [
         ("CUSTOMERS", "9999"),
         ("CUSTOMERS", "9998"),
@@ -589,8 +526,8 @@ def test_find_network_by_record_id_bad_record_ids(sz_engine: SzEngineCore) -> No
         )
 
 
-def test_find_path_by_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_path_by_entity_id()."""
+def test_find_path_by_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_path_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -615,8 +552,8 @@ def test_find_path_by_entity_id(sz_engine: SzEngineCore) -> None:
     assert schema(path_schema) == actual_as_dict
 
 
-def test_find_path_by_entity_id_bad_entity_ids(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_path_by_entity_id()."""
+def test_find_path_by_entity_id_bad_entity_ids(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_path_by_entity_id()."""
     bad_start_entity_id = 0
     bad_end_entity_id = 1
     max_degrees = 1
@@ -635,8 +572,8 @@ def test_find_path_by_entity_id_bad_entity_ids(sz_engine: SzEngineCore) -> None:
         )
 
 
-def test_find_path_by_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_path_by_record_id()."""
+def test_find_path_by_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_path_by_record_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -665,8 +602,8 @@ def test_find_path_by_record_id(sz_engine: SzEngineCore) -> None:
     assert schema(path_schema) == actual_as_dict
 
 
-def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_path_by_record_id()."""
+def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_path_by_record_id()."""
     bad_start_data_source_code = "XXXX"
     start_record_id = "9999"
     bad_end_data_source_code = "XXXX"
@@ -688,8 +625,8 @@ def test_find_path_by_record_id_bad_data_source_code(sz_engine: SzEngineCore) ->
         )
 
 
-def test_find_path_by_record_id_bad_record_ids(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().find_path_by_record_id()."""
+def test_find_path_by_record_id_bad_record_ids(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().find_path_by_record_id()."""
     start_data_source_code = "CUSTOMERS"
     bad_start_record_id = "9999"
     end_data_source_code = "CUSTOMERS"
@@ -711,14 +648,14 @@ def test_find_path_by_record_id_bad_record_ids(sz_engine: SzEngineCore) -> None:
         )
 
 
-def test_get_active_config_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_active_config_id()."""
+def test_get_active_config_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_active_config_id()."""
     actual = sz_engine.get_active_config_id()
     assert actual >= 0
 
 
-def test_get_entity_by_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_by_entity_id()."""
+def test_get_entity_by_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -732,8 +669,8 @@ def test_get_entity_by_entity_id(sz_engine: SzEngineCore) -> None:
     assert schema(resolved_entity_schema) == actual_as_dict
 
 
-def test_get_entity_by_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_by_record_id()."""
+def test_get_entity_by_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_by_record_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -747,8 +684,8 @@ def test_get_entity_by_record_id(sz_engine: SzEngineCore) -> None:
     assert schema(resolved_entity_schema) == actual_as_dict
 
 
-def test_get_entity_by_record_id_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_by_record_id()."""
+def test_get_entity_by_record_id_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_by_record_id()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
@@ -756,8 +693,8 @@ def test_get_entity_by_record_id_bad_data_source_code(sz_engine: SzEngineCore) -
         _ = sz_engine.get_entity_by_record_id(bad_data_source_code, record_id, flags)
 
 
-def test_get_entity_by_record_id_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_by_record_id()."""
+def test_get_entity_by_record_id_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_by_record_id()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS
@@ -765,8 +702,8 @@ def test_get_entity_by_record_id_bad_record_id(sz_engine: SzEngineCore) -> None:
         _ = sz_engine.get_entity_by_record_id(data_source_code, bad_record_id, flags)
 
 
-def test_get_record(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_record()."""
+def test_get_record(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_record()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -780,8 +717,8 @@ def test_get_record(sz_engine: SzEngineCore) -> None:
     assert schema(record_schema) == actual_as_dict
 
 
-def test_get_record_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_record()."""
+def test_get_record_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_record()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
@@ -789,8 +726,8 @@ def test_get_record_bad_data_source_code(sz_engine: SzEngineCore) -> None:
         _ = sz_engine.get_record(bad_data_source_code, record_id, flags)
 
 
-def test_get_record_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_record()."""
+def test_get_record_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_record()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
@@ -798,8 +735,8 @@ def test_get_record_bad_record_id(sz_engine: SzEngineCore) -> None:
         _ = sz_engine.get_record(data_source_code, bad_record_id, flags)
 
 
-def test_get_redo_record(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_redo_record()."""
+def test_get_redo_record(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_redo_record()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -812,15 +749,15 @@ def test_get_redo_record(sz_engine: SzEngineCore) -> None:
     assert schema(redo_record_schema) == actual_as_dict
 
 
-def test_get_stats(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().stats()."""
+def test_get_stats(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().stats()."""
     actual = sz_engine.get_stats()
     actual_as_dict = json.loads(actual)
     assert schema(stats_schema) == actual_as_dict
 
 
-def test_get_virtual_entity_by_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_virtual_entity_by_record_id()."""
+def test_get_virtual_entity_by_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_virtual_entity_by_record_id()."""
     record_list: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -834,9 +771,9 @@ def test_get_virtual_entity_by_record_id(sz_engine: SzEngineCore) -> None:
 
 
 def test_get_virtual_entity_by_record_id_bad_data_source_code(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().get_virtual_entity_by_record_id()."""
+    """Test SzEngine().get_virtual_entity_by_record_id()."""
     bad_record_list: List[Tuple[str, str]] = [
         ("XXXX", "9999"),
         ("XXXX", "9998"),
@@ -847,9 +784,9 @@ def test_get_virtual_entity_by_record_id_bad_data_source_code(
 
 
 def test_get_virtual_entity_by_record_id_bad_record_ids(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().get_virtual_entity_by_record_id()."""
+    """Test SzEngine().get_virtual_entity_by_record_id()."""
     bad_record_list: List[Tuple[str, str]] = [
         ("CUSTOMERS", "9999"),
         ("CUSTOMERS", "9998"),
@@ -859,8 +796,8 @@ def test_get_virtual_entity_by_record_id_bad_record_ids(
         _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
 
 
-def test_how_entity_by_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().how_entity_by_entity_id()."""
+def test_how_entity_by_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().how_entity_by_entity_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -873,21 +810,37 @@ def test_how_entity_by_entity_id(sz_engine: SzEngineCore) -> None:
     assert schema(how_results_schema) == actual_as_dict
 
 
-def test_how_entity_by_entity_id_bad_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().how_entity_by_entity_id()."""
+def test_how_entity_by_entity_id_bad_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().how_entity_by_entity_id()."""
     bad_entity_id = 0
     flags = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.how_entity_by_entity_id(bad_entity_id, flags)
 
 
-def test_prime_engine(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().prime_engine()."""
+# def test_preprocess_record(sz_engine: SzEngineTest) -> None:
+#     """Test SzEngine().add_record()."""
+#     record_definition: Dict[Any, Any] = DATA_SOURCES.get("CUSTOMERS", {}).get(
+#         "1001", {}
+#     )
+#     with pytest.raises(SzBadInputError):
+#         sz_engine.preprocess_record(json.dumps(record_definition))
+
+
+# def test_preprocess_record_bad_empty_record(sz_engine: SzEngineTest) -> None:
+#     """Test SzEngine().add_record()."""
+#     record_definition: Dict[Any, Any] = {}
+#     with pytest.raises(SzBadInputError):
+#         sz_engine.preprocess_record(json.dumps(record_definition))
+
+
+def test_prime_engine(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().prime_engine()."""
     sz_engine.prime_engine()
 
 
-def test_reevaluate_entity(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_id_from_record_id()."""
+def test_reevaluate_entity(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_id_from_record_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -898,15 +851,15 @@ def test_reevaluate_entity(sz_engine: SzEngineCore) -> None:
     delete_records(sz_engine, test_records)
 
 
-def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_id_from_record_id()."""
+def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_id_from_record_id()."""
     bad_entity_id = 0
     flags = SZ_WITHOUT_INFO
     sz_engine.reevaluate_entity(bad_entity_id, flags)
 
 
-def test_reevaluate_entity_with_info(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_entity_with_info()."""
+def test_reevaluate_entity_with_info(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_entity_with_info()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -919,15 +872,15 @@ def test_reevaluate_entity_with_info(sz_engine: SzEngineCore) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_entity_with_info()."""
+def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_entity_with_info()."""
     bad_entity_id = 0
     flags = SzEngineFlags.SZ_WITH_INFO
     _ = sz_engine.reevaluate_entity(bad_entity_id, flags)
 
 
-def test_reevaluate_record(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().get_entity_id_from_record_id()."""
+def test_reevaluate_record(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().get_entity_id_from_record_id()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -939,8 +892,8 @@ def test_reevaluate_record(sz_engine: SzEngineCore) -> None:
     delete_records(sz_engine, test_records)
 
 
-def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_record()."""
+def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_record()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SZ_WITHOUT_INFO
@@ -948,8 +901,8 @@ def test_reevaluate_record_bad_data_source_code(sz_engine: SzEngineCore) -> None
         sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
-def test_reevaluate_record_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_record()."""
+def test_reevaluate_record_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_record()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SZ_WITHOUT_INFO
@@ -961,8 +914,8 @@ def test_reevaluate_record_bad_record_id(sz_engine: SzEngineCore) -> None:
 #     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
 
-def test_reevaluate_record_with_info(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_entity_with_info()."""
+def test_reevaluate_record_with_info(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_entity_with_info()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -977,9 +930,9 @@ def test_reevaluate_record_with_info(sz_engine: SzEngineCore) -> None:
 
 
 def test_reevaluate_record_with_info_bad_data_source_code(
-    sz_engine: SzEngineCore,
+    sz_engine: SzEngineTest,
 ) -> None:
-    """Test SzEngineCore().reevaluate_entity_with_info()."""
+    """Test SzEngine().reevaluate_entity_with_info()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
@@ -987,8 +940,8 @@ def test_reevaluate_record_with_info_bad_data_source_code(
         _ = sz_engine.reevaluate_record(bad_data_source_code, record_id, flags)
 
 
-def test_reevaluate_record_with_info_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reevaluate_entity_with_info()."""
+def test_reevaluate_record_with_info_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reevaluate_entity_with_info()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
@@ -998,8 +951,8 @@ def test_reevaluate_record_with_info_bad_record_id(sz_engine: SzEngineCore) -> N
     #     _ = sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
 
 
-def test_search_by_attributes(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().search_by_attributes
+def test_search_by_attributes(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().search_by_attributes
     ()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
@@ -1019,8 +972,8 @@ def test_search_by_attributes(sz_engine: SzEngineCore) -> None:
         assert schema(search_schema) == actual_as_dict
 
 
-def test_search_by_attributes_bad_attributes(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().search_by_attributes()."""
+def test_search_by_attributes_bad_attributes(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().search_by_attributes()."""
     bad_attributes = "{"
     search_profile = ""
     flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
@@ -1028,8 +981,8 @@ def test_search_by_attributes_bad_attributes(sz_engine: SzEngineCore) -> None:
         _ = sz_engine.search_by_attributes(bad_attributes, flags, search_profile)
 
 
-def test_why_entities(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().why_entities()."""
+def test_why_entities(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().why_entities()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -1044,8 +997,8 @@ def test_why_entities(sz_engine: SzEngineCore) -> None:
     assert schema(why_entities_results_schema) == actual_as_dict
 
 
-def test_why_entities_bad_entity_ids(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().why_entities()."""
+def test_why_entities_bad_entity_ids(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().why_entities()."""
     bad_entity_id_1 = 0
     entity_id_2 = 1
     flags = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
@@ -1054,12 +1007,12 @@ def test_why_entities_bad_entity_ids(sz_engine: SzEngineCore) -> None:
 
 
 def test_why_record_in_entity() -> None:
-    """Test SzEngineCore().why_record_in_entity()."""
+    """Test SzEngine().why_record_in_entity()."""
     # TODO: implement.
 
 
-def test_why_records(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().why_records()."""
+def test_why_records(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().why_records()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -1078,8 +1031,8 @@ def test_why_records(sz_engine: SzEngineCore) -> None:
     assert schema(why_entity_results_schema) == actual_as_dict
 
 
-def test_why_records_bad_data_source_code(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().why_records()."""
+def test_why_records_bad_data_source_code(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().why_records()."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
     bad_data_source_code_2 = "XXXX"
@@ -1091,8 +1044,8 @@ def test_why_records_bad_data_source_code(sz_engine: SzEngineCore) -> None:
         )
 
 
-def test_why_records_bad_record_id(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().why_records()."""
+def test_why_records_bad_record_id(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().why_records()."""
     data_source_code_1 = "CUSTOMERS"
     record_id_1 = "1001"
     data_source_code_2 = "CUSTOMERS"
@@ -1105,13 +1058,49 @@ def test_why_records_bad_record_id(sz_engine: SzEngineCore) -> None:
 
 
 # -----------------------------------------------------------------------------
-# SzEngineCore misc tests
+# Unique testcases
 # -----------------------------------------------------------------------------
+
+
+def test_add_record_str(sz_engine: SzEngineTest) -> None:
+    """Test add_record where the record is a JSON string."""
+    data_source_code = "TEST"
+    record_id = "1"
+    json_data = RECORD_STR
+    sz_engine.add_record(data_source_code, record_id, json_data)
+
+
+# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
+# def test_add_record_bad_data_source_code_type(sz_engine: SzEngineTest) -> None:
+#     """Test add_record with incorrect data source code type."""
+#     data_source_code = 1
+#     record_id = "1"
+#     json_data = RECORD_DICT
+#     with pytest.raises(TypeError):
+#         sz_engine.add_record(data_source_code, record_id, json_data)
+
+
+# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
+# def test_add_record_bad_data_source_code_value(sz_engine: SzEngineTest) -> None:
+#     """Test add_record with non-existent data source code."""
+#     data_source_code = "DOESN'T EXIST"
+#     record_id = "1"
+#     json_data = RECORD_DICT
+#     with pytest.raises(SzError):
+#         sz_engine.add_record(data_source_code, record_id, json_data)
+
+# def test_add_record_dict(sz_engine: SzEngineTest) -> None:
+#     """Test add_record where the record is a dict."""
+#     data_source_code = "TEST"
+#     record_id = "1"
+#     json_data = RECORD_DICT
+#     sz_engine.add_record(data_source_code, record_id, json_data)
 
 
 # def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
 #     """Add truthset data for tests"""
-#     sz_engine = SzEngineCore()
+#     sz_engine = SzEngineTest()
 #     sz_engine._initialize(  # pylint: disable=W0212
 #         engine_vars["INSTANCE_NAME"],
 #         engine_vars["SETTINGS"],
@@ -1120,17 +1109,55 @@ def test_why_records_bad_record_id(sz_engine: SzEngineCore) -> None:
 #     add_records_truthset(sz_engine)
 
 
-# -----------------------------------------------------------------------------
-# SzEngineCore post tests
-# -----------------------------------------------------------------------------
+def test_exception(sz_engine: SzEngineTest) -> None:
+    """Test exceptions."""
 
+    with pytest.raises(Exception):
+        sz_engine.check_result(-1)
+
+
+def test_constructor(engine_vars: Dict[Any, Any]) -> None:
+    """Test constructor."""
+    actual = SzEngineTest(
+        instance_name=engine_vars["INSTANCE_NAME"],
+        settings=engine_vars["SETTINGS"],
+        verbose_logging=engine_vars["VERBOSE_LOGGING"],
+    )
+    assert isinstance(actual, SzEngineTest)
+
+
+# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_instance_name = ""
+#     with pytest.raises(SzError):
+#         test_object = SzEngineTest()
+#         test_object._initialize(  # pylint: disable=W0212
+#             bad_instance_name,
+#             engine_vars["SETTINGS"],
+#         )
+
+
+# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
+#     """Test constructor."""
+#     bad_settings = ""
+#     with pytest.raises(SzError):
+#         test_object = SzEngineTest()
+#         test_object._initialize(  # pylint: disable=W0212
+#             engine_vars["INSTANCE_NAME"],
+#             bad_settings,
+#         )
+
+
+# TODO: Was having issues with the as_c_ini in init
+# def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
+#     """Test constructor."""
 
 # TODO: Add testing bad args
 # def test_initialize_and_destroy(engine_vars: Dict[Any, Any]) -> None:
 #     """Test init and destroy."""
 #     instance_name = engine_vars["INSTANCE_NAME"]
 #     settings = engine_vars["SETTINGS"]
-#     sz_engine_init_destroy = SzEngineCore()
+#     sz_engine_init_destroy = SzEngineTest()
 #     sz_engine_init_destroy.initialize(instance_name, settings)
 #     sz_engine_init_destroy.destroy()
 
@@ -1139,11 +1166,11 @@ def test_why_records_bad_record_id(sz_engine: SzEngineCore) -> None:
 #     """Test init_with_config_id."""
 #     instance_name = engine_vars["INSTANCE_NAME"]
 #     settings = engine_vars["SETTINGS"]
-#     sz_engine_1 = SzEngineCore()
+#     sz_engine_1 = SzEngineTest()
 #     sz_engine_1.initialize(instance_name, settings)
 #     config_id = sz_engine_1.get_active_config_id()
 #     sz_engine_1.destroy()
-#     sz_engine_2 = SzEngineCore()
+#     sz_engine_2 = SzEngineTest()
 #     sz_engine_2.initialize(instance_name, settings, config_id)
 
 
@@ -1152,20 +1179,20 @@ def test_why_records_bad_record_id(sz_engine: SzEngineCore) -> None:
 #     instance_name = engine_vars["INSTANCE_NAME"]
 #     settings = engine_vars["SETTINGS"]
 #     config_id = 0
-#     sz_engine = SzEngineCore()
+#     sz_engine = SzEngineTest()
 #     sz_engine.initialize(instance_name, settings, config_id)
 
 
-def test_reinitialize(sz_engine: SzEngineCore) -> None:
-    """Test SzEngineCore().reinitialize()."""
+def test_reinitialize(sz_engine: SzEngineTest) -> None:
+    """Test SzEngine().reinitialize()."""
     config_id = sz_engine.get_active_config_id()
     sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 
 
 def test_reinitialize_bad_config_id(
-    sz_engine: SzEngineCore, sz_configmanager: SzConfigManagerCore
+    sz_engine: SzEngineTest, sz_configmanager: SzConfigManagerTest
 ) -> None:
-    """Test SzEngineCore().reinitialize()."""
+    """Test SzEngine().reinitialize()."""
     _ = sz_engine
     _ = sz_configmanager
     # TODO: Uncomment once fixed in engine GDEV-3739
@@ -1178,77 +1205,16 @@ def test_reinitialize_bad_config_id(
     #     sz_engine.reinitialize(config_id)
 
 
-# def test_destroy(sz_engine: SzEngineCore) -> None:
-#     """Test SzEngineCore().destroy()."""
+# def test_destroy(sz_engine: SzEngineTest) -> None:
+#     """Test SzEngine().destroy()."""
 #     sz_engine.destroy()
-
-
-# -----------------------------------------------------------------------------
-# SzEngineCore fixtures
-# -----------------------------------------------------------------------------
-
-
-# @pytest.fixture(name="sz_config", scope="module")
-@pytest.fixture(name="sz_config", scope="function")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigCore:
-    """
-    Single szconfig object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigCore()
-    result._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    return result
-
-
-# @pytest.fixture(name="sz_configmanager", scope="module")
-@pytest.fixture(name="sz_configmanager", scope="function")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManagerCore:
-    """
-    Single szconfigmanager object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigManagerCore()
-    result._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    return result
-
-
-# @pytest.fixture(name="sz_engine", scope="module")
-@pytest.fixture(name="sz_engine", scope="function")
-def szenginecore_fixture(engine_vars: Dict[Any, Any]) -> SzEngineCore:
-    """
-    Single SzEngineCore object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    # global global_sz_engine
-    # if not global_sz_engine:
-    #     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> create engine")
-    #     global_sz_engine = SzEngineCore()
-    #     global_sz_engine._initialize(  # pylint: disable=W0212
-    #         engine_vars["INSTANCE_NAME"],
-    #         engine_vars["SETTINGS"],
-    #     )
-    # return global_sz_engine
-
-    result = SzEngineCore()
-    result._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    return result
-
 
 # -----------------------------------------------------------------------------
 # Utilities
 # -----------------------------------------------------------------------------
 
 
-def add_records(sz_engine: SzEngineCore, record_id_list: List[Tuple[str, str]]) -> None:
+def add_records(sz_engine: SzEngineTest, record_id_list: List[Tuple[str, str]]) -> None:
     """Add all of the records in the list."""
     flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
@@ -1263,7 +1229,7 @@ def add_records(sz_engine: SzEngineCore, record_id_list: List[Tuple[str, str]]) 
         )
 
 
-def add_records_truthset(sz_engine: SzEngineCore, do_redo: bool = True) -> None:
+def add_records_truthset(sz_engine: SzEngineTest, do_redo: bool = True) -> None:
     """Add all truth-set the records."""
     flags = SZ_WITHOUT_INFO
     for record_set in DATA_SOURCES.values():
@@ -1281,7 +1247,7 @@ def add_records_truthset(sz_engine: SzEngineCore, do_redo: bool = True) -> None:
 
 
 def delete_records(
-    sz_engine: SzEngineCore, record_id_list: List[Tuple[str, str]]
+    sz_engine: SzEngineTest, record_id_list: List[Tuple[str, str]]
 ) -> None:
     """Delete all of the records in the list."""
     flags = SZ_WITHOUT_INFO
@@ -1294,7 +1260,7 @@ def delete_records(
         )
 
 
-def delete_records_truthset(sz_engine: SzEngineCore) -> None:
+def delete_records_truthset(sz_engine: SzEngineTest) -> None:
     """Delete all truth-set the records."""
     flags = SZ_WITHOUT_INFO
     for record_set in DATA_SOURCES.values():
@@ -1303,7 +1269,7 @@ def delete_records_truthset(sz_engine: SzEngineCore) -> None:
 
 
 def get_entity_id_from_record_id(
-    sz_engine: SzEngineCore, data_source_code: str, record_id: str
+    sz_engine: SzEngineTest, data_source_code: str, record_id: str
 ) -> int:
     """Given a (datasource, record_id), return the entity ID."""
     entity = sz_engine.get_entity_by_record_id(data_source_code, record_id)
@@ -1312,47 +1278,55 @@ def get_entity_id_from_record_id(
 
 
 # -----------------------------------------------------------------------------
-# Constants
+# Fixtures
 # -----------------------------------------------------------------------------
 
-DATA_SOURCES = {
-    "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
-    "REFERENCE": TRUTHSET_REFERENCE_RECORDS,
-    "WATCHLIST": TRUTHSET_WATCHLIST_RECORDS,
-}
 
-RECORD_DICT = {
-    "RECORD_TYPE": "PERSON",
-    "PRIMARY_NAME_LAST": "Smith",
-    "PRIMARY_NAME_FIRST": "Robert",
-    "DATE_OF_BIRTH": "12/11/1978",
-    "ADDR_TYPE": "MAILING",
-    "ADDR_LINE1": "123 Main Street, Las Vegas NV 89132",
-    "PHONE_TYPE": "HOME",
-    "PHONE_NUMBER": "702-919-1300",
-    "EMAIL_ADDRESS": "bsmith@work.com",
-    "DATE": "1/2/18",
-    "STATUS": "Active",
-    "AMOUNT": "100",
-}
-RECORD_STR = (
-    '{"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST":'
-    ' "Robert", "DATE_OF_BIRTH": "12/11/1978", "ADDR_TYPE": "MAILING", "ADDR_LINE1":'
-    ' "123 Main Street, Las Vegas NV 89132","PHONE_TYPE": "HOME", "PHONE_NUMBER":'
-    ' "702-919-1300", "EMAIL_ADDRESS": "bsmith@work.com", "DATE": "1/2/18", "STATUS":'
-    ' "Active", "AMOUNT": "100"}'
-)
+@pytest.fixture(name="sz_config", scope="function")
+def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfigTest:
+    """
+    Single szconfig object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+    result = SzConfigTest()
+    result._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    return result
 
-RECORD_STR_BAD = (
-    '{"RECORD_TYPE": "PERSON" "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST":'
-    ' "Robert", "DATE_OF_BIRTH": "12/11/1978", "ADDR_TYPE": "MAILING", "ADDR_LINE1":'
-    ' "123 Main Street, Las Vegas NV 89132","PHONE_TYPE": "HOME", "PHONE_NUMBER":'
-    ' "702-919-1300", "EMAIL_ADDRESS": "bsmith@work.com", "DATE": "1/2/18", "STATUS":'
-    ' "Active", "AMOUNT": "100"}'
-)
+
+@pytest.fixture(name="sz_configmanager", scope="function")
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManagerTest:
+    """
+    Single szconfigmanager object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+    result = SzConfigManagerTest()
+    result._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    return result
+
+
+@pytest.fixture(name="sz_engine", scope="function")
+def szenginecore_fixture(engine_vars: Dict[Any, Any]) -> SzEngineTest:
+    """
+    Single SzEngine object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+
+    result = SzEngineTest()
+    result._initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    return result
+
 
 # -----------------------------------------------------------------------------
-# SzEngineCore schemas
+# Schemas
 # -----------------------------------------------------------------------------
 
 add_record_with_info_schema = {
@@ -1419,7 +1393,7 @@ g2_config_schema = {
         "CFG_FTYPE": [
             {
                 "FTYPE_ID": int,
-                Optional("FTYPE_CODE"): str,
+                "FTYPE_CODE": Or(str, None),
                 "FCLASS_ID": int,
                 "FTYPE_FREQ": str,
                 "FTYPE_EXCL": str,
@@ -1445,7 +1419,7 @@ g2_config_schema = {
                 Optional("FELEM_ID"): int,
                 Optional("EXEC_ORDER"): int,
                 "DISPLAY_LEVEL": int,
-                Optional("DISPLAY_DELIM"): str,
+                "DISPLAY_DELIM": Or(str, None),
                 "DERIVED": str,
             },
         ],
@@ -1483,7 +1457,7 @@ g2_config_schema = {
                 Optional("FUNC_LIB"): str,
                 Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
-                Optional("LANGUAGE"): str,
+                "LANGUAGE": Or(str, None),
             },
         ],
         "CFG_EFCALL": [
@@ -1513,7 +1487,7 @@ g2_config_schema = {
                 Optional("FUNC_LIB"): str,
                 Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
-                Optional("LANGUAGE"): str,
+                "LANGUAGE": Or(str, None),
             },
         ],
         "SYS_OOM": [
@@ -1534,7 +1508,7 @@ g2_config_schema = {
                 Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
-                Optional("LANGUAGE"): str,
+                "LANGUAGE": Or(str, None),
             },
         ],
         "CFG_CFCALL": [
@@ -1561,8 +1535,8 @@ g2_config_schema = {
                 Optional("REF_SCORE"): int,
                 "RTYPE_ID": int,
                 "QUAL_ERFRAG_CODE": str,
-                Optional("DISQ_ERFRAG_CODE"): str,
-                Optional("ERRULE_TIER"): int,
+                "DISQ_ERFRAG_CODE": Or(str, None),
+                "ERRULE_TIER": Or(int, None),
             },
         ],
         "CFG_ERFRAG": [
@@ -1571,7 +1545,7 @@ g2_config_schema = {
                 "ERFRAG_CODE": str,
                 "ERFRAG_DESC": str,
                 "ERFRAG_SOURCE": str,
-                Optional("ERFRAG_DEPENDS"): str,
+                "ERFRAG_DEPENDS": Or(str, None),
             },
         ],
         "CFG_CFBOM": [
@@ -1590,7 +1564,7 @@ g2_config_schema = {
                 Optional("FUNC_VER"): str,
                 "CONNECT_STR": str,
                 "ANON_SUPPORT": str,
-                Optional("LANGUAGE"): str,
+                "LANGUAGE": Or(str, None),
             },
         ],
         "CFG_DFCALL": [
@@ -1656,12 +1630,12 @@ g2_config_schema = {
                 "ATTR_ID": int,
                 "ATTR_CODE": str,
                 "ATTR_CLASS": str,
-                Optional("FTYPE_CODE"): str,
-                Optional("FELEM_CODE"): str,
+                "FTYPE_CODE": Or(str, None),
+                "FELEM_CODE": Or(str, None),
                 "FELEM_REQ": str,
-                Optional("DEFAULT_VALUE"): str,
+                "DEFAULT_VALUE": Or(str, None),
                 Optional("ADVANCED"): str,
-                Optional("INTERNAL"): str,
+                "INTERNAL": Or(str, None),
             },
         ],
         "CONFIG_BASE_VERSION": {

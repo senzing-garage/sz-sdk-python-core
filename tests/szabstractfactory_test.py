@@ -25,7 +25,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 }
 
 # -----------------------------------------------------------------------------
-# SzAbstractFactory testcases
+# Testcases
 # -----------------------------------------------------------------------------
 
 
@@ -99,15 +99,24 @@ def test_destroy(sz_abstract_factory: SzAbstractFactory) -> None:
 
 
 # -----------------------------------------------------------------------------
-# SzAbstractFactory fixtures
+# Unique testcases
+# -----------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------
+# Fixtures
 # -----------------------------------------------------------------------------
 
 
 @pytest.fixture(name="sz_abstract_factory", scope="function")
 def sz_abstract_factory_fixture() -> SzAbstractFactory:
     """
-    Single szconfig object to use for all tests.
-    engine_vars is returned from conftest.py.
+    Single sz_abstractfactory object to use for all tests.
     """
     result = SzAbstractFactory(**FACTORY_PARAMETERS)
     return result
+
+
+# -----------------------------------------------------------------------------
+# Schemas
+# -----------------------------------------------------------------------------
