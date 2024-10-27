@@ -63,7 +63,7 @@ __updated__ = "2023-11-15"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class SzResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -72,7 +72,7 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2ResponseLonglongReturnCodeResult(Structure):
+class SzResponseLonglongReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -81,15 +81,15 @@ class G2ResponseLonglongReturnCodeResult(Structure):
     ]
 
 
-class G2AddRecordWithInfoResult(G2ResponseReturnCodeResult):
+class SzAddRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_addRecordWithInfo_result"""
 
 
-class G2DeleteRecordWithInfoResult(G2ResponseReturnCodeResult):
+class SzDeleteRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_deleteRecordWithInfo_result"""
 
 
-class G2ExportCSVEntityReportResult(Structure):
+class SzExportCSVEntityReportResult(Structure):
     """In SzLang_helpers.h Sz_exportCSVEntityReport_result"""
 
     _fields_ = [
@@ -98,7 +98,7 @@ class G2ExportCSVEntityReportResult(Structure):
     ]
 
 
-class G2ExportJSONEntityReportResult(Structure):
+class SzExportJSONEntityReportResult(Structure):
     """In SzLang_helpers.h Sz_exportJSONEntityReport_result"""
 
     _fields_ = [
@@ -107,107 +107,107 @@ class G2ExportJSONEntityReportResult(Structure):
     ]
 
 
-class G2FetchNextResult(G2ResponseReturnCodeResult):
+class SzFetchNextResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_fetchNext_result"""
 
 
-class G2FindInterestingEntitiesByEntityIDResult(G2ResponseReturnCodeResult):
+class SzFindInterestingEntitiesByEntityIDResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findInterestingEntitiesByEntityID_result"""
 
 
-class G2FindInterestingEntitiesByRecordIDResult(G2ResponseReturnCodeResult):
+class SzFindInterestingEntitiesByRecordIDResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findInterestingEntitiesByRecordID_result"""
 
 
-class G2FindNetworkByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzFindNetworkByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findNetworkByEntityID_V2_result"""
 
 
-class G2FindNetworkByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzFindNetworkByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findNetworkByRecordID_V2_result"""
 
 
-class G2FindPathByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathByEntityID_V2_result"""
 
 
-class G2FindPathByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathByRecordID_V2_result"""
 
 
-class G2FindPathExcludingByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathExcludingByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathExcludingByEntityID_V2_result"""
 
 
-class G2FindPathExcludingByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathExcludingByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathExcludingByRecordID_V2_result"""
 
 
-class G2FindPathIncludingSourceByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathIncludingSourceByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathIncludingSourceByEntityID_V2_result"""
 
 
-class G2FindPathIncludingSourceByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzFindPathIncludingSourceByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_findPathIncludingSourceByRecordID_V2_result"""
 
 
-class G2GetActiveConfigIDResult(G2ResponseLonglongReturnCodeResult):
+class SzGetActiveConfigIDResult(SzResponseLonglongReturnCodeResult):
     """In SzLang_helpers.h Sz_getActiveConfigID_result"""
 
 
-class G2GetEntityByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzGetEntityByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getEntityByEntityID_V2_result"""
 
 
-class G2GetEntityByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzGetEntityByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getEntityByRecordID_V2_result"""
 
 
-class G2GetRecordV2Result(G2ResponseReturnCodeResult):
+class SzGetRecordV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getRecord_V2_result"""
 
 
-class G2GetRedoRecordResult(G2ResponseReturnCodeResult):
+class SzGetRedoRecordResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getRedoRecord_result"""
 
 
-class G2GetVirtualEntityByRecordIDV2Result(G2ResponseReturnCodeResult):
+class SzGetVirtualEntityByRecordIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getVirtualEntityByRecordID_V2_result"""
 
 
-class G2HowEntityByEntityIDV2Result(G2ResponseReturnCodeResult):
+class SzHowEntityByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_howEntityByEntityID_V2_result"""
 
 
-class G2ProcessRedoRecordWithInfoResult(G2ResponseReturnCodeResult):
+class SzProcessRedoRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_processRedoRecordWithInfo_result"""
 
 
-class G2ReevaluateEntityWithInfoResult(G2ResponseReturnCodeResult):
+class SzReevaluateEntityWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_reevaluateEntityWithInfo_result"""
 
 
-class G2ReevaluateRecordWithInfoResult(G2ResponseReturnCodeResult):
+class SzReevaluateRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_reevaluateRecordWithInfo_result"""
 
 
-class G2SearchByAttributesV3Result(G2ResponseReturnCodeResult):
+class SzSearchByAttributesV3Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_searchByAttributes_V2_result"""
 
 
-class G2StatsResult(G2ResponseReturnCodeResult):
+class SzStatsResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_stats_result"""
 
 
-class G2WhyEntitiesV2Result(G2ResponseReturnCodeResult):
+class SzWhyEntitiesV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_whyEntities_V2_result"""
 
 
-class G2WhyRecordInEntityV2Result(G2ResponseReturnCodeResult):
+class SzWhyRecordInEntityV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_whyRecordInEntity_V2_result"""
 
 
-class G2WhyRecordsV2Result(G2ResponseReturnCodeResult):
+class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_whyRecords_V2_result"""
 
 
@@ -324,7 +324,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_addRecordWithInfo_helper.restype = (
-            G2AddRecordWithInfoResult
+            SzAddRecordWithInfoResult
         )
         self.library_handle.Sz_closeExport_helper.argtypes = [
             POINTER(c_uint),
@@ -343,7 +343,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_deleteRecordWithInfo_helper.restype = (
-            G2DeleteRecordWithInfoResult
+            SzDeleteRecordWithInfoResult
         )
         self.library_handle.Sz_destroy.argtypes = []
         self.library_handle.Sz_destroy.restype = c_longlong
@@ -352,22 +352,22 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_exportCSVEntityReport_helper.restype = (
-            G2ExportCSVEntityReportResult
+            SzExportCSVEntityReportResult
         )
         self.library_handle.Sz_exportJSONEntityReport_helper.argtypes = [c_longlong]
         self.library_handle.Sz_exportJSONEntityReport_helper.restype = (
-            G2ExportJSONEntityReportResult
+            SzExportJSONEntityReportResult
         )
         self.library_handle.Sz_fetchNext_helper.argtypes = [
             POINTER(c_uint),
         ]
-        self.library_handle.Sz_fetchNext_helper.restype = G2FetchNextResult
+        self.library_handle.Sz_fetchNext_helper.restype = SzFetchNextResult
         self.library_handle.Sz_findInterestingEntitiesByEntityID_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
         self.library_handle.Sz_findInterestingEntitiesByEntityID_helper.restype = (
-            G2FindInterestingEntitiesByEntityIDResult
+            SzFindInterestingEntitiesByEntityIDResult
         )
         self.library_handle.Sz_findInterestingEntitiesByRecordID_helper.argtypes = [
             c_char_p,
@@ -375,7 +375,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findInterestingEntitiesByRecordID_helper.restype = (
-            G2FindInterestingEntitiesByRecordIDResult
+            SzFindInterestingEntitiesByRecordIDResult
         )
         self.library_handle.Sz_findNetworkByEntityID_V2_helper.argtypes = [
             c_char_p,
@@ -385,7 +385,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findNetworkByEntityID_V2_helper.restype = (
-            G2FindNetworkByEntityIDV2Result
+            SzFindNetworkByEntityIDV2Result
         )
         self.library_handle.Sz_findNetworkByRecordID_V2_helper.argtypes = [
             c_char_p,
@@ -395,7 +395,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findNetworkByRecordID_V2_helper.restype = (
-            G2FindNetworkByRecordIDV2Result
+            SzFindNetworkByRecordIDV2Result
         )
         self.library_handle.Sz_findPathByEntityID_V2_helper.argtypes = [
             c_longlong,
@@ -404,7 +404,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByEntityID_V2_helper.restype = (
-            G2FindPathByEntityIDV2Result
+            SzFindPathByEntityIDV2Result
         )
         self.library_handle.Sz_findPathByEntityIDIncludingSource_V2_helper.argtypes = [
             c_longlong,
@@ -415,7 +415,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByEntityIDIncludingSource_V2_helper.restype = (
-            G2FindPathIncludingSourceByEntityIDV2Result
+            SzFindPathIncludingSourceByEntityIDV2Result
         )
         self.library_handle.Sz_findPathByEntityIDWithAvoids_V2_helper.argtypes = [
             c_longlong,
@@ -425,7 +425,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByEntityIDWithAvoids_V2_helper.restype = (
-            G2FindPathExcludingByEntityIDV2Result
+            SzFindPathExcludingByEntityIDV2Result
         )
         self.library_handle.Sz_findPathByRecordID_V2_helper.argtypes = [
             c_char_p,
@@ -436,7 +436,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByRecordID_V2_helper.restype = (
-            G2FindPathByRecordIDV2Result
+            SzFindPathByRecordIDV2Result
         )
         self.library_handle.Sz_findPathByRecordIDIncludingSource_V2_helper.argtypes = [
             c_char_p,
@@ -449,7 +449,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByRecordIDIncludingSource_V2_helper.restype = (
-            G2FindPathIncludingSourceByRecordIDV2Result
+            SzFindPathIncludingSourceByRecordIDV2Result
         )
         self.library_handle.Sz_findPathByRecordIDWithAvoids_V2_helper.argtypes = [
             c_char_p,
@@ -461,18 +461,18 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_findPathByRecordIDWithAvoids_V2_helper.restype = (
-            G2FindPathExcludingByRecordIDV2Result
+            SzFindPathExcludingByRecordIDV2Result
         )
         self.library_handle.Sz_getActiveConfigID_helper.argtypes = []
         self.library_handle.Sz_getActiveConfigID_helper.restype = (
-            G2GetActiveConfigIDResult
+            SzGetActiveConfigIDResult
         )
         self.library_handle.Sz_getEntityByEntityID_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
         self.library_handle.Sz_getEntityByEntityID_V2_helper.restype = (
-            G2GetEntityByEntityIDV2Result
+            SzGetEntityByEntityIDV2Result
         )
         self.library_handle.Sz_getEntityByRecordID_V2_helper.argtypes = [
             c_char_p,
@@ -480,29 +480,29 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_getEntityByRecordID_V2_helper.restype = (
-            G2GetEntityByRecordIDV2Result
+            SzGetEntityByRecordIDV2Result
         )
         self.library_handle.Sz_getRecord_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_getRecord_V2_helper.restype = G2GetRecordV2Result
+        self.library_handle.Sz_getRecord_V2_helper.restype = SzGetRecordV2Result
         self.library_handle.Sz_getRedoRecord_helper.argtypes = []
-        self.library_handle.Sz_getRedoRecord_helper.restype = G2GetRedoRecordResult
+        self.library_handle.Sz_getRedoRecord_helper.restype = SzGetRedoRecordResult
         self.library_handle.Sz_getVirtualEntityByRecordID_V2_helper.argtypes = [
             c_char_p,
             c_longlong,
         ]
         self.library_handle.Sz_getVirtualEntityByRecordID_V2_helper.restype = (
-            G2GetVirtualEntityByRecordIDV2Result
+            SzGetVirtualEntityByRecordIDV2Result
         )
         self.library_handle.Sz_howEntityByEntityID_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
         self.library_handle.Sz_howEntityByEntityID_V2_helper.restype = (
-            G2HowEntityByEntityIDV2Result
+            SzHowEntityByEntityIDV2Result
         )
         self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.Sz_init.restype = c_longlong
@@ -520,7 +520,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
         ]
         self.library_handle.Sz_processRedoRecordWithInfo_helper.restype = (
-            G2ProcessRedoRecordWithInfoResult
+            SzProcessRedoRecordWithInfoResult
         )
         self.library_handle.Sz_reevaluateEntity.argtypes = [c_longlong, c_longlong]
         self.library_handle.Sz_reevaluateEntity.restype = c_longlong
@@ -529,7 +529,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_reevaluateEntityWithInfo_helper.restype = (
-            G2ReevaluateEntityWithInfoResult
+            SzReevaluateEntityWithInfoResult
         )
         self.library_handle.Sz_reevaluateRecord.argtypes = [
             c_char_p,
@@ -543,7 +543,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_reevaluateRecordWithInfo_helper.restype = (
-            G2ReevaluateRecordWithInfoResult
+            SzReevaluateRecordWithInfoResult
         )
         self.library_handle.Sz_reinit.argtypes = [c_longlong]
         self.library_handle.Sz_reinit.restype = c_longlong
@@ -553,23 +553,23 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_searchByAttributes_V3_helper.restype = (
-            G2SearchByAttributesV3Result
+            SzSearchByAttributesV3Result
         )
         self.library_handle.Sz_stats_helper.argtypes = []
-        self.library_handle.Sz_stats_helper.restype = G2StatsResult
+        self.library_handle.Sz_stats_helper.restype = SzStatsResult
         self.library_handle.Sz_whyEntities_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_whyEntities_V2_helper.restype = G2WhyEntitiesV2Result
+        self.library_handle.Sz_whyEntities_V2_helper.restype = SzWhyEntitiesV2Result
         self.library_handle.Sz_whyRecordInEntity_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
         ]
         self.library_handle.Sz_whyRecordInEntity_V2_helper.restype = (
-            G2WhyRecordInEntityV2Result
+            SzWhyRecordInEntityV2Result
         )
         self.library_handle.Sz_whyRecords_V2_helper.argtypes = [
             c_char_p,
@@ -578,7 +578,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_whyRecords_V2_helper.restype = G2WhyRecordsV2Result
+        self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
         self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
         # if not self.instance_name or len(self.settings) == 0:

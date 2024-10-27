@@ -47,7 +47,7 @@ __updated__ = "2023-11-27"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class SzResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -56,15 +56,15 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class SzDiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):
+class SzDiagnosticCheckDatastorePerformanceResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzDiagnostic_checkDatastorePerformance_result"""
 
 
-class SzDiagnosticGetDatastoreInfoResult(G2ResponseReturnCodeResult):
+class SzDiagnosticGetDatastoreInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzDiagnostic_getDatastoreInfo_result"""
 
 
-class SzDiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
+class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzDiagnostic_getFeature_result"""
 
 
@@ -99,7 +99,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         sz_diagnostic.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **G2Exception**.
+    Just specifying one or the other results in a **SzException**.
 
     Parameters:
         instance_name:
@@ -162,7 +162,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libSzDiagnostic.h
+        # Must be synchronized with er/sdk/c/libSzDiagnostic.h
 
         self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [
             c_longlong

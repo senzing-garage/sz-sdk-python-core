@@ -58,7 +58,7 @@ __updated__ = "2023-11-07"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseAsCharPointerResult(Structure):
+class SzResponseAsCharPointerResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -67,7 +67,7 @@ class G2ResponseAsCharPointerResult(Structure):
     ]
 
 
-class G2ResponseAsVoidPointerResult(Structure):
+class SzResponseAsVoidPointerResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -76,23 +76,23 @@ class G2ResponseAsVoidPointerResult(Structure):
     ]
 
 
-class SzConfigAddDataSourceResult(G2ResponseAsCharPointerResult):
+class SzConfigAddDataSourceResult(SzResponseAsCharPointerResult):
     """In SzLang_helpers.h SzConfig_addDataSource_result"""
 
 
-class SzConfigCreateResult(G2ResponseAsVoidPointerResult):
+class SzConfigCreateResult(SzResponseAsVoidPointerResult):
     """In SzLang_helpers.h SzConfig_create_result"""
 
 
-class SzConfigListDataSourcesResult(G2ResponseAsCharPointerResult):
+class SzConfigListDataSourcesResult(SzResponseAsCharPointerResult):
     """In SzLang_helpers.h SzConfig_listDataSources_result"""
 
 
-class SzConfigLoadResult(G2ResponseAsVoidPointerResult):
+class SzConfigLoadResult(SzResponseAsVoidPointerResult):
     """In SzLang_helpers.h SzConfig_load_result"""
 
 
-class SzConfigSaveResult(G2ResponseAsCharPointerResult):
+class SzConfigSaveResult(SzResponseAsCharPointerResult):
     """In SzLang_helpers.h SzConfig_save_result"""
 
 
@@ -187,7 +187,7 @@ class SzConfig(SzConfigAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libSzConfig.h
+        # Must be synchronized with er/sdk/c/libSzConfig.h
 
         self.library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),

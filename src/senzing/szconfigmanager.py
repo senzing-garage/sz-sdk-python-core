@@ -46,7 +46,7 @@ __updated__ = "2023-11-07"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class SzResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -55,7 +55,7 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2ResponseLonglongReturnCodeResult(Structure):
+class SzResponseLonglongReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -64,19 +64,19 @@ class G2ResponseLonglongReturnCodeResult(Structure):
     ]
 
 
-class SzConfigMgrAddConfigResult(G2ResponseLonglongReturnCodeResult):
+class SzConfigMgrAddConfigResult(SzResponseLonglongReturnCodeResult):
     """In SzLang_helpers.h SzConfigMgr_addConfig_result"""
 
 
-class SzConfigMgrGetConfigListResult(G2ResponseReturnCodeResult):
+class SzConfigMgrGetConfigListResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzConfigMgr_getConfigList_result"""
 
 
-class SzConfigMgrGetConfigResult(G2ResponseReturnCodeResult):
+class SzConfigMgrGetConfigResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzConfigMgr_getConfig_result"""
 
 
-class SzConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
+class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
     """In SzLang_helpers.h SzConfigMgr_getDefaultConfigID_result"""
 
 
@@ -174,7 +174,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libSzConfigMgr.h
+        # Must be synchronized with er/sdk/c/libSzConfigMgr.h
 
         self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
         self.library_handle.SzConfigMgr_addConfig_helper.restype = (
