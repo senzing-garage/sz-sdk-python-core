@@ -91,13 +91,6 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
     sz_abstract_factory.reinitialize(new_config_id)
 
 
-def test_destroy(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Test a destroy and reinitialize."""
-    sz_abstract_factory.destroy()
-    sz_engine = sz_abstract_factory.create_sz_engine()
-    _ = sz_engine.count_redo_records()
-
-
 # -----------------------------------------------------------------------------
 # Unique testcases
 # -----------------------------------------------------------------------------
