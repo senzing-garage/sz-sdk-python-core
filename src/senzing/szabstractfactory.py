@@ -93,6 +93,10 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         """Context Manager method."""
         return self
 
+    def __del__(self) -> None:
+        """Destructor"""
+        self._destroy()
+
     def __exit__(
         self,
         exc_type: Union[Type[BaseException], None],
@@ -100,9 +104,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         exc_tb: Union[TracebackType, None],
     ) -> None:
         """Context Manager method."""
-        if not self.is_szengine_initialized or not self.is_szdiagnostic_initialized:
-            # TODO: destroy  (Ant, can you see what's wrong with destroying Senzing process?  Hint: scope)
-            pass
+        self._destroy()
 
     # -------------------------------------------------------------------------
     # SzAbstractFactory methods
@@ -171,8 +173,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szproduct_initialized = True
         return result
 
-    def destroy(self, **kwargs: Any) -> None:
-        _ = kwargs
+    def _destroy(self, **kwargs: Any) -> None:
 
         # TODO: Determine if atomic operation is needed.
 
