@@ -1,6 +1,6 @@
 """
 The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
-It is a wrapper over Senzing's G2Configmgr C binding.
+It is a wrapper over Senzing's SzConfigMgr C binding.
 It conforms to the interface specified in
 `szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
 
@@ -11,16 +11,15 @@ Example:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
+    export LD_LIBRARY_PATH=/opt/senzing/er/lib
 """
 
 # pylint: disable=R0903
-from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigManagerAbstract
+from senzing_abstract import SzConfigManagerAbstract
 
 from ._helpers import (
     FreeCResources,
@@ -30,7 +29,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 from ._version import is_supported_senzingapi_version
 
@@ -48,7 +46,7 @@ __updated__ = "2023-11-07"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class SzResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -57,7 +55,7 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2ResponseLonglongReturnCodeResult(Structure):
+class SzResponseLonglongReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -66,20 +64,20 @@ class G2ResponseLonglongReturnCodeResult(Structure):
     ]
 
 
-class G2ConfigMgrAddConfigResult(G2ResponseLonglongReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_addConfig_result"""
+class SzConfigMgrAddConfigResult(SzResponseLonglongReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_addConfig_result"""
 
 
-class G2ConfigMgrGetConfigListResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getConfigList_result"""
+class SzConfigMgrGetConfigListResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_getConfigList_result"""
 
 
-class G2ConfigMgrGetConfigResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getConfig_result"""
+class SzConfigMgrGetConfigResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_getConfig_result"""
 
 
-class G2ConfigMgrGetDefaultConfigIDResult(G2ResponseLonglongReturnCodeResult):
-    """In golang_helpers.h G2ConfigMgr_getDefaultConfigID_result"""
+class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_getDefaultConfigID_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -136,8 +134,8 @@ class SzConfigManager(SzConfigManagerAbstract):
             :language: python
     """
 
-    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
-    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
+    # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
+    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -145,9 +143,9 @@ class SzConfigManager(SzConfigManagerAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
-        settings: Union[str, Dict[Any, Any]] = "",
-        verbose_logging: int = 0,
+        # instance_name: str = "",
+        # settings: Union[str, Dict[Any, Any]] = "",
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -156,10 +154,10 @@ class SzConfigManager(SzConfigManagerAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
-        self.initialized = False
-        self.settings = settings
-        self.instance_name = instance_name
-        self.verbose_logging = verbose_logging
+        # self.initialized = False
+        # self.settings = settings
+        # self.instance_name = instance_name
+        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -170,54 +168,54 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
-            self.library_handle.G2ConfigMgr_getLastException,
-            self.library_handle.G2ConfigMgr_clearLastException,
-            self.library_handle.G2ConfigMgr_getLastExceptionCode,
+            self.library_handle.SzConfigMgr_getLastException,
+            self.library_handle.SzConfigMgr_clearLastException,
+            self.library_handle.SzConfigMgr_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libg2configmgr.h
+        # Must be synchronized with er/sdk/c/libSzConfigMgr.h
 
-        self.library_handle.G2ConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
-        self.library_handle.G2ConfigMgr_addConfig_helper.restype = (
-            G2ConfigMgrAddConfigResult
+        self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
+        self.library_handle.SzConfigMgr_addConfig_helper.restype = (
+            SzConfigMgrAddConfigResult
         )
-        self.library_handle.G2ConfigMgr_destroy.argtypes = []
-        self.library_handle.G2ConfigMgr_destroy.restype = c_longlong
-        self.library_handle.G2ConfigMgr_getConfig_helper.argtypes = [c_longlong]
-        self.library_handle.G2ConfigMgr_getConfig_helper.restype = (
-            G2ConfigMgrGetConfigResult
+        self.library_handle.SzConfigMgr_destroy.argtypes = []
+        self.library_handle.SzConfigMgr_destroy.restype = c_longlong
+        self.library_handle.SzConfigMgr_getConfig_helper.argtypes = [c_longlong]
+        self.library_handle.SzConfigMgr_getConfig_helper.restype = (
+            SzConfigMgrGetConfigResult
         )
-        self.library_handle.G2ConfigMgr_getConfigList_helper.argtypes = []
-        self.library_handle.G2ConfigMgr_getConfigList_helper.restype = (
-            G2ConfigMgrGetConfigListResult
+        self.library_handle.SzConfigMgr_getConfigList_helper.argtypes = []
+        self.library_handle.SzConfigMgr_getConfigList_helper.restype = (
+            SzConfigMgrGetConfigListResult
         )
-        self.library_handle.G2ConfigMgr_getDefaultConfigID_helper.restype = (
-            G2ConfigMgrGetDefaultConfigIDResult
+        self.library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = (
+            SzConfigMgrGetDefaultConfigIDResult
         )
-        self.library_handle.G2ConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.G2ConfigMgr_init.restype = c_longlong
-        self.library_handle.G2ConfigMgr_replaceDefaultConfigID.argtypes = [
+        self.library_handle.SzConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
+        self.library_handle.SzConfigMgr_init.restype = c_longlong
+        self.library_handle.SzConfigMgr_replaceDefaultConfigID.argtypes = [
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.G2ConfigMgr_replaceDefaultConfigID.restype = c_longlong
-        self.library_handle.G2ConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
-        self.library_handle.G2ConfigMgr_setDefaultConfigID.restype = c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
+        self.library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
+        self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
-        if not self.instance_name or len(self.settings) == 0:
-            raise sdk_exception(2)
+        # if not self.instance_name or len(self.settings) == 0:
+        #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        self.initialized = True
+        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        # self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods
@@ -230,8 +228,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         config_comment: str,
         **kwargs: Any,
     ) -> int:
-        result = self.library_handle.G2ConfigMgr_addConfig_helper(
-            as_c_char_p(config_definition),
+        result = self.library_handle.SzConfigMgr_addConfig_helper(
+            as_c_char_p(as_str(config_definition)),
             as_c_char_p(config_comment),
         )
         self.check_result(result.return_code)
@@ -239,22 +237,22 @@ class SzConfigManager(SzConfigManagerAbstract):
         return result.response  # type: ignore[no-any-return]
 
     def _destroy(self, **kwargs: Any) -> None:
-        _ = self.library_handle.G2ConfigMgr_destroy()
+        _ = self.library_handle.SzConfigMgr_destroy()
 
     def get_config(self, config_id: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2ConfigMgr_getConfig_helper(config_id)
+        result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     def get_configs(self, **kwargs: Any) -> str:
-        result = self.library_handle.G2ConfigMgr_getConfigList_helper()
+        result = self.library_handle.SzConfigMgr_getConfigList_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     def get_default_config_id(self, **kwargs: Any) -> int:
-        result = self.library_handle.G2ConfigMgr_getDefaultConfigID_helper()
+        result = self.library_handle.SzConfigMgr_getDefaultConfigID_helper()
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
@@ -266,7 +264,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2ConfigMgr_init(
+        result = self.library_handle.SzConfigMgr_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
@@ -279,11 +277,11 @@ class SzConfigManager(SzConfigManagerAbstract):
         new_default_config_id: int,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2ConfigMgr_replaceDefaultConfigID(
+        result = self.library_handle.SzConfigMgr_replaceDefaultConfigID(
             current_default_config_id, new_default_config_id
         )
         self.check_result(result)
 
     def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
-        result = self.library_handle.G2ConfigMgr_setDefaultConfigID(config_id)
+        result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
         self.check_result(result)

@@ -84,7 +84,8 @@ def is_supported_senzingapi_version() -> bool:
     :meta private:
     """
 
-    sz_product = SzProduct("szversion", "{}")
+    sz_product = SzProduct()
+    sz_product._initialize("szversion", "{}")  # pylint: disable=W0212
     version_dict = json.loads(sz_product.get_version())
     senzing_version_current = version_dict.get("VERSION", "0.0.0")
 

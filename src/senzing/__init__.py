@@ -1,18 +1,35 @@
 from senzing_abstract import (
+    ENGINE_EXCEPTION_MAP,
+    SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION,
+    SZ_NO_ATTRIBUTES,
+    SZ_NO_AVOIDANCES,
+    SZ_NO_FLAGS,
+    SZ_NO_LOGGING,
+    SZ_NO_REQUIRED_DATASOURCES,
+    SZ_NO_SEARCH_PROFILE,
+    SZ_VERBOSE_LOGGING,
+    SZ_WITHOUT_INFO,
     SzBadInputError,
-    SzConfigAbstract,
-    SzConfigManagerAbstract,
+)
+from senzing_abstract import SzConfigAbstract as SzConfig
+from senzing_abstract import SzConfigManagerAbstract as SzConfigManager
+from senzing_abstract import (
     SzConfigurationError,
     SzDatabaseConnectionLostError,
     SzDatabaseError,
-    SzDiagnosticAbstract,
-    SzEngineAbstract,
+)
+from senzing_abstract import SzDiagnosticAbstract as SzDiagnostic
+from senzing_abstract import SzEngineAbstract as SzEngine
+from senzing_abstract import (
     SzEngineFlags,
     SzError,
     SzLicenseError,
     SzNotFoundError,
     SzNotInitializedError,
-    SzProductAbstract,
+)
+from senzing_abstract import SzProductAbstract as SzProduct
+from senzing_abstract import (
+    SzReplaceConflictError,
     SzRetryableError,
     SzRetryTimeoutExceededError,
     SzUnhandledError,
@@ -20,32 +37,47 @@ from senzing_abstract import (
     SzUnrecoverableError,
 )
 
-from .szconfig import SzConfig
-from .szconfigmanager import SzConfigManager
-from .szdiagnostic import SzDiagnostic
-from .szengine import SzEngine
-from .szproduct import SzProduct
+from .szabstractfactory import SzAbstractFactory, SzAbstractFactoryParameters
+from .szconfig import SzConfig as SzConfigCore
+from .szconfigmanager import SzConfigManager as SzConfigManagerCore
+from .szdiagnostic import SzDiagnostic as SzDiagnosticCore
+from .szengine import SzEngine as SzEngineCore
+from .szproduct import SzProduct as SzProductCore
 
 __all__ = [
+    "ENGINE_EXCEPTION_MAP",
+    "SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION",
+    "SZ_NO_ATTRIBUTES",
+    "SZ_NO_AVOIDANCES",
+    "SZ_NO_FLAGS",
+    "SZ_NO_LOGGING",
+    "SZ_NO_LOGGING",
+    "SZ_NO_REQUIRED_DATASOURCES",
+    "SZ_NO_SEARCH_PROFILE",
+    "SZ_VERBOSE_LOGGING",
+    "SZ_WITHOUT_INFO",
+    "SzAbstractFactory",
+    "SzAbstractFactoryParameters",
     "SzBadInputError",
     "SzConfig",
-    "SzConfigAbstract",
+    "SzConfigCore",
     "SzConfigManager",
-    "SzConfigManagerAbstract",
+    "SzConfigManagerCore",
     "SzConfigurationError",
     "SzDatabaseConnectionLostError",
     "SzDatabaseError",
     "SzDiagnostic",
-    "SzDiagnosticAbstract",
+    "SzDiagnosticCore",
     "SzEngine",
-    "SzEngineAbstract",
+    "SzEngineCore",
     "SzEngineFlags",
     "SzError",
     "SzLicenseError",
     "SzNotFoundError",
     "SzNotInitializedError",
     "SzProduct",
-    "SzProductAbstract",
+    "SzProductCore",
+    "SzReplaceConflictError",
     "SzRetryableError",
     "SzRetryTimeoutExceededError",
     "SzUnhandledError",

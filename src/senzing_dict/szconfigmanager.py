@@ -9,10 +9,9 @@ import json
 from types import TracebackType
 from typing import Any, Callable, Dict, Type, Union
 
-from senzing_abstract import SzConfigManagerAbstract
-
 # from senzing import as_str
 from senzing._helpers import as_str
+from senzing_abstract import SzConfigManagerAbstract
 
 # Metadata
 
@@ -86,11 +85,6 @@ class SzConfigManager:
         return self.sz_configmanager.add_config(
             as_str(config_definition), config_comment, **kwargs
         )
-
-    # TODO
-    # def destroy(self, **kwargs: Any) -> None:
-    #     """TODO: Create documentation"""
-    #     return self.sz_configmanager.destroy(**kwargs)
 
     def get_config(self, config_id: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""

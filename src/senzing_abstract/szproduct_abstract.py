@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 """
 szproduct_abstract.py is the abstract class for all implementations of szproduct.
 """
@@ -5,6 +7,8 @@ szproduct_abstract.py is the abstract class for all implementations of szproduct
 # TODO: Determine specific SzError, Errors for "Raises:" documentation.
 from abc import ABC, abstractmethod
 from typing import Any
+
+from .szhelpers import construct_help
 
 # Metadata
 
@@ -23,6 +27,18 @@ class SzProductAbstract(ABC):
     SzProductAbstract is the definition of the Senzing Python API that is
     implemented by packages such as szproduct.py.
     """
+
+    # -------------------------------------------------------------------------
+    # Messages
+    # -------------------------------------------------------------------------
+
+    PREFIX = "szproduct."
+    ID_MESSAGES = {
+        4001: PREFIX + "destroy() failed. Return code: {0}",
+        4002: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
+        4003: PREFIX
+        + "SzProduct({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+    }
 
     # -------------------------------------------------------------------------
     # Interface definition
@@ -69,3 +85,19 @@ class SzProductAbstract(ABC):
                 :linenos:
                 :language: json
         """
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
+
+    def help(self, method_name: str = "") -> str:
+        """
+        Return the help for a particular message.
+
+        Args:
+            method_name (str): The name of the method. (e.g. "init"). If empty, a list of methods and descriptions is returned.
+
+        Returns:
+            str: The Help information about the requested method
+        """
+        return construct_help(self, method_name=method_name)

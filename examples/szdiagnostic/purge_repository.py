@@ -1,19 +1,22 @@
 #! /usr/bin/env python3
 
-from senzing import SzDiagnostic, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-INSTANCE_NAME = "Example"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_diagnostic = SzDiagnostic(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
     # WARNING
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING

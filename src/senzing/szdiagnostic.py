@@ -1,6 +1,6 @@
 """
 The `szdiagnostic` package is used to inspect the Senzing environment.
-It is a wrapper over Senzing's G2Diagnostic C binding.
+It is a wrapper over Senzing's SzDiagnostic C binding.
 It conforms to the interface specified in
 `szdiagnostic_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szdiagnostic_abstract.py>`_
 
@@ -11,17 +11,16 @@ Example:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
+    export LD_LIBRARY_PATH=/opt/senzing/er/lib
 """
 
 # pylint: disable=R0903
 
-from contextlib import suppress
 from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnosticAbstract
+from senzing_abstract import SzDiagnosticAbstract
 
 from ._helpers import (
     FreeCResources,
@@ -31,7 +30,6 @@ from ._helpers import (
     catch_exceptions,
     check_result_rc,
     load_sz_library,
-    sdk_exception,
 )
 from ._version import is_supported_senzingapi_version
 
@@ -49,7 +47,7 @@ __updated__ = "2023-11-27"
 # -----------------------------------------------------------------------------
 
 
-class G2ResponseReturnCodeResult(Structure):
+class SzResponseReturnCodeResult(Structure):
     """Simple response, return_code structure"""
 
     _fields_ = [
@@ -58,16 +56,16 @@ class G2ResponseReturnCodeResult(Structure):
     ]
 
 
-class G2DiagnosticCheckDatastorePerformanceResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_checkDatastorePerformance_result"""
+class SzDiagnosticCheckDatastorePerformanceResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzDiagnostic_checkDatastorePerformance_result"""
 
 
-class G2DiagnosticGetDatastoreInfoResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_getDatastoreInfo_result"""
+class SzDiagnosticGetDatastoreInfoResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzDiagnostic_getDatastoreInfo_result"""
 
 
-class G2DiagnosticGetFeatureResult(G2ResponseReturnCodeResult):
-    """In golang_helpers.h G2Diagnostic_getFeature_result"""
+class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzDiagnostic_getFeature_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -91,7 +89,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
 
     If the SzDiagnostic constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of G2Product.
+    the `initialize()` method must be called to initialize the use of SzProduct.
 
     Example:
 
@@ -101,7 +99,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         sz_diagnostic.initialize(instance_name, settings)
 
     Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **G2Exception**.
+    Just specifying one or the other results in a **SzException**.
 
     Parameters:
         instance_name:
@@ -131,10 +129,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
-        settings: Union[str, Dict[Any, Any]] = "",
-        config_id: int = 0,
-        verbose_logging: int = 0,
+        # instance_name: str = "",
+        # settings: Union[str, Dict[Any, Any]] = "",
+        # config_id: int = 0,
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -143,11 +141,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
-        self.initialized = False
-        self.instance_name = instance_name
-        self.settings = settings
-        self.config_id = config_id
-        self.verbose_logging = verbose_logging
+        # self.initialized = False
+        # self.instance_name = instance_name
+        # self.settings = settings
+        # self.config_id = config_id
+        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -158,67 +156,67 @@ class SzDiagnostic(SzDiagnosticAbstract):
         # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
-            self.library_handle.G2Diagnostic_getLastException,
-            self.library_handle.G2Diagnostic_clearLastException,
-            self.library_handle.G2Diagnostic_getLastExceptionCode,
+            self.library_handle.SzDiagnostic_getLastException,
+            self.library_handle.SzDiagnostic_clearLastException,
+            self.library_handle.SzDiagnostic_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with g2/sdk/c/libg2diagnostic.h
+        # Must be synchronized with er/sdk/c/libSzDiagnostic.h
 
-        self.library_handle.G2Diagnostic_checkDatastorePerformance_helper.argtypes = [
+        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [
             c_longlong
         ]
-        self.library_handle.G2Diagnostic_checkDatastorePerformance_helper.restype = (
-            G2DiagnosticCheckDatastorePerformanceResult
+        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
+            SzDiagnosticCheckDatastorePerformanceResult
         )
-        self.library_handle.G2Diagnostic_destroy.argtypes = []
-        self.library_handle.G2Diagnostic_destroy.restype = c_longlong
-        self.library_handle.G2Diagnostic_getDatastoreInfo_helper.argtypes = []
-        self.library_handle.G2Diagnostic_getDatastoreInfo_helper.restype = (
-            G2DiagnosticGetDatastoreInfoResult
+        self.library_handle.SzDiagnostic_destroy.argtypes = []
+        self.library_handle.SzDiagnostic_destroy.restype = c_longlong
+        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
+        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = (
+            SzDiagnosticGetDatastoreInfoResult
         )
-        self.library_handle.G2Diagnostic_getFeature_helper.argtypes = [c_longlong]
-        self.library_handle.G2Diagnostic_getFeature_helper.restype = (
-            G2DiagnosticGetFeatureResult
+        self.library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
+        self.library_handle.SzDiagnostic_getFeature_helper.restype = (
+            SzDiagnosticGetFeatureResult
         )
-        self.library_handle.G2Diagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.G2Diagnostic_init.restype = c_longlong
-        self.library_handle.G2Diagnostic_initWithConfigID.argtypes = [
+        self.library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzDiagnostic_init.restype = c_longlong
+        self.library_handle.SzDiagnostic_initWithConfigID.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.G2Diagnostic_initWithConfigID.restype = c_longlong
-        self.library_handle.G2Diagnostic_reinit.argtypes = [c_longlong]
-        self.library_handle.G2Diagnostic_reinit.restype = c_longlong
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
+        self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
+        self.library_handle.SzDiagnostic_reinit.restype = c_longlong
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
-        if not self.instance_name or len(self.settings) == 0:
-            raise sdk_exception(2)
+        # if not self.instance_name or len(self.settings) == 0:
+        #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(
-            instance_name=self.instance_name,
-            settings=self.settings,
-            config_id=self.config_id,
-            verbose_logging=self.verbose_logging,
-        )
-        self.initialized = True
+        # self._initialize(
+        #     instance_name=self.instance_name,
+        #     settings=self.settings,
+        #     config_id=self.config_id,
+        #     verbose_logging=self.verbose_logging,
+        # )
+        # self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
     def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2Diagnostic_checkDatastorePerformance_helper(
+        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(
             seconds_to_run
         )
         with FreeCResources(self.library_handle, result.response):
@@ -226,10 +224,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
             return as_python_str(result.response)
 
     def _destroy(self, **kwargs: Any) -> None:
-        _ = self.library_handle.G2Diagnostic_destroy()
+        _ = self.library_handle.SzDiagnostic_destroy()
 
     def get_datastore_info(self, **kwargs: Any) -> str:
-        result = self.library_handle.G2Diagnostic_getDatastoreInfo_helper()
+        result = self.library_handle.SzDiagnostic_getDatastoreInfo_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -237,7 +235,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # NOTE This is included but not to be documented
     # NOTE Is used by sz_explorer
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
-        result = self.library_handle.G2Diagnostic_getFeature_helper(feature_id)
+        result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -252,7 +250,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         **kwargs: Any,
     ) -> None:
         if config_id == 0:
-            result = self.library_handle.G2Diagnostic_init(
+            result = self.library_handle.SzDiagnostic_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
                 verbose_logging,
@@ -260,7 +258,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.check_result(result)
             return
 
-        result = self.library_handle.G2Diagnostic_initWithConfigID(
+        result = self.library_handle.SzDiagnostic_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             config_id,
@@ -269,9 +267,9 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.check_result(result)
 
     def purge_repository(self, **kwargs: Any) -> None:
-        result = self.library_handle.G2Diagnostic_purgeRepository()
+        result = self.library_handle.SzDiagnostic_purgeRepository()
         self.check_result(result)
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        result = self.library_handle.G2Diagnostic_reinit(config_id)
+    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

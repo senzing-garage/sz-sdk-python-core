@@ -1,6 +1,6 @@
 """
 The `szproduct` package is used to inspect the Senzing product.
-It is a wrapper over Senzing's G2Product C binding.
+It is a wrapper over Senzing's SzProduct C binding.
 It conforms to the interface specified in
 `szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
 
@@ -11,17 +11,16 @@ Example:
 
 .. code-block:: bash
 
-    export LD_LIBRARY_PATH=/opt/senzing/g2/lib
+    export LD_LIBRARY_PATH=/opt/senzing/er/lib
 """
 
 # pylint: disable=R0903
 
-from contextlib import suppress
 from ctypes import c_char_p, c_int, c_longlong
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzProductAbstract
+from senzing_abstract import SzProductAbstract
 
 from ._helpers import (
     as_c_char_p,
@@ -93,8 +92,8 @@ class SzProduct(SzProductAbstract):
             :language: python
     """
 
-    # TODO: Consider making usual constructor private (`g2config.G2Config()`)
-    # and replacing it with static constructor (i.e. `g2config.NewABC(str,str)`, `g2config.NewDEF(str,dict))
+    # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
+    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -102,11 +101,11 @@ class SzProduct(SzProductAbstract):
 
     def __init__(
         self,
-        instance_name: str = "",
+        # instance_name: str = "",
         # TODO
         # settings: Union[str, Dict[Any, Any]] = "",
-        settings: Union[str, Dict[Any, Any]] = "{}",
-        verbose_logging: int = 0,
+        # settings: Union[str, Dict[Any, Any]] = "{}",
+        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -115,10 +114,10 @@ class SzProduct(SzProductAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
-        self.initialized = False
-        self.instance_name = instance_name
-        self.settings = settings
-        self.verbose_logging = verbose_logging
+        # self.initialized = False
+        # self.instance_name = instance_name
+        # self.settings = settings
+        # self.verbose_logging = verbose_logging
 
         # Load binary library.
         self.library_handle = load_sz_library()
@@ -126,23 +125,23 @@ class SzProduct(SzProductAbstract):
         # Partial function to use this modules self.library_handle for exception handling
         self.check_result = partial(
             check_result_rc,
-            self.library_handle.G2Product_getLastException,
-            self.library_handle.G2Product_clearLastException,
-            self.library_handle.G2Product_getLastExceptionCode,
+            self.library_handle.SzProduct_getLastException,
+            self.library_handle.SzProduct_clearLastException,
+            self.library_handle.SzProduct_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results
-        # Must be synchronized with g2/sdk/c/libg2product.h
+        # Must be synchronized with /opt/senzing/er/sdk/c/libSzProduct.h
 
-        self.library_handle.G2Product_destroy.argtypes = []
-        self.library_handle.G2Product_destroy.restype = c_longlong
-        self.library_handle.G2Product_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.G2Product_init.restype = c_longlong
-        self.library_handle.G2Product_license.argtypes = []
-        self.library_handle.G2Product_license.restype = c_char_p
-        self.library_handle.G2Product_version.argtypes = []
-        self.library_handle.G2Product_version.restype = c_char_p
-        self.library_handle.G2GoHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzProduct_destroy.argtypes = []
+        self.library_handle.SzProduct_destroy.restype = c_longlong
+        self.library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzProduct_init.restype = c_longlong
+        self.library_handle.SzProduct_license.argtypes = []
+        self.library_handle.SzProduct_license.restype = c_char_p
+        self.library_handle.SzProduct_version.argtypes = []
+        self.library_handle.SzProduct_version.restype = c_char_p
+        self.library_handle.SzHelper_free.argtypes = [c_char_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
         # TODO
@@ -150,21 +149,21 @@ class SzProduct(SzProductAbstract):
         #     raise sdk_exception(2)
 
         # Initialize Senzing engine.
-        self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        self.initialized = True
+        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
+        # self.initialized = True
 
     def __del__(self) -> None:
         """Destructor"""
-        if self.initialized:
-            with suppress(Exception):
-                self._destroy()
+        # if self.initialized:
+        #     with suppress(Exception):
+        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzProduct methods
     # -------------------------------------------------------------------------
 
     def _destroy(self, **kwargs: Any) -> None:
-        _ = self.library_handle.G2Product_destroy()
+        _ = self.library_handle.SzProduct_destroy()
 
     @catch_exceptions
     def _initialize(
@@ -174,7 +173,7 @@ class SzProduct(SzProductAbstract):
         verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
-        result = self.library_handle.G2Product_init(
+        result = self.library_handle.SzProduct_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
@@ -182,7 +181,7 @@ class SzProduct(SzProductAbstract):
         self.check_result(result)
 
     def get_license(self, **kwargs: Any) -> str:
-        return as_python_str(self.library_handle.G2Product_license())
+        return as_python_str(self.library_handle.SzProduct_license())
 
     def get_version(self, **kwargs: Any) -> str:
-        return as_python_str(self.library_handle.G2Product_version())
+        return as_python_str(self.library_handle.SzProduct_version())

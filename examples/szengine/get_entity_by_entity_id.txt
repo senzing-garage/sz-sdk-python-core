@@ -19,8 +19,8 @@
                 "MATCH_KEY": "",
                 "MATCH_LEVEL_CODE": "",
                 "ERRULE_CODE": "",
-                "FIRST_SEEN_DT": "2024-04-29T14:47:05Z",
-                "LAST_SEEN_DT": "2024-04-29T14:47:05Z"
+                "FIRST_SEEN_DT": "YYYY-MM-DDThh:mm:ssZ",
+                "LAST_SEEN_DT": "YYYY-MM-DDThh:mm:ssZ"
             }
         ]
     },

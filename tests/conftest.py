@@ -16,7 +16,7 @@ def engine_vars_fixture() -> Dict[Any, Any]:
     linux_config = {
         "PIPELINE": {
             "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/g2/resources",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
             "SUPPORTPATH": "/opt/senzing/data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
@@ -24,18 +24,18 @@ def engine_vars_fixture() -> Dict[Any, Any]:
 
     darwin_config = {
         "PIPELINE": {
-            "CONFIGPATH": "/opt/senzing/g2/etc",
-            "RESOURCEPATH": "/opt/senzing/g2/resources",
-            "SUPPORTPATH": "/opt/senzing/g2/data",
+            "CONFIGPATH": "/opt/senzing/er/etc",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/er/data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     }
 
     windows_config = {
         "PIPELINE": {
-            "CONFIGPATH": "C:\\Program Files\\Senzing\\g2\\etc",
-            "RESOURCEPATH": "C:\\Program Files\\Senzing\\g2\\resources",
-            "SUPPORTPATH": "C:\\Program Files\\Senzing\\g2\\data",
+            "CONFIGPATH": "C:\\Program Files\\Senzing\\er\\etc",
+            "RESOURCEPATH": "C:\\Program Files\\Senzing\\er\\resources",
+            "SUPPORTPATH": "C:\\Program Files\\Senzing\\er\\data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@nowhere/C:\\Temp\\sqlite\\G2C.db"},
     }

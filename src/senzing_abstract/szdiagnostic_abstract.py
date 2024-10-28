@@ -1,9 +1,13 @@
+#! /usr/bin/env python3
+
 """
 TODO: szdiagnostic_abstract.py
 """
 
 from abc import ABC, abstractmethod
 from typing import Any
+
+from .szhelpers import construct_help
 
 # Metadata
 
@@ -21,6 +25,23 @@ class SzDiagnosticAbstract(ABC):
     """
     Senzing diagnostic module access library
     """
+
+    # -------------------------------------------------------------------------
+    # Messages
+    # -------------------------------------------------------------------------
+
+    PREFIX = "szdiagnostic."
+    ID_MESSAGES = {
+        4001: PREFIX + "check_datastore_performance({0}) failed. Return code: {1}",
+        4002: PREFIX + "destroy() failed. Return code: {0}",
+        4003: PREFIX + "get_datastore_info() failed. Return code: {0}",
+        4004: PREFIX + "get_feature({0}) failed. Return code: {1}",
+        4005: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
+        4006: PREFIX + "purge_repository() failed. Return code: {0}",
+        4007: PREFIX + "reinitialize({0}) failed. Return Code: {1}",
+        4008: PREFIX
+        + "SzDiagnostic({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+    }
 
     # -------------------------------------------------------------------------
     # Interface definition
@@ -99,21 +120,18 @@ class SzDiagnosticAbstract(ABC):
                 :language: python
         """
 
-    @abstractmethod
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
+
+    def help(self, method_name: str = "") -> str:
         """
-        The `reinitialize` method re-initializes the Senzing SzDiagnostic object.
+        Return the help for a particular message.
 
         Args:
-            config_id (int): The configuration ID used for the initialization
+            method_name (str): The name of the method. (e.g. "init"). If empty, a list of methods and descriptions is returned.
 
-        Raises:
-            TypeError: Incorrect datatype of input parameter.
-            szexception.SzError: config_id does not exist.
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_reinitialize.py
-                :linenos:
-                :language: python
+        Returns:
+            str: The Help information about the requested method
         """
+        return construct_help(self, method_name=method_name)

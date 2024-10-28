@@ -9,10 +9,9 @@ import json
 from types import TracebackType
 from typing import Any, Callable, Dict, Optional, Type, Union
 
-from senzing_abstract import SzEngineAbstract
-
 from senzing import SzEngineFlags
 from senzing._helpers import as_str
+from senzing_abstract import SzEngineAbstract
 
 # Metadata
 
@@ -108,11 +107,6 @@ class SzEngine:
         return self.dict_function(
             self.sz_engine.delete_record(data_source_code, record_id, flags, **kwargs)
         )
-
-    # TODO
-    # def destroy(self, **kwargs: Any) -> None:
-    #     """TODO: Create documentation"""
-    #     return self.sz_engine.destroy(**kwargs)
 
     def export_csv_entity_report(
         self,
@@ -422,9 +416,9 @@ class SzEngine:
             )
         )
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_engine.reinitialize(config_id, **kwargs)
+    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
+        # TODO:
+        pass
 
     def search_by_attributes(
         self,

@@ -3,6 +3,6 @@
 {
     "REASON": "deferred delete",
     "DATA_SOURCE": "CUSTOMERS",
-    "RECORD_ID": "1003",
+    "RECORD_ID": "1001",
     "DSRC_ACTION": "X"
 }

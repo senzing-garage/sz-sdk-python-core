@@ -93,7 +93,7 @@ def test_get_config(sz_configmanager: SzConfigManager) -> None:
 def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(ArgumentError): # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -145,7 +145,7 @@ def test_replace_default_config_id_bad_new_id_type(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(ArgumentError): # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -176,7 +176,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
     new_default_config_id = sz_configmanager.add_config(
         config_definition, config_comment
     )
-    with pytest.raises(ArgumentError):
+    with pytest.raises(ArgumentError): # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -224,7 +224,7 @@ def test_set_default_config_id_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(ArgumentError):
+    with pytest.raises(ArgumentError):# TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
         sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 

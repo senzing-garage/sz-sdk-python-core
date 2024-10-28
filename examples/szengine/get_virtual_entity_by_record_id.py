@@ -1,22 +1,33 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
-FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
-INSTANCE_NAME = "Example"
-RECORD_KEYS = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1002")]
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
+RECORD_LIST = [
+    ("CUSTOMERS", "1001"),
+    ("CUSTOMERS", "1002"),
+]
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
-    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_KEYS, FLAGS)
-    print(RESULT)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
+    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
+    print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

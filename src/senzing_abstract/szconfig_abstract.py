@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 """
 szconfig_abstract.py is the abstract class for all implementations of szconfig.
 """
@@ -6,6 +8,8 @@ szconfig_abstract.py is the abstract class for all implementations of szconfig.
 
 from abc import ABC, abstractmethod
 from typing import Any
+
+from .szhelpers import construct_help
 
 # Metadata
 
@@ -24,6 +28,25 @@ class SzConfigAbstract(ABC):
     SzConfigAbstract is the definition of the Senzing Python API that is
     implemented by packages such as szconfig.py.
     """
+
+    # -------------------------------------------------------------------------
+    # Messages
+    # -------------------------------------------------------------------------
+
+    PREFIX = "szconfig."
+    ID_MESSAGES = {
+        4001: PREFIX + "add_data_source({0}) failed. Return code: {1}",
+        4002: PREFIX + "close_config() failed. Return code: {0}",
+        4003: PREFIX + "create_config() failed. Return code: {0}",
+        4004: PREFIX + "delete_data_source({0}) failed. Return code: {1}",
+        4005: PREFIX + "destroy() failed. Return code: {0}",
+        4006: PREFIX + "export_config() failed. Return code: {0}",
+        4007: PREFIX + "get_data_sources() failed. Return code: {0}",
+        4008: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
+        4009: PREFIX + "import_config({0}) failed. Return code: {1}",
+        4010: PREFIX
+        + "SzConfig({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+    }
 
     # -------------------------------------------------------------------------
     # Interface definition
@@ -213,3 +236,19 @@ class SzConfigAbstract(ABC):
                 :linenos:
                 :language: python
         """
+
+    # -------------------------------------------------------------------------
+    # Convenience methods
+    # -------------------------------------------------------------------------
+
+    def help(self, method_name: str = "") -> str:
+        """
+        Return the help for a particular message.
+
+        Args:
+            method_name (str): The name of the method. (e.g. "init"). If empty, a list of methods and descriptions is returned.
+
+        Returns:
+            str: The Help information about the requested method
+        """
+        return construct_help(self, method_name=method_name)

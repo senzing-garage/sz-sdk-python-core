@@ -2,25 +2,33 @@
 
 import json
 
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 DATA_SOURCE_CODE = "TEST"
-INSTANCE_NAME = "Example"
-RECORD_ID = "1"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+RECORD_ID = "1"
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     RESULT = sz_engine.delete_record(
         DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
     )
-    print(json.dumps(RESULT))
+    print(f"\n/File {__file__}:\n{json.dumps(RESULT)}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

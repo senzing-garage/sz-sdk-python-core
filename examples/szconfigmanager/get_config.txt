@@ -50,8 +50,7 @@
                 "CFUNC_DESC": "String comparison",
                 "CONNECT_STR": "g2StringComp",
                 "ANON_SUPPORT": "Yes",
-                "LANGUAGE": null,
-                "JAVA_CLASS_NAME": null
+                "LANGUAGE": null
             }
         ],
         "CFG_DFBOM": [
@@ -76,8 +75,7 @@
                 "DFUNC_DESC": "Strict subset of felems",
                 "CONNECT_STR": "g2StrictSubsetFelems",
                 "ANON_SUPPORT": "Yes",
-                "LANGUAGE": null,
-                "JAVA_CLASS_NAME": null
+                "LANGUAGE": null
             }
         ],
         "CFG_DSRC": [
@@ -115,8 +113,7 @@
                 "EFUNC_CODE": "EXPRESS_BOM",
                 "EFUNC_DESC": "General BOM Hasher",
                 "CONNECT_STR": "g2GenericHasher",
-                "LANGUAGE": null,
-                "JAVA_CLASS_NAME": null
+                "LANGUAGE": null
             }
         ],
         "CFG_ERFRAG": [
@@ -241,8 +238,7 @@
                 "SFUNC_CODE": "PARSE_NAME",
                 "SFUNC_DESC": "Parse name",
                 "CONNECT_STR": "g2ParseName",
-                "LANGUAGE": null,
-                "JAVA_CLASS_NAME": null
+                "LANGUAGE": null
             }
         ],
         "SYS_OOM": [

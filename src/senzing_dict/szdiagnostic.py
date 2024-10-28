@@ -80,11 +80,6 @@ class SzDiagnostic:
             self.sz_diagnostic.check_datastore_performance(seconds_to_run, **kwargs)
         )
 
-    # TODO
-    # def destroy(self, **kwargs: Any) -> None:
-    #     """TODO: Create documentation"""
-    #     return self.sz_diagnostic.destroy(**kwargs)
-
     def get_datastore_info(self, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(self.sz_diagnostic.get_datastore_info(**kwargs))
@@ -111,6 +106,8 @@ class SzDiagnostic:
         """TODO: Create documentation"""
         return self.sz_diagnostic.purge_repository(**kwargs)
 
-    def reinitialize(self, config_id: int, **kwargs: Any) -> None:
-        """TODO: Create documentation"""
-        return self.sz_diagnostic.reinitialize(config_id, **kwargs)
+    # def reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    #     """TODO: Create documentation"""
+    #     return self.sz_diagnostic.reinitialize(
+    #         config_id, **kwargs
+    #     )

@@ -1,11 +1,25 @@
 #! /usr/bin/env python3
 
-
-from senzing import SzEngine, SzEngineFlags, SzError
+from senzing import (
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzEngineFlags,
+    SzError,
+)
 
 DATA_SOURCE_CODE = "TEST"
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+    },
+}
 FLAGS = SzEngineFlags.SZ_WITH_INFO
-INSTANCE_NAME = "Example1"
 RECORD_DEFINITION = (
     "{"
     '"RECORD_TYPE": "PERSON",'
@@ -23,18 +37,11 @@ RECORD_DEFINITION = (
     "}"
 )
 RECORD_ID = "1"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
-    },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-}
 
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, FLAGS)
-    print(RESULT)
+    print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

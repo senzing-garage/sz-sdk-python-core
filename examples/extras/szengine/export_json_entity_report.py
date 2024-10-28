@@ -1,19 +1,21 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzError
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-INSTANCE_NAME = "Example"
-SETTINGS = {
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
-        "SUPPORTPATH": "/opt/senzing/data",
+FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+    "instance_name": "Example",
+    "settings": {
+        "PIPELINE": {
+            "CONFIGPATH": "/etc/opt/senzing",
+            "RESOURCEPATH": "/opt/senzing/er/resources",
+            "SUPPORTPATH": "/opt/senzing/data",
+        },
+        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
-    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
-
 try:
-    sz_engine = SzEngine(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_engine = sz_abstract_factory.create_sz_engine()
     export_handle = sz_engine.export_json_entity_report()
     with open("exportJSONEntityReport.json", "w", encoding="utf-8") as export_out:
         while True:
@@ -23,4 +25,4 @@ try:
             export_out.write(export_record)
     sz_engine.close_export(export_handle)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nError in {__file__}:\n{err}\n")

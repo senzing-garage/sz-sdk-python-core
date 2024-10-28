@@ -31,9 +31,8 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing_abstract.szerror import ENGINE_EXCEPTION_MAP
-
 from senzing import SzError
+from senzing_abstract import ENGINE_EXCEPTION_MAP
 
 # if sys.version_info < (3, 10):
 if sys.version_info < (3, 11):
@@ -76,7 +75,7 @@ class FreeCResources:
         exc_value: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.handle.G2GoHelper_free(self.resource)
+        self.handle.SzHelper_free(self.resource)
 
 
 # -----------------------------------------------------------------------------
@@ -153,9 +152,9 @@ def load_sz_library(lib: str = "") -> CDLL:
             win_path = find_library(lib if lib else "G2")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        return cdll.LoadLibrary(lib if lib else "libG2.so")
+        return cdll.LoadLibrary(lib if lib else "libSz.so")
     except OSError as err:
-        # TODO Change to Sz library when the libG2.so is changed in a build
+        # TODO Change to Sz library when the libSz.so is changed in a build
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
@@ -250,9 +249,9 @@ def escape_json_str(to_escape: str) -> str:
         raise TypeError(f"expected a str, got{to_escape}")
     # TODO ensure_ascii=False = èAnt\\n👍
     # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
-    print(f"{to_escape = }")
-    jdumps = json.dumps({"escaped": to_escape}["escaped"])
-    print(f"{jdumps = }")
+    # print(f"{to_escape=}")
+    # jdumps = json.dumps({"escaped": to_escape}["escaped"])
+    # print(f"{jdumps=}")
     return json.dumps({"escaped": to_escape}["escaped"])
 
 
