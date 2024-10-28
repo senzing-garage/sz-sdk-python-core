@@ -108,11 +108,6 @@ class SzEngine:
             self.sz_engine.delete_record(data_source_code, record_id, flags, **kwargs)
         )
 
-    # TODO
-    # def destroy(self, **kwargs: Any) -> None:
-    #     """TODO: Create documentation"""
-    #     return self.sz_engine.destroy(**kwargs)
-
     def export_csv_entity_report(
         self,
         csv_column_list: str,

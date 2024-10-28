@@ -105,11 +105,6 @@ class SzConfig:
             config_handle, data_source_code, **kwargs
         )
 
-    # TODO
-    # def destroy(self, **kwargs: Any) -> None:
-    #     """TODO: Create documentation"""
-    #     return self.sz_config.destroy(**kwargs)
-
     def export_config(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(self.sz_config.export_config(config_handle, **kwargs))

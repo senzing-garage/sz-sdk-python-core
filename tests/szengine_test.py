@@ -1148,18 +1148,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #     """Test constructor."""
 
 
-# def test_initialize_with_config_id(engine_vars: Dict[Any, Any]) -> None:
-#     """Test init_with_config_id."""
-#     instance_name = engine_vars["INSTANCE_NAME"]
-#     settings = engine_vars["SETTINGS"]
-#     sz_engine_1 = SzEngineTest()
-#     sz_engine_1.initialize(instance_name, settings)
-#     config_id = sz_engine_1.get_active_config_id()
-#     sz_engine_1.destroy()
-#     sz_engine_2 = SzEngineTest()
-#     sz_engine_2.initialize(instance_name, settings, config_id)
-
-
 # def test_initialize_bad_config_id(engine_vars: Dict[Any, Any]) -> None:
 #     """Test init_with_config_id with non-existent config id."""
 #     instance_name = engine_vars["INSTANCE_NAME"]

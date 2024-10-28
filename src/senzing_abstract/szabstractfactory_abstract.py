@@ -163,20 +163,6 @@ class SzAbstractFactoryAbstract(ABC):
         """
 
     @abstractmethod
-    def destroy(self, **kwargs: Any) -> None:
-        """
-        The `destroy` method ...FIXME: .
-
-        Raises:
-
-        .. collapse:: Example:
-
-            .. literalinclude:: ../../examples/szabstractfactory/destroy.py
-                :linenos:
-                :language: python
-        """
-
-    @abstractmethod
     def reinitialize(self, config_id: int, **kwargs: Any) -> None:
         """
         The `reinitialize` method reinitializes the Senzing objects using a specific configuration
