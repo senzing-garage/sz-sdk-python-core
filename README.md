@@ -2,17 +2,42 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/senzing-garage/sz-sdk-python/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                           |    Stmts |     Miss |   Cover |   Missing |
-|------------------------------- | -------: | -------: | ------: | --------: |
-| src/senzing/\_\_init\_\_.py    |        7 |        0 |    100% |           |
-| src/senzing/\_helpers.py       |      151 |        6 |     96% |123-124, 127, 133, 153-154 |
-| src/senzing/\_version.py       |       23 |        0 |    100% |           |
-| src/senzing/szconfig.py        |       97 |        0 |    100% |           |
-| src/senzing/szconfigmanager.py |       83 |        0 |    100% |           |
-| src/senzing/szdiagnostic.py    |       80 |        4 |     95% |263-269, 272-273 |
-| src/senzing/szengine.py        |      354 |       16 |     95% |649, 792, 800, 834, 844, 971-977, 988-994, 1111-1118 |
-| src/senzing/szproduct.py       |       43 |        0 |    100% |           |
-|                      **TOTAL** |  **838** |   **26** | **97%** |           |
+| Name                                                 |    Stmts |     Miss |   Cover |   Missing |
+|----------------------------------------------------- | -------: | -------: | ------: | --------: |
+| src/senzing/\_\_init\_\_.py                          |       16 |        0 |    100% |           |
+| src/senzing/\_helpers.py                             |      148 |        6 |     96% |122-123, 126, 132, 152-153 |
+| src/senzing/\_version.py                             |       24 |        0 |    100% |           |
+| src/senzing/szabstractfactory.py                     |       99 |        6 |     94% |94, 107, 213-214, 217-218 |
+| src/senzing/szconfig.py                              |       85 |        0 |    100% |           |
+| src/senzing/szconfigmanager.py                       |       71 |        0 |    100% |           |
+| src/senzing/szdiagnostic.py                          |       67 |        4 |     94% |261-267, 270-271 |
+| src/senzing/szengine.py                              |      346 |       24 |     93% |647, 790, 807, 832, 853, 969-975, 983-987, 997-1010, 1121-1128 |
+| src/senzing/szproduct.py                             |       33 |        0 |    100% |           |
+| src/senzing\_abstract/\_\_init\_\_.py                |       11 |        0 |    100% |           |
+| src/senzing\_abstract/constants.py                   |       12 |        0 |    100% |           |
+| src/senzing\_abstract/engine\_exception\_map.py      |       19 |        0 |    100% |           |
+| src/senzing\_abstract/observer\_abstract.py          |        5 |        5 |      0% |     13-33 |
+| src/senzing\_abstract/szabstractfactory\_abstract.py |       27 |        1 |     96% |       200 |
+| src/senzing\_abstract/szconfig\_abstract.py          |       26 |        1 |     96% |       254 |
+| src/senzing\_abstract/szconfigmanager\_abstract.py   |       24 |        1 |     96% |       204 |
+| src/senzing\_abstract/szdiagnostic\_abstract.py      |       20 |        1 |     95% |       137 |
+| src/senzing\_abstract/szengine\_abstract.py          |       75 |        1 |     99% |      1035 |
+| src/senzing\_abstract/szengineflags.py               |       92 |       16 |     83% |57-66, 72-78 |
+| src/senzing\_abstract/szerror.py                     |       49 |       26 |     47% |54-55, 64-76, 85, 94-102, 114-120, 136-151 |
+| src/senzing\_abstract/szhelpers.py                   |       24 |       21 |     12% |     23-44 |
+| src/senzing\_abstract/szproduct\_abstract.py         |       16 |        1 |     94% |       103 |
+| src/senzing\_dict/\_\_init\_\_.py                    |        6 |        6 |      0% |       1-7 |
+| src/senzing\_dict/szconfig.py                        |       34 |       34 |      0% |     8-135 |
+| src/senzing\_dict/szconfigmanager.py                 |       32 |       32 |      0% |     8-127 |
+| src/senzing\_dict/szdiagnostic.py                    |       27 |       27 |      0% |     7-107 |
+| src/senzing\_dict/szengine.py                        |       84 |       84 |      0% |     6-486 |
+| src/senzing\_dict/szproduct.py                       |       23 |       23 |      0% |      7-83 |
+| src/senzing\_truthset/\_\_init\_\_.py                |        5 |        0 |    100% |           |
+| src/senzing\_truthset/customers.py                   |        2 |        0 |    100% |           |
+| src/senzing\_truthset/datasources.py                 |        2 |        0 |    100% |           |
+| src/senzing\_truthset/references.py                  |        2 |        0 |    100% |           |
+| src/senzing\_truthset/watchlist.py                   |        2 |        0 |    100% |           |
+|                                            **TOTAL** | **1508** |  **320** | **79%** |           |
 
 
 ## Setup coverage badge
