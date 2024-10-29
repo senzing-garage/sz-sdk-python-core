@@ -24,10 +24,10 @@ from ctypes import (
     Structure,
     c_char,
     c_char_p,
-    c_int,
     c_longlong,
     c_uint,
     c_void_p,
+    create_string_buffer,
 )
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -179,6 +179,10 @@ class SzHowEntityByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_howEntityByEntityID_V2_result"""
 
 
+class SzPreprocessRecordResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h Sz_preprocessRecord_result"""
+
+
 class SzProcessRedoRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_processRedoRecordWithInfo_result"""
 
@@ -252,7 +256,7 @@ class SzEngine(SzEngineAbstract):
         config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
-            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            `Optional:` A flag to enable deeper logging of the Sz processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
@@ -311,6 +315,9 @@ class SzEngine(SzEngineAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with /opt/senzing/er/sdk/c/libSz.h
 
+        # TODO - Ant - Macy method, needed in final?
+        self.library_handle.Szinternal_bulkLoad.argtypes = [POINTER(POINTER(c_char))]
+        self.library_handle.Szinternal_bulkLoad.restype = c_longlong
         self.library_handle.Sz_addRecord.argtypes = [
             c_char_p,
             c_char_p,
@@ -504,7 +511,7 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.Sz_howEntityByEntityID_V2_helper.restype = (
             SzHowEntityByEntityIDV2Result
         )
-        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.Sz_init.restype = c_longlong
         self.library_handle.Sz_initWithConfigID.argtypes = [
             c_char_p,
@@ -512,6 +519,13 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
             c_longlong,
         ]
+        self.library_handle.Sz_preprocessRecord_helper.argtypes = [
+            c_char_p,
+            c_longlong,
+        ]
+        self.library_handle.Sz_preprocessRecord_helper.restype = (
+            SzPreprocessRecordResult
+        )
         self.library_handle.Sz_processRedoRecord.argtypes = [
             c_char_p,
         ]
@@ -579,7 +593,9 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
+        # TODO - Ant - What is correct?
         self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        # self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # if not self.instance_name or len(self.settings) == 0:
         #     raise sdk_exception(2)
@@ -603,6 +619,33 @@ class SzEngine(SzEngineAbstract):
     # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
+
+    # TODO - Ant - Macy method, needed in final?
+    @catch_exceptions
+    def bulk_load(
+        self,
+        records: List[str],
+        # flags: int = 0,
+        **kwargs: Any,
+    ) -> str:
+        """Internal method"""
+
+        try:
+            c_records = (POINTER(c_char) * (len(records) + 1))()
+
+            i = 0
+            for rec in records:
+                c_records[i] = create_string_buffer(rec.encode())  # type: ignore[call-overload]
+                i += 1
+            c_records[len(records)] = None  # type: ignore[call-overload]
+
+            result = self.library_handle.Szinternal_bulkLoad(c_records)
+            self.check_result(result)
+        except Exception as err:
+            print(err)
+            raise
+
+        return self.no_info
 
     @catch_exceptions
     def add_record(
@@ -628,7 +671,6 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_addRecord(
             as_c_char_p(data_source_code),
             as_c_char_p(record_id),
-            as_c_char_p(record_definition),
             as_c_char_p(record_definition),
         )
         self.check_result(result)
@@ -736,7 +778,7 @@ class SzEngine(SzEngineAbstract):
         self,
         entity_ids: List[int],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -744,7 +786,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByEntityID_V2_helper(
             as_c_char_p(build_entities_json(entity_ids)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -758,7 +800,7 @@ class SzEngine(SzEngineAbstract):
         self,
         record_keys: List[Tuple[str, str]],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -766,7 +808,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByRecordID_V2_helper(
             as_c_char_p(build_records_json(record_keys)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -977,14 +1019,16 @@ class SzEngine(SzEngineAbstract):
     def preprocess_record(
         self,
         record_definition: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        _ = kwargs
-        _ = record_definition
-        _ = flags
-        # TODO: Implement function.
-        return "Not implemented"
+        result = self.library_handle.Sz_preprocessRecord_helper(
+            as_c_char_p(record_definition),
+            flags,
+        )
+        with FreeCResources(self.library_handle, result.response):
+            self.check_result(result.return_code)
+            return as_python_str(result.response)
 
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.Sz_primeEngine()

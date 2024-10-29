@@ -16,16 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import (
-    POINTER,
-    Structure,
-    c_char,
-    c_char_p,
-    c_int,
-    c_longlong,
-    c_uint,
-    c_void_p,
-)
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_uint, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -139,7 +130,7 @@ class SzConfig(SzConfigAbstract):
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Sz library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -187,7 +178,7 @@ class SzConfig(SzConfigAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with er/sdk/c/libSzConfig.h
+        # Synchronized with er/sdk/c/libSzConfig.h
 
         self.library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),
@@ -207,7 +198,7 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_deleteDataSource_helper.restype = c_longlong
         self.library_handle.SzConfig_destroy.argtypes = []
         self.library_handle.SzConfig_destroy.restype = c_longlong
-        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzConfig_init.restype = c_longlong
         self.library_handle.SzConfig_listDataSources_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_listDataSources_helper.restype = (
@@ -314,7 +305,7 @@ class SzConfig(SzConfigAbstract):
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.SzConfig_load_helper(
-            as_c_char_p(as_str(config_definition))
+            as_c_char_p(config_definition)
         )
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

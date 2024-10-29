@@ -344,9 +344,9 @@ class SzEngineAbstract(ABC):
         self,
         entity_ids: List[int],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -358,7 +358,7 @@ class SzEngineAbstract(ABC):
         Args:
             entity_ids (str):
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            build_out_degrees (int): The number of degrees of relationships to show around each search entity.
             build_out_max_entities (int): The maximum number of entities to return in the discovered network.
             flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
@@ -385,9 +385,9 @@ class SzEngineAbstract(ABC):
         self,
         record_keys: List[Tuple[str, str]],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
-        flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """
@@ -399,7 +399,7 @@ class SzEngineAbstract(ABC):
         Args:
             record_keys (str):
             max_degrees (int): The maximum number of degrees in paths between search entities.
-            build_out_degree (int): The number of degrees of relationships to show around each search entity.
+            build_out_degrees (int): The number of degrees of relationships to show around each search entity.
             build_out_max_entities (int): The maximum number of entities to return in the discovered network.
             flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.
 
@@ -759,7 +759,7 @@ class SzEngineAbstract(ABC):
     def preprocess_record(
         self,
         record_definition: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
         """

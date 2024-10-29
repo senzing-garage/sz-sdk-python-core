@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-szerror.py manages tranformation from Senzing error number to Python error class.
+szerror.py manages transformation from Senzing error number to Python error class.
 """
 
 import datetime

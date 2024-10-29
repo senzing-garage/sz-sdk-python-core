@@ -121,11 +121,11 @@ class SzConfigManager(SzConfigManagerAbstract):
         config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
-            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            `Optional:` A flag to enable deeper logging of the Sz processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Sz library or incorrect `instance_name`, `settings` combination.
 
     .. collapse:: Example:
 
@@ -174,7 +174,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with er/sdk/c/libSzConfigMgr.h
+        # Synchronized with er/sdk/c/libSzConfigMgr.h
 
         self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
         self.library_handle.SzConfigMgr_addConfig_helper.restype = (
@@ -229,7 +229,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         **kwargs: Any,
     ) -> int:
         result = self.library_handle.SzConfigMgr_addConfig_helper(
-            as_c_char_p(as_str(config_definition)),
+            as_c_char_p(config_definition),
             as_c_char_p(config_comment),
         )
         self.check_result(result.return_code)
