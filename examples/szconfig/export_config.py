@@ -18,9 +18,7 @@ try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_config = sz_abstract_factory.create_sz_config()
     config_handle = sz_config.create_config()  # Create first in-memory.
-    CONFIG_DEFINITION = sz_config.export_config(
-        config_handle
-    )  # Save in-memory to string.
+    CONFIG_DEFINITION = sz_config.export_config(config_handle)  # Save in-memory to string.
     sz_config.close_config(config_handle)
     print(f"\nFile {__file__}:\n{CONFIG_DEFINITION}\n")
 except SzError as err:

@@ -87,8 +87,6 @@ def is_supported_senzingapi_version() -> bool:
     version_dict = json.loads(sz_product.get_version())
     senzing_version_current = version_dict.get("VERSION", "0.0.0")
 
-    result = supports_senzingapi_version(
-        SENZING_VERSION_MINIMUM, SENZING_VERSION_MAXIMUM, senzing_version_current
-    )
+    result = supports_senzingapi_version(SENZING_VERSION_MINIMUM, SENZING_VERSION_MAXIMUM, senzing_version_current)
 
     return result

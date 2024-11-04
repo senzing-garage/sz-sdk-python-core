@@ -39,7 +39,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-# SENZING_PRODUCT_ID = "5041"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -143,9 +142,6 @@ class SzConfigManager(SzConfigManagerAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -153,11 +149,6 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
-        # self.initialized = False
-        # self.settings = settings
-        # self.instance_name = instance_name
-        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -196,18 +187,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        # self.initialized = True
-
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfigManager methods

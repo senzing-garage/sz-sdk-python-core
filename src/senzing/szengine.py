@@ -55,7 +55,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
 
-# SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -273,10 +272,6 @@ class SzEngine(SzEngineAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # config_id: int = 0,
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -284,12 +279,6 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # self.initialized = False
-        # self.instance_name = instance_name
-        # self.settings = settings
-        # self.config_id = config_id
-        # self.verbose_logging = verbose_logging
-
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
@@ -314,7 +303,7 @@ class SzEngine(SzEngineAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with /opt/senzing/er/sdk/c/libSz.h
 
-        # TODO - Ant - Needed in final?
+        # TODO Needed in final?
         self.library_handle.Szinternal_bulkLoad.argtypes = [POINTER(POINTER(c_char))]
         self.library_handle.Szinternal_bulkLoad.restype = c_longlong
         self.library_handle.Sz_addRecord.argtypes = [
@@ -552,34 +541,18 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(
-        #     instance_name=self.instance_name,
-        #     settings=self.settings,
-        #     config_id=self.config_id,
-        #     verbose_logging=self.verbose_logging,
-        # )
-        # self.initialized = True
-
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
 
-    # TODO - Ant - Needed in final?
+    # TODO Needed in final?
     @catch_exceptions
     def bulk_load(
         self,
         records: List[str],
-        # flags: int = 0,
         **kwargs: Any,
     ) -> str:
         """Internal method"""
@@ -762,7 +735,6 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # TODO Needs additional tests with combination of optional args
     @catch_exceptions
     def find_path_by_entity_id(
         self,
@@ -802,7 +774,6 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # TODO Needs additional tests with combination of optional args
     @catch_exceptions
     def find_path_by_record_id(
         self,

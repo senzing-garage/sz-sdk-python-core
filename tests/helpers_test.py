@@ -134,7 +134,5 @@ build_data_sources_json_schema = {"DATA_SOURCES": [str]}
 
 build_avoidances_json_by_entity_id_schema = {"ENTITIES": [{"ENTITY_ID": int}]}
 
-build_avoidances_json_by_record_keys_schema = {
-    "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}]
-}
+build_avoidances_json_by_record_keys_schema = {"RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}]}
 # "RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}

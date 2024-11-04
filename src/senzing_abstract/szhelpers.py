@@ -1,5 +1,5 @@
 """
-TODO: g2helpers.py
+TODO: szhelpers.py
 """
 
 import inspect

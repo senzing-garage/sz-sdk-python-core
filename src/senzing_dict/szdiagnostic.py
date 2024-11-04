@@ -54,9 +54,7 @@ class SzDiagnostic:
 
     def __enter__(
         self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
         return self
 
@@ -72,13 +70,9 @@ class SzDiagnostic:
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_datastore_performance(
-        self, seconds_to_run: int, **kwargs: Any
-    ) -> Dict[str, Any]:
+    def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_diagnostic.check_datastore_performance(seconds_to_run, **kwargs)
-        )
+        return self.dict_function(self.sz_diagnostic.check_datastore_performance(seconds_to_run, **kwargs))
 
     def get_datastore_info(self, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""

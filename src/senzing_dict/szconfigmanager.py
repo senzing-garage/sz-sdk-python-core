@@ -57,9 +57,7 @@ class SzConfigManager:
 
     def __enter__(
         self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
         return self
 
@@ -82,9 +80,7 @@ class SzConfigManager:
         **kwargs: Any,
     ) -> int:
         """TODO: Create documentation"""
-        return self.sz_configmanager.add_config(
-            as_str(config_definition), config_comment, **kwargs
-        )
+        return self.sz_configmanager.add_config(as_str(config_definition), config_comment, **kwargs)
 
     def get_config(self, config_id: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""

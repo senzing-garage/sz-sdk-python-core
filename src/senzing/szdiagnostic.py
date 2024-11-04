@@ -40,7 +40,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-27"
 
-# SENZING_PRODUCT_ID = "5042"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -109,11 +108,11 @@ class SzDiagnostic(SzDiagnosticAbstract):
         config_id:
             `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
         verbose_logging:
-            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
+            `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
         TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
+        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
 
     .. collapse:: Example:
@@ -129,10 +128,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # config_id: int = 0,
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -140,12 +135,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
-        # self.initialized = False
-        # self.instance_name = instance_name
-        # self.settings = settings
-        # self.config_id = config_id
-        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -187,23 +176,8 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_reinit.restype = c_longlong
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(
-        #     instance_name=self.instance_name,
-        #     settings=self.settings,
-        #     config_id=self.config_id,
-        #     verbose_logging=self.verbose_logging,
-        # )
-        # self.initialized = True
-
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
@@ -224,8 +198,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # NOTE This is included but not to be documented
-    # NOTE Is used by sz_explorer
+    # NOTE This is included but not to be documented, used by sz_explorer
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
         result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):

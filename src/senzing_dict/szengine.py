@@ -55,9 +55,7 @@ class SzEngine:
 
     def __enter__(
         self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
         return self
 
@@ -83,9 +81,7 @@ class SzEngine:
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
-            self.sz_engine.add_record(
-                data_source_code, record_id, as_str(record_definition), flags, **kwargs
-            )
+            self.sz_engine.add_record(data_source_code, record_id, as_str(record_definition), flags, **kwargs)
         )
 
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
@@ -104,9 +100,7 @@ class SzEngine:
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_engine.delete_record(data_source_code, record_id, flags, **kwargs)
-        )
+        return self.dict_function(self.sz_engine.delete_record(data_source_code, record_id, flags, **kwargs))
 
     def export_csv_entity_report(
         self,
@@ -129,21 +123,13 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.sz_engine.fetch_next(export_handle, **kwargs)
 
-    def fetch_next_return_dict(
-        self, export_handle: int, **kwargs: Any
-    ) -> Dict[str, Any]:
+    def fetch_next_return_dict(self, export_handle: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(self.sz_engine.fetch_next(export_handle, **kwargs))
 
-    def find_interesting_entities_by_entity_id(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> Dict[str, Any]:
+    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_engine.find_interesting_entities_by_entity_id(
-                entity_id, flags, **kwargs
-            )
-        )
+        return self.dict_function(self.sz_engine.find_interesting_entities_by_entity_id(entity_id, flags, **kwargs))
 
     def find_interesting_entities_by_record_id(
         self,
@@ -154,9 +140,7 @@ class SzEngine:
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
-            self.sz_engine.find_interesting_entities_by_record_id(
-                data_source_code, record_id, flags, **kwargs
-            )
+            self.sz_engine.find_interesting_entities_by_record_id(data_source_code, record_id, flags, **kwargs)
         )
 
     def find_network_by_entity_id(
@@ -375,9 +359,7 @@ class SzEngine:
         """TODO: Create documentation"""
         return self.sz_engine.prime_engine(**kwargs)
 
-    def process_redo_record(
-        self, redo_record: str, flags: int = 0, **kwargs: Any
-    ) -> Dict[str, Any]:
+    def process_redo_record(self, redo_record: str, flags: int = 0, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.process_redo_record(
@@ -387,9 +369,7 @@ class SzEngine:
             )
         )
 
-    def reevaluate_entity(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> Dict[str, Any]:
+    def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
         return self.dict_function(
             self.sz_engine.reevaluate_entity(

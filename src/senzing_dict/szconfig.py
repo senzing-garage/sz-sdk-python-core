@@ -57,9 +57,7 @@ class SzConfig:
 
     def __enter__(
         self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
         return self
 
@@ -82,9 +80,7 @@ class SzConfig:
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_config.add_data_source(config_handle, data_source_code, **kwargs)
-        )
+        return self.dict_function(self.sz_config.add_data_source(config_handle, data_source_code, **kwargs))
 
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         """TODO: Create documentation"""
@@ -101,9 +97,7 @@ class SzConfig:
         **kwargs: Any,
     ) -> None:
         """TODO: Create documentation"""
-        return self.sz_config.delete_data_source(
-            config_handle, data_source_code, **kwargs
-        )
+        return self.sz_config.delete_data_source(config_handle, data_source_code, **kwargs)
 
     def export_config(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
@@ -111,9 +105,7 @@ class SzConfig:
 
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> Dict[str, Any]:
         """TODO: Create documentation"""
-        return self.dict_function(
-            self.sz_config.get_data_sources(config_handle, **kwargs)
-        )
+        return self.dict_function(self.sz_config.get_data_sources(config_handle, **kwargs))
 
     # TODO
     # def initialize(
@@ -128,8 +120,6 @@ class SzConfig:
     #         instance_name, settings, verbose_logging, **kwargs
     #     )
 
-    def import_config(
-        self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any
-    ) -> int:
+    def import_config(self, config_definition: Union[str, Dict[Any, Any]], **kwargs: Any) -> int:
         """TODO: Create documentation"""
         return self.sz_config.import_config(as_str(config_definition), **kwargs)

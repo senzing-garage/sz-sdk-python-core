@@ -42,7 +42,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-# SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -148,9 +147,6 @@ class SzConfig(SzConfigAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -158,10 +154,6 @@ class SzConfig(SzConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # self.initialized = False
-        # self.settings = settings
-        # self.instance_name = instance_name
-        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -215,9 +207,6 @@ class SzConfig(SzConfigAbstract):
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfig methods

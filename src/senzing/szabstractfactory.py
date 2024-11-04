@@ -87,9 +87,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
     def __enter__(
         self,
-    ) -> (
-        Any
-    ):  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
         """Context Manager method."""
         return self
 
