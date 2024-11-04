@@ -16,7 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
+from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -40,7 +40,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-27"
 
-# SENZING_PRODUCT_ID = "5042"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -75,52 +74,21 @@ class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
 
 class SzDiagnostic(SzDiagnosticAbstract):
     """
-    The `initialize` method initializes the Senzing SzDiagnostic object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzDiagnostic constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_diagnostic() to create an SzDiagnostic object.
+    The SzDiagnostic object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_diagnostic = SzDiagnostic(instance_name, settings)
-
-
-    If the SzDiagnostic constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzProduct.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_diagnostic = SzDiagnostic()
-        sz_diagnostic.initialize(instance_name, settings)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzException**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
-
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szdiagnostic/szdiagnostic_constructor.py
-            :linenos:
-            :language: python
     """
 
     # -------------------------------------------------------------------------
@@ -129,10 +97,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # config_id: int = 0,
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -140,12 +104,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
-        # self.initialized = False
-        # self.instance_name = instance_name
-        # self.settings = settings
-        # self.config_id = config_id
-        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -164,22 +122,16 @@ class SzDiagnostic(SzDiagnosticAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with er/sdk/c/libSzDiagnostic.h
 
-        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [
-            c_longlong
-        ]
+        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
             SzDiagnosticCheckDatastorePerformanceResult
         )
         self.library_handle.SzDiagnostic_destroy.argtypes = []
         self.library_handle.SzDiagnostic_destroy.restype = c_longlong
         self.library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
-        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = (
-            SzDiagnosticGetDatastoreInfoResult
-        )
+        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = SzDiagnosticGetDatastoreInfoResult
         self.library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
-        self.library_handle.SzDiagnostic_getFeature_helper.restype = (
-            SzDiagnosticGetFeatureResult
-        )
+        self.library_handle.SzDiagnostic_getFeature_helper.restype = SzDiagnosticGetFeatureResult
         self.library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.SzDiagnostic_init.restype = c_longlong
         self.library_handle.SzDiagnostic_initWithConfigID.argtypes = [
@@ -191,34 +143,17 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_reinit.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
-
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(
-        #     instance_name=self.instance_name,
-        #     settings=self.settings,
-        #     config_id=self.config_id,
-        #     verbose_logging=self.verbose_logging,
-        # )
-        # self.initialized = True
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
     def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
-        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(
-            seconds_to_run
-        )
+        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -232,8 +167,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # NOTE This is included but not to be documented
-    # NOTE Is used by sz_explorer
+    # NOTE This is included but not to be documented, used by sz_explorer
     def get_feature(self, feature_id: int, **kwargs: Any) -> str:
         result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):

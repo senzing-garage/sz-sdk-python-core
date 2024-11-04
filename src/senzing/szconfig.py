@@ -16,16 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import (
-    POINTER,
-    Structure,
-    c_char,
-    c_char_p,
-    c_int,
-    c_longlong,
-    c_uint,
-    c_void_p,
-)
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_uint, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -51,7 +42,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-# SENZING_PRODUCT_ID = "5040"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -103,49 +93,21 @@ class SzConfigSaveResult(SzResponseAsCharPointerResult):
 
 class SzConfig(SzConfigAbstract):
     """
-    The `initialize` method initializes the Senzing SzConfig object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzConfig constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_config() to create an SzConfig object.
+    The SzConfig object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_config = SzConfig(instance_name, settings)
-
-
-    If the SzConfig constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzConfig.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_config = SzConfig()
-        sz_config.initialize(instance_name, settings)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzError**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_config = sz_abstract_factory.create_sz_config()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the G2 library or incorrect `instance_name`, `settings` combination.
 
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szconfig/szconfig_constructor.py
-            :linenos:
-            :language: python
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
@@ -157,9 +119,6 @@ class SzConfig(SzConfigAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -167,10 +126,6 @@ class SzConfig(SzConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # self.initialized = False
-        # self.settings = settings
-        # self.instance_name = instance_name
-        # self.verbose_logging = verbose_logging
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
@@ -187,15 +142,13 @@ class SzConfig(SzConfigAbstract):
         )
 
         # Initialize C function input parameters and results.
-        # Must be synchronized with er/sdk/c/libSzConfig.h
+        # Synchronized with er/sdk/c/libSzConfig.h
 
         self.library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
         ]
-        self.library_handle.SzConfig_addDataSource_helper.restype = (
-            SzConfigAddDataSourceResult
-        )
+        self.library_handle.SzConfig_addDataSource_helper.restype = SzConfigAddDataSourceResult
         self.library_handle.SzConfig_close_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_close_helper.restype = c_longlong
         self.library_handle.SzConfig_create_helper.argtypes = []
@@ -207,17 +160,15 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_deleteDataSource_helper.restype = c_longlong
         self.library_handle.SzConfig_destroy.argtypes = []
         self.library_handle.SzConfig_destroy.restype = c_longlong
-        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzConfig_init.restype = c_longlong
         self.library_handle.SzConfig_listDataSources_helper.argtypes = [POINTER(c_uint)]
-        self.library_handle.SzConfig_listDataSources_helper.restype = (
-            SzConfigListDataSourcesResult
-        )
+        self.library_handle.SzConfig_listDataSources_helper.restype = SzConfigListDataSourcesResult
         self.library_handle.SzConfig_load_helper.argtypes = [c_char_p]
         self.library_handle.SzConfig_load_helper.restype = SzConfigLoadResult
         self.library_handle.SzConfig_save_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # if (not self.instance_name) or (len(self.settings) == 0):
         #     raise sdk_exception(2)
@@ -228,9 +179,6 @@ class SzConfig(SzConfigAbstract):
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzConfig methods
@@ -254,9 +202,7 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
-        result = self.library_handle.SzConfig_close_helper(
-            as_c_uintptr_t(config_handle)
-        )
+        result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
         self.check_result(result)
 
     def create_config(self, **kwargs: Any) -> int:
@@ -289,9 +235,7 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
-        result = self.library_handle.SzConfig_listDataSources_helper(
-            as_c_uintptr_t(config_handle)
-        )
+        result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -313,8 +257,6 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
-        result = self.library_handle.SzConfig_load_helper(
-            as_c_char_p(as_str(config_definition))
-        )
+        result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

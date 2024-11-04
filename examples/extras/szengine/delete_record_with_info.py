@@ -26,9 +26,7 @@ RECORD_ID = "1"
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_engine = sz_abstract_factory.create_sz_engine()
-    RESULT = sz_engine.delete_record(
-        DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO
-    )
+    RESULT = sz_engine.delete_record(DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO)
     print(f"\n/File {__file__}:\n{json.dumps(RESULT)}\n")
 except SzError as err:
     print(f"\nError in {__file__}:\n{err}\n")

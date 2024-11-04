@@ -129,9 +129,7 @@ get_license_schema = {
 
 get_version_schema = {
     "PRODUCT_NAME": str,
-    "VERSION": Regex(
-        r"^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$"
-    ),
+    "VERSION": Regex(r"^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$"),
     "BUILD_VERSION": str,
     "BUILD_DATE": Regex(r"^\d{4}-\d{2}-\d{2}$"),
     "BUILD_NUMBER": str,

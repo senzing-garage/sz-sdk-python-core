@@ -29,9 +29,7 @@ def test_add_data_source_bad_config_handle_type(sz_config: SzConfigTest) -> None
     bad_config_handle = "string"
     data_source_code = "NAME_OF_DATASOURCE"
     with pytest.raises(TypeError):
-        sz_config.add_data_source(
-            bad_config_handle, data_source_code  # type: ignore[arg-type]
-        )
+        sz_config.add_data_source(bad_config_handle, data_source_code)  # type: ignore[arg-type]
 
 
 def test_add_data_source_bad_data_source_code_type(sz_config: SzConfigTest) -> None:
@@ -40,9 +38,7 @@ def test_add_data_source_bad_data_source_code_type(sz_config: SzConfigTest) -> N
     bad_data_source_code = 0
     try:
         with pytest.raises(TypeError):
-            sz_config.add_data_source(
-                config_handle, bad_data_source_code  # type: ignore[arg-type]
-            )
+            sz_config.add_data_source(config_handle, bad_data_source_code)  # type: ignore[arg-type]
     finally:
         sz_config.close_config(config_handle)
 
@@ -88,9 +84,7 @@ def test_delete_data_source_bad_config_handle_type(sz_config: SzConfigTest) -> N
     data_source_code = "TEST"
     bad_config_handle = "string"
     with pytest.raises(TypeError):
-        sz_config.delete_data_source(
-            bad_config_handle, data_source_code  # type: ignore[arg-type]
-        )
+        sz_config.delete_data_source(bad_config_handle, data_source_code)  # type: ignore[arg-type]
 
 
 def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfigTest) -> None:
@@ -98,9 +92,7 @@ def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfigTest) -
     bad_data_source_code = 0
     config_handle = sz_config.create_config()
     with pytest.raises(TypeError):
-        sz_config.delete_data_source(
-            config_handle, bad_data_source_code  # type: ignore[arg-type]
-        )
+        sz_config.delete_data_source(config_handle, bad_data_source_code)  # type: ignore[arg-type]
     sz_config.close_config(config_handle)
 
 
@@ -135,17 +127,6 @@ def test_import_config(sz_config: SzConfigTest) -> None:
     config_handle = sz_config.create_config()
     config_definition = sz_config.export_config(config_handle)
     config_handle = sz_config.import_config(config_definition)
-    assert isinstance(config_handle, int)
-    assert config_handle > 0
-    sz_config.close_config(config_handle)
-
-
-def test_import_config_dict(sz_config: SzConfigTest) -> None:
-    """Test SzConfig().import_config()."""
-    config_handle = sz_config.create_config()
-    config_definition = sz_config.export_config(config_handle)
-    config_definition_as_dict = json.loads(config_definition)
-    config_handle = sz_config.import_config(config_definition_as_dict)
     assert isinstance(config_handle, int)
     assert config_handle > 0
     sz_config.close_config(config_handle)

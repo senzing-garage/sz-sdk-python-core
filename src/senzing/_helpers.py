@@ -31,16 +31,15 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing import SzError
 from senzing_abstract import ENGINE_EXCEPTION_MAP
+
+from senzing import SzError
 
 # if sys.version_info < (3, 10):
 if sys.version_info < (3, 11):
     from typing_extensions import ParamSpec, Self
 else:
     from typing import ParamSpec, Self
-
-# TODO Add metadata, should use __all__ ?
 
 T = TypeVar("T")
 P = ParamSpec("P")
@@ -96,9 +95,7 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     def catch_inner(*args: P.args, **kwargs: P.kwargs) -> T:
         method_name = func_to_decorate.__name__
         module_name = func_to_decorate.__module__
-        basic_msg = (
-            f"wrong type for an argument when calling {module_name}.{method_name}"
-        )
+        basic_msg = f"wrong type for an argument when calling {module_name}.{method_name}"
 
         try:
             return func_to_decorate(*args, **kwargs)
@@ -116,9 +113,7 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                     bad_arg_index = int(bad_arg_index)
                     bad_arg_value = args[bad_arg_index]
                     bad_arg_type = type(bad_arg_value)
-                    bad_arg_tuple = list(func_to_decorate.__annotations__.items())[
-                        bad_arg_index - 1
-                    ]
+                    bad_arg_tuple = list(func_to_decorate.__annotations__.items())[bad_arg_index - 1]
                 except (IndexError, ValueError):
                     raise TypeError(basic_msg) from err
 
@@ -130,7 +125,6 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                 ) from None
 
             raise TypeError(basic_msg) from err
-        # # TODO Do we need to catch anything else? Has a code smell about it
         # NOTE Catch TypeError from the test in as_uintptr_t()
         except TypeError as err:
             raise TypeError(f"{basic_msg} - {err}") from None
@@ -149,12 +143,11 @@ def load_sz_library(lib: str = "") -> CDLL:
     """
     try:
         if os.name == "nt":
-            win_path = find_library(lib if lib else "G2")
+            win_path = find_library(lib if lib else "SZ")
             return cdll.LoadLibrary(win_path if win_path else "")
 
         return cdll.LoadLibrary(lib if lib else "libSz.so")
     except OSError as err:
-        # TODO Change to Sz library when the libSz.so is changed in a build
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
@@ -222,23 +215,18 @@ def check_list_types(to_check: List[Any]) -> None:
     if not types:
         raise TypeError(f"elements in the list are not of the same type - {to_check}")
 
-    # TODO Consider making the number_of_tuples check an input to function
     # If elements are tuples check they are the same size and correct size
     if isinstance(to_check[0], tuple):
         num_elements = set(len(elem) for elem in to_check)
         if len(num_elements) > 1:
-            raise TypeError(
-                f"number of tuple elements for each tuple are not of the same size - {to_check}"
-            )
+            raise TypeError(f"number of tuple elements for each tuple are not of the same size - {to_check}")
 
         number_of_tuples = num_elements.pop()
         if number_of_tuples != 2:
-            raise TypeError(
-                f"number of elements in a tuple is {number_of_tuples}, expected 2 - {to_check}"
-            )
+            raise TypeError(f"number of elements in a tuple is {number_of_tuples}, expected 2 - {to_check}")
 
 
-# TODO - Ant - And Jira
+# TODO - Investigate adding and recalling is working correctly
 def escape_json_str(to_escape: str) -> str:
     """
     Escape strings when building a new JSON string.
@@ -280,7 +268,6 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
 
-# TODO Additional checks on these functions
 def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     """
     Build JSON string of entity ids.
@@ -455,9 +442,10 @@ def engine_exception(
 # Helpers for creating SDK specific exceptions
 # -----------------------------------------------------------------------------
 
+# TODO Still needed? Investigate using in szabstractfactory
 # fmt: off
 SDK_EXCEPTION_MAP = {
-    1: "failed to load the G2 library",                                 # Engine module wasn't able to load the G2 library
+    1: "failed to load the Senzing library",                                 # Engine module wasn't able to load the G2 library
     2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
 }
 # fmt: on

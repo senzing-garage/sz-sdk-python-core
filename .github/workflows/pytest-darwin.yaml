@@ -20,7 +20,7 @@ jobs:
       matrix:
         os: [macos-latest]
         # 3.8 and 3.9 are unsupported on the darwin runner
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
         senzingapi-version: [staging-v4]
 
     steps:

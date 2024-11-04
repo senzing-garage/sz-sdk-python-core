@@ -4,7 +4,6 @@ It is a wrapper over Senzing's SzEngine C binding.
 It conforms to the interface specified in
 `szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szengine_abstract.py>`_
 
-# TODO: LD_LIBRARY_PATH is only for Linux
 To use szengine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
 
@@ -24,10 +23,10 @@ from ctypes import (
     Structure,
     c_char,
     c_char_p,
-    c_int,
     c_longlong,
     c_uint,
     c_void_p,
+    create_string_buffer,
 )
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -56,7 +55,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-15"
 
-# SENZING_PRODUCT_ID = "5043"  # See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # Classes that are result structures from calls to Senzing
@@ -179,6 +177,10 @@ class SzHowEntityByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_howEntityByEntityID_V2_result"""
 
 
+class SzPreprocessRecordResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h Sz_preprocessRecord_result"""
+
+
 class SzProcessRedoRecordWithInfoResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_processRedoRecordWithInfo_result"""
 
@@ -218,50 +220,21 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
 
 class SzEngine(SzEngineAbstract):
     """
-    The `initialize` method initializes the Senzing SzEngine object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzEngine constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_engine() to create an SzEngine object.
+    The SzEngine object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_engine = SzEngine(instance_name, settings)
-
-
-    If the SzEngine constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzEngine.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_engine = SzEngine()
-        sz_engine.initialize(instance_name, settings, verbose_logging)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzError**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_engine = sz_abstract_factory.create_sz_engine()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the G2 processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szengine/szengine_constructor.py
-            :linenos:
-            :language: python
     """
 
     # -------------------------------------------------------------------------
@@ -270,10 +243,6 @@ class SzEngine(SzEngineAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # config_id: int = 0,
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -281,12 +250,6 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-        # self.initialized = False
-        # self.instance_name = instance_name
-        # self.settings = settings
-        # self.config_id = config_id
-        # self.verbose_logging = verbose_logging
-
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
@@ -311,6 +274,9 @@ class SzEngine(SzEngineAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with /opt/senzing/er/sdk/c/libSz.h
 
+        # TODO Needed in final?
+        self.library_handle.Szinternal_bulkLoad.argtypes = [POINTER(POINTER(c_char))]
+        self.library_handle.Szinternal_bulkLoad.restype = c_longlong
         self.library_handle.Sz_addRecord.argtypes = [
             c_char_p,
             c_char_p,
@@ -323,9 +289,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_addRecordWithInfo_helper.restype = (
-            SzAddRecordWithInfoResult
-        )
+        self.library_handle.Sz_addRecordWithInfo_helper.restype = SzAddRecordWithInfoResult
         self.library_handle.Sz_closeExport_helper.argtypes = [
             POINTER(c_uint),
         ]
@@ -342,22 +306,16 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_deleteRecordWithInfo_helper.restype = (
-            SzDeleteRecordWithInfoResult
-        )
+        self.library_handle.Sz_deleteRecordWithInfo_helper.restype = SzDeleteRecordWithInfoResult
         self.library_handle.Sz_destroy.argtypes = []
         self.library_handle.Sz_destroy.restype = c_longlong
         self.library_handle.Sz_exportCSVEntityReport_helper.argtypes = [
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_exportCSVEntityReport_helper.restype = (
-            SzExportCSVEntityReportResult
-        )
+        self.library_handle.Sz_exportCSVEntityReport_helper.restype = SzExportCSVEntityReportResult
         self.library_handle.Sz_exportJSONEntityReport_helper.argtypes = [c_longlong]
-        self.library_handle.Sz_exportJSONEntityReport_helper.restype = (
-            SzExportJSONEntityReportResult
-        )
+        self.library_handle.Sz_exportJSONEntityReport_helper.restype = SzExportJSONEntityReportResult
         self.library_handle.Sz_fetchNext_helper.argtypes = [
             POINTER(c_uint),
         ]
@@ -384,9 +342,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_findNetworkByEntityID_V2_helper.restype = (
-            SzFindNetworkByEntityIDV2Result
-        )
+        self.library_handle.Sz_findNetworkByEntityID_V2_helper.restype = SzFindNetworkByEntityIDV2Result
         self.library_handle.Sz_findNetworkByRecordID_V2_helper.argtypes = [
             c_char_p,
             c_longlong,
@@ -394,18 +350,14 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_findNetworkByRecordID_V2_helper.restype = (
-            SzFindNetworkByRecordIDV2Result
-        )
+        self.library_handle.Sz_findNetworkByRecordID_V2_helper.restype = SzFindNetworkByRecordIDV2Result
         self.library_handle.Sz_findPathByEntityID_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_findPathByEntityID_V2_helper.restype = (
-            SzFindPathByEntityIDV2Result
-        )
+        self.library_handle.Sz_findPathByEntityID_V2_helper.restype = SzFindPathByEntityIDV2Result
         self.library_handle.Sz_findPathByEntityIDIncludingSource_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
@@ -424,9 +376,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_findPathByEntityIDWithAvoids_V2_helper.restype = (
-            SzFindPathExcludingByEntityIDV2Result
-        )
+        self.library_handle.Sz_findPathByEntityIDWithAvoids_V2_helper.restype = SzFindPathExcludingByEntityIDV2Result
         self.library_handle.Sz_findPathByRecordID_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -435,9 +385,7 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_findPathByRecordID_V2_helper.restype = (
-            SzFindPathByRecordIDV2Result
-        )
+        self.library_handle.Sz_findPathByRecordID_V2_helper.restype = SzFindPathByRecordIDV2Result
         self.library_handle.Sz_findPathByRecordIDIncludingSource_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -460,28 +408,20 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_findPathByRecordIDWithAvoids_V2_helper.restype = (
-            SzFindPathExcludingByRecordIDV2Result
-        )
+        self.library_handle.Sz_findPathByRecordIDWithAvoids_V2_helper.restype = SzFindPathExcludingByRecordIDV2Result
         self.library_handle.Sz_getActiveConfigID_helper.argtypes = []
-        self.library_handle.Sz_getActiveConfigID_helper.restype = (
-            SzGetActiveConfigIDResult
-        )
+        self.library_handle.Sz_getActiveConfigID_helper.restype = SzGetActiveConfigIDResult
         self.library_handle.Sz_getEntityByEntityID_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_getEntityByEntityID_V2_helper.restype = (
-            SzGetEntityByEntityIDV2Result
-        )
+        self.library_handle.Sz_getEntityByEntityID_V2_helper.restype = SzGetEntityByEntityIDV2Result
         self.library_handle.Sz_getEntityByRecordID_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_getEntityByRecordID_V2_helper.restype = (
-            SzGetEntityByRecordIDV2Result
-        )
+        self.library_handle.Sz_getEntityByRecordID_V2_helper.restype = SzGetEntityByRecordIDV2Result
         self.library_handle.Sz_getRecord_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -494,17 +434,13 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_getVirtualEntityByRecordID_V2_helper.restype = (
-            SzGetVirtualEntityByRecordIDV2Result
-        )
+        self.library_handle.Sz_getVirtualEntityByRecordID_V2_helper.restype = SzGetVirtualEntityByRecordIDV2Result
         self.library_handle.Sz_howEntityByEntityID_V2_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_howEntityByEntityID_V2_helper.restype = (
-            SzHowEntityByEntityIDV2Result
-        )
-        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_int]
+        self.library_handle.Sz_howEntityByEntityID_V2_helper.restype = SzHowEntityByEntityIDV2Result
+        self.library_handle.Sz_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.Sz_init.restype = c_longlong
         self.library_handle.Sz_initWithConfigID.argtypes = [
             c_char_p,
@@ -512,6 +448,11 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
             c_longlong,
         ]
+        self.library_handle.Sz_preprocessRecord_helper.argtypes = [
+            c_char_p,
+            c_longlong,
+        ]
+        self.library_handle.Sz_preprocessRecord_helper.restype = SzPreprocessRecordResult
         self.library_handle.Sz_processRedoRecord.argtypes = [
             c_char_p,
         ]
@@ -519,18 +460,14 @@ class SzEngine(SzEngineAbstract):
         self.library_handle.Sz_processRedoRecordWithInfo_helper.argtypes = [
             c_char_p,
         ]
-        self.library_handle.Sz_processRedoRecordWithInfo_helper.restype = (
-            SzProcessRedoRecordWithInfoResult
-        )
+        self.library_handle.Sz_processRedoRecordWithInfo_helper.restype = SzProcessRedoRecordWithInfoResult
         self.library_handle.Sz_reevaluateEntity.argtypes = [c_longlong, c_longlong]
         self.library_handle.Sz_reevaluateEntity.restype = c_longlong
         self.library_handle.Sz_reevaluateEntityWithInfo_helper.argtypes = [
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.Sz_reevaluateEntityWithInfo_helper.restype = (
-            SzReevaluateEntityWithInfoResult
-        )
+        self.library_handle.Sz_reevaluateEntityWithInfo_helper.restype = SzReevaluateEntityWithInfoResult
         self.library_handle.Sz_reevaluateRecord.argtypes = [
             c_char_p,
             c_char_p,
@@ -542,9 +479,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_reevaluateRecordWithInfo_helper.restype = (
-            SzReevaluateRecordWithInfoResult
-        )
+        self.library_handle.Sz_reevaluateRecordWithInfo_helper.restype = SzReevaluateRecordWithInfoResult
         self.library_handle.Sz_reinit.argtypes = [c_longlong]
         self.library_handle.Sz_reinit.restype = c_longlong
         self.library_handle.Sz_searchByAttributes_V3_helper.argtypes = [
@@ -552,9 +487,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_searchByAttributes_V3_helper.restype = (
-            SzSearchByAttributesV3Result
-        )
+        self.library_handle.Sz_searchByAttributes_V3_helper.restype = SzSearchByAttributesV3Result
         self.library_handle.Sz_stats_helper.argtypes = []
         self.library_handle.Sz_stats_helper.restype = SzStatsResult
         self.library_handle.Sz_whyEntities_V2_helper.argtypes = [
@@ -568,9 +501,7 @@ class SzEngine(SzEngineAbstract):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_whyRecordInEntity_V2_helper.restype = (
-            SzWhyRecordInEntityV2Result
-        )
+        self.library_handle.Sz_whyRecordInEntity_V2_helper.restype = SzWhyRecordInEntityV2Result
         self.library_handle.Sz_whyRecords_V2_helper.argtypes = [
             c_char_p,
             c_char_p,
@@ -579,30 +510,40 @@ class SzEngine(SzEngineAbstract):
             c_longlong,
         ]
         self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(
-        #     instance_name=self.instance_name,
-        #     settings=self.settings,
-        #     config_id=self.config_id,
-        #     verbose_logging=self.verbose_logging,
-        # )
-        # self.initialized = True
-
-    # TODO Add garbage collection to ensure destruction
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
+
+    # TODO Needed in final?
+    @catch_exceptions
+    def bulk_load(
+        self,
+        records: List[str],
+        **kwargs: Any,
+    ) -> str:
+        """Internal method"""
+
+        try:
+            c_records = (POINTER(c_char) * (len(records) + 1))()
+
+            i = 0
+            for rec in records:
+                c_records[i] = create_string_buffer(rec.encode())  # type: ignore[call-overload]
+                i += 1
+            c_records[len(records)] = None  # type: ignore[call-overload]
+
+            result = self.library_handle.Szinternal_bulkLoad(c_records)
+            self.check_result(result)
+        except Exception as err:
+            print(err)
+            raise
+
+        return self.no_info
 
     @catch_exceptions
     def add_record(
@@ -629,16 +570,13 @@ class SzEngine(SzEngineAbstract):
             as_c_char_p(data_source_code),
             as_c_char_p(record_id),
             as_c_char_p(record_definition),
-            as_c_char_p(record_definition),
         )
         self.check_result(result)
         return self.no_info
 
     @catch_exceptions
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
-        result = self.library_handle.Sz_closeExport_helper(
-            as_c_uintptr_t(export_handle)
-        )
+        result = self.library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
         self.check_result(result)
 
     def count_redo_records(self, **kwargs: Any) -> int:
@@ -683,9 +621,7 @@ class SzEngine(SzEngineAbstract):
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> int:
-        result = self.library_handle.Sz_exportCSVEntityReport_helper(
-            as_c_char_p(csv_column_list), flags
-        )
+        result = self.library_handle.Sz_exportCSVEntityReport_helper(as_c_char_p(csv_column_list), flags)
         self.check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
@@ -706,12 +642,8 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-    def find_interesting_entities_by_entity_id(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> str:
-        result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(
-            entity_id, flags
-        )
+    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
+        result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -736,7 +668,7 @@ class SzEngine(SzEngineAbstract):
         self,
         entity_ids: List[int],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -744,7 +676,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByEntityID_V2_helper(
             as_c_char_p(build_entities_json(entity_ids)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -758,7 +690,7 @@ class SzEngine(SzEngineAbstract):
         self,
         record_keys: List[Tuple[str, str]],
         max_degrees: int,
-        build_out_degree: int,
+        build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
         **kwargs: Any,
@@ -766,7 +698,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_findNetworkByRecordID_V2_helper(
             as_c_char_p(build_records_json(record_keys)),
             max_degrees,
-            build_out_degree,
+            build_out_degrees,
             build_out_max_entities,
             flags,
         )
@@ -774,7 +706,6 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # TODO Needs additional tests with combination of optional args
     @catch_exceptions
     def find_path_by_entity_id(
         self,
@@ -814,7 +745,6 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    # TODO Needs additional tests with combination of optional args
     @catch_exceptions
     def find_path_by_record_id(
         self,
@@ -977,28 +907,26 @@ class SzEngine(SzEngineAbstract):
     def preprocess_record(
         self,
         record_definition: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
         **kwargs: Any,
     ) -> str:
-        _ = kwargs
-        _ = record_definition
-        _ = flags
-        # TODO: Implement function.
-        return "Not implemented"
+        result = self.library_handle.Sz_preprocessRecord_helper(
+            as_c_char_p(record_definition),
+            flags,
+        )
+        with FreeCResources(self.library_handle, result.response):
+            self.check_result(result.return_code)
+            return as_python_str(result.response)
 
     def prime_engine(self, **kwargs: Any) -> None:
         result = self.library_handle.Sz_primeEngine()
         self.check_result(result)
 
     @catch_exceptions
-    def process_redo_record(
-        self, redo_record: str, flags: int = 0, **kwargs: Any
-    ) -> str:
+    def process_redo_record(self, redo_record: str, flags: int = 0, **kwargs: Any) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
-            result = self.library_handle.Sz_processRedoRecordWithInfo_helper(
-                as_c_char_p(redo_record), base_flags
-            )
+            result = self.library_handle.Sz_processRedoRecordWithInfo_helper(as_c_char_p(redo_record), base_flags)
             with FreeCResources(self.library_handle, result.response):
                 self.check_result(result.return_code)
                 return as_python_str(result.response)
@@ -1045,9 +973,7 @@ class SzEngine(SzEngineAbstract):
                 response_str = as_python_str(result.response)
                 return response_str if response_str else self.no_info
 
-        result = self.library_handle.Sz_reevaluateRecord(
-            as_c_char_p(data_source_code), as_c_char_p(record_id), flags
-        )
+        result = self.library_handle.Sz_reevaluateRecord(as_c_char_p(data_source_code), as_c_char_p(record_id), flags)
         self.check_result(result)
         return self.no_info
 

@@ -16,7 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import c_char_p, c_int, c_longlong
+from ctypes import c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -38,7 +38,6 @@ __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
 __updated__ = "2023-11-07"
 
-# SENZING_PRODUCT_ID = "5046"  # See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 
 # -----------------------------------------------------------------------------
 # SzProduct class
@@ -47,49 +46,21 @@ __updated__ = "2023-11-07"
 
 class SzProduct(SzProductAbstract):
     """
-    The `init` method initializes the Senzing SzProduct object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzProduct constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_product() to create an SzProduct object.
+    The SzProduct object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_product = SzProduct(instance_name, settings)
-
-
-    If the SzProduct constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzProduct.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_product = SzProduct()
-        sz_product.initialize(instance_name, settings)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzError**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_product = sz_abstract_factory.create_sz_product()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the Senzing processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szproduct/szproduct_constructor.py
-            :linenos:
-            :language: python
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
@@ -101,11 +72,6 @@ class SzProduct(SzProductAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
-        # TODO
-        # settings: Union[str, Dict[Any, Any]] = "",
-        # settings: Union[str, Dict[Any, Any]] = "{}",
-        # verbose_logging: int = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -113,11 +79,6 @@ class SzProduct(SzProductAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
-
-        # self.initialized = False
-        # self.instance_name = instance_name
-        # self.settings = settings
-        # self.verbose_logging = verbose_logging
 
         # Load binary library.
         self.library_handle = load_sz_library()
@@ -141,22 +102,10 @@ class SzProduct(SzProductAbstract):
         self.library_handle.SzProduct_license.restype = c_char_p
         self.library_handle.SzProduct_version.argtypes = []
         self.library_handle.SzProduct_version.restype = c_char_p
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
-
-        # NOTE both get_license and get_version will work if "", "{}" are passed in
-        # TODO
-        # if not self.instance_name or len(self.settings) == 0:
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        # self.initialized = True
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
     def __del__(self) -> None:
         """Destructor"""
-        # if self.initialized:
-        #     with suppress(Exception):
-        #         self._destroy()
 
     # -------------------------------------------------------------------------
     # SzProduct methods

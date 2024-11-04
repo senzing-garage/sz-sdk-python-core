@@ -136,9 +136,7 @@ def test_exception(sz_configmanager: SzConfigManagerTest) -> None:
         sz_configmanager.check_result(-1)
 
 
-def test_reinitialize(
-    sz_diagnostic: SzDiagnosticTest, sz_configmanager: SzConfigManagerTest
-) -> None:
+def test_reinitialize(sz_diagnostic: SzDiagnosticTest, sz_configmanager: SzConfigManagerTest) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:

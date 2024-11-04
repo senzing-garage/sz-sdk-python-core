@@ -6,16 +6,17 @@ Simply a header used in development.
 
 from typing import List, Tuple
 
+from senzing_truthset import (
+    TRUTHSET_CUSTOMER_RECORDS,
+    TRUTHSET_REFERENCE_RECORDS,
+    TRUTHSET_WATCHLIST_RECORDS,
+)
+
 from senzing import (
     SZ_WITHOUT_INFO,
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngine,
-)
-from senzing_truthset import (
-    TRUTHSET_CUSTOMER_RECORDS,
-    TRUTHSET_REFERENCE_RECORDS,
-    TRUTHSET_WATCHLIST_RECORDS,
 )
 
 DATA_SOURCES = {
@@ -47,9 +48,7 @@ TEST_RECORDS: List[Tuple[str, str]] = [
 # -----------------------------------------------------------------------------
 
 
-def add_records(
-    sz_engine_local: SzEngine, record_id_list: List[Tuple[str, str]]
-) -> None:
+def add_records(sz_engine_local: SzEngine, record_id_list: List[Tuple[str, str]]) -> None:
     """Add all of the records in the list."""
     flags = SZ_WITHOUT_INFO
     for record_identification in record_id_list:
