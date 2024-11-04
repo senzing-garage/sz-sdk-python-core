@@ -43,8 +43,7 @@ class SzConfigManagerAbstract(ABC):
         4006: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
         4007: PREFIX + "replace_default_config_id({0}, {1}) failed. Return code: {2}",
         4008: PREFIX + "set_default_config_id({0}) failed. Return code: {1}",
-        4009: PREFIX
-        + "SzConfigManager({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+        4009: PREFIX + "SzConfigManager({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------
@@ -52,9 +51,7 @@ class SzConfigManagerAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def add_config(
-        self, config_definition: str, config_comment: str, **kwargs: Any
-    ) -> int:
+    def add_config(self, config_definition: str, config_comment: str, **kwargs: Any) -> int:
         """
         The `add_config` method adds a Senzing configuration JSON document to the Senzing database.
 

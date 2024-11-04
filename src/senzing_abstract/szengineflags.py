@@ -7,7 +7,7 @@ TODO: szengineflags.py
 from enum import IntFlag
 from typing import List, Union
 
-from .engine_exception_map import SzError
+from .szerror import SzError
 
 try:
     from typing_extensions import Self  # type: ignore[attr-defined,no-redef]
@@ -68,7 +68,6 @@ class SzEngineFlags(IntFlag):
     @classmethod
     def get_flag_int(cls, flag: Union[Self, str]) -> int:
         """TODO:"""
-        # TODO - Ant - Correct type?
         try:
             if isinstance(flag, str):
                 flag = cls[flag.upper()]
@@ -76,6 +75,11 @@ class SzEngineFlags(IntFlag):
         except (AttributeError, KeyError) as err:
             raise SzError(f"{err} is not a valid engine flag") from err
         return flag_int
+
+    # Flags for including special data.
+
+    SZ_INCLUDE_FEATURE_SCORES = 1 << 26
+    SZ_INCLUDE_MATCH_KEY_DETAILS = 1 << 34
 
     # Flags for exporting entity data.
 
@@ -85,10 +89,7 @@ class SzEngineFlags(IntFlag):
     SZ_EXPORT_INCLUDE_NAME_ONLY = 1 << 3
     SZ_EXPORT_INCLUDE_DISCLOSED = 1 << 4
     SZ_EXPORT_INCLUDE_SINGLE_RECORD_ENTITIES = 1 << 5
-    SZ_EXPORT_INCLUDE_ALL_ENTITIES = (
-        SZ_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES
-        | SZ_EXPORT_INCLUDE_SINGLE_RECORD_ENTITIES
-    )
+    SZ_EXPORT_INCLUDE_ALL_ENTITIES = SZ_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES | SZ_EXPORT_INCLUDE_SINGLE_RECORD_ENTITIES
     SZ_EXPORT_INCLUDE_ALL_HAVING_RELATIONSHIPS = (
         SZ_EXPORT_INCLUDE_POSSIBLY_SAME
         | SZ_EXPORT_INCLUDE_POSSIBLY_RELATED
@@ -123,39 +124,35 @@ class SzEngineFlags(IntFlag):
     SZ_ENTITY_INCLUDE_RECORD_MATCHING_INFO = 1 << 15
     SZ_ENTITY_INCLUDE_RECORD_JSON_DATA = 1 << 16
     SZ_ENTITY_INCLUDE_RECORD_UNMAPPED_DATA = 1 << 31
-    SZ_ENTITY_INCLUDE_RECORD_FEATURES = 1 << 18
+    SZ_ENTITY_INCLUDE_RECORD_FEATURE_IDS = 1 << 18
+    SZ_ENTITY_INCLUDE_RECORD_FEATURE_DETAILS = 1 << 35
+    SZ_ENTITY_INCLUDE_RECORD_FEATURE_STATS = 1 << 36
     SZ_ENTITY_INCLUDE_RELATED_ENTITY_NAME = 1 << 19
     SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO = 1 << 20
     SZ_ENTITY_INCLUDE_RELATED_RECORD_SUMMARY = 1 << 21
     SZ_ENTITY_INCLUDE_RELATED_RECORD_TYPES = 1 << 29
     SZ_ENTITY_INCLUDE_RELATED_RECORD_DATA = 1 << 22
-    SZ_ENTITY_INCLUDE_RECORD_FEATURE_DETAILS = 1 << 35
-    SZ_ENTITY_INCLUDE_RECORD_FEATURE_STATS = 1 << 36
 
     # Flags for extra feature data.
 
     SZ_ENTITY_INCLUDE_INTERNAL_FEATURES = 1 << 23
     SZ_ENTITY_INCLUDE_FEATURE_STATS = 1 << 24
 
-    # Flags for extra matching data.
-
-    SZ_INCLUDE_MATCH_KEY_DETAILS = 1 << 34
-
-    # Flags for finding entity path & network data.
+    # Flags for finding entity path data.
 
     SZ_FIND_PATH_STRICT_AVOID = 1 << 25
     SZ_FIND_PATH_INCLUDE_MATCHING_INFO = 1 << 30
     SZ_FIND_NETWORK_INCLUDE_MATCHING_INFO = 1 << 33
 
-    # Flags for including search result information.
+    # Flags for including search result feature scores.
 
-    SZ_INCLUDE_FEATURE_SCORES = 1 << 26
     SZ_SEARCH_INCLUDE_STATS = 1 << 27
 
     # Flag for returning with info responses.
+
     SZ_WITH_INFO = 1 << 62
 
-    # Flags for exporting entity data.
+    # Flags for searching for entities.
 
     SZ_SEARCH_INCLUDE_RESOLVED = SZ_EXPORT_INCLUDE_MULTI_RECORD_ENTITIES
     SZ_SEARCH_INCLUDE_POSSIBLY_SAME = SZ_EXPORT_INCLUDE_POSSIBLY_SAME
@@ -168,10 +165,12 @@ class SzEngineFlags(IntFlag):
         | SZ_SEARCH_INCLUDE_NAME_ONLY
     )
 
-    # Recommended settings.
+    # Recommended settings for various API functions.
 
+    # The recommended default flag values for getting records.
     SZ_RECORD_DEFAULT_FLAGS = SZ_ENTITY_INCLUDE_RECORD_JSON_DATA
 
+    # The recommended default flag values for getting entities.
     SZ_ENTITY_DEFAULT_FLAGS = (
         SZ_ENTITY_INCLUDE_ALL_RELATIONS
         | SZ_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES
@@ -184,26 +183,25 @@ class SzEngineFlags(IntFlag):
         | SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO
     )
 
+    # The recommended default flag values for a brief entity result.
     SZ_ENTITY_BRIEF_DEFAULT_FLAGS = (
         SZ_ENTITY_INCLUDE_RECORD_MATCHING_INFO
         | SZ_ENTITY_INCLUDE_ALL_RELATIONS
         | SZ_ENTITY_INCLUDE_RELATED_MATCHING_INFO
     )
 
+    # The recommended default flag values for exporting entities.
     SZ_EXPORT_DEFAULT_FLAGS = SZ_EXPORT_INCLUDE_ALL_ENTITIES | SZ_ENTITY_DEFAULT_FLAGS
 
+    # The recommended default flag values for finding entity paths.
     SZ_FIND_PATH_DEFAULT_FLAGS = (
-        SZ_FIND_PATH_INCLUDE_MATCHING_INFO
-        | SZ_ENTITY_INCLUDE_ENTITY_NAME
-        | SZ_ENTITY_INCLUDE_RECORD_SUMMARY
+        SZ_FIND_PATH_INCLUDE_MATCHING_INFO | SZ_ENTITY_INCLUDE_ENTITY_NAME | SZ_ENTITY_INCLUDE_RECORD_SUMMARY
     )
-
     SZ_FIND_NETWORK_DEFAULT_FLAGS = (
-        SZ_FIND_NETWORK_INCLUDE_MATCHING_INFO
-        | SZ_ENTITY_INCLUDE_ENTITY_NAME
-        | SZ_ENTITY_INCLUDE_RECORD_SUMMARY
+        SZ_FIND_NETWORK_INCLUDE_MATCHING_INFO | SZ_ENTITY_INCLUDE_ENTITY_NAME | SZ_ENTITY_INCLUDE_RECORD_SUMMARY
     )
 
+    # The recommended default flag values for why-analysis on entities.
     SZ_WHY_ENTITIES_DEFAULT_FLAGS = (
         SZ_ENTITY_DEFAULT_FLAGS
         | SZ_ENTITY_INCLUDE_INTERNAL_FEATURES
@@ -225,10 +223,15 @@ class SzEngineFlags(IntFlag):
         | SZ_INCLUDE_FEATURE_SCORES
     )
 
+    # The recommended default flag values for how-analysis on entities.
     SZ_HOW_ENTITY_DEFAULT_FLAGS = SZ_INCLUDE_FEATURE_SCORES
 
+    # The recommended default flag values for virtual-entity-analysis on entities.
     SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS = SZ_ENTITY_DEFAULT_FLAGS
 
+    # The recommended settings for searching by attributes.
+
+    # The recommended flag values for searching by attributes, returning all matching entities.
     SZ_SEARCH_BY_ATTRIBUTES_ALL = (
         SZ_SEARCH_INCLUDE_ALL_ENTITIES
         | SZ_ENTITY_INCLUDE_REPRESENTATIVE_FEATURES
@@ -237,6 +240,7 @@ class SzEngineFlags(IntFlag):
         | SZ_INCLUDE_FEATURE_SCORES
     )
 
+    # The recommended flag values for searching by attributes, returning only strongly matching entities.
     SZ_SEARCH_BY_ATTRIBUTES_STRONG = (
         SZ_SEARCH_INCLUDE_RESOLVED
         | SZ_SEARCH_INCLUDE_POSSIBLY_SAME
@@ -246,10 +250,11 @@ class SzEngineFlags(IntFlag):
         | SZ_INCLUDE_FEATURE_SCORES
     )
 
+    # Return minimal data with all matches.
     SZ_SEARCH_BY_ATTRIBUTES_MINIMAL_ALL = SZ_SEARCH_INCLUDE_ALL_ENTITIES
 
-    SZ_SEARCH_BY_ATTRIBUTES_MINIMAL_STRONG = (
-        SZ_SEARCH_INCLUDE_RESOLVED | SZ_SEARCH_INCLUDE_POSSIBLY_SAME
-    )
+    # Return minimal data with only the strongest matches.
+    SZ_SEARCH_BY_ATTRIBUTES_MINIMAL_STRONG = SZ_SEARCH_INCLUDE_RESOLVED | SZ_SEARCH_INCLUDE_POSSIBLY_SAME
 
+    # Rhe recommended default flag values for search-by-attributes.
     SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS = SZ_SEARCH_BY_ATTRIBUTES_ALL

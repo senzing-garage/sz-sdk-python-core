@@ -47,30 +47,16 @@ class SzEngineAbstract(ABC):
         4007: PREFIX + "export_json_entity_report({0}) failed. Return code: {1}",
         4008: PREFIX + "fetch_next({0}) failed. Return code: {1}",
         # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-        4009: PREFIX
-        + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}",
+        4009: PREFIX + "find_interesting_entities_by_entity_id({0}, {1}) failed. Return code: {2}",
         # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-        4010: (
-            PREFIX
-            + "find_interesting_entities_by_record_id({0}, {1}, {2}) failed. Return"
-            " code: {3}"
-        ),
-        4011: (
-            PREFIX
-            + "find_network_by_entity_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
-        ),
-        4012: (
-            PREFIX
-            + "find_network_by_record_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"
-        ),
-        4013: PREFIX
-        + "find_path_by_entity_id({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
-        4014: PREFIX
-        + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}",
+        4010: (PREFIX + "find_interesting_entities_by_record_id({0}, {1}, {2}) failed. Return" " code: {3}"),
+        4011: (PREFIX + "find_network_by_entity_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"),
+        4012: (PREFIX + "find_network_by_record_id({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}"),
+        4013: PREFIX + "find_path_by_entity_id({0}, {1}, {2}, {3}, {4}, {5}) failed. Return code: {6}",
+        4014: PREFIX + "find_path_by_record_id({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}) failed. Return code: {8}",
         4015: PREFIX + "get_active_config_id() failed. Return code: {0}",
         4016: PREFIX + "get_entity_by_entity_id({0}, {1}) failed. Return code: {2}",
-        4017: PREFIX
-        + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
+        4017: PREFIX + "get_entity_by_record_id({0}, {1}, {2}) failed. Return code: {3}",
         4018: PREFIX + "get_record({0}, {1}, {2}) failed. Return code: {3}",
         4019: PREFIX + "get_redo_record() failed. Return code: {0}",
         4021: PREFIX + "get_stats() failed. Return code: {0}",
@@ -86,11 +72,7 @@ class SzEngineAbstract(ABC):
         4031: PREFIX + "why_entities({0}, {1}) failed. Return code: {2}",
         4032: PREFIX + "why_records({0}, {1}, {2}, {3}, {4}) failed. Return code: {5}",
         4033: PREFIX + "why_record_in_entity({0}, {1}, {2}) failed. Return code: {3}",
-        4034: (
-            PREFIX
-            + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or"
-            " both be empty"
-        ),
+        4034: (PREFIX + "SzEngine({0}, {1}) failed. instance_name and settings must both be set or" " both be empty"),
         4035: PREFIX + "preprocess_record({0}, {1}) failed. Return code: {2}",
     }
     """ :meta private: """
@@ -264,9 +246,7 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
-    def export_json_entity_report(
-        self, flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS, **kwargs: Any
-    ) -> int:
+    def export_json_entity_report(self, flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS, **kwargs: Any) -> int:
         """
         **Warning:** `export_json_entity_report` is not recommended for large systems as it does not scale.
         It is recommended larger systems implement real-time replication to a data warehouse.
@@ -327,9 +307,7 @@ class SzEngineAbstract(ABC):
 
     # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
     @abstractmethod
-    def find_interesting_entities_by_entity_id(
-        self, entity_id: int, flags: int = 0, **kwargs: Any
-    ) -> str:
+    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
         """TODO: Document find_interesting_entities_by_entity_id()"""
 
     # NOTE Included but not to be documented or examples, early adaptor feature, needs manual additions to config
@@ -805,7 +783,7 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
-    def process_redo_record(self, redo_record: str, flags: int, **kwargs: Any) -> str:
+    def process_redo_record(self, redo_record: str, flags: int = 0, **kwargs: Any) -> str:
         """
         # TODO: The `process_redo_record` method...
 
@@ -849,9 +827,7 @@ class SzEngineAbstract(ABC):
         """
 
     @abstractmethod
-    def reevaluate_record(
-        self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any
-    ) -> str:
+    def reevaluate_record(self, data_source_code: str, record_id: str, flags: int = 0, **kwargs: Any) -> str:
         """
         The `reevaluate_record` method reevaluates a specific record.
 

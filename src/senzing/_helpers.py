@@ -96,9 +96,7 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     def catch_inner(*args: P.args, **kwargs: P.kwargs) -> T:
         method_name = func_to_decorate.__name__
         module_name = func_to_decorate.__module__
-        basic_msg = (
-            f"wrong type for an argument when calling {module_name}.{method_name}"
-        )
+        basic_msg = f"wrong type for an argument when calling {module_name}.{method_name}"
 
         try:
             return func_to_decorate(*args, **kwargs)
@@ -116,9 +114,7 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                     bad_arg_index = int(bad_arg_index)
                     bad_arg_value = args[bad_arg_index]
                     bad_arg_type = type(bad_arg_value)
-                    bad_arg_tuple = list(func_to_decorate.__annotations__.items())[
-                        bad_arg_index - 1
-                    ]
+                    bad_arg_tuple = list(func_to_decorate.__annotations__.items())[bad_arg_index - 1]
                 except (IndexError, ValueError):
                     raise TypeError(basic_msg) from err
 
@@ -130,7 +126,7 @@ def catch_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                 ) from None
 
             raise TypeError(basic_msg) from err
-        # # TODO Do we need to catch anything else? Has a code smell about it
+        # # TODO Do we need to catch anything else?
         # NOTE Catch TypeError from the test in as_uintptr_t()
         except TypeError as err:
             raise TypeError(f"{basic_msg} - {err}") from None
@@ -154,7 +150,6 @@ def load_sz_library(lib: str = "") -> CDLL:
 
         return cdll.LoadLibrary(lib if lib else "libSz.so")
     except OSError as err:
-        # TODO Change to Sz library when the libSz.so is changed in a build
         # TODO Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
@@ -227,15 +222,11 @@ def check_list_types(to_check: List[Any]) -> None:
     if isinstance(to_check[0], tuple):
         num_elements = set(len(elem) for elem in to_check)
         if len(num_elements) > 1:
-            raise TypeError(
-                f"number of tuple elements for each tuple are not of the same size - {to_check}"
-            )
+            raise TypeError(f"number of tuple elements for each tuple are not of the same size - {to_check}")
 
         number_of_tuples = num_elements.pop()
         if number_of_tuples != 2:
-            raise TypeError(
-                f"number of elements in a tuple is {number_of_tuples}, expected 2 - {to_check}"
-            )
+            raise TypeError(f"number of elements in a tuple is {number_of_tuples}, expected 2 - {to_check}")
 
 
 # TODO - Ant - And Jira
@@ -280,7 +271,6 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
 
-# TODO Additional checks on these functions
 def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     """
     Build JSON string of entity ids.

@@ -36,8 +36,7 @@ class SzProductAbstract(ABC):
     ID_MESSAGES = {
         4001: PREFIX + "destroy() failed. Return code: {0}",
         4002: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
-        4003: PREFIX
-        + "SzProduct({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+        4003: PREFIX + "SzProduct({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------

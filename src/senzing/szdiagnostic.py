@@ -16,7 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong
+from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -164,22 +164,16 @@ class SzDiagnostic(SzDiagnosticAbstract):
         # Initialize C function input parameters and results.
         # Must be synchronized with er/sdk/c/libSzDiagnostic.h
 
-        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [
-            c_longlong
-        ]
+        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
             SzDiagnosticCheckDatastorePerformanceResult
         )
         self.library_handle.SzDiagnostic_destroy.argtypes = []
         self.library_handle.SzDiagnostic_destroy.restype = c_longlong
         self.library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
-        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = (
-            SzDiagnosticGetDatastoreInfoResult
-        )
+        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = SzDiagnosticGetDatastoreInfoResult
         self.library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
-        self.library_handle.SzDiagnostic_getFeature_helper.restype = (
-            SzDiagnosticGetFeatureResult
-        )
+        self.library_handle.SzDiagnostic_getFeature_helper.restype = SzDiagnosticGetFeatureResult
         self.library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
         self.library_handle.SzDiagnostic_init.restype = c_longlong
         self.library_handle.SzDiagnostic_initWithConfigID.argtypes = [
@@ -191,7 +185,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
         self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
         self.library_handle.SzDiagnostic_reinit.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # if not self.instance_name or len(self.settings) == 0:
         #     raise sdk_exception(2)
@@ -216,9 +210,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # -------------------------------------------------------------------------
 
     def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
-        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(
-            seconds_to_run
-        )
+        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)

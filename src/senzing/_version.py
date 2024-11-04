@@ -1,5 +1,4 @@
 # TODO: Move in szhelpers?
-# TODO AC - tried to move to helpers, got circular import issues
 """
 TODO: _version.py
 """
@@ -63,7 +62,6 @@ def supports_senzingapi_version(
     max_version = normalize_semantic_version(max_semantic_version)
     current_version = normalize_semantic_version(current_semantic_version)
 
-    # TODO Use sdk_exception instead of SzError
     if (current_version < min_version) or (current_version >= max_version):
         message = f"Current Senzing API version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}."
         raise SzError(json.dumps(message))

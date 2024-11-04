@@ -44,8 +44,7 @@ class SzConfigAbstract(ABC):
         4007: PREFIX + "get_data_sources() failed. Return code: {0}",
         4008: PREFIX + "initialize({0}, {1}, {2}) failed. Return code: {3}",
         4009: PREFIX + "import_config({0}) failed. Return code: {1}",
-        4010: PREFIX
-        + "SzConfig({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+        4010: PREFIX + "SzConfig({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------
@@ -53,9 +52,7 @@ class SzConfigAbstract(ABC):
     # -------------------------------------------------------------------------
 
     @abstractmethod
-    def add_data_source(
-        self, config_handle: int, data_source_code: str, **kwargs: Any
-    ) -> str:
+    def add_data_source(self, config_handle: int, data_source_code: str, **kwargs: Any) -> str:
         """
         The `add_data_source` method adds a data source to an existing in-memory configuration.
 
@@ -125,9 +122,7 @@ class SzConfigAbstract(ABC):
         """
 
     @abstractmethod
-    def delete_data_source(
-        self, config_handle: int, data_source_code: str, **kwargs: Any
-    ) -> None:
+    def delete_data_source(self, config_handle: int, data_source_code: str, **kwargs: Any) -> None:
         """
         The `delete_data_source` method removes a data source from an existing in-memory configuration.
 

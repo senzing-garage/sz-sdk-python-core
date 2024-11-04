@@ -39,8 +39,7 @@ class SzDiagnosticAbstract(ABC):
         4005: PREFIX + "initialize({0}, {1}, {2}, {3}) failed. Return code: {4}",
         4006: PREFIX + "purge_repository() failed. Return code: {0}",
         4007: PREFIX + "reinitialize({0}) failed. Return Code: {1}",
-        4008: PREFIX
-        + "SzDiagnostic({0}, {1}) failed. instance_name and settings must both be set or both be empty",
+        4008: PREFIX + "SzDiagnostic({0}, {1}) failed. instance_name and settings must both be set or both be empty",
     }
 
     # -------------------------------------------------------------------------

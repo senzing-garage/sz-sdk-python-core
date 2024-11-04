@@ -184,9 +184,7 @@ class SzConfig(SzConfigAbstract):
             POINTER(c_uint),
             c_char_p,
         ]
-        self.library_handle.SzConfig_addDataSource_helper.restype = (
-            SzConfigAddDataSourceResult
-        )
+        self.library_handle.SzConfig_addDataSource_helper.restype = SzConfigAddDataSourceResult
         self.library_handle.SzConfig_close_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_close_helper.restype = c_longlong
         self.library_handle.SzConfig_create_helper.argtypes = []
@@ -201,14 +199,12 @@ class SzConfig(SzConfigAbstract):
         self.library_handle.SzConfig_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzConfig_init.restype = c_longlong
         self.library_handle.SzConfig_listDataSources_helper.argtypes = [POINTER(c_uint)]
-        self.library_handle.SzConfig_listDataSources_helper.restype = (
-            SzConfigListDataSourcesResult
-        )
+        self.library_handle.SzConfig_listDataSources_helper.restype = SzConfigListDataSourcesResult
         self.library_handle.SzConfig_load_helper.argtypes = [c_char_p]
         self.library_handle.SzConfig_load_helper.restype = SzConfigLoadResult
         self.library_handle.SzConfig_save_helper.argtypes = [POINTER(c_uint)]
         self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # if (not self.instance_name) or (len(self.settings) == 0):
         #     raise sdk_exception(2)
@@ -245,9 +241,7 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
-        result = self.library_handle.SzConfig_close_helper(
-            as_c_uintptr_t(config_handle)
-        )
+        result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
         self.check_result(result)
 
     def create_config(self, **kwargs: Any) -> int:
@@ -280,9 +274,7 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
-        result = self.library_handle.SzConfig_listDataSources_helper(
-            as_c_uintptr_t(config_handle)
-        )
+        result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
@@ -304,8 +296,6 @@ class SzConfig(SzConfigAbstract):
 
     @catch_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
-        result = self.library_handle.SzConfig_load_helper(
-            as_c_char_p(config_definition)
-        )
+        result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

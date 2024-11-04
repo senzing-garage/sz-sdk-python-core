@@ -15,7 +15,7 @@ Example:
 """
 
 # pylint: disable=R0903
-from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong
+from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -177,22 +177,14 @@ class SzConfigManager(SzConfigManagerAbstract):
         # Synchronized with er/sdk/c/libSzConfigMgr.h
 
         self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
-        self.library_handle.SzConfigMgr_addConfig_helper.restype = (
-            SzConfigMgrAddConfigResult
-        )
+        self.library_handle.SzConfigMgr_addConfig_helper.restype = SzConfigMgrAddConfigResult
         self.library_handle.SzConfigMgr_destroy.argtypes = []
         self.library_handle.SzConfigMgr_destroy.restype = c_longlong
         self.library_handle.SzConfigMgr_getConfig_helper.argtypes = [c_longlong]
-        self.library_handle.SzConfigMgr_getConfig_helper.restype = (
-            SzConfigMgrGetConfigResult
-        )
+        self.library_handle.SzConfigMgr_getConfig_helper.restype = SzConfigMgrGetConfigResult
         self.library_handle.SzConfigMgr_getConfigList_helper.argtypes = []
-        self.library_handle.SzConfigMgr_getConfigList_helper.restype = (
-            SzConfigMgrGetConfigListResult
-        )
-        self.library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = (
-            SzConfigMgrGetDefaultConfigIDResult
-        )
+        self.library_handle.SzConfigMgr_getConfigList_helper.restype = SzConfigMgrGetConfigListResult
+        self.library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = SzConfigMgrGetDefaultConfigIDResult
         self.library_handle.SzConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self.library_handle.SzConfigMgr_init.restype = c_longlong
         self.library_handle.SzConfigMgr_replaceDefaultConfigID.argtypes = [
@@ -202,7 +194,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
         self.library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # if not self.instance_name or len(self.settings) == 0:
         #     raise sdk_exception(2)

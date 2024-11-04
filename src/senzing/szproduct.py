@@ -16,7 +16,7 @@ Example:
 
 # pylint: disable=R0903
 
-from ctypes import c_char_p, c_int, c_longlong
+from ctypes import c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
@@ -101,8 +101,8 @@ class SzProduct(SzProductAbstract):
 
     def __init__(
         self,
-        # instance_name: str = "",
         # TODO
+        # instance_name: str = "",
         # settings: Union[str, Dict[Any, Any]] = "",
         # settings: Union[str, Dict[Any, Any]] = "{}",
         # verbose_logging: int = 0,
@@ -141,7 +141,7 @@ class SzProduct(SzProductAbstract):
         self.library_handle.SzProduct_license.restype = c_char_p
         self.library_handle.SzProduct_version.argtypes = []
         self.library_handle.SzProduct_version.restype = c_char_p
-        self.library_handle.SzHelper_free.argtypes = [c_char_p]
+        self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
         # NOTE both get_license and get_version will work if "", "{}" are passed in
         # TODO
