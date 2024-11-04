@@ -1,2 +1,2 @@
-orjson==3.10.10
+orjson==3.10.11
 senzing-abstract==0.1.10
