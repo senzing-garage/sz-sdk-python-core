@@ -220,50 +220,21 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
 
 class SzEngine(SzEngineAbstract):
     """
-    The `initialize` method initializes the Senzing SzEngine object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzEngine constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_engine() to create an SzEngine object.
+    The SzEngine object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_engine = SzEngine(instance_name, settings)
-
-
-    If the SzEngine constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzEngine.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_engine = SzEngine()
-        sz_engine.initialize(instance_name, settings, verbose_logging)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzError**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_engine = sz_abstract_factory.create_sz_engine()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the Sz processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        SzError: Failed to load the Senzing library or incorrect `instance_name`, `settings` combination.
 
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szengine/szengine_constructor.py
-            :linenos:
-            :language: python
     """
 
     # -------------------------------------------------------------------------

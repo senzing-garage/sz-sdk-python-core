@@ -86,51 +86,21 @@ class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
 
 class SzConfigManager(SzConfigManagerAbstract):
     """
-    The `initialize` method initializes the Senzing SzConfigManager object.
-    It must be called prior to any other calls.
-
-    **Note:** If the SzConfigManager constructor is called with parameters,
-    the constructor will automatically call the `initialize()` method.
+    Use SzAbstractFactory.create_sz_configmanager() to create an SzConfigManager object.
+    The SzConfig object uses the parameters provided to the SzAbstractFactory()
+    function.
 
     Example:
 
     .. code-block:: python
 
-        sz_configmanager = SzConfigManager(instance_name, settings)
-
-
-    If the szconfigmanager constructor is called without parameters,
-    the `initialize()` method must be called to initialize the use of SzConfigManager.
-
-    Example:
-
-    .. code-block:: python
-
-        sz_configmanager = SzConfigManager()
-        sz_configmanager.initialize(instance_name, settings)
-
-    Either `instance_name` and `settings` must both be specified or neither must be specified.
-    Just specifying one or the other results in a **SzError**.
+        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        sz_config_manager = sz_abstract_factory.create_sz_configmanager()
 
     Parameters:
-        instance_name:
-            `Optional:` A name for the auditing node, to help identify it within system logs. Default: ""
-        settings:
-            `Optional:` A JSON string containing configuration parameters. Default: ""
-        config_id:
-            `Optional:` Specify the ID of a specific Senzing configuration. Default: 0 - Use default Senzing configuration
-        verbose_logging:
-            `Optional:` A flag to enable deeper logging of the Sz processing. 0 for no Senzing logging; 1 for logging. Default: 0
 
     Raises:
-        TypeError: Incorrect datatype detected on input parameter.
-        SzError: Failed to load the Sz library or incorrect `instance_name`, `settings` combination.
 
-    .. collapse:: Example:
-
-        .. literalinclude:: ../../examples/szconfigmanager/szconfigmanager_constructor.py
-            :linenos:
-            :language: python
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
