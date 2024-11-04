@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 from senzing_truthset import TRUTHSET_DATASOURCES
+
+from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example1",

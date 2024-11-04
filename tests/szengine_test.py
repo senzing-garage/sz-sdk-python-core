@@ -13,6 +13,12 @@ from typing import Any, Dict, List, Tuple
 
 import pytest
 from pytest_schema import Optional, Or, schema
+from senzing_truthset import (
+    TRUTHSET_CUSTOMER_RECORDS,
+    TRUTHSET_DATASOURCES,
+    TRUTHSET_REFERENCE_RECORDS,
+    TRUTHSET_WATCHLIST_RECORDS,
+)
 
 from senzing import SZ_NO_FLAGS, SZ_WITHOUT_INFO, SzBadInputError
 from senzing import SzConfigCore as SzConfigTest
@@ -20,12 +26,6 @@ from senzing import SzConfigManagerCore as SzConfigManagerTest
 from senzing import SzEngine
 from senzing import SzEngineCore as SzEngineTest
 from senzing import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
-from senzing_truthset import (
-    TRUTHSET_CUSTOMER_RECORDS,
-    TRUTHSET_DATASOURCES,
-    TRUTHSET_REFERENCE_RECORDS,
-    TRUTHSET_WATCHLIST_RECORDS,
-)
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,

@@ -6,16 +6,17 @@ Simply a header used in development.
 
 from typing import List, Tuple
 
+from senzing_truthset import (
+    TRUTHSET_CUSTOMER_RECORDS,
+    TRUTHSET_REFERENCE_RECORDS,
+    TRUTHSET_WATCHLIST_RECORDS,
+)
+
 from senzing import (
     SZ_WITHOUT_INFO,
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngine,
-)
-from senzing_truthset import (
-    TRUTHSET_CUSTOMER_RECORDS,
-    TRUTHSET_REFERENCE_RECORDS,
-    TRUTHSET_WATCHLIST_RECORDS,
 )
 
 DATA_SOURCES = {
