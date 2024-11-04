@@ -74,7 +74,7 @@ jobs:
             examples/szdiagnostic/*.py \
             examples/szengine/*.py \
             examples/szproduct/*.py \
-            examples/misc/*.py
+            examples/misc/*.py \
             || true
 
       - name: Rename coverage file
