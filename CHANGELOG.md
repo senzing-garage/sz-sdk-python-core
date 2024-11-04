@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.2.0] - 2024-11-04
+
+### Deleted in 0.2.0.
+
+- Deleted abstract, dict and truthset packages from core SDK 
+
 ## [0.1.0] - 2024-10-27
 
 ### Added to 0.1.0
