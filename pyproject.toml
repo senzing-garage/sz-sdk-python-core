@@ -16,7 +16,7 @@ line-length = 120
 
 [tool.flake8]
 extend-ignore = ["E203", "E501", "E704", "W503"]
-max-line-length = 88
+max-line-length = 120
 
 [tool.isort]
 profile = "black"
@@ -50,5 +50,3 @@ ignore = [
 notes = [
     "FIXME"
 ]
-
-
