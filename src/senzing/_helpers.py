@@ -93,13 +93,11 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
 
     @wraps(func_to_decorate)
-    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:
+    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
         try:
             return func_to_decorate(*args, **kwargs)
         # ctypes.ArgumentError from converting python types to ctypes before call to Senzing library
         except (ArgumentError, TypeError, ValueError, json.JSONDecodeError) as err:
-            method_name = func_to_decorate.__name__
-            module_name = func_to_decorate.__module__
             annotations_dict = func_to_decorate.__annotations__
 
             # Remove kwargs and return type, not needed initially
@@ -116,7 +114,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             # Get the values of the arguments received by the wrapped function and build a string of received arguments
             # and types
-            received_arg_values = [a for a in args[1:]]
+            received_arg_values = list(args[1:])
             # If no kwargs, arguments are in order of the wrapped function signature, get the first x argument names
             if received_arg_values and not kwargs:
                 func_arg_names = func_arg_names[: len(received_arg_values)]
@@ -133,7 +131,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
             arg_zip = list(zip(func_arg_names, received_arg_values))
             received = ", ".join([f"{tup[0]}: {type(tup[1]).__name__}" for tup in arg_zip])
 
-            err_msg = f"{err} - {module_name}.{method_name} accepts - {accepts} - but received - {received}"
+            err_msg = f"{err} - {func_to_decorate.__module__}.{func_to_decorate.__name__} accepts - {accepts} - but received - {received}"
 
             # Convert ctypes ArgumentError to a TypeError for simplicity
             err_class = TypeError if err.__class__.__name__ == "ArgumentError" else err.__class__
