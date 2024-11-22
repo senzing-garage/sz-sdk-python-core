@@ -133,7 +133,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             err_msg = f"{err} - {func_to_decorate.__module__}.{func_to_decorate.__name__} accepts - {accepts} - but received - {received}"
 
-            # Convert ctypes ArgumentError to a TypeError for simplicity
+            # Convert ctypes ArgumentError to a TypeError for simplicity, a user shouldn't need ctypes in their code
             err_class = TypeError if err.__class__.__name__ == "ArgumentError" else err.__class__
 
             raise err_class(err_msg) from err
