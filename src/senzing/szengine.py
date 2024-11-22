@@ -42,7 +42,7 @@ from ._helpers import (
     build_data_sources_json,
     build_entities_json,
     build_records_json,
-    catch_exceptions,
+    catch_non_sz_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -520,7 +520,7 @@ class SzEngine(SzEngineAbstract):
     # -------------------------------------------------------------------------
 
     # TODO Needed in final?
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def bulk_load(
         self,
         records: List[str],
@@ -545,7 +545,7 @@ class SzEngine(SzEngineAbstract):
 
         return self.no_info
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def add_record(
         self,
         data_source_code: str,
@@ -574,7 +574,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def close_export(self, export_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
         self.check_result(result)
@@ -585,7 +585,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result)
         return result
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def delete_record(
         self,
         data_source_code: str,
@@ -614,7 +614,7 @@ class SzEngine(SzEngineAbstract):
     def _destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.Sz_destroy()
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def export_csv_entity_report(
         self,
         csv_column_list: str,
@@ -634,7 +634,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def fetch_next(self, export_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.Sz_fetchNext_helper(as_c_uintptr_t(export_handle))
         with FreeCResources(self.library_handle, result.response):
@@ -663,7 +663,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def find_network_by_entity_id(
         self,
         entity_ids: List[int],
@@ -685,7 +685,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def find_network_by_record_id(
         self,
         record_keys: List[Tuple[str, str]],
@@ -706,7 +706,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def find_path_by_entity_id(
         self,
         start_entity_id: int,
@@ -745,7 +745,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def find_path_by_record_id(
         self,
         start_data_source_code: str,
@@ -808,7 +808,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def get_entity_by_record_id(
         self,
         data_source_code: str,
@@ -823,7 +823,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def get_record(
         self,
         data_source_code: str,
@@ -852,7 +852,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def get_virtual_entity_by_record_id(
         self,
         record_keys: List[Tuple[str, str]],
@@ -878,7 +878,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def _initialize(
         self,
         instance_name: str,
@@ -922,7 +922,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_primeEngine()
         self.check_result(result)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def process_redo_record(self, redo_record: str, flags: int = 0, **kwargs: Any) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -953,7 +953,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def reevaluate_record(
         self,
         data_source_code: str,
@@ -981,7 +981,7 @@ class SzEngine(SzEngineAbstract):
         result = self.library_handle.Sz_reinit(config_id)
         self.check_result(result)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def search_by_attributes(
         self,
         attributes: str,
@@ -998,7 +998,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def why_entities(
         self,
         entity_id_1: int,
@@ -1015,7 +1015,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def why_records(
         self,
         data_source_code_1: str,
@@ -1036,7 +1036,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def why_record_in_entity(
         self,
         data_source_code: str,
