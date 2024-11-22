@@ -29,7 +29,7 @@ from ._helpers import (
     as_python_str,
     as_str,
     build_dsrc_code_json,
-    catch_exceptions,
+    catch_non_sz_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -184,7 +184,7 @@ class SzConfig(SzConfigAbstract):
     # SzConfig methods
     # -------------------------------------------------------------------------
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def add_data_source(
         self,
         config_handle: int,
@@ -200,7 +200,7 @@ class SzConfig(SzConfigAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def close_config(self, config_handle: int, **kwargs: Any) -> None:
         result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
         self.check_result(result)
@@ -210,7 +210,7 @@ class SzConfig(SzConfigAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def delete_data_source(
         self,
         config_handle: int,
@@ -226,21 +226,21 @@ class SzConfig(SzConfigAbstract):
     def _destroy(self, **kwargs: Any) -> None:
         _ = self.library_handle.SzConfig_destroy()
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def export_config(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
         result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def _initialize(
         self,
         instance_name: str,
@@ -255,7 +255,7 @@ class SzConfig(SzConfigAbstract):
         )
         self.check_result(result)
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def import_config(self, config_definition: str, **kwargs: Any) -> int:
         result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
         self.check_result(result.return_code)

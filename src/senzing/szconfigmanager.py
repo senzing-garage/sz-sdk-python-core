@@ -26,7 +26,7 @@ from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_exceptions,
+    catch_non_sz_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -164,7 +164,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     # SzConfigManager methods
     # -------------------------------------------------------------------------
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def add_config(
         self,
         config_definition: str,
@@ -199,7 +199,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_exceptions
+    @catch_non_sz_exceptions
     def _initialize(
         self,
         instance_name: str,
