@@ -135,10 +135,10 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             err_msg = f"{err} - {module_name}.{method_name} accepts - {accepts} - but received - {received}"
 
-            err_class = err.__class__ if not isinstance(err.__class__, ArgumentError) else TypeError
+            # Convert ctypes ArgumentError to a TypeError for simplicity
+            err_class = TypeError if err.__class__.__name__ == "ArgumentError" else err.__class__
 
-            # raise err.__class__(err_msg) from err
-            raise err_class(err_msg)
+            raise err_class(err_msg) from err
 
     return wrapped_func
 
