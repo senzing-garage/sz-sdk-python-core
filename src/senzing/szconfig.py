@@ -119,7 +119,6 @@ class SzConfig(SzConfigAbstract):
 
     def __init__(
         self,
-        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -189,7 +188,6 @@ class SzConfig(SzConfigAbstract):
         self,
         config_handle: int,
         data_source_code: str,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.SzConfig_addDataSource_helper(
             as_c_uintptr_t(config_handle),
@@ -201,11 +199,11 @@ class SzConfig(SzConfigAbstract):
             return as_python_str(result.response)
 
     @catch_non_sz_exceptions
-    def close_config(self, config_handle: int, **kwargs: Any) -> None:
+    def close_config(self, config_handle: int) -> None:
         result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
         self.check_result(result)
 
-    def create_config(self, **kwargs: Any) -> int:
+    def create_config(self) -> int:
         result = self.library_handle.SzConfig_create_helper()
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
@@ -215,7 +213,6 @@ class SzConfig(SzConfigAbstract):
         self,
         config_handle: int,
         data_source_code: str,
-        **kwargs: Any,
     ) -> None:
         result = self.library_handle.SzConfig_deleteDataSource_helper(
             as_c_uintptr_t(config_handle),
@@ -223,18 +220,18 @@ class SzConfig(SzConfigAbstract):
         )
         self.check_result(result)
 
-    def _destroy(self, **kwargs: Any) -> None:
+    def _destroy(self) -> None:
         _ = self.library_handle.SzConfig_destroy()
 
     @catch_non_sz_exceptions
-    def export_config(self, config_handle: int, **kwargs: Any) -> str:
+    def export_config(self, config_handle: int) -> str:
         result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     @catch_non_sz_exceptions
-    def get_data_sources(self, config_handle: int, **kwargs: Any) -> str:
+    def get_data_sources(self, config_handle: int) -> str:
         result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -246,7 +243,6 @@ class SzConfig(SzConfigAbstract):
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         result = self.library_handle.SzConfig_init(
             as_c_char_p(instance_name),
@@ -256,7 +252,7 @@ class SzConfig(SzConfigAbstract):
         self.check_result(result)
 
     @catch_non_sz_exceptions
-    def import_config(self, config_definition: str, **kwargs: Any) -> int:
+    def import_config(self, config_definition: str) -> int:
         result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]

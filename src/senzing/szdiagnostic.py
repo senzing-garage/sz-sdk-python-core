@@ -97,7 +97,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
 
     def __init__(
         self,
-        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -152,23 +151,23 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
-    def check_datastore_performance(self, seconds_to_run: int, **kwargs: Any) -> str:
+    def check_datastore_performance(self, seconds_to_run: int) -> str:
         result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def _destroy(self, **kwargs: Any) -> None:
+    def _destroy(self) -> None:
         _ = self.library_handle.SzDiagnostic_destroy()
 
-    def get_datastore_info(self, **kwargs: Any) -> str:
+    def get_datastore_info(self) -> str:
         result = self.library_handle.SzDiagnostic_getDatastoreInfo_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented, used by sz_explorer
-    def get_feature(self, feature_id: int, **kwargs: Any) -> str:
+    def get_feature(self, feature_id: int) -> str:
         result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -181,7 +180,6 @@ class SzDiagnostic(SzDiagnosticAbstract):
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         if config_id == 0:
             result = self.library_handle.SzDiagnostic_init(
@@ -200,10 +198,10 @@ class SzDiagnostic(SzDiagnosticAbstract):
         )
         self.check_result(result)
 
-    def purge_repository(self, **kwargs: Any) -> None:
+    def purge_repository(self) -> None:
         result = self.library_handle.SzDiagnostic_purgeRepository()
         self.check_result(result)
 
-    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

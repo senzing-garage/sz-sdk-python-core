@@ -72,7 +72,6 @@ class SzProduct(SzProductAbstract):
 
     def __init__(
         self,
-        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -111,7 +110,7 @@ class SzProduct(SzProductAbstract):
     # SzProduct methods
     # -------------------------------------------------------------------------
 
-    def _destroy(self, **kwargs: Any) -> None:
+    def _destroy(self) -> None:
         _ = self.library_handle.SzProduct_destroy()
 
     @catch_non_sz_exceptions
@@ -120,7 +119,6 @@ class SzProduct(SzProductAbstract):
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         result = self.library_handle.SzProduct_init(
             as_c_char_p(instance_name),
@@ -129,8 +127,10 @@ class SzProduct(SzProductAbstract):
         )
         self.check_result(result)
 
-    def get_license(self, **kwargs: Any) -> str:
+    def get_license(self) -> str:
         return as_python_str(self.library_handle.SzProduct_license())
 
-    def get_version(self, **kwargs: Any) -> str:
+    def get_version(
+        self,
+    ) -> str:
         return as_python_str(self.library_handle.SzProduct_version())
