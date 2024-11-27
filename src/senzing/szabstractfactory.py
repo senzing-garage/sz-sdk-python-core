@@ -55,7 +55,7 @@ class SzAbstractFactoryParameters(TypedDict, total=False):
 
 class SzAbstractFactory(SzAbstractFactoryAbstract):
     """
-    SzAbstractFactory module is a factory pattern for accessing Senzing over gRPC.
+    SzAbstractFactory module is a factory pattern for accessing Senzing.
     """
 
     # -------------------------------------------------------------------------
@@ -68,7 +68,6 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         settings: Union[str, Dict[Any, Any]] = "",
         config_id: int = 0,
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         """
         Constructor
@@ -87,7 +86,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
     def __enter__(
         self,
-    ) -> Any:  # TODO: Replace "Any" with "Self" once python 3.11 is lowest supported python version.
+    ) -> Any:
         """Context Manager method."""
         return self
 
@@ -108,8 +107,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
-    def create_sz_config(self, **kwargs: Any) -> SzConfigAbstract:
-        _ = kwargs
+    def create_config(self) -> SzConfigAbstract:
         result = SzConfig()
         if not self.is_szconfig_initialized:
             result._initialize(  # pylint: disable=W0212
@@ -120,8 +118,7 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szconfig_initialized = True
         return result
 
-    def create_sz_configmanager(self, **kwargs: Any) -> SzConfigManagerAbstract:
-        _ = kwargs
+    def create_configmanager(self, **kwargs: Any) -> SzConfigManagerAbstract:
         result = SzConfigManager()
         if not self.is_szconfigmanager_initialized:
             result._initialize(  # pylint: disable=W0212
