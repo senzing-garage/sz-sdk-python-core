@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.2.2] - 2024-11-28
+
+### Changed in 0.2.2.
+
+- Aligned create engine method calls to new abstract
+- Improvements to helper functions 
+
 ## [0.2.1] - 2024-11-22
 
 ### Added in 0.2.1.

@@ -86,7 +86,7 @@ class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
 
 class SzConfigManager(SzConfigManagerAbstract):
     """
-    Use SzAbstractFactory.create_sz_configmanager() to create an SzConfigManager object.
+    Use SzAbstractFactory.create_configmanager() to create an SzConfigManager object.
     The SzConfig object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -95,7 +95,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_config_manager = sz_abstract_factory.create_sz_configmanager()
+        sz_config_manager = sz_abstract_factory.create_configmanager()
 
     Parameters:
 
@@ -110,10 +110,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-        **kwargs: Any,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 
@@ -169,7 +166,6 @@ class SzConfigManager(SzConfigManagerAbstract):
         self,
         config_definition: str,
         config_comment: str,
-        **kwargs: Any,
     ) -> int:
         result = self.library_handle.SzConfigMgr_addConfig_helper(
             as_c_char_p(config_definition),
@@ -179,22 +175,25 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         return result.response  # type: ignore[no-any-return]
 
-    def _destroy(self, **kwargs: Any) -> None:
+    def _destroy(
+        self,
+    ) -> None:
         _ = self.library_handle.SzConfigMgr_destroy()
 
-    def get_config(self, config_id: int, **kwargs: Any) -> str:
+    @catch_non_sz_exceptions
+    def get_config(self, config_id: int) -> str:
         result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def get_configs(self, **kwargs: Any) -> str:
+    def get_configs(self) -> str:
         result = self.library_handle.SzConfigMgr_getConfigList_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def get_default_config_id(self, **kwargs: Any) -> int:
+    def get_default_config_id(self) -> int:
         result = self.library_handle.SzConfigMgr_getDefaultConfigID_helper()
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
@@ -205,7 +204,6 @@ class SzConfigManager(SzConfigManagerAbstract):
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         result = self.library_handle.SzConfigMgr_init(
             as_c_char_p(instance_name),
@@ -214,17 +212,18 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def replace_default_config_id(
         self,
         current_default_config_id: int,
         new_default_config_id: int,
-        **kwargs: Any,
     ) -> None:
         result = self.library_handle.SzConfigMgr_replaceDefaultConfigID(
             current_default_config_id, new_default_config_id
         )
         self.check_result(result)
 
-    def set_default_config_id(self, config_id: int, **kwargs: Any) -> None:
+    @catch_non_sz_exceptions
+    def set_default_config_id(self, config_id: int) -> None:
         result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
         self.check_result(result)

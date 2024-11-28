@@ -29,7 +29,7 @@ from ctypes import (
 from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
 from senzing_abstract import ENGINE_EXCEPTION_MAP
 
@@ -85,9 +85,10 @@ class FreeCResources:
 def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
     The Python SDK methods convert Python types to ctypes and utilize helper functions. If incorrect types/values are
-    used standard library exceptions are raised not SzError based exceptions as the Senzing library hasn't been called
+    used standard library exceptions are raised not SzError exceptions as the Senzing library hasn't been called
     yet. Raise the original Python exception type and append information to identify the SDK method called, accepted
-    arguments & types and the arguments and types the SDK method received.
+    arguments & types and the arguments and types the SDK method received. Also convert ctypes.ArgumentError exceptions
+    to TypeError, a user shouldn't need to import ctypes to catch ArgumentError
 
     :meta private:
     """
@@ -96,47 +97,54 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
         try:
             return func_to_decorate(*args, **kwargs)
-        # ctypes.ArgumentError from converting python types to ctypes before call to Senzing library
         except (ArgumentError, TypeError, ValueError, json.JSONDecodeError) as err:
-            annotations_dict = func_to_decorate.__annotations__
+            append_err_msg = ""
 
-            # Remove kwargs and return type, not needed initially
-            with suppress(KeyError):
-                del annotations_dict["return"]
-                del annotations_dict["kwargs"]
-
-            # Get the wrapped functions argument names and types and build a string of accepted arguments and types
-            func_arg_names, func_arg_types = zip(*annotations_dict.items())
-            func_zip = list(zip(func_arg_names, func_arg_types))
-            accepts = ", ".join(
-                [f"{tup[0]}: {tup[1] if isinstance(tup[1], str) else tup[1].__name__}" for tup in func_zip]
-            )
-
-            # Get the values of the arguments received by the wrapped function and build a string of received arguments
-            # and types
+            # Remove the Senzing engine object from args
             received_arg_values = list(args[1:])
-            # If no kwargs, arguments are in order of the wrapped function signature, get the first x argument names
-            if received_arg_values and not kwargs:
-                func_arg_names = func_arg_names[: len(received_arg_values)]
 
-            if kwargs:
-                kwargs_arg_names, kwargs_arg_values = zip(*kwargs.items())
-                # First get the names of all required arguments
-                non_default_args: Tuple[Any] = func_to_decorate.__defaults__ if func_to_decorate.__defaults__ else ()
-                func_arg_names = func_arg_names[: len(func_arg_names) - len(non_default_args)]
-                # Add any kwarg arguments to the set of function arguments names
-                func_arg_names = func_arg_names + kwargs_arg_names
-                # Add the value of the kwargs
-                received_arg_values.extend(list(kwargs_arg_values))
-            arg_zip = list(zip(func_arg_names, received_arg_values))
-            received = ", ".join([f"{tup[0]}: {type(tup[1]).__name__}" for tup in arg_zip])
+            # Append a custom message if received arguments are likely incorrect type, value, etc. If any positional
+            # arguments are missing don't append to the original error message
+            missing_positional = bool(err.args and " required positional argument" in err.args[0])
+            if (received_arg_values or kwargs) and not missing_positional:
+                # Get wrapped function annotation, remove unwanted keys
+                annotations_dict = func_to_decorate.__annotations__
+                with suppress(KeyError):
+                    del annotations_dict["return"]
+                    del annotations_dict["kwargs"]
 
-            err_msg = f"{err} - {func_to_decorate.__module__}.{func_to_decorate.__name__} accepts - {accepts} - but received - {received}"
+                # Get the wrapped functions argument names and determine which, if any, positional args were received
+                # and capture the signature names and received values
+                func_signature_names = list(annotations_dict.keys())
+                received_arg_names = func_signature_names[: len(received_arg_values)]
+                received_args = {received_arg_names[a]: received_arg_values[a] for a in range(len(received_arg_names))}
 
-            # Convert ctypes ArgumentError to a TypeError for simplicity, a user shouldn't need ctypes in their code
-            err_class = TypeError if err.__class__.__name__ == "ArgumentError" else err.__class__
+                # Add names and values of any key word arguments and order on the wrapped function signature
+                all_received = {**received_args, **kwargs}
+                all_received_ordered = {k: all_received[k] for k in annotations_dict if k in all_received}
 
-            raise err_class(err_msg) from err
+                # Get the wrapped function signature names and types and build a string for append to the error message
+                func_signature = ", ".join(
+                    [
+                        f"{name}: {type if isinstance(type, str) else type.__name__}"
+                        for name, type in annotations_dict.items()
+                    ]
+                )
+
+                # Get the wrapped functions received argument names and types
+                func_received = ", ".join(
+                    [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
+                )
+
+                append_err_msg = f" - [Called: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature}) - Received: {func_received}]"
+
+            err_args = err.args
+            arg_0 = append_err_msg if not err_args else f"{err_args[0]}{append_err_msg}"
+            err.args = (arg_0,) + err_args[1:]
+
+            if err.__class__.__name__ == "ArgumentError":
+                raise TypeError(err) from err
+            raise err
 
     return wrapped_func
 
@@ -152,7 +160,7 @@ def load_sz_library(lib: str = "") -> CDLL:
     """
     try:
         if os.name == "nt":
-            win_path = find_library(lib if lib else "SZ")
+            win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
 
         return cdll.LoadLibrary(lib if lib else "libSz.so")
@@ -239,10 +247,7 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     :meta private:
     """
 
-    try:
-        dsrcs = ", ".join([f"{escape_json_str(code)}" for code in dsrc_codes])
-    except (TypeError, ValueError) as err:
-        raise err.__class__(err)
+    dsrcs = ", ".join([f"{escape_json_str(code)}" for code in dsrc_codes])
 
     return f"{START_DSRC_JSON}{dsrcs}{END_JSON}"
 
@@ -260,10 +265,7 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     if not entity_ids or (isinstance(entity_ids, list) and len(entity_ids) == 0):
         return ""
 
-    try:
-        entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
-    except (TypeError, ValueError) as err:
-        raise err.__class__(err)
+    entities = ", ".join([f'{{"ENTITY_ID": {id}}}' for id in entity_ids])
 
     return f"{START_ENTITIES_JSON}{entities}{END_JSON}"
 
@@ -281,15 +283,12 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     if not record_keys or (isinstance(record_keys, list) and len(record_keys) == 0):
         return ""
 
-    try:
-        records = ", ".join(
-            [
-                f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
-                for ds, rec_id in record_keys
-            ]
-        )
-    except (TypeError, ValueError) as err:
-        raise err.__class__(err)
+    records = ", ".join(
+        [
+            f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
+            for ds, rec_id in record_keys
+        ]
+    )
 
     return f"{START_RECORDS_JSON}{records}{END_JSON}"
 
@@ -324,9 +323,7 @@ def as_c_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     """
 
     # Test if candidate_value can be used with the ctype and is an int. If not a
-    # TypeError is raised and caught by the catch_exceptions decorator on
-    # calling methods
-    # TODO Better to raise here?
+    # TypeError is raised and caught by the catch_non_sz_exceptions decorator
     _ = c_uint(candidate_value)
 
     return cast(candidate_value, POINTER(c_uint))
@@ -353,7 +350,6 @@ def as_python_str(candidate_value: Any) -> str:
 
     :meta private:
     """
-    # TODO catch_exceptions decorator would catch, need to check error type and that it's caught
     result_raw = cast(candidate_value, c_char_p).value
     result = result_raw.decode() if result_raw else ""
     return result
@@ -425,7 +421,7 @@ def engine_exception(
 # Helpers for creating SDK specific exceptions
 # -----------------------------------------------------------------------------
 
-# TODO Still needed? Investigate using in szabstractfactory
+# TODO Still needed?
 # fmt: off
 SDK_EXCEPTION_MAP = {
     1: "failed to load the Senzing library",                                 # Engine module wasn't able to load the G2 library

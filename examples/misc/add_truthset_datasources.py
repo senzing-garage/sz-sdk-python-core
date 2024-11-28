@@ -18,10 +18,10 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_config = sz_abstract_factory.create_sz_config()
-    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
-    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_config = sz_abstract_factory.create_config()
+    sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_diagnostic = sz_abstract_factory.create_diagnostic()
+    sz_engine = sz_abstract_factory.create_engine()
 
     current_default_config_id = sz_configmanager.get_default_config_id()
     OLD_CONFIG_DEFINITION = sz_configmanager.get_config(current_default_config_id)

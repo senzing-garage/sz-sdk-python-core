@@ -220,7 +220,7 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
 
 class SzEngine(SzEngineAbstract):
     """
-    Use SzAbstractFactory.create_sz_engine() to create an SzEngine object.
+    Use SzAbstractFactory.create_engine() to create an SzEngine object.
     The SzEngine object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -229,7 +229,7 @@ class SzEngine(SzEngineAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_engine = sz_abstract_factory.create_sz_engine()
+        sz_engine = sz_abstract_factory.create_engine()
 
     Parameters:
 
@@ -241,10 +241,7 @@ class SzEngine(SzEngineAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-        **kwargs: Any,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 
@@ -524,7 +521,6 @@ class SzEngine(SzEngineAbstract):
     def bulk_load(
         self,
         records: List[str],
-        **kwargs: Any,
     ) -> str:
         """Internal method"""
 
@@ -552,7 +548,6 @@ class SzEngine(SzEngineAbstract):
         record_id: str,
         record_definition: str,
         flags: int = 0,
-        **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -575,11 +570,11 @@ class SzEngine(SzEngineAbstract):
         return self.no_info
 
     @catch_non_sz_exceptions
-    def close_export(self, export_handle: int, **kwargs: Any) -> None:
+    def close_export(self, export_handle: int) -> None:
         result = self.library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
         self.check_result(result)
 
-    def count_redo_records(self, **kwargs: Any) -> int:
+    def count_redo_records(self) -> int:
         result: int = self.library_handle.Sz_countRedoRecords()
         if result < 0:
             self.check_result(result)
@@ -591,7 +586,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code: str,
         record_id: str,
         flags: int = 0,
-        **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -611,7 +605,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    def _destroy(self, **kwargs: Any) -> None:
+    def _destroy(self) -> None:
         _ = self.library_handle.Sz_destroy()
 
     @catch_non_sz_exceptions
@@ -619,7 +613,6 @@ class SzEngine(SzEngineAbstract):
         self,
         csv_column_list: str,
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> int:
         result = self.library_handle.Sz_exportCSVEntityReport_helper(as_c_char_p(csv_column_list), flags)
         self.check_result(result.return_code)
@@ -628,33 +621,33 @@ class SzEngine(SzEngineAbstract):
     def export_json_entity_report(
         self,
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> int:
         result = self.library_handle.Sz_exportJSONEntityReport_helper(flags)
         self.check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
     @catch_non_sz_exceptions
-    def fetch_next(self, export_handle: int, **kwargs: Any) -> str:
+    def fetch_next(self, export_handle: int) -> str:
         result = self.library_handle.Sz_fetchNext_helper(as_c_uintptr_t(export_handle))
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
+    @catch_non_sz_exceptions
+    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    @catch_non_sz_exceptions
     def find_interesting_entities_by_record_id(
         self,
         data_source_code: str,
         record_id: str,
         flags: int = 0,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByRecordID_helper(
             as_c_char_p(data_source_code), as_c_char_p(record_id), flags
@@ -671,7 +664,6 @@ class SzEngine(SzEngineAbstract):
         build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_findNetworkByEntityID_V2_helper(
             as_c_char_p(build_entities_json(entity_ids)),
@@ -693,7 +685,6 @@ class SzEngine(SzEngineAbstract):
         build_out_degrees: int,
         build_out_max_entities: int,
         flags: int = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_findNetworkByRecordID_V2_helper(
             as_c_char_p(build_records_json(record_keys)),
@@ -715,7 +706,6 @@ class SzEngine(SzEngineAbstract):
         avoid_entity_ids: Optional[List[int]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         if avoid_entity_ids and not required_data_sources:
             result = self.library_handle.Sz_findPathByEntityIDWithAvoids_V2_helper(
@@ -756,7 +746,6 @@ class SzEngine(SzEngineAbstract):
         avoid_record_keys: Optional[List[Tuple[str, str]]] = None,
         required_data_sources: Optional[List[str]] = None,
         flags: int = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         if avoid_record_keys and not required_data_sources:
             result = self.library_handle.Sz_findPathByRecordIDWithAvoids_V2_helper(
@@ -792,16 +781,16 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def get_active_config_id(self, **kwargs: Any) -> int:
+    def get_active_config_id(self) -> int:
         result = self.library_handle.Sz_getActiveConfigID_helper()
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    @catch_non_sz_exceptions
     def get_entity_by_entity_id(
         self,
         entity_id: int,
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_getEntityByEntityID_V2_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
@@ -814,7 +803,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code: str,
         record_id: str,
         flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_getEntityByRecordID_V2_helper(
             as_c_char_p(data_source_code), as_c_char_p(record_id), flags
@@ -829,7 +817,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code: str,
         record_id: str,
         flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_getRecord_V2_helper(
             as_c_char_p(data_source_code),
@@ -840,13 +827,13 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def get_redo_record(self, **kwargs: Any) -> str:
+    def get_redo_record(self) -> str:
         result = self.library_handle.Sz_getRedoRecord_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def get_stats(self, **kwargs: Any) -> str:
+    def get_stats(self) -> str:
         result = self.library_handle.Sz_stats_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -857,7 +844,6 @@ class SzEngine(SzEngineAbstract):
         self,
         record_keys: List[Tuple[str, str]],
         flags: int = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_getVirtualEntityByRecordID_V2_helper(
             as_c_char_p(build_records_json(record_keys)),
@@ -867,11 +853,11 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
+    @catch_non_sz_exceptions
     def how_entity_by_entity_id(
         self,
         entity_id: int,
         flags: int = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_howEntityByEntityID_V2_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
@@ -885,7 +871,6 @@ class SzEngine(SzEngineAbstract):
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
-        **kwargs: Any,
     ) -> None:
         if config_id == 0:
             result = self.library_handle.Sz_init(
@@ -904,11 +889,11 @@ class SzEngine(SzEngineAbstract):
         )
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def preprocess_record(
         self,
         record_definition: str,
         flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_preprocessRecord_helper(
             as_c_char_p(record_definition),
@@ -918,12 +903,12 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    def prime_engine(self, **kwargs: Any) -> None:
+    def prime_engine(self) -> None:
         result = self.library_handle.Sz_primeEngine()
         self.check_result(result)
 
     @catch_non_sz_exceptions
-    def process_redo_record(self, redo_record: str, flags: int = 0, **kwargs: Any) -> str:
+    def process_redo_record(self, redo_record: str, flags: int = 0) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.Sz_processRedoRecordWithInfo_helper(as_c_char_p(redo_record), base_flags)
@@ -937,7 +922,8 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    def reevaluate_entity(self, entity_id: int, flags: int = 0, **kwargs: Any) -> str:
+    @catch_non_sz_exceptions
+    def reevaluate_entity(self, entity_id: int, flags: int = 0) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.Sz_reevaluateEntityWithInfo_helper(
@@ -959,7 +945,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code: str,
         record_id: str,
         flags: int = 0,
-        **kwargs: Any,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -977,7 +962,8 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
-    def _reinitialize(self, config_id: int, **kwargs: Any) -> None:
+    @catch_non_sz_exceptions
+    def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.Sz_reinit(config_id)
         self.check_result(result)
 
@@ -987,7 +973,6 @@ class SzEngine(SzEngineAbstract):
         attributes: str,
         flags: int = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS,
         search_profile: str = "",
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_searchByAttributes_V3_helper(
             as_c_char_p(attributes),
@@ -1004,7 +989,6 @@ class SzEngine(SzEngineAbstract):
         entity_id_1: int,
         entity_id_2: int,
         flags: int = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_whyEntities_V2_helper(
             entity_id_1,
@@ -1023,7 +1007,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code_2: str,
         record_id_2: str,
         flags: int = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_whyRecords_V2_helper(
             as_c_char_p(data_source_code_1),
@@ -1042,7 +1025,6 @@ class SzEngine(SzEngineAbstract):
         data_source_code: str,
         record_id: str,
         flags: int = SzEngineFlags.SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS,
-        **kwargs: Any,
     ) -> str:
         result = self.library_handle.Sz_whyRecordInEntity_V2_helper(
             as_c_char_p(data_source_code),

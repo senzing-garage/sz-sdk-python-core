@@ -26,7 +26,7 @@ RECORD_ID_2 = "1002"
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.why_records(
         DATA_SOURCE_CODE_1,
         RECORD_ID_1,

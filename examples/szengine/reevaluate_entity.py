@@ -23,7 +23,7 @@ FLAGS = SzEngineFlags.SZ_WITH_INFO
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.reevaluate_entity(ENTITY_ID, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:

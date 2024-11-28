@@ -23,7 +23,7 @@ RECORD_ID = "1001"
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.reevaluate_record(DATA_SOURCE_CODE, RECORD_ID, SzEngineFlags.SZ_WITH_INFO)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:

@@ -16,7 +16,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
+    sz_diagnostic = sz_abstract_factory.create_diagnostic()
     # WARNING
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING

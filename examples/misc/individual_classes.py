@@ -56,11 +56,11 @@ def try_sz_product(sz_product_local: SzProduct) -> None:
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_config = sz_abstract_factory.create_sz_config()
-    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
-    sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
-    sz_engine = sz_abstract_factory.create_sz_engine()
-    sz_product = sz_abstract_factory.create_sz_product()
+    sz_config = sz_abstract_factory.create_config()
+    sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_diagnostic = sz_abstract_factory.create_diagnostic()
+    sz_engine = sz_abstract_factory.create_engine()
+    sz_product = sz_abstract_factory.create_product()
 
     try_sz_abstract_factory(sz_abstract_factory)
     try_sz_config(sz_config)
