@@ -1,5 +1,4 @@
 import json
-from ctypes import ArgumentError
 from typing import Any, Dict
 
 import pytest
@@ -29,9 +28,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 ) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
 
 
@@ -148,9 +145,7 @@ def test_reinitialize(sz_diagnostic: SzDiagnosticTest, sz_configmanager: SzConfi
 def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticTest) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 

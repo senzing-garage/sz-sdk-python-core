@@ -634,6 +634,7 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    @catch_non_sz_exceptions
     def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
@@ -641,6 +642,7 @@ class SzEngine(SzEngineAbstract):
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    @catch_non_sz_exceptions
     def find_interesting_entities_by_record_id(
         self,
         data_source_code: str,
@@ -784,6 +786,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    @catch_non_sz_exceptions
     def get_entity_by_entity_id(
         self,
         entity_id: int,
@@ -850,6 +853,7 @@ class SzEngine(SzEngineAbstract):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
+    @catch_non_sz_exceptions
     def how_entity_by_entity_id(
         self,
         entity_id: int,
@@ -885,6 +889,7 @@ class SzEngine(SzEngineAbstract):
         )
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def preprocess_record(
         self,
         record_definition: str,
@@ -917,6 +922,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
+    @catch_non_sz_exceptions
     def reevaluate_entity(self, entity_id: int, flags: int = 0) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -956,6 +962,7 @@ class SzEngine(SzEngineAbstract):
         self.check_result(result)
         return self.no_info
 
+    @catch_non_sz_exceptions
     def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.Sz_reinit(config_id)
         self.check_result(result)

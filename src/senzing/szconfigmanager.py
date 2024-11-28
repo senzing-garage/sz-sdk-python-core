@@ -180,6 +180,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     ) -> None:
         _ = self.library_handle.SzConfigMgr_destroy()
 
+    @catch_non_sz_exceptions
     def get_config(self, config_id: int) -> str:
         result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
         with FreeCResources(self.library_handle, result.response):
@@ -211,6 +212,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def replace_default_config_id(
         self,
         current_default_config_id: int,
@@ -221,6 +223,7 @@ class SzConfigManager(SzConfigManagerAbstract):
         )
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def set_default_config_id(self, config_id: int) -> None:
         result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
         self.check_result(result)

@@ -1,5 +1,4 @@
 import json
-from ctypes import ArgumentError
 from typing import Any, Dict
 
 import pytest
@@ -67,9 +66,7 @@ def test_get_config(sz_configmanager: SzConfigManagerTest) -> None:
 def test_get_config_bad_config_id_type(sz_configmanager: SzConfigManagerTest) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_configmanager.get_config(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -116,9 +113,7 @@ def test_replace_default_config_id_bad_new_default_config_id_type(
     """Test SzConfigManager().get_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_configmanager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -145,9 +140,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(
     config_definition = sz_config.export_config(config_handle)
     config_comment = "Test"
     new_default_config_id = sz_configmanager.add_config(config_definition, config_comment)
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -188,9 +181,7 @@ def test_set_default_config_id_bad_config_id_type(
 ) -> None:
     """Test SzConfigManager().get_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 

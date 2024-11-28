@@ -1,14 +1,6 @@
 # pylint: disable=C0302
 
-# TODO: Check and change the exception type with raises to more specific exception instead of SzError
-# TODO: Add tests for flags
-# TODO: Think about and test how to make the szhelper conversions more robust and possibly raise SzError
-# TODO: Test calling delete record again
-# TODO: Add tests for incorrect ini parms paths and incorrect DB details for constructor
-# TODO: value/type tests and handling ctype exceptions from szhelpers - needs thought
-
 import json
-from ctypes import ArgumentError
 from typing import Any, Dict, List, Tuple
 
 import pytest
@@ -1161,9 +1153,7 @@ def test_reinitialize(sz_engine: SzEngineTest) -> None:
 def test_reinitialize_bad_config_id(sz_engine: SzEngineTest) -> None:
     """Test SzEngine().reinitialize()."""
     bad_default_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 

@@ -149,6 +149,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
+    @catch_non_sz_exceptions
     def check_datastore_performance(self, seconds_to_run: int) -> str:
         result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self.library_handle, result.response):
@@ -165,6 +166,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented, used by sz_explorer
+    @catch_non_sz_exceptions
     def get_feature(self, feature_id: int) -> str:
         result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
@@ -200,6 +202,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
         result = self.library_handle.SzDiagnostic_purgeRepository()
         self.check_result(result)
 
+    @catch_non_sz_exceptions
     def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)
