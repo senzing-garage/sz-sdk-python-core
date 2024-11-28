@@ -26,7 +26,7 @@ RECORD_LIST = [("CUSTOMERS", "1001"), ("CUSTOMERS", "1009")]
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.find_network_by_record_id(RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREE, MAX_ENTITIES, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:

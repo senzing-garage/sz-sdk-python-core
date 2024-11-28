@@ -24,7 +24,7 @@ FLAGS = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.why_entities(
         ENTITY_ID_1,
         ENTITY_ID_2,

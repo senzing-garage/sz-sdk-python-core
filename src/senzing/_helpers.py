@@ -94,7 +94,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
 
     @wraps(func_to_decorate)
-    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:
+    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
         try:
             return func_to_decorate(*args, **kwargs)
         except (ArgumentError, TypeError, ValueError, json.JSONDecodeError) as err:
@@ -105,7 +105,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             # Append a custom message if received arguments are likely incorrect type, value, etc. If any positional
             # arguments are missing don't append to the original error message
-            missing_positional = True if err.args and " required positional argument" in err.args[0] else False
+            missing_positional = bool(err.args and " required positional argument" in err.args[0])
             if (received_arg_values or kwargs) and not missing_positional:
                 # Get wrapped function annotation, remove unwanted keys
                 annotations_dict = func_to_decorate.__annotations__

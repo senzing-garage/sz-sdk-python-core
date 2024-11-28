@@ -46,7 +46,7 @@ __updated__ = "2023-11-07"
 
 class SzProduct(SzProductAbstract):
     """
-    Use SzAbstractFactory.create_sz_product() to create an SzProduct object.
+    Use SzAbstractFactory.create_product() to create an SzProduct object.
     The SzProduct object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -55,7 +55,7 @@ class SzProduct(SzProductAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_product = sz_abstract_factory.create_sz_product()
+        sz_product = sz_abstract_factory.create_product()
 
     Parameters:
 
@@ -70,9 +70,7 @@ class SzProduct(SzProductAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 

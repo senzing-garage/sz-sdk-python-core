@@ -26,7 +26,7 @@ RECORD_LIST = [
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:

@@ -74,7 +74,7 @@ class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
 
 class SzDiagnostic(SzDiagnosticAbstract):
     """
-    Use SzAbstractFactory.create_sz_diagnostic() to create an SzDiagnostic object.
+    Use SzAbstractFactory.create_diagnostic() to create an SzDiagnostic object.
     The SzDiagnostic object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -83,7 +83,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_diagnostic = sz_abstract_factory.create_sz_diagnostic()
+        sz_diagnostic = sz_abstract_factory.create_diagnostic()
 
     Parameters:
 
@@ -95,9 +95,7 @@ class SzDiagnostic(SzDiagnosticAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 

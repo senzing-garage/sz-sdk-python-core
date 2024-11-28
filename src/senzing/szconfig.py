@@ -93,7 +93,7 @@ class SzConfigSaveResult(SzResponseAsCharPointerResult):
 
 class SzConfig(SzConfigAbstract):
     """
-    Use SzAbstractFactory.create_sz_config() to create an SzConfig object.
+    Use SzAbstractFactory.create_config() to create an SzConfig object.
     The SzConfig object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -102,7 +102,7 @@ class SzConfig(SzConfigAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_config = sz_abstract_factory.create_sz_config()
+        sz_config = sz_abstract_factory.create_config()
 
     Parameters:
 
@@ -117,9 +117,7 @@ class SzConfig(SzConfigAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 

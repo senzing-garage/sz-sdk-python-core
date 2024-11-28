@@ -86,7 +86,7 @@ class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
 
 class SzConfigManager(SzConfigManagerAbstract):
     """
-    Use SzAbstractFactory.create_sz_configmanager() to create an SzConfigManager object.
+    Use SzAbstractFactory.create_configmanager() to create an SzConfigManager object.
     The SzConfig object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -95,7 +95,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_config_manager = sz_abstract_factory.create_sz_configmanager()
+        sz_config_manager = sz_abstract_factory.create_configmanager()
 
     Parameters:
 
@@ -110,9 +110,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 

@@ -220,7 +220,7 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
 
 class SzEngine(SzEngineAbstract):
     """
-    Use SzAbstractFactory.create_sz_engine() to create an SzEngine object.
+    Use SzAbstractFactory.create_engine() to create an SzEngine object.
     The SzEngine object uses the parameters provided to the SzAbstractFactory()
     function.
 
@@ -229,7 +229,7 @@ class SzEngine(SzEngineAbstract):
     .. code-block:: python
 
         sz_abstract_factory = SzAbstractFactory(instance_name, settings)
-        sz_engine = sz_abstract_factory.create_sz_engine()
+        sz_engine = sz_abstract_factory.create_engine()
 
     Parameters:
 
@@ -241,9 +241,7 @@ class SzEngine(SzEngineAbstract):
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
 
-    def __init__(
-        self,
-    ) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         """
         Constructor
 

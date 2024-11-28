@@ -22,7 +22,7 @@ FLAGS = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     export_handle = sz_engine.export_json_entity_report(FLAGS)
     RESULT = ""
     while True:
