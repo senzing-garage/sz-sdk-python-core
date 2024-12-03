@@ -29,31 +29,31 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 # -----------------------------------------------------------------------------
 
 
-def test_create_sz_config(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_config(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzConfig."""
     actual = sz_abstract_factory.create_config()
     assert isinstance(actual, SzConfig)
 
 
-def test_create_sz_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzConfigManager."""
     actual = sz_abstract_factory.create_configmanager()
     assert isinstance(actual, SzConfigManager)
 
 
-def test_create_sz_diagnostic(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_diagnostic(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzDiagnostic."""
     actual = sz_abstract_factory.create_diagnostic()
     assert isinstance(actual, SzDiagnostic)
 
 
-def test_create_sz_engine(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_engine(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzEngine."""
     actual = sz_abstract_factory.create_engine()
     assert isinstance(actual, SzEngine)
 
 
-def test_create_sz_product(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_product(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzProduct."""
     actual = sz_abstract_factory.create_product()
     assert isinstance(actual, SzProduct)

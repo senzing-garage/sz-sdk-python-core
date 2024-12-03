@@ -2,7 +2,7 @@
 The `szconfig` package is used to modify the in-memory representation of a Senzing configuration.
 It is a wrapper over Senzing's SzConfig C binding.
 It conforms to the interface specified in
-`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
+`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
 
 To use szconfig,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
