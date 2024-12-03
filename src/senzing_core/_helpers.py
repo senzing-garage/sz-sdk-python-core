@@ -131,6 +131,11 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                     ]
                 )
 
+                # TODO: Figure out why these lines prevent the error in the ".join(..) command":
+                # UnboundLocalError: cannot access local variable 'type' where it is not associated with a value
+                for _, value in all_received_ordered.items():
+                    _ = type(value).__name__
+
                 # Get the wrapped functions received argument names and types
                 func_received = ", ".join(
                     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]

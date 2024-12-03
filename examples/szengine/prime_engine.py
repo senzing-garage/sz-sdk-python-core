@@ -19,4 +19,4 @@ try:
     sz_engine = sz_abstract_factory.create_engine()
     sz_engine.prime_engine()
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

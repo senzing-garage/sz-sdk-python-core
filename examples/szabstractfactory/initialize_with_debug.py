@@ -18,4 +18,4 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

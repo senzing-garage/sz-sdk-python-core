@@ -30,4 +30,4 @@ try:
     RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

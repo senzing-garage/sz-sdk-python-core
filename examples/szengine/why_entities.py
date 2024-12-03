@@ -8,7 +8,7 @@ from senzing_core import (
 )
 
 ENTITY_ID_1 = 1
-ENTITY_ID_2 = 35
+ENTITY_ID_2 = 4
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -32,4 +32,4 @@ try:
     )
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

@@ -21,4 +21,4 @@ try:
     RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")
