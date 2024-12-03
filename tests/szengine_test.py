@@ -17,7 +17,12 @@ from senzing_core import SzConfigCore as SzConfigTest
 from senzing_core import SzConfigManagerCore as SzConfigManagerTest
 from senzing_core import SzEngine
 from senzing_core import SzEngineCore as SzEngineTest
-from senzing_core import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
+from senzing_core import (
+    SzEngineFlags,
+    SzError,
+    SzNotFoundError,
+    SzUnknownDataSourceError,
+)
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
