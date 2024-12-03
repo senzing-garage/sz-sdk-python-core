@@ -2,7 +2,7 @@
 
 from typing import List, Tuple
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,

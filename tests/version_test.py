@@ -1,7 +1,7 @@
 import pytest
 
-# from senzing import SzError, szversion
-from senzing import SzError, _version
+# from senzing_core import SzError, szversion
+from senzing_core import SzError, _version
 
 # -----------------------------------------------------------------------------
 # szversion testcases

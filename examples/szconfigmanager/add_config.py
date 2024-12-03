@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an empty example"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {

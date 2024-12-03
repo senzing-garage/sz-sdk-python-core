@@ -6,7 +6,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import (
+from senzing_core import (
     SZ_WITHOUT_INFO,
     SzAbstractFactory,
     SzAbstractFactoryParameters,

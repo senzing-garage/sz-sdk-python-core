@@ -2,7 +2,7 @@
 
 import time
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = f"REPLACE_DEFAULT_CONFIG_ID_{time.time()}"

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,

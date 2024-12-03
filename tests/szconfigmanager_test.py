@@ -5,10 +5,10 @@ import pytest
 from pytest_schema import Optional, Or, schema
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-from senzing import SzConfigCore as SzConfigTest
-from senzing import SzConfigManager
-from senzing import SzConfigManagerCore as SzConfigManagerTest
-from senzing import SzConfigurationError, SzReplaceConflictError
+from senzing_core import SzConfigCore as SzConfigTest
+from senzing_core import SzConfigManager
+from senzing_core import SzConfigManagerCore as SzConfigManagerTest
+from senzing_core import SzConfigurationError, SzReplaceConflictError
 
 # -----------------------------------------------------------------------------
 # Testcases

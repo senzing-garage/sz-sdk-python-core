@@ -12,12 +12,12 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import SZ_NO_FLAGS, SZ_WITHOUT_INFO, SzBadInputError
-from senzing import SzConfigCore as SzConfigTest
-from senzing import SzConfigManagerCore as SzConfigManagerTest
-from senzing import SzEngine
-from senzing import SzEngineCore as SzEngineTest
-from senzing import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
+from senzing_core import SZ_NO_FLAGS, SZ_WITHOUT_INFO, SzBadInputError
+from senzing_core import SzConfigCore as SzConfigTest
+from senzing_core import SzConfigManagerCore as SzConfigManagerTest
+from senzing_core import SzEngine
+from senzing_core import SzEngineCore as SzEngineTest
+from senzing_core import SzEngineFlags, SzError, SzNotFoundError, SzUnknownDataSourceError
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,

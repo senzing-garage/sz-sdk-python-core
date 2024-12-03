@@ -2,7 +2,7 @@
 
 import json
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,
