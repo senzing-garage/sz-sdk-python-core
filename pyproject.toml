@@ -32,7 +32,6 @@ module = "pytest_schema.*"
 ignore_missing_imports = "true"
 
 [tool.pylint]
-ignored-argument-names = "args|kwargs"
 disable = [
     "duplicate-code",
     "line-too-long",

@@ -2,7 +2,6 @@
 
 from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -17,6 +16,6 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_diagnostic = sz_abstract_factory.create_diagnostic()
+    sz_engine = sz_abstract_factory.create_engine()
 except SzError as err:
     print(f"\nFile {__file__}:\nError:\n{err}\n")

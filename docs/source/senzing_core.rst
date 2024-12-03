@@ -4,46 +4,46 @@ senzing package
 Submodules
 ----------
 
-senzing.szconfig module
------------------------
+senzing_core.szconfig module
+----------------------------
 
-.. automodule:: senzing.szconfig
+.. automodule:: senzing_core.szconfig
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.szconfigmanager module
-------------------------------
+senzing_core.szconfigmanager module
+-----------------------------------
 
-.. automodule:: senzing.szconfigmanager
+.. automodule:: senzing_core.szconfigmanager
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.szdiagnostic module
----------------------------
+senzing_core.szdiagnostic module
+--------------------------------
 
-.. automodule:: senzing.szdiagnostic
+.. automodule:: senzing_core.szdiagnostic
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.szengine module
------------------------
+senzing_core.szengine module
+----------------------------
 
-.. automodule:: senzing.szengine
+.. automodule:: senzing_core.szengine
    :members:
    :undoc-members:
    :show-inheritance:
    :inherited-members:
 
-senzing.szproduct module
-------------------------
+senzing_core.szproduct module
+-----------------------------
 
-.. automodule:: senzing.szproduct
+.. automodule:: senzing_core.szproduct
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,7 +52,7 @@ senzing.szproduct module
 Module contents
 ---------------
 
-.. automodule:: senzing
+.. automodule:: senzing_core
    :members:
    :undoc-members:
    :show-inheritance:
