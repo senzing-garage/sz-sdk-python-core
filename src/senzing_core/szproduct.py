@@ -77,6 +77,8 @@ class SzProduct(SzProductAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
+        _ = kwargs
+
         # Load binary library.
         self.library_handle = load_sz_library()
 

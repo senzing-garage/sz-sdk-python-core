@@ -117,6 +117,8 @@ class SzConfigManager(SzConfigManagerAbstract):
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
 
+        _ = kwargs
+
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()
 

@@ -247,6 +247,9 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+
+        _ = kwargs
+
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
