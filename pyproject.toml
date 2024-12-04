@@ -11,9 +11,12 @@ test = ["pytest", "coverage"]
 [tool.bandit]
 skips = ["B101"]
 
+[tool.black]
+line-length = 120
+
 [tool.flake8]
 extend-ignore = ["E203", "E501", "E704", "W503"]
-max-line-length = 88
+max-line-length = 120
 
 [tool.isort]
 profile = "black"
@@ -29,7 +32,6 @@ module = "pytest_schema.*"
 ignore_missing_imports = "true"
 
 [tool.pylint]
-ignored-argument-names = "args|kwargs"
 disable = [
     "duplicate-code",
     "line-too-long",
@@ -47,5 +49,3 @@ ignore = [
 notes = [
     "FIXME"
 ]
-
-

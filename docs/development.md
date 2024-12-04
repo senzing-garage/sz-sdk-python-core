@@ -1,4 +1,4 @@
-# sz-sdk-python development
+# sz-sdk-python-core development
 
 The following instructions are useful during development.
 
@@ -34,7 +34,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
    ```console
    export GIT_ACCOUNT=senzing-garage
-   export GIT_REPOSITORY=sz-sdk-python
+   export GIT_REPOSITORY=sz-sdk-python-core
    export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
    export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
 
@@ -145,11 +145,11 @@ Create a code coverage map.
 
    ```
 
-1. Verify that `senzing` is not installed.
+1. Verify that `senzing-core` is not installed.
    Example:
 
    ```console
-   python3 -m pip freeze | grep -e senzing
+   python3 -m pip freeze | grep -e senzing_core
 
    ```
 
@@ -163,23 +163,23 @@ Create a code coverage map.
 
    ```
 
-1. Verify that `senzing` is installed.
+1. Verify that `senzing-core` is installed.
    Example:
 
    ```console
-   python3 -m pip freeze | grep -e senzing
+   python3 -m pip freeze | grep -e senzing-core -e senzing_core
 
    ```
 
    Example return:
 
-   > senzing @ file:///home/senzing/senzing-garage.git/sz-sdk-python-/dist/senzing-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
+   > senzing-core @ file:///home/senzing/senzing-garage.git/sz-sdk-python-core/dist/senzing-core-0.0.1-py3-none-any.whl#sha256=2a4e5218d66d5be60ee31bfad5943e6611fc921f28a4326d9594ceceae7e0ac1
 
-1. Uninstall the `senzing` python package.
+1. Uninstall the `senzing-core` python package.
    Example:
 
    ```console
-   python3 -m pip uninstall senzing
+   python3 -m pip uninstall senzing-core
 
    ```
 

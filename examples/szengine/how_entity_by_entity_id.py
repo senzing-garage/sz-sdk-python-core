@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,
@@ -23,8 +23,8 @@ FLAGS = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     RESULT = sz_engine.how_entity_by_entity_id(ENTITY_ID, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

@@ -1,15 +1,14 @@
 import json
-from ctypes import ArgumentError
 from typing import Any, Dict
 
 import pytest
 from pytest_schema import schema
 
-from senzing import SzConfigManagerCore as SzConfigManagerTest
-from senzing import SzDiagnostic
-from senzing import SzDiagnosticCore as SzDiagnosticTest
-from senzing import SzEngineCore as SzEngineTest
-from senzing import SzError
+from senzing_core import SzConfigManagerCore as SzConfigManagerTest
+from senzing_core import SzDiagnostic
+from senzing_core import SzDiagnosticCore as SzDiagnosticTest
+from senzing_core import SzEngineCore as SzEngineTest
+from senzing_core import SzError
 
 # -----------------------------------------------------------------------------
 # Testcases
@@ -29,9 +28,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 ) -> None:
     """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
 
 
@@ -136,9 +133,7 @@ def test_exception(sz_configmanager: SzConfigManagerTest) -> None:
         sz_configmanager.check_result(-1)
 
 
-def test_reinitialize(
-    sz_diagnostic: SzDiagnosticTest, sz_configmanager: SzConfigManagerTest
-) -> None:
+def test_reinitialize(sz_diagnostic: SzDiagnosticTest, sz_configmanager: SzConfigManagerTest) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
@@ -150,9 +145,7 @@ def test_reinitialize(
 def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticTest) -> None:
     """Test SzDiagnostic().reinit() with current config ID."""
     bad_default_config_id = "string"
-    with pytest.raises(
-        ArgumentError
-    ):  # TODO:  Can we make it a TypeError to match native Python exceptions so a user doesn't have to import ctypes
+    with pytest.raises(TypeError):
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 

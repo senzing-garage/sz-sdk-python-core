@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-12-03
+
+### Changed in 0.3.0
+
+- Renamed repository from sz-sdk-python to sz-sdk-python-core
+
+## [0.2.2] - 2024-11-28
+
+### Changed in 0.2.2
+
+- Aligned create engine method calls to new abstract
+- Improvements to helper functions
+
+## [0.2.1] - 2024-11-22
+
+### Added in 0.2.1
+
+- Improvements to helpers
+
+## [0.2.0] - 2024-11-04
+
+### Deleted in 0.2.0
+
+- Deleted abstract, dict and truthset packages from core SDK
+
 ## [0.1.0] - 2024-10-27
 
 ### Added to 0.1.0

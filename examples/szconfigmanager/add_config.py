@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an empty example"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
@@ -17,10 +17,10 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_config = sz_abstract_factory.create_sz_config()
-    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
+    sz_config = sz_abstract_factory.create_config()
+    sz_configmanager = sz_abstract_factory.create_configmanager()
     config_handle = sz_config.create_config()
     CONFIG_DEFINITION = sz_config.export_config(config_handle)
     config_id = sz_configmanager.add_config(CONFIG_DEFINITION, CONFIG_COMMENT)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

@@ -2,7 +2,7 @@
 
 import time
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = f"REPLACE_DEFAULT_CONFIG_ID_{time.time()}"
@@ -20,8 +20,8 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_config = sz_abstract_factory.create_sz_config()
-    sz_configmanager = sz_abstract_factory.create_sz_configmanager()
+    sz_config = sz_abstract_factory.create_config()
+    sz_configmanager = sz_abstract_factory.create_configmanager()
     old_config_id = sz_configmanager.get_default_config_id()
 
     # Create a new config.
@@ -36,4 +36,4 @@ try:
 
     sz_configmanager.set_default_config_id(config_id)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

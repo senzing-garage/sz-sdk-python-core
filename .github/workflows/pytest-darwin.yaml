@@ -5,7 +5,7 @@ on: [pull_request, workflow_dispatch]
 env:
   DYLD_LIBRARY_PATH: /opt/senzing/er/lib:/opt/senzing/er/lib/macos
   LD_LIBRARY_PATH: /opt/senzing/er/lib:/opt/senzing/er/lib/macos
-  PYTHONPATH: /Users/runner/work/sz-sdk-python/sz-sdk-python/src
+  PYTHONPATH: /Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 
 permissions:
@@ -13,15 +13,15 @@ permissions:
 
 jobs:
   pytest-darwin:
-    name: "pytest Senzing: ${{ matrix.senzingapi-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    name: "pytest Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        # 3.8 and 3.9 are unsupported on the darwin runner
-        python-version: ["3.10", "3.11"]
-        senzingapi-version: [staging-v4]
+        # 3.9 is unsupported on the darwin runner
+        python-version: ["3.10", "3.11", "3.12"]
+        senzingsdk-version: [staging-v4]
 
     steps:
       - name: Checkout repository
@@ -41,16 +41,16 @@ jobs:
           python -m pip install --requirement requirements.txt
           python -m pip install psutil pytest pytest-cov pytest-schema
 
-      - if: matrix.python-version == '3.8' || matrix.python-version == '3.9' || matrix.python-version == '3.10'
-        name: Install python libraries for python 3.8, 3.9, and 3.10
+      - if: matrix.python-version == '3.10'
+        name: Install python libraries for python 3.10
         run: |
           source ./venv/bin/activate
           python -m pip install typing_extensions
 
-      - name: Install Senzing API
-        uses: senzing-factory/github-action-install-senzing-api@v4
+      - name: Install Senzing SDK
+        uses: senzing-factory/github-action-install-senzing-sdk@v1
         with:
-          senzingapi-version: ${{ matrix.senzingapi-version }}
+          senzingsdk-version: ${{ matrix.senzingsdk-version }}
 
       - name: Copy /etc files
         run: |
@@ -59,8 +59,8 @@ jobs:
 
       - name: Copy test database files
         run: |
-          mkdir -p /tmp/sqlite
-          cp testdata/sqlite/G2C.db /tmp/sqlite/
+          mkdir /tmp/sqlite
+          cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
       - name: Run pytest on tests
         run: |

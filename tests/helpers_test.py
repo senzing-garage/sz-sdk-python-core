@@ -3,15 +3,13 @@ import json
 import pytest
 from pytest_schema import schema
 
-from senzing import SzError
-from senzing._helpers import (
+from senzing_core import SzError
+from senzing_core._helpers import (
     as_c_char_p,
     as_str,
     build_data_sources_json,
     build_entities_json,
     build_records_json,
-    check_list_types,
-    check_type_is_list,
     escape_json_str,
     load_sz_library,
 )
@@ -61,42 +59,6 @@ def test_build_data_sources_json() -> None:
     assert schema(build_data_sources_json_schema) == actual_as_dict
 
 
-def test_check_list_types_empty_list() -> None:
-    """# TODO"""
-    check_list_types([])
-
-
-def test_check_list_types_different_types() -> None:
-    """# TODO"""
-    with pytest.raises(TypeError):
-        check_list_types([1, 2, "3"])
-
-
-def test_check_list_types_different_tuple_lengths() -> None:
-    """# TODO"""
-    with pytest.raises(TypeError):
-        check_list_types([("test1", 1), ("test2", 2, 3)])
-
-
-def test_check_list_types_incorrect_number_of_tuple_elements() -> None:
-    """# TODO"""
-    with pytest.raises(TypeError):
-        check_list_types([("test1", 1, 2), ("test2", 3, 4)])
-
-
-def test_check_type_is_list() -> None:
-    """# TODO"""
-    list_ = [1, 2, 3]
-    check_type_is_list(list_)
-
-
-def test_check_type_is_list_bad_type() -> None:
-    """# TODO"""
-    list_ = "not_a_list"
-    with pytest.raises(TypeError):
-        check_type_is_list(list_)
-
-
 def test_build_entities_json_empty_list() -> None:
     """# TODO"""
     actual = build_entities_json([])
@@ -134,7 +96,5 @@ build_data_sources_json_schema = {"DATA_SOURCES": [str]}
 
 build_avoidances_json_by_entity_id_schema = {"ENTITIES": [{"ENTITY_ID": int}]}
 
-build_avoidances_json_by_record_keys_schema = {
-    "RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}]
-}
+build_avoidances_json_by_record_keys_schema = {"RECORDS": [{"DATA_SOURCE": str, "RECORD_ID": str}]}
 # "RECORDS":[{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001"},{"DATA_SOURCE":"WATCHLIST","RECORD_ID":"1007"}]}

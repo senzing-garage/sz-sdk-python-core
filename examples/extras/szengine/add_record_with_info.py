@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,
@@ -39,10 +39,8 @@ RECORD_ID = "1001"
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
-    RESULT = sz_engine.add_record(
-        DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, SzEngineFlags.SZ_WITH_INFO
-    )
+    sz_engine = sz_abstract_factory.create_engine()
+    RESULT = sz_engine.add_record(DATA_SOURCE_CODE, RECORD_ID, RECORD_DEFINITION, SzEngineFlags.SZ_WITH_INFO)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
     print(f"\nError in {__file__}:\n{err}\n")

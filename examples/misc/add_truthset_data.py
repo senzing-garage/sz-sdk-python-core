@@ -1,15 +1,16 @@
 #! /usr/bin/env python3
 
-from senzing import (
-    SZ_WITHOUT_INFO,
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
-    SzError,
-)
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
+)
+
+from senzing_core import (
+    SZ_WITHOUT_INFO,
+    SzAbstractFactory,
+    SzAbstractFactoryParameters,
+    SzError,
 )
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
@@ -26,7 +27,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_sz_engine()
+    sz_engine = sz_abstract_factory.create_engine()
     record_sets = [
         TRUTHSET_CUSTOMER_RECORDS,
         TRUTHSET_REFERENCE_RECORDS,
@@ -41,4 +42,4 @@ try:
                 SZ_WITHOUT_INFO,
             )
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")
