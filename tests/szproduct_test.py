@@ -3,16 +3,16 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Regex, schema
+from senzing import SzProduct as SzProductAbstract
 
 from senzing_core import SzProduct
-from senzing_core import SzProductCore as SzProductTest
 
 # -----------------------------------------------------------------------------
 # Testcases
 # -----------------------------------------------------------------------------
 
 
-def test_get_license(sz_product: SzProductTest) -> None:
+def test_get_license(sz_product: SzProduct) -> None:
     """Test Senzing license."""
     actual = sz_product.get_license()
     assert isinstance(actual, str)
@@ -20,7 +20,7 @@ def test_get_license(sz_product: SzProductTest) -> None:
     assert schema(get_license_schema) == actual_as_dict
 
 
-def test_get_version(sz_product: SzProductTest) -> None:
+def test_get_version(sz_product: SzProduct) -> None:
     """Test Senzing version."""
     actual = sz_product.get_version()
     assert isinstance(actual, str)
@@ -35,12 +35,12 @@ def test_get_version(sz_product: SzProductTest) -> None:
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProductTest()
+    actual = SzProduct()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzProduct)
+    assert isinstance(actual, SzProductAbstract)
 
 
 # NOTE szproduct can be initialized without an instance name
@@ -52,7 +52,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #             bad_instance_name,
 #             engine_vars["SETTINGS"],
 #         )
-#         assert isinstance(actual, SzProductTest)
+#         assert isinstance(actual, SzProductAbstract)
 
 # NOTE szproduct can be initialized without settings
 # def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
@@ -63,22 +63,22 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #             engine_vars["INSTANCE_NAME"],
 #             bad_settings,
 #         )
-#         assert isinstance(actual, SzProductTest)
+#         assert isinstance(actual, SzProductAbstract)
 
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProductTest()
+    actual = SzProduct()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzProduct)
+    assert isinstance(actual, SzProductAbstract)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProductTest()
+    actual = SzProduct()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -86,7 +86,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._destroy()  # pylint: disable=W0212
 
 
-def test_exception(sz_product: SzProductTest) -> None:
+def test_exception(sz_product: SzProduct) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_product.check_result(-1)
@@ -98,12 +98,12 @@ def test_exception(sz_product: SzProductTest) -> None:
 
 
 @pytest.fixture(name="sz_product", scope="function")
-def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProductTest:
+def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
     Single szproduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = SzProductTest()
+    result = SzProduct()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],

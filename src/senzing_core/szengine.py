@@ -31,7 +31,8 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing_abstract import SzEngineAbstract, SzEngineFlags
+from senzing import SzEngine as SzEngineAbstract
+from senzing import SzEngineFlags
 
 from ._helpers import (
     FreeCResources,
