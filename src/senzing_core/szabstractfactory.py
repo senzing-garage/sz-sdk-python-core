@@ -9,24 +9,18 @@ TODO: szabstractfactory.py
 from types import TracebackType
 from typing import Any, Dict, Type, TypedDict, Union
 
-from senzing_abstract import (
-    SzAbstractFactoryAbstract,
-    SzConfigAbstract,
-    SzConfigManagerAbstract,
-    SzDiagnosticAbstract,
-    SzEngineAbstract,
-    SzProductAbstract,
-)
+from senzing import SzAbstractFactory as SzAbstractFactoryAbstract
+from senzing import SzConfig, SzConfigManager, SzDiagnostic, SzEngine, SzProduct
 
-from .szconfig import SzConfig
-from .szconfigmanager import SzConfigManager
-from .szdiagnostic import SzDiagnostic
-from .szengine import SzEngine
-from .szproduct import SzProduct
+from .szconfig import SzConfig as SzConfigCore
+from .szconfigmanager import SzConfigManager as SzConfigManagerCore
+from .szdiagnostic import SzDiagnostic as SzDiagnosticCore
+from .szengine import SzEngine as SzEngineCore
+from .szproduct import SzProduct as SzProductCore
 
 # Metadata
 
-__all__ = ["SzAbstractFactoryAbstract"]
+__all__ = ["SzAbstractFactory"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-10-21"
 __updated__ = "2024-10-24"
@@ -107,8 +101,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
-    def create_config(self) -> SzConfigAbstract:
-        result = SzConfig()
+    def create_config(self) -> SzConfig:
+        result = SzConfigCore()
         if not self.is_szconfig_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
@@ -118,8 +112,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szconfig_initialized = True
         return result
 
-    def create_configmanager(self) -> SzConfigManagerAbstract:
-        result = SzConfigManager()
+    def create_configmanager(self) -> SzConfigManager:
+        result = SzConfigManagerCore()
         if not self.is_szconfigmanager_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
@@ -129,8 +123,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szconfigmanager_initialized = True
         return result
 
-    def create_diagnostic(self) -> SzDiagnosticAbstract:
-        result = SzDiagnostic()
+    def create_diagnostic(self) -> SzDiagnostic:
+        result = SzDiagnosticCore()
         if not self.is_szdiagnostic_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
@@ -141,9 +135,9 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szdiagnostic_initialized = True
         return result
 
-    def create_engine(self) -> SzEngineAbstract:
+    def create_engine(self) -> SzEngine:
         # TODO: Determine if atomic operation is needed.
-        result = SzEngine()
+        result = SzEngineCore()
         if not self.is_szengine_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
@@ -154,8 +148,8 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
             self.is_szengine_initialized = True
         return result
 
-    def create_product(self) -> SzProductAbstract:
-        result = SzProduct()
+    def create_product(self) -> SzProduct:
+        result = SzProductCore()
         if not self.is_szproduct_initialized:
             result._initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
@@ -171,27 +165,27 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
         if self.is_szconfig_initialized:
             self.is_szconfig_initialized = False
-            sz_config = SzConfig()
+            sz_config = SzConfigCore()
             sz_config._destroy()  # pylint: disable=W0212
 
         if self.is_szconfigmanager_initialized:
             self.is_szconfigmanager_initialized = False
-            sz_configmanager = SzConfigManager()
+            sz_configmanager = SzConfigManagerCore()
             sz_configmanager._destroy()  # pylint: disable=W0212
 
         if self.is_szdiagnostic_initialized:
             self.is_szdiagnostic_initialized = False
-            sz_diagnostic = SzDiagnostic()
+            sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic._destroy()  # pylint: disable=W0212
 
         if self.is_szengine_initialized:
             self.is_szengine_initialized = False
-            sz_engine = SzEngine()
+            sz_engine = SzEngineCore()
             sz_engine._destroy()  # pylint: disable=W0212
 
         if self.is_szproduct_initialized:
             self.is_szproduct_initialized = False
-            sz_product = SzProduct()
+            sz_product = SzProductCore()
             sz_product._destroy()  # pylint: disable=W0212
 
     def reinitialize(self, config_id: int) -> None:
@@ -201,9 +195,9 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
         self.config_id = config_id
 
         if self.is_szengine_initialized:
-            sz_engine = SzEngine()
+            sz_engine = SzEngineCore()
             sz_engine._reinitialize(config_id=config_id)  # pylint: disable=W0212
 
         if self.is_szdiagnostic_initialized:
-            sz_diagnostic = SzDiagnostic()
+            sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic._reinitialize(config_id=config_id)  # pylint: disable=W0212
