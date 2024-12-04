@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import (
+from senzing_core import (
     SzAbstractFactory,
     SzAbstractFactoryParameters,
     SzEngineFlags,
@@ -27,4 +27,4 @@ try:
     RESULT = sz_engine.reevaluate_entity(ENTITY_ID, FLAGS)
     print(f"\nFile {__file__}:\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

@@ -2,7 +2,7 @@
 The `szconfig` package is used to modify the in-memory representation of a Senzing configuration.
 It is a wrapper over Senzing's SzConfig C binding.
 It conforms to the interface specified in
-`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
+`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
 
 To use szconfig,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -111,7 +111,7 @@ class SzConfig(SzConfigAbstract):
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
-    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))
+    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))`
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -123,6 +123,8 @@ class SzConfig(SzConfigAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+
+        _ = kwargs
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()

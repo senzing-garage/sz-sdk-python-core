@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   LD_LIBRARY_PATH: /opt/senzing/er/lib
-  PYTHONPATH: /home/runner/work/sz-sdk-python/sz-sdk-python/src
+  PYTHONPATH: /home/runner/work/sz-sdk-python-core/sz-sdk-python-core/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 
 permissions:

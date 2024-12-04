@@ -2,7 +2,7 @@
 The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
 It is a wrapper over Senzing's SzEngine C binding.
 It conforms to the interface specified in
-`szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szengine_abstract.py>`_
+`szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szengine_abstract.py>`_
 
 To use szengine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -247,6 +247,9 @@ class SzEngine(SzEngineAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+
+        _ = kwargs
+
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 

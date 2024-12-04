@@ -2,7 +2,7 @@
 
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example1",
@@ -33,4 +33,4 @@ try:
     sz_configmanager.replace_default_config_id(current_default_config_id, new_default_config_id)
     sz_abstract_factory.reinitialize(new_default_config_id)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

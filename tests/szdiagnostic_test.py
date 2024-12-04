@@ -4,11 +4,11 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import schema
 
-from senzing import SzConfigManagerCore as SzConfigManagerTest
-from senzing import SzDiagnostic
-from senzing import SzDiagnosticCore as SzDiagnosticTest
-from senzing import SzEngineCore as SzEngineTest
-from senzing import SzError
+from senzing_core import SzConfigManagerCore as SzConfigManagerTest
+from senzing_core import SzDiagnostic
+from senzing_core import SzDiagnosticCore as SzDiagnosticTest
+from senzing_core import SzEngineCore as SzEngineTest
+from senzing_core import SzError
 
 # -----------------------------------------------------------------------------
 # Testcases

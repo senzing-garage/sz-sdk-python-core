@@ -4,9 +4,9 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Optional, Or, schema
 
-from senzing import SzConfig
-from senzing import SzConfigCore as SzConfigTest
-from senzing import SzConfigurationError
+from senzing_core import SzConfig
+from senzing_core import SzConfigCore as SzConfigTest
+from senzing_core import SzConfigurationError
 
 # -----------------------------------------------------------------------------
 # Testcases

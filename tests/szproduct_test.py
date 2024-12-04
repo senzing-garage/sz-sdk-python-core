@@ -4,8 +4,8 @@ from typing import Any, Dict
 import pytest
 from pytest_schema import Regex, schema
 
-from senzing import SzProduct
-from senzing import SzProductCore as SzProductTest
+from senzing_core import SzProduct
+from senzing_core import SzProductCore as SzProductTest
 
 # -----------------------------------------------------------------------------
 # Testcases

@@ -9,7 +9,7 @@
 import os
 import sys
 
-project = "sz-sdk-python"
+project = "sz-sdk-python-core"
 copyright = "2024, Senzing"
 author = "senzing"
 

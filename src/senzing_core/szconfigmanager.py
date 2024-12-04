@@ -2,7 +2,7 @@
 The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
 It is a wrapper over Senzing's SzConfigMgr C binding.
 It conforms to the interface specified in
-`szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
+`szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
 
 To use szconfigmanager,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -104,7 +104,7 @@ class SzConfigManager(SzConfigManagerAbstract):
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
-    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))
+    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))`
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -116,6 +116,8 @@ class SzConfigManager(SzConfigManagerAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+
+        _ = kwargs
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()

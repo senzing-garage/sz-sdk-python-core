@@ -5,7 +5,7 @@ TODO: _version.py
 
 import json
 
-from senzing import SzError
+from senzing_core import SzError
 
 from .szproduct import SzProduct
 

@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
-DATA_SOURCE_CODE = "NAME_OF_DATASOURCE"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
     "settings": {
@@ -19,4 +18,4 @@ try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
     sz_config = sz_abstract_factory.create_config()
 except SzError as err:
-    print(f"\nError:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

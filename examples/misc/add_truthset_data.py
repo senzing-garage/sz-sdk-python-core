@@ -6,7 +6,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing import (
+from senzing_core import (
     SZ_WITHOUT_INFO,
     SzAbstractFactory,
     SzAbstractFactoryParameters,
@@ -42,4 +42,4 @@ try:
                 SZ_WITHOUT_INFO,
             )
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")

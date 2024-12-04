@@ -2,7 +2,7 @@
 The `szproduct` package is used to inspect the Senzing product.
 It is a wrapper over Senzing's SzProduct C binding.
 It conforms to the interface specified in
-`szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
+`szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
 
 To use szproduct,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -64,7 +64,7 @@ class SzProduct(SzProductAbstract):
     """
 
     # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
-    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))
+    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))`
 
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
@@ -76,6 +76,8 @@ class SzProduct(SzProductAbstract):
 
         For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
         """
+
+        _ = kwargs
 
         # Load binary library.
         self.library_handle = load_sz_library()

@@ -6,7 +6,7 @@
 # from contextlib import suppress
 # from datetime import timedelta
 
-# from senzing import SzEngineFlags, SzError, szengine
+# from senzing_core import SzEngineFlags, SzError, szengine
 
 # with suppress(ModuleNotFoundError):
 #     import orjson

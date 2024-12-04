@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
 
 DATA_SOURCE_CODE = "TEST"
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
@@ -22,4 +22,4 @@ try:
     sz_config.delete_data_source(config_handle, DATA_SOURCE_CODE)
     sz_config.close_config(config_handle)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nFile {__file__}:\nError:\n{err}\n")
