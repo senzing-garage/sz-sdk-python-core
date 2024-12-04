@@ -167,7 +167,7 @@ Create a code coverage map.
    Example:
 
    ```console
-   python3 -m pip freeze | grep -e senzing_core
+   python3 -m pip freeze | grep -e senzing-core -e senzing_core
 
    ```
 
@@ -179,7 +179,7 @@ Create a code coverage map.
    Example:
 
    ```console
-   python3 -m pip uninstall senzing_core
+   python3 -m pip uninstall senzing-core
 
    ```
 
