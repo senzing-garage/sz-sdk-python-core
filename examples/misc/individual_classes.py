@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
-from senzing_core import (
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
+
+from senzing import (
     SzConfig,
     SzConfigManager,
     SzDiagnostic,
@@ -10,6 +9,8 @@ from senzing_core import (
     SzError,
     SzProduct,
 )
+
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",

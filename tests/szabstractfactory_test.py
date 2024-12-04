@@ -1,16 +1,13 @@
 from datetime import datetime
 
 import pytest
+from senzing import SzConfig as SzConfigAbstract
+from senzing import SzConfigManager as SzConfigManagerAbstract
+from senzing import SzDiagnostic as SzDiagnosticAbstract
+from senzing import SzEngine as SzEngineAbstract
+from senzing import SzProduct as SzProductAbstract
 
-from senzing_core import (
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
-    SzConfig,
-    SzConfigManager,
-    SzDiagnostic,
-    SzEngine,
-    SzProduct,
-)
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
@@ -32,31 +29,31 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 def test_create_config(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzConfig."""
     actual = sz_abstract_factory.create_config()
-    assert isinstance(actual, SzConfig)
+    assert isinstance(actual, SzConfigAbstract)
 
 
 def test_create_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzConfigManager."""
     actual = sz_abstract_factory.create_configmanager()
-    assert isinstance(actual, SzConfigManager)
+    assert isinstance(actual, SzConfigManagerAbstract)
 
 
 def test_create_diagnostic(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzDiagnostic."""
     actual = sz_abstract_factory.create_diagnostic()
-    assert isinstance(actual, SzDiagnostic)
+    assert isinstance(actual, SzDiagnosticAbstract)
 
 
 def test_create_engine(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzEngine."""
     actual = sz_abstract_factory.create_engine()
-    assert isinstance(actual, SzEngine)
+    assert isinstance(actual, SzEngineAbstract)
 
 
 def test_create_product(sz_abstract_factory: SzAbstractFactory) -> None:
     """Create SzProduct."""
     actual = sz_abstract_factory.create_product()
-    assert isinstance(actual, SzProduct)
+    assert isinstance(actual, SzProductAbstract)
 
 
 def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
