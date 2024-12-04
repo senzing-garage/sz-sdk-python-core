@@ -19,7 +19,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing_abstract import SzConfigManagerAbstract
+from senzing import SzConfigManager as SzConfigManagerAbstract
 
 from ._helpers import (
     FreeCResources,
