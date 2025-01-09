@@ -2,12 +2,9 @@
 
 from typing import List
 
-from senzing_core import (
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
-    SzEngineFlags,
-    SzError,
-)
+from senzing import SzEngineFlags, SzError
+
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 AVOID_ENTITY_IDS: List[int] = []
 END_ENTITY_ID = 4

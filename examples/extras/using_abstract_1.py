@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 
+from senzing import SzError
 from using_abstract_2 import try_using_abstract
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",

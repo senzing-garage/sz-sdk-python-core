@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing import SzAbstractFactory, SzEngine, SzError
+from senzing import SzEngine, SzError
+
+from senzing_core import SzAbstractFactory
 
 __all__ = ["try_using_abstract"]
 

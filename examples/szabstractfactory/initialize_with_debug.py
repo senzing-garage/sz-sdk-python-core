@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing import SzError
+
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
@@ -17,5 +19,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 
 try:
     sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    # Create an engine to show debug output
+    sz_abstract_factory.create_engine()
 except SzError as err:
     print(f"\nFile {__file__}:\nError:\n{err}\n")

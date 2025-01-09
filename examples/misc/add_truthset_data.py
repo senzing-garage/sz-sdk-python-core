@@ -1,17 +1,13 @@
 #! /usr/bin/env python3
 
+from senzing import SZ_WITHOUT_INFO, SzError
 from senzing_truthset import (
     TRUTHSET_CUSTOMER_RECORDS,
     TRUTHSET_REFERENCE_RECORDS,
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing_core import (
-    SZ_WITHOUT_INFO,
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
-    SzError,
-)
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",

@@ -1,11 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing_core import (
-    SzAbstractFactory,
-    SzAbstractFactoryParameters,
-    SzEngineFlags,
-    SzError,
-)
+from senzing import SzEngineFlags, SzError
+
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 BUILD_OUT_DEGREES = 1
 ENTITY_LIST = [1, 4]

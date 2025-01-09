@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing import SzError
+
+from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
 
 FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     "instance_name": "Example",
@@ -20,6 +22,12 @@ try:
     # WARNING
     # WARNING - This will remove all loaded and entity resolved data from the Senzing repository, use with caution!
     # WARNING
-    sz_diagnostic.purge_repository()
+    if (
+        input(
+            "WARNING: This will remove all loaded and entity resolved data from the Senzing repository, type YESPURGESENZING to continue and purge! "
+        )
+        == "YESPURGESENZING"
+    ):
+        sz_diagnostic.purge_repository()
 except SzError as err:
     print(f"\nFile {__file__}:\nError:\n{err}\n")
