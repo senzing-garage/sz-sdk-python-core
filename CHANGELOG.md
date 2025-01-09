@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-01-09
+
+### Changed in 0.3.2
+
+- Modify examples to import from senzing and senzing_core
+
 ## [0.3.1] - 2024-12-04
 
 ### Added in 0.3.1
