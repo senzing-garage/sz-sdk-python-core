@@ -101,7 +101,7 @@ jobs:
           echo "exit code=$exitcode" >> "$GITHUB_OUTPUT"
 
       - name: Debug print
-        - run: |
+        run: |
           echo "pytest-examples exitcode: ${{ steps.pytest-examples.outputs.exitcode }}"
 
       - name: Rename coverage file
