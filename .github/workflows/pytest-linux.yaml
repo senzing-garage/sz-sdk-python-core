@@ -111,8 +111,8 @@ jobs:
             exit "$exitcode"
           fi
 
-      - name: Ant debug 
-         run: |
+      - name: Ant debug
+        run: |
           echo ${{ steps.pytest-examples.outputs.exitcode }}
 
       - name: Rename coverage file
