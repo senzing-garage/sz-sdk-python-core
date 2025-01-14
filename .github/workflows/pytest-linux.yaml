@@ -66,17 +66,28 @@ jobs:
           source ./venv/bin/activate
           pytest tests/ --verbose --capture=no --cov=src --cov-append
 
-      - name: Run unittest on examples
+      # - name: Run unittest on examples
+      #   run: |
+      #     source ./venv/bin/activate
+      #     python3 -m unittest \
+      #       examples/szconfig/*.py \
+      #       examples/szconfigmanager/*.py \
+      #       examples/szdiagnostic/*.py \
+      #       examples/szengine/*.py \
+      #       examples/szproduct/*.py \
+      #       examples/misc/*.py \
+      #       || true
+      - name: Run pytest on examples
         run: |
           source ./venv/bin/activate
-          python3 -m unittest \
-            examples/szconfig/*.py \
-            examples/szconfigmanager/*.py \
-            examples/szdiagnostic/*.py \
-            examples/szengine/*.py \
-            examples/szproduct/*.py \
-            examples/misc/*.py \
-            || true
+          pytest examples/szconfig/ \
+            examples/szconfigmanager/ \
+            examples/szdiagnostic/ \
+            examples/szengine/ \
+            examples/szproduct/ \
+            examples/misc/ \
+            -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
+            --verbose
 
       - name: Rename coverage file
         env:

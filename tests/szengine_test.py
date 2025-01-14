@@ -102,7 +102,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SZ_WITHOUT_INFO
-    with pytest.raises(OSError):
+    with pytest.raises(TypeError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)  # type: ignore[arg-type]
 
 
