@@ -99,6 +99,7 @@ jobs:
             --capture=no \
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose
+          exitcode="$?"
           set -e
           if [ "$?" -eq 5 ]; then
             echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
