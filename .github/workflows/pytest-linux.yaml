@@ -101,7 +101,7 @@ jobs:
             --verbose
           exitcode="$?"
           set -e
-          if [ "$?" -eq 5 ]; then
+          if [ "$exitcode" -eq 5 ]; then
             echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
             echo "Exit code was 5"
             exit 0
