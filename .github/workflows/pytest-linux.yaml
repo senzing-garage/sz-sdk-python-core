@@ -93,7 +93,7 @@ jobs:
             --capture=no \
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose \
-            ; if [ $? -eq 5 ]; then true; else false; fi
+            ; if [ $? -eq 5 ]; then echo "exit code = 5"; true; else echo "exit code =  $?"; false; fi
 
       - name: Rename coverage file
         env:
