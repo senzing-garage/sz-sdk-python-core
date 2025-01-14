@@ -99,15 +99,13 @@ jobs:
             --capture=no \
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose
-          if [ "$?" -eq 5 ]; then
+          if [ "$?" -eq 5 ]; then 
+            echo "Exit code was 5"
             exit 0
           else
+            echo "Exit code wasn't 5: $?"
             exit "$?"
           fi
-
-      - name: Debug print
-        run: |
-          echo "pytest-examples exitcode: ${{ steps.pytest-examples.outputs.exitcode }}"
 
       - name: Rename coverage file
         env:
