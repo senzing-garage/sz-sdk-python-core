@@ -78,15 +78,12 @@ jobs:
       #       examples/misc/*.py \
       #       || true
 
-      # Use pytest to check examples, there are no "test" classes/functions, pytest imports the
-      # .py files, if there is an error in examples catches and raises similar to using unittest
-      # || true is to exit with code 0
-      # || if [ $? -eq 5 ]; then echo "exit code = 5"; true; else echo "exit code = $?"; false; fi
-      # if [ $exit_code -eq 5 ]; then exit 0; else exit "$exit_code"; fi
-      # exitcode="$?"
-      # echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
+      # Use pytest to check examples, there are no "test" classes/functions, pytest imports
+      # the .py files. If there is a Python error in the examples, an exit code of 1
+      # is returned. If there are no Python errors but pytest didn't think it found any
+      # tests an exit code of 5 is returned, this is a pass but need to capture it and
+      # return 0 - https://docs.pytest.org/en/stable/reference/exit-codes.html
       - name: Run pytest on examples
-        id: pytest-examples
         run: |
           source ./venv/bin/activate
           set +e
@@ -97,23 +94,17 @@ jobs:
             examples/szproduct/ \
             examples/misc/ \
             --capture=no \
-            -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
+            --ignore=examples/szengine/a_header_szengine.py \
+            -o python_files=*.py \
             --verbose
-          exitcode="$?"
+          pytest_exit_code="$?"
           set -e
-          if [ "$exitcode" -eq 5 ]; then
-            echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
-            echo "Exit code was 5"
+          if [ "$pytest_exit_code" -eq 5 ]; then
+            echo -e "\nExit code from pytest was $pytest_exit_code, this is expected testing the examples if there were no Python errors\n"
             exit 0
           else
-            echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
-            echo "Exit code wasn't 5: $exitcode"
-            exit "$exitcode"
+            exit "$pytest_exit_code"
           fi
-
-      - name: Ant debug
-        run: |
-          echo ${{ steps.pytest-examples.outputs.exitcode }}
 
       - name: Rename coverage file
         env:
