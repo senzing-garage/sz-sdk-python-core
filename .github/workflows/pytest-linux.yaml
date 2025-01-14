@@ -100,13 +100,18 @@ jobs:
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose
           set -e
-          if [ "$?" -eq 5 ]; then 
+          if [ "$?" -eq 5 ]; then
+            echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
             echo "Exit code was 5"
-            exit 0
+            exit "$exitcode"
           else
+            echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
             echo "Exit code wasn't 5: $?"
-            exit "$?"
+            exit "$exitcode"
           fi
+
+      - name: Ant debug 
+         run: echo ${{ steps.pytest-examples.exitcode }}
 
       - name: Rename coverage file
         env:
