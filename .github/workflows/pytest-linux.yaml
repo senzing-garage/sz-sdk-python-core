@@ -81,9 +81,11 @@ jobs:
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports the
       # .py files, if there is an error in examples catches and raises similar to using unittest
       # || true is to exit with code 0
+      # || if [ $? -eq 5 ]; then echo "exit code = 5"; true; else echo "exit code = $?"; false; fi
       - name: Run pytest on examples
         run: |
           source ./venv/bin/activate
+          set +e
           pytest examples/szconfig/ \
             examples/szconfigmanager/ \
             examples/szdiagnostic/ \
@@ -92,8 +94,10 @@ jobs:
             examples/misc/ \
             --capture=no \
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
-            --verbose \
-            || if [ $? -eq 5 ]; then echo "exit code = 5"; true; else echo "exit code =  $?"; false; fi
+            --verbose
+          exit_code="$?"
+          echo "exit code=$exit_code" >> $GITHUB_OUTPUT
+          if [ $exit_code -eq 5 ]; then exit 0; else exit "$exit_code"
 
       - name: Rename coverage file
         env:
