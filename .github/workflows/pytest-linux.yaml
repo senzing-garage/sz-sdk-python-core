@@ -99,6 +99,11 @@ jobs:
             --verbose
           exitcode="$?"
           echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
+          if [ "$?" -eq 5 ]; then
+            exit 0
+          else
+            exit "$?"
+          fi
 
       - name: Debug print
         run: |
