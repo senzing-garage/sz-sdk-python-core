@@ -97,7 +97,7 @@ jobs:
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose
           exitcode="$?"
-          echo "exit code=$exitcode" >> $GITHUB_OUTPUT
+          echo "exit code=$exitcode" >> "$GITHUB_OUTPUT"
 
       - name: Rename coverage file
         env:
