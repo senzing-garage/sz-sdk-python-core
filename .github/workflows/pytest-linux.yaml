@@ -99,6 +99,7 @@ jobs:
             --capture=no \
             -o python_files=*.py --ignore=examples/szengine/a_header_szengine.py --maxfail=1 \
             --verbose
+          set -e
           if [ "$?" -eq 5 ]; then 
             echo "Exit code was 5"
             exit 0
