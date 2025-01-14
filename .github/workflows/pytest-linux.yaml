@@ -107,7 +107,7 @@ jobs:
             exit 0
           else
             echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
-            echo "Exit code wasn't 5: $?"
+            echo "Exit code wasn't 5: $exitcode"
             exit "$exitcode"
           fi
 
