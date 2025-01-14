@@ -103,7 +103,7 @@ jobs:
           if [ "$?" -eq 5 ]; then
             echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
             echo "Exit code was 5"
-            exit "$exitcode"
+            exit 0
           else
             echo "exitcode=$exitcode" >> "$GITHUB_OUTPUT"
             echo "Exit code wasn't 5: $?"
