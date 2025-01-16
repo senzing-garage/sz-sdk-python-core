@@ -8,6 +8,7 @@ name: Create sphinx documentation
 #       - "examples"
 #       - "src"
 #   workflow_dispatch:
+on: [push]
 
 permissions:
   contents: write
