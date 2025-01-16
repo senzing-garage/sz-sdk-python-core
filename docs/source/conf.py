@@ -43,9 +43,13 @@ if not GIT_WORKFLOW:
     ).stdout.decode(encoding="utf-8")
 else:
     print("Running in a Github action...")
-    git_branch_name = os.getenv("GITHUB_HEAD_REF", "")
-git_branch_name = git_branch_name.strip()
-print(f"\n{git_branch_name = }\n")
+    env_vars = os.environ
+    for k, v in env_vars.items():
+        print(f"{k}={v}")
+
+#     git_branch_name = os.getenv("GITHUB_HEAD_REF", "")
+# git_branch_name = git_branch_name.strip()
+# print(f"\n{git_branch_name = }\n")
 
 extensions = [
     "autodocsumm",  # to generate tables of functions, attributes, methods, etc.
