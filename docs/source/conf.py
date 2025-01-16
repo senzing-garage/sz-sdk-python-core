@@ -69,9 +69,7 @@ html_theme = "sphinx_rtd_theme"
 # TODO
 def process_docstring(app, what, name, obj, options, lines):
     print("\nDEBUG: In process_docstring()...\b")
-    # pass
-    # for i in xrange(len(lines)):
-    #     lines[i] = lines[i].replace("|class|", classname)
+
     if "add_record" in name:
         print(f"\n{app = }")
         print(f"{what = }")
@@ -83,10 +81,10 @@ def process_docstring(app, what, name, obj, options, lines):
             print(f"\t{line}")
 
     for i, line in enumerate(lines):
-        line: str = line.strip()
-        if line.startswith(".. rli:: https://raw.githubusercontent.com/senzing-garage/"):
+        # line: str = line.strip()
+        if line.startswith("                .. rli:: https://raw.githubusercontent.com/senzing-garage/"):
             print(f"Replacing in: {line}")
-            lines[i] = line.replace("/main/", git_branch_name)
+            lines[i] = line.replace("/main/", f"/{git_branch_name}/")
 
 
 def setup(app):
