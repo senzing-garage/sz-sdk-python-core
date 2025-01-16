@@ -68,6 +68,7 @@ html_theme = "sphinx_rtd_theme"
 
 # TODO
 def process_docstring(app, what, name, obj, options, lines):
+    print("\nDEBUG: In process_docstring()...\b")
     # pass
     # for i in xrange(len(lines)):
     #     lines[i] = lines[i].replace("|class|", classname)
@@ -89,4 +90,5 @@ def process_docstring(app, what, name, obj, options, lines):
 
 
 def setup(app):
+    print("\nDEBUG: In setup()...\n")
     app.connect("autodoc-process-docstring", process_docstring)
