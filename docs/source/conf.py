@@ -68,7 +68,7 @@ html_theme = "sphinx_rtd_theme"
 
 # TODO
 def process_docstring(app, what, name, obj, options, lines):
-    print("\nDEBUG: In process_docstring()...\b")
+    # print("\nDEBUG: In process_docstring()...\b")
 
     if "add_record" in name:
         print(f"\n{app = }")
@@ -82,11 +82,11 @@ def process_docstring(app, what, name, obj, options, lines):
 
     for i, line in enumerate(lines):
         # line: str = line.strip()
-        if line.startswith("                .. rli:: https://raw.githubusercontent.com/senzing-garage/"):
+        if ".. rli:: https://raw.githubusercontent.com/senzing-garage/" in line:
             print(f"Replacing in: {line}")
             lines[i] = line.replace("/main/", f"/{git_branch_name}/")
 
 
 def setup(app):
-    print("\nDEBUG: In setup()...\n")
+    # print("\nDEBUG: In setup()...\n")
     app.connect("autodoc-process-docstring", process_docstring)
