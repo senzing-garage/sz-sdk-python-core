@@ -68,20 +68,24 @@ html_theme = "sphinx_rtd_theme"
 
 # TODO
 def process_docstring(app, what, name, obj, options, lines):
-    pass
-    # loop through each line in the docstring and replace |class| with
-    # the classname
+    # pass
     # for i in xrange(len(lines)):
     #     lines[i] = lines[i].replace("|class|", classname)
-    # if "add_record" in name:
-    #     print(f"\n{app = }")
-    #     print(f"{what = }")
-    #     print(f"{name = }")
-    #     print(f"{obj = }")
-    #     print(f"{options = }")
-    #     print(f"{lines = }\n")
-    #     for line in lines:
-    #         print(f"\t{line}")
+    if "add_record" in name:
+        print(f"\n{app = }")
+        print(f"{what = }")
+        print(f"{name = }")
+        print(f"{obj = }")
+        print(f"{options = }")
+        print(f"{lines = }\n")
+        for line in lines:
+            print(f"\t{line}")
+
+    for i, line in enumerate(lines):
+        line: str = line.strip()
+        if line.startswith(".. rli:: https://raw.githubusercontent.com/senzing-garage/"):
+            print(f"Replacing in: {line}")
+            lines[i] = line.replace("/main/", git_branch_name)
 
 
 def setup(app):
