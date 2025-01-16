@@ -2,7 +2,7 @@
 
 from senzing import SzEngine, SzError
 
-from senzing_core import SzAbstractFactory
+from senzing_core import SzAbstractFactoryCore
 
 __all__ = ["try_using_abstract"]
 
@@ -13,10 +13,10 @@ def get_stats(sz_engine: SzEngine) -> None:
         stats = sz_engine.get_stats()
         print(f"Stats: {stats}")
     except SzError as err:
-        print(f"\nFile {__file__}:\nError:\n{err}\n")
+        print(f"\nError: {err}\n")
 
 
-def try_using_abstract(sz_abstract_factory: SzAbstractFactory) -> None:
+def try_using_abstract(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Example of using SzAbstractFactory"""
     try:
         sz_product = sz_abstract_factory.create_product()
@@ -25,4 +25,4 @@ def try_using_abstract(sz_abstract_factory: SzAbstractFactory) -> None:
         sz_engine = sz_abstract_factory.create_engine()
         get_stats(sz_engine)
     except SzError as err:
-        print(f"\nFile {__file__}:\nError:\n{err}\n")
+        print(f"\nError: {err}\n")

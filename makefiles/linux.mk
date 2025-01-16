@@ -31,7 +31,7 @@ coverage-osarch-specific: export SENZING_LOG_LEVEL=TRACE
 coverage-osarch-specific:
 	@$(activate-venv); pytest --cov=src --cov-report=xml  $(shell git ls-files '*.py')
 	@$(activate-venv); coverage html
-	@xdg-open $(MAKEFILE_DIRECTORY)/htmlcov/index.html
+	@xdg-open $(MAKEFILE_DIRECTORY)/htmlcov/index.html 1>/dev/null 2>&1
 
 
 .PHONY: dependencies-for-development-osarch-specific
@@ -41,7 +41,7 @@ dependencies-for-development-osarch-specific:
 .PHONY: documentation-osarch-specific
 documentation-osarch-specific:
 	@$(activate-venv); cd docs; rm -rf build; make html
-	@xdg-open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html
+	@xdg-open file://$(MAKEFILE_DIRECTORY)/docs/build/html/index.html  1>/dev/null 2>&1
 
 
 .PHONY: hello-world-osarch-specific
@@ -64,21 +64,25 @@ setup-osarch-specific:
 test-osarch-specific:
 	$(info --- Unit tests -------------------------------------------------------)
 	@$(activate-venv); pytest tests/ --verbose --capture=no --cov=src --cov-report xml:coverage.xml
-	$(info --- Test examples using unittest -------------------------------------)
-	@$(activate-venv); python3 -m unittest \
-		examples/szconfig/*.py \
-		examples/szconfigmanager/*.py \
-		examples/szdiagnostic/*.py \
-		examples/szengine/*.py \
-		examples/szproduct/*.py
-
-
-.PHONY: test-examples
-test-examples:
-	$(info --- Test examples using unittest -------------------------------------)
-	@$(activate-venv); python3 -m unittest \
-		examples/misc/add_truthset_datasources.py \
-		examples/misc/add_truthset_data.py
+	$(info --- Test examples using pytest -------------------------------------)
+	@$(activate-venv); pytest examples/szconfig/ \
+		examples/szconfigmanager/ \
+		examples/szdiagnostic/ \
+		examples/szengine/ \
+		examples/szproduct/ \
+		examples/extras/ \
+		examples/misc/ \
+		--capture=no \
+		--ignore=examples/szengine/a_header_szengine.py \
+		-o python_files=*.py \
+		--verbose; \
+		pytest_exit_code="$$?"; \
+		if [ "$$pytest_exit_code" -eq 5 ]; then \
+			printf '\nExit code from pytest was %s, this is expected testing the examples if there were no Python errors\n' "$$pytest_exit_code"; \
+			exit 0; \
+		else \
+			exit "$$pytest_exit_code"; \
+		fi
 
 
 .PHONY: venv-osarch-specific

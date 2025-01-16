@@ -2,8 +2,8 @@ import json
 
 import pytest
 from pytest_schema import schema
+from senzing import SzError
 
-from senzing_core import SzError
 from senzing_core._helpers import (
     as_c_char_p,
     as_str,

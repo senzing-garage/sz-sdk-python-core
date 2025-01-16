@@ -1,69 +1,16 @@
-from senzing import (
-    ENGINE_EXCEPTION_MAP,
-    SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION,
-    SZ_NO_ATTRIBUTES,
-    SZ_NO_AVOIDANCES,
-    SZ_NO_FLAGS,
-    SZ_NO_LOGGING,
-    SZ_NO_REQUIRED_DATASOURCES,
-    SZ_NO_SEARCH_PROFILE,
-    SZ_VERBOSE_LOGGING,
-    SZ_WITHOUT_INFO,
-    SzBadInputError,
-    SzConfigurationError,
-    SzDatabaseConnectionLostError,
-    SzDatabaseError,
-    SzEngineFlags,
-    SzError,
-    SzLicenseError,
-    SzNotFoundError,
-    SzNotInitializedError,
-    SzReplaceConflictError,
-    SzRetryableError,
-    SzRetryTimeoutExceededError,
-    SzUnhandledError,
-    SzUnknownDataSourceError,
-    SzUnrecoverableError,
-)
-
-from .szabstractfactory import SzAbstractFactory, SzAbstractFactoryParameters
-from .szconfig import SzConfig
-from .szconfigmanager import SzConfigManager
-from .szdiagnostic import SzDiagnostic
-from .szengine import SzEngine
-from .szproduct import SzProduct
+from .szabstractfactory import SzAbstractFactoryCore, SzAbstractFactoryParametersCore
+from .szconfig import SzConfigCore
+from .szconfigmanager import SzConfigManagerCore
+from .szdiagnostic import SzDiagnosticCore
+from .szengine import SzEngineCore
+from .szproduct import SzProductCore
 
 __all__ = [
-    "ENGINE_EXCEPTION_MAP",
-    "SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION",
-    "SZ_NO_ATTRIBUTES",
-    "SZ_NO_AVOIDANCES",
-    "SZ_NO_FLAGS",
-    "SZ_NO_LOGGING",
-    "SZ_NO_REQUIRED_DATASOURCES",
-    "SZ_NO_SEARCH_PROFILE",
-    "SZ_VERBOSE_LOGGING",
-    "SZ_WITHOUT_INFO",
-    "SzAbstractFactory",
-    "SzAbstractFactoryParameters",
-    "SzBadInputError",
-    "SzConfig",
-    "SzConfigManager",
-    "SzConfigurationError",
-    "SzDatabaseConnectionLostError",
-    "SzDatabaseError",
-    "SzDiagnostic",
-    "SzEngine",
-    "SzEngineFlags",
-    "SzError",
-    "SzLicenseError",
-    "SzNotFoundError",
-    "SzNotInitializedError",
-    "SzProduct",
-    "SzReplaceConflictError",
-    "SzRetryableError",
-    "SzRetryTimeoutExceededError",
-    "SzUnhandledError",
-    "SzUnknownDataSourceError",
-    "SzUnrecoverableError",
+    "SzAbstractFactoryCore",
+    "SzAbstractFactoryParametersCore",
+    "SzConfigCore",
+    "SzConfigManagerCore",
+    "SzDiagnosticCore",
+    "SzEngineCore",
+    "SzProductCore",
 ]

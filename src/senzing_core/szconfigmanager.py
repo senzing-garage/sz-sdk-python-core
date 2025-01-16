@@ -19,7 +19,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigManager as SzConfigManagerAbstract
+from senzing import SzConfigManager
 
 from ._helpers import (
     FreeCResources,
@@ -34,10 +34,10 @@ from ._version import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["SzConfigManager"]
+__all__ = ["SzConfigManagerCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-07"
+__updated__ = "2025-01-16"
 
 
 # -----------------------------------------------------------------------------
@@ -80,21 +80,22 @@ class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# SzConfigManager class
+# SzConfigManagerCore class
 # -----------------------------------------------------------------------------
 
 
-class SzConfigManager(SzConfigManagerAbstract):
+class SzConfigManagerCore(SzConfigManager):
     """
-    Use SzAbstractFactory.create_configmanager() to create an SzConfigManager object.
-    The SzConfig object uses the parameters provided to the SzAbstractFactory()
-    function.
+    Use SzAbstractFactoryCore.create_configmanager() to create an SzConfigManager object.
+    The SzConfigManager object uses the parameters provided to SzAbstractFactoryCore().
 
     Example:
 
     .. code-block:: python
 
-        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        from senzing_core import SzAbstractFactoryCore
+
+        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_config_manager = sz_abstract_factory.create_configmanager()
 
     Parameters:

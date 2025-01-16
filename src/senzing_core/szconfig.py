@@ -20,7 +20,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_uint, c_v
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfig as SzConfigAbstract
+from senzing import SzConfig
 
 from ._helpers import (
     FreeCResources,
@@ -37,10 +37,10 @@ from ._version import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["SzConfig"]
+__all__ = ["SzConfigCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-07"
+__updated__ = "2025-01-16"
 
 
 # -----------------------------------------------------------------------------
@@ -87,21 +87,22 @@ class SzConfigSaveResult(SzResponseAsCharPointerResult):
 
 
 # -----------------------------------------------------------------------------
-# SzConfig class
+# SzConfigCore class
 # -----------------------------------------------------------------------------
 
 
-class SzConfig(SzConfigAbstract):
+class SzConfigCore(SzConfig):
     """
-    Use SzAbstractFactory.create_config() to create an SzConfig object.
-    The SzConfig object uses the parameters provided to the SzAbstractFactory()
-    function.
+    Use SzAbstractFactoryCore.create_config() to create an SzConfig object.
+    The SzConfig object uses the parameters provided to SzAbstractFactoryCore().
 
     Example:
 
     .. code-block:: python
 
-        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        from senzing_core import SzAbstractFactoryCore
+
+        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_config = sz_abstract_factory.create_config()
 
     Parameters:

@@ -3,15 +3,15 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing import SzConfigManager as SzConfigManagerAbstract
-from senzing_truthset import TRUTHSET_DATASOURCES
-
-from senzing_core import (
+from senzing import (
     SzConfig,
     SzConfigManager,
     SzConfigurationError,
     SzReplaceConflictError,
 )
+from senzing_truthset import TRUTHSET_DATASOURCES
+
+from senzing_core import SzConfigCore, SzConfigManagerCore
 
 # -----------------------------------------------------------------------------
 # Testcases
@@ -204,12 +204,12 @@ def test_set_default_config_id_bad_config_id_value(
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManager()
+    actual = SzConfigManagerCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzConfigManagerAbstract)
+    assert isinstance(actual, SzConfigManager)
 
 
 # def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
@@ -238,17 +238,17 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManager()
+    actual = SzConfigManagerCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzConfigManagerAbstract)
+    assert isinstance(actual, SzConfigManager)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzConfigManager()
+    actual = SzConfigManagerCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -256,7 +256,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._destroy()  # pylint: disable=W0212
 
 
-def test_exception(sz_configmanager: SzConfigManager) -> None:
+def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_configmanager.check_result(-1)
@@ -274,7 +274,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     engine_vars is returned from conftest.py.
     """
 
-    result = SzConfig()
+    result = SzConfigCore()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -287,7 +287,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single szconfigmanager object to use for all tests.
     build_engine_vars is returned from conftest.pys"""
 
-    result = SzConfigManager()
+    result = SzConfigManagerCore()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],

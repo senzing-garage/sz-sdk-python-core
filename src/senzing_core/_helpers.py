@@ -31,10 +31,9 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-from senzing import ENGINE_EXCEPTION_MAP
+from senzing import ENGINE_EXCEPTION_MAP, SzError
 
-from senzing_core import SzError
-
+# TODO
 # if sys.version_info < (3, 10):
 if sys.version_info < (3, 11):
     from typing_extensions import ParamSpec, Self
@@ -151,7 +150,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
                 # func_received = ", ".join(
                 #     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
                 # )
-                # TODO - Ant -
+                # TODO
                 # print(f"\n{func_received = }", flush=True)
 
                 append_err_msg = f" - [Called: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature}) - Received: {func_received}]"
@@ -230,7 +229,7 @@ def escape_json_str(to_escape: str) -> str:
     :meta private:
     """
     if not isinstance(to_escape, str):
-        # TODO - Ant -
+        # TODO
         raise TypeError("expected a str")
     # return to_escape
     # TODO ensure_ascii=False = èAnt\\n👍

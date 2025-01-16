@@ -2,24 +2,24 @@
 
 import time
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing import SzError
+
+from senzing_core import SzAbstractFactoryCore
 
 CONFIG_COMMENT = "Just an example"
 DATA_SOURCE_CODE = f"REPLACE_DEFAULT_CONFIG_ID_{time.time()}"
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
-    "instance_name": "Example",
-    "settings": {
-        "PIPELINE": {
-            "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/data",
-        },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+INSTANCE_NAME = "Example"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
     },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
     old_config_id = sz_configmanager.get_default_config_id()
@@ -36,4 +36,4 @@ try:
 
     sz_configmanager.set_default_config_id(config_id)
 except SzError as err:
-    print(f"\nFile {__file__}:\nError:\n{err}\n")
+    print(f"\nError: {err}\n")

@@ -66,6 +66,7 @@ jobs:
           source ./venv/bin/activate
           pytest tests/ --verbose --capture=no --cov=src --cov-append
 
+      # TODO
       # - name: Run unittest on examples
       #   run: |
       #     source ./venv/bin/activate
@@ -92,6 +93,7 @@ jobs:
             examples/szdiagnostic/ \
             examples/szengine/ \
             examples/szproduct/ \
+            examples/extras/ \
             examples/misc/ \
             --capture=no \
             --ignore=examples/szengine/a_header_szengine.py \

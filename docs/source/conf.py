@@ -7,6 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import os
+import subprocess
 import sys
 
 project = "sz-sdk-python-core"
@@ -33,6 +34,19 @@ html_static_path = ["_static"]
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
+# TODO
+GIT_WORKFLOW = os.getenv("GITHUB_ACTIONS", "")
+if not GIT_WORKFLOW:
+    print("Not running in a Github action...")
+    git_branch_name = subprocess.run(
+        ["git", "symbolic-ref", "--short", "HEAD"], capture_output=True, check=True
+    ).stdout.decode(encoding="utf-8")
+else:
+    print("Running in a Github action...")
+    git_branch_name = os.getenv("GITHUB_HEAD_REF", "")
+git_branch_name = git_branch_name.strip()
+print(f"\n{git_branch_name = }\n")
+
 extensions = [
     "autodocsumm",  # to generate tables of functions, attributes, methods, etc.
     "sphinx_toolbox.collapse",  # support collapsable sections
@@ -41,6 +55,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",  # to read Google-style or Numpy-style docstrings
+    "sphinxext.remoteliteralinclude",  # extends literalinclude to be able to pull files from URLs
     "sphinx.ext.viewcode",  # to allow vieing the source code in the web page
 ]
 
@@ -49,3 +64,25 @@ exclude_patterns = ["*.py"]
 html_theme = "sphinx_rtd_theme"
 # autodoc_inherit_docstrings = False  # don't include docstrings from the parent class
 # autodoc_typehints = "description"   # Show types only in descriptions, not in signatures
+
+
+# TODO
+def process_docstring(app, what, name, obj, options, lines):
+    pass
+    # loop through each line in the docstring and replace |class| with
+    # the classname
+    # for i in xrange(len(lines)):
+    #     lines[i] = lines[i].replace("|class|", classname)
+    # if "add_record" in name:
+    #     print(f"\n{app = }")
+    #     print(f"{what = }")
+    #     print(f"{name = }")
+    #     print(f"{obj = }")
+    #     print(f"{options = }")
+    #     print(f"{lines = }\n")
+    #     for line in lines:
+    #         print(f"\t{line}")
+
+
+def setup(app):
+    app.connect("autodoc-process-docstring", process_docstring)
