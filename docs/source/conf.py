@@ -35,8 +35,8 @@ html_static_path = ["_static"]
 sys.path.insert(0, os.path.abspath("../../src"))
 
 # TODO
-GIT_WORKFLOW = os.getenv("GITHUB_ACTIONS", "")
-if not GIT_WORKFLOW:
+GIT_ACTIONS = os.getenv("GITHUB_ACTIONS", "")
+if not GIT_ACTIONS:
     print("Not running in a Github action...")
     git_branch_name = subprocess.run(
         ["git", "symbolic-ref", "--short", "HEAD"], capture_output=True, check=True
@@ -46,6 +46,10 @@ else:
     git_branch_name = os.getenv("GITHUB_REF_NAME", "")
 git_branch_name = git_branch_name.strip()
 print(f"\n{git_branch_name = }\n")
+
+envs = os.environ
+for k, v in envs.items():
+    print(f"{k}={v}")
 
 extensions = [
     "autodocsumm",  # to generate tables of functions, attributes, methods, etc.
@@ -82,8 +86,8 @@ def process_docstring(app, what, name, obj, options, lines):
 
     for i, line in enumerate(lines):
         # line: str = line.strip()
-        if ".. rli:: https://raw.githubusercontent.com/senzing-garage/" in line:
-            print(f"Replacing in: {line}")
+        if ".. rli:: https://raw.githubusercontent.com/senzing-garage/sz-sdk-python-core/refs/heads/" in line:
+            print(f"Replacing for sz-sdk-python-core in: {line}")
             lines[i] = line.replace("/main/", f"/{git_branch_name}/")
 
 
