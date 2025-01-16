@@ -13,6 +13,7 @@ on: [push]
 permissions:
   contents: write
 
+# TODO - testing with adding senzing to install dependencies
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -33,7 +34,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-# TODO - testing with adding senzing
           python -m pip install senzing sphinx sphinx_rtd_theme myst_parser autodocsumm sphinx-toolbox sphinxext-remoteliteralinclude
 
       - name: Sphinx build
