@@ -25,4 +25,4 @@ try:
         result = sz_engine.process_redo_record(redo_record, FLAGS)
         print(result)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

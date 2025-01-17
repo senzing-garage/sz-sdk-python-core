@@ -25,4 +25,4 @@ try:
     RESULT = sz_engine.find_network_by_record_id(RECORD_LIST, MAX_DEGREES, BUILD_OUT_DEGREES, MAX_ENTITIES, FLAGS)
     print(f"\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

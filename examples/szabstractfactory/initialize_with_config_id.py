@@ -19,4 +19,4 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS, CONFIG_ID)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

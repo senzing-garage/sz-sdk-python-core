@@ -20,4 +20,4 @@ try:
     RESULT = sz_product.get_version()
     print(f"\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

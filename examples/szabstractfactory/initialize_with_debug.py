@@ -19,4 +19,4 @@ try:
     # Create an engine to show debug output
     sz_abstract_factory.create_engine()
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

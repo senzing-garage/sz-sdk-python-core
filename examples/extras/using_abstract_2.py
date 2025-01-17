@@ -13,7 +13,7 @@ def get_stats(sz_engine: SzEngine) -> None:
         stats = sz_engine.get_stats()
         print(f"Stats: {stats}")
     except SzError as err:
-        print(f"\nError: {err}\n")
+        print(f"\nERROR: {err}\n")
 
 
 def try_using_abstract(sz_abstract_factory: SzAbstractFactoryCore) -> None:
@@ -25,4 +25,4 @@ def try_using_abstract(sz_abstract_factory: SzAbstractFactoryCore) -> None:
         sz_engine = sz_abstract_factory.create_engine()
         get_stats(sz_engine)
     except SzError as err:
-        print(f"\nError: {err}\n")
+        print(f"\nERROR: {err}\n")

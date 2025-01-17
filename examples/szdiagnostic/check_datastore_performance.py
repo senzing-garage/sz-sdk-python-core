@@ -22,4 +22,4 @@ try:
     RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
     print(f"\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

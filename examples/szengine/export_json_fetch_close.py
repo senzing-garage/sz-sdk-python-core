@@ -25,4 +25,4 @@ try:
         print(fragment, end="")
     sz_engine.close_export(export_handle)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

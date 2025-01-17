@@ -20,4 +20,4 @@ try:
     sz_abstract_factory = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
     try_using_abstract(sz_abstract_factory)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

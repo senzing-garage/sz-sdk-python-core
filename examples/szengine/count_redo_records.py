@@ -20,4 +20,4 @@ try:
     RESULT = sz_engine.count_redo_records()
     print(f"\n{RESULT}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

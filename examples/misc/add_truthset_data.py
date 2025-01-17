@@ -36,4 +36,4 @@ try:
                 SZ_WITHOUT_INFO,
             )
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

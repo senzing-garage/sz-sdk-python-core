@@ -20,4 +20,4 @@ try:
     CONFIG_ID = sz_configmanager.get_default_config_id()
     print(f"\n{CONFIG_ID}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

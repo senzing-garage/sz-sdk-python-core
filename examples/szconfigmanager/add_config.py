@@ -23,4 +23,4 @@ try:
     CONFIG_DEFINITION = sz_config.export_config(config_handle)
     config_id = sz_configmanager.add_config(CONFIG_DEFINITION, CONFIG_COMMENT)
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")

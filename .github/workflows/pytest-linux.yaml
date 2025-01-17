@@ -66,19 +66,6 @@ jobs:
           source ./venv/bin/activate
           pytest tests/ --verbose --capture=no --cov=src --cov-append
 
-      # TODO
-      # - name: Run unittest on examples
-      #   run: |
-      #     source ./venv/bin/activate
-      #     python3 -m unittest \
-      #       examples/szconfig/*.py \
-      #       examples/szconfigmanager/*.py \
-      #       examples/szdiagnostic/*.py \
-      #       examples/szengine/*.py \
-      #       examples/szproduct/*.py \
-      #       examples/misc/*.py \
-      #       || true
-
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1
       # is returned. If there are no Python errors but pytest didn't think it found any

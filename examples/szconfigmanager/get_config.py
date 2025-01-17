@@ -21,4 +21,4 @@ try:
     CONFIG_DEFINITION = sz_configmanager.get_config(config_id)
     print(f"\n{CONFIG_DEFINITION}\n")
 except SzError as err:
-    print(f"\nError: {err}\n")
+    print(f"\nERROR: {err}\n")
