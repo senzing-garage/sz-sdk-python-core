@@ -111,6 +111,12 @@ def process_docstring(app, what, name, obj, options, lines):
             lines[i] = line.replace("/main/", f"/{git_branch}/")
             print(f"\tPROCESS_DOCSTRING: {lines[i].strip()}\n")
 
+        # TODO To test abstract main for now
+        if ".. literalinclude:: ../../examples/" in line:
+            print(
+                f"PROCESS_DOCSTRING: Testing! - Replacing /main/ with /{git_branch}/ for {what} {name}, line: {line.strip()}"
+            )
+
 
 def setup(app):
     # print("\nDEBUG: In setup()...\n")
