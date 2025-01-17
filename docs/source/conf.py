@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 project = "sz-sdk-python-core"
-copyright = "2024, Senzing"
+copyright = "2025, Senzing"
 author = "senzing"
 
 # -- General configuration ---------------------------------------------------
@@ -53,13 +53,12 @@ html_theme = "sphinx_rtd_theme"
 # autodoc_inherit_docstrings = False  # don't include docstrings from the parent class
 # autodoc_typehints = "description"   # Show types only in descriptions, not in signatures
 
-# TODO
+# Setup for process_docstring()
 PROCESS_DOCSTRING_DEBUG = os.getenv("SPHINX_PROCESS_DOCSTRING_DEBUG", "")
-# TODO
 try:
-    GIT_ACTIONS = os.getenv("GITHUB_ACTIONS", "")
-    if not GIT_ACTIONS:
-        print("PROCESS_DOCSTRING: Not running in a Github action...")
+    # Running "locally" using Make
+    if not os.getenv("GITHUB_ACTIONS", ""):
+        print("\nPROCESS_DOCSTRING: Not running in a GitHub action...")
 
         # Example response = 153-ant-1
         git_branch = subprocess.run(
@@ -70,12 +69,14 @@ try:
         git_repo = subprocess.run(
             ["git", "config", "--get-all", "remote.origin.url"], capture_output=True, check=True
         ).stdout.decode(encoding="utf-8")
+
+        # Capture only senzing-garage/sz-sdk-python-core
         if git_repo:
             git_repo_list = git_repo.split(":")
             git_repo = git_repo_list[-1]
             git_repo = git_repo.replace(".git", "")
     else:
-        print("PROCESS_DOCSTRING: Running in a Github action...")
+        print("\nPROCESS_DOCSTRING: Running in a GitHub action...")
         # Example response = 153-ant-1
         git_branch = os.getenv("GITHUB_REF_NAME", "")
         # Example response = senzing-garage/sz-sdk-python-core
@@ -84,40 +85,42 @@ try:
     git_branch = git_branch.strip()
     git_repo = git_repo.strip()
 
-    # TODO Debug
     print(f"PROCESS_DOCSTRING: {git_branch = }")
     print(f"PROCESS_DOCSTRING: {git_repo = }\n")
-except (subprocess.CalledProcessError, FileNotFoundError, TypeError, IndexError) as err:
-    print(f"\nERROR: Failed trying to process doc strings - {err}\n")
-    sys.exit(1)
+
+    if not git_branch or not git_repo:
+        raise ValueError("no value for either git_branch or git_repo")
+except (subprocess.CalledProcessError, FileNotFoundError, TypeError, IndexError, ValueError) as err:
+    print("ERROR: Failed processing doc strings: ")
+    raise err
 
 
-# TODO
-def process_docstring(app, what, name, obj, options, lines):
-    # print("\nDEBUG: In process_docstring()...\b")
+def process_abstract_docstring(app, what, name, obj, options, lines):
+    """
+    When processing doc strings from (abstract) sz-sdk-python check if any line in the doc string has a
+    remote import (rli directive) for the examples and output files in a concrete package (for example,
+    sz-sdk-python-core or sz-sdk-python-grpc).
 
+    If the rli directive is found and is referencing /examples/ replace /main/ with the current branch to
+    point to examples in that branch to build the docs and not the current main branch; examples in main
+    may not be current if the working branch has modified them.
+    """
     if PROCESS_DOCSTRING_DEBUG:
-        print(f"\n{app = }")
-        print(f"{what = }")
-        print(f"{name = }")
-        print(f"{obj = }")
-        print(f"{options = }")
-        print(f"{lines = }\n")
+        print(f"\nPROCESS_DOCSTRING: {app = }")
+        print(f"PROCESS_DOCSTRING: {what = }")
+        print(f"PROCESS_DOCSTRING: {name = }")
+        print(f"PROCESS_DOCSTRING: {obj = }")
+        print(f"PROCESS_DOCSTRING: {options = }")
+        print(f"PROCESS_DOCSTRING: {lines = }")
 
     for i, line in enumerate(lines):
         # .. rli:: https://raw.githubusercontent.com/senzing-garage/sz-sdk-python-core/refs/heads/main/examples/szengine/add_record.py
         if f".. rli:: https://raw.githubusercontent.com/{git_repo}/refs/heads/main/examples/" in line:
             print(f"PROCESS_DOCSTRING: Replacing /main/ with /{git_branch}/ for {what} {name}, line: {line.strip()}")
             lines[i] = line.replace("/main/", f"/{git_branch}/")
-            print(f"\tPROCESS_DOCSTRING: {lines[i].strip()}\n")
-
-        # TODO To test abstract main for now
-        if ".. literalinclude:: ../../examples/" in line:
-            print(
-                f"PROCESS_DOCSTRING: Testing! - Replacing /main/ with /{git_branch}/ for {what} {name}, line: {line.strip()}"
-            )
+            print(f"PROCESS_DOCSTRING:\t{lines[i].strip()}\n")
 
 
 def setup(app):
-    # print("\nDEBUG: In setup()...\n")
-    app.connect("autodoc-process-docstring", process_docstring)
+    """Hook to autodoc to process docs strings from (abstract) sz-sdk-python"""
+    app.connect("autodoc-process-docstring", process_abstract_docstring)

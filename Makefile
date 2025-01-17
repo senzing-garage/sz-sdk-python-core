@@ -60,7 +60,7 @@ hello-world: hello-world-osarch-specific
 .PHONY: venv
 venv: venv-osarch-specific
 
-
+# TODO Add for docs
 .PHONY: dependencies-for-development
 dependencies-for-development: venv dependencies-for-development-osarch-specific
 	$(activate-venv); \
