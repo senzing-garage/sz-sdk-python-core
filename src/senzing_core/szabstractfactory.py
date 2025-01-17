@@ -26,7 +26,7 @@ from .szproduct import SzProductCore
 
 # Metadata
 
-__all__ = ["SzAbstractFactory", "SzAbstractFactoryParametersCore"]
+__all__ = ["SzAbstractFactoryCore", "SzAbstractFactoryParametersCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-10-21"
 __updated__ = "2025-01-17"
@@ -39,7 +39,8 @@ __updated__ = "2025-01-17"
 
 class SzAbstractFactoryParametersCore(TypedDict, total=False):
     """
-    SzAbstractFactoryParameters is used to create a dictionary that can be unpacked when creating an SzAbstractFactory.
+    SzAbstractFactoryParametersCore is used to create a dictionary that can be unpacked when creating an
+    SzAbstractFactory.
     """
 
     instance_name: str
@@ -55,7 +56,7 @@ class SzAbstractFactoryParametersCore(TypedDict, total=False):
 
 class SzAbstractFactoryCore(SzAbstractFactory):
     """
-    SzAbstractFactory module is a factory pattern for accessing Senzing.
+    SzAbstractFactoryCore is a factory pattern for accessing Senzing.
     """
 
     # -------------------------------------------------------------------------

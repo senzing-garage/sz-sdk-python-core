@@ -17,7 +17,7 @@ def get_stats(sz_engine: SzEngine) -> None:
 
 
 def try_using_abstract(sz_abstract_factory: SzAbstractFactoryCore) -> None:
-    """Example of using SzAbstractFactory"""
+    """Example of using SzAbstractFactoryCore"""
     try:
         sz_product = sz_abstract_factory.create_product()
         version = sz_product.get_version()

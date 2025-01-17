@@ -76,7 +76,6 @@ test-osarch-specific:
 		examples/extras/ \
 		examples/misc/ \
 		--capture=no \
-		--ignore=examples/szengine/a_header_szengine.py \
 		-o python_files=*.py \
 		--verbose; \
 		pytest_exit_code="$$?"; \
