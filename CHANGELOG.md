@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning].
 - Simplified \_\_init\_\_.py
 - Modify examples to import from senzing and senzing_core
 - Modified workflows and make files to use pytest instead of unittest for examples
-- Cleaned up examples
+- Cleaned up tne examples
 
 ### Added in 0.3.2
 
