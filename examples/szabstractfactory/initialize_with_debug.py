@@ -13,9 +13,10 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+VERBOSE_LOGGING = 1
 
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS, verbose_logging=VERBOSE_LOGGING)
     # Create an engine to show debug output
     sz_abstract_factory.create_engine()
 except SzError as err:
