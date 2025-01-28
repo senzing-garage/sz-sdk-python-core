@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from senzing import (
-	SzAbstractFactory,
+    SzAbstractFactory,
     SzConfig,
     SzConfigManager,
     SzDiagnostic,
