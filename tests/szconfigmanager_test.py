@@ -28,6 +28,17 @@ def test_add_config(sz_configmanager: SzConfigManager, sz_config: SzConfig) -> N
     assert actual > 0
 
 
+def test_add_config_dict(sz_configmanager: SzConfigManager, sz_config: SzConfig) -> None:
+    """Test SzConfigManager().add_config()."""
+    config_handle = sz_config.create_config()
+    config_definition = sz_config.export_config(config_handle)
+    config_definition_as_dict = json.loads(config_definition)
+    config_comment = "Test"
+    actual = sz_configmanager.add_config(config_definition_as_dict, config_comment)
+    assert isinstance(actual, int)
+    assert actual > 0
+
+
 def test_add_config_bad_config_definition_type(
     sz_configmanager: SzConfigManager,
 ) -> None:
