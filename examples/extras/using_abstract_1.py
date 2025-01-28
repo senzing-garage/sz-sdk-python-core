@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 
+from senzing import SzError
 from using_abstract_2 import try_using_abstract
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactoryCore, SzAbstractFactoryParametersCore
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+FACTORY_PARAMETERS: SzAbstractFactoryParametersCore = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -16,7 +17,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
     },
 }
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_abstract_factory = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
     try_using_abstract(sz_abstract_factory)
 except SzError as err:
-    print(f"\nFile {__file__}:\nError:\n{err}\n")
+    print(f"\nERROR: {err}\n")

@@ -4,6 +4,11 @@
 
 include makefiles/osdetect.mk
 
+# Define newline for use
+define \n
+
+endef
+
 # -----------------------------------------------------------------------------
 # Variables
 # -----------------------------------------------------------------------------
@@ -60,12 +65,17 @@ hello-world: hello-world-osarch-specific
 .PHONY: venv
 venv: venv-osarch-specific
 
-
 .PHONY: dependencies-for-development
 dependencies-for-development: venv dependencies-for-development-osarch-specific
 	$(activate-venv); \
 		python3 -m pip install --upgrade pip; \
 		python3 -m pip install --requirement development-requirements.txt
+
+.PHONY: dependencies-for-documentation
+dependencies-for-documentation: venv dependencies-for-documentation-osarch-specific
+	$(activate-venv); \
+		python3 -m pip install --upgrade pip; \
+		python3 -m pip install --requirement documentation-requirements.txt
 
 
 .PHONY: dependencies
@@ -171,63 +181,74 @@ print-make-variables:
 
 .PHONY: bandit
 bandit:
+	$(info ${\n})
 	$(info --- bandit ---------------------------------------------------------------------)
 	@$(activate-venv); bandit -c pyproject.toml $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: black
 black:
+	$(info ${\n})
 	$(info --- black ----------------------------------------------------------------------)
 	@$(activate-venv); black $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: flake8
 flake8:
+	$(info ${\n})
 	$(info --- flake8 ---------------------------------------------------------------------)
 	@$(activate-venv); flake8 $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: isort
 isort:
+	$(info ${\n})
 	$(info --- isort ----------------------------------------------------------------------)
 	@$(activate-venv); isort $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: mypy
 mypy:
+	$(info ${\n})
 	$(info --- mypy -----------------------------------------------------------------------)
 	@$(activate-venv); mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: pydoc
 pydoc:
+	$(info ${\n})
 	$(info --- pydoc ----------------------------------------------------------------------)
 	@$(activate-venv); python3 -m pydoc
 
 
 .PHONY: pydoc-web
 pydoc-web:
+	$(info ${\n})
 	$(info --- pydoc-web ------------------------------------------------------------------)
 	@$(activate-venv); python3 -m pydoc -p 8885
 
 
 .PHONY: pylint
 pylint:
+	$(info ${\n})
 	$(info --- pylint ---------------------------------------------------------------------)
 	@$(activate-venv); pylint $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: pytest
 pytest:
+	$(info ${\n})
 	$(info --- pytest ---------------------------------------------------------------------)
 	@$(activate-venv); pytest $(shell git ls-files '*.py' ':!:docs/source/*')
 
 
 .PHONY: sphinx
 sphinx: sphinx-osarch-specific
+	$(info ${\n})
 	$(info --- sphinx ---------------------------------------------------------------------)
 
 
 .PHONY: view-sphinx
 view-sphinx: view-sphinx-osarch-specific
+	$(info ${\n})
 	$(info --- view-sphinx ----------------------------------------------------------------)

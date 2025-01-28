@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing import SzError
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+from senzing_core import SzAbstractFactoryCore, SzAbstractFactoryParametersCore
+
+FACTORY_PARAMETERS: SzAbstractFactoryParametersCore = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -13,10 +15,7 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     },
 }
-
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
-    sz_engine = sz_abstract_factory.create_engine()
-    # Do Work
+    sz_abstract_factory = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
 except SzError as err:
-    print(f"\nError in {__file__}:\n{err}\n")
+    print(f"\nERROR: {err}\n")

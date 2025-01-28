@@ -66,17 +66,33 @@ jobs:
           source ./venv/bin/activate
           pytest tests/ --verbose --capture=no --cov=src --cov-append
 
-      - name: Run unittest on examples
+      # Use pytest to check examples, there are no "test" classes/functions, pytest imports
+      # the .py files. If there is a Python error in the examples, an exit code of 1
+      # is returned. If there are no Python errors but pytest didn't think it found any
+      # tests an exit code of 5 is returned, this is a pass but need to capture it and
+      # return 0 - https://docs.pytest.org/en/stable/reference/exit-codes.html
+      - name: Run pytest on examples
         run: |
           source ./venv/bin/activate
-          python3 -m unittest \
-            examples/szconfig/*.py \
-            examples/szconfigmanager/*.py \
-            examples/szdiagnostic/*.py \
-            examples/szengine/*.py \
-            examples/szproduct/*.py \
-            examples/misc/*.py \
-            || true
+          set +e
+          pytest examples/szconfig/ \
+            examples/szconfigmanager/ \
+            examples/szdiagnostic/ \
+            examples/szengine/ \
+            examples/szproduct/ \
+            examples/extras/ \
+            examples/misc/ \
+            --capture=no \
+            -o python_files=*.py \
+            --verbose
+          pytest_exit_code="$?"
+          set -e
+          if [ "$pytest_exit_code" -eq 5 ]; then
+            echo -e "\nExit code from pytest was $pytest_exit_code, this is expected testing the examples if there were no Python errors\n"
+            exit 0
+          else
+            exit "$pytest_exit_code"
+          fi
 
       - name: Rename coverage file
         env:

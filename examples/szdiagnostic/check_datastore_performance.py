@@ -1,24 +1,25 @@
 #! /usr/bin/env python3
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing import SzError
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
-    "instance_name": "Example",
-    "settings": {
-        "PIPELINE": {
-            "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/data",
-        },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-    },
-}
+from senzing_core import SzAbstractFactoryCore
+
+INSTANCE_NAME = "Example"
 SECONDS_TO_RUN = 3
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
+    },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+}
+
 
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
     RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
-    print(f"\nFile {__file__}:\n{RESULT}\n")
+    print(f"\n{RESULT}\n")
 except SzError as err:
-    print(f"\nFile {__file__}:\nError:\n{err}\n")
+    print(f"\nERROR: {err}\n")

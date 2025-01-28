@@ -31,8 +31,7 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing import SzEngine as SzEngineAbstract
-from senzing import SzEngineFlags
+from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags
 
 from ._helpers import (
     FreeCResources,
@@ -51,10 +50,10 @@ from ._version import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["SzEngine"]
+__all__ = ["SzEngineCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-15"
+__updated__ = "2025-01-28"
 
 
 # -----------------------------------------------------------------------------
@@ -215,21 +214,22 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# SzEngine class
+# SzEngineCore class
 # -----------------------------------------------------------------------------
 
 
-class SzEngine(SzEngineAbstract):
+class SzEngineCore(SzEngine):
     """
-    Use SzAbstractFactory.create_engine() to create an SzEngine object.
-    The SzEngine object uses the parameters provided to the SzAbstractFactory()
-    function.
+    Use SzAbstractFactoryCore.create_engine() to create an SzEngine object.
+    The SzEngine object uses the parameters provided to SzAbstractFactoryCore().
 
     Example:
 
     .. code-block:: python
 
-        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        from senzing_core import SzAbstractFactoryCore
+
+        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_engine = sz_abstract_factory.create_engine()
 
     Parameters:
@@ -254,9 +254,8 @@ class SzEngine(SzEngineAbstract):
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
-        # Empty response for methods where with info can optionally be
-        # returned but was not requested
-        self.no_info = "{}"
+        # Empty response for methods where with info can optionally be returned but was not requested
+        self.no_info = SZ_NO_INFO
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()

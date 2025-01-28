@@ -3,9 +3,9 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Regex, schema
-from senzing import SzProduct as SzProductAbstract
+from senzing import SzProduct
 
-from senzing_core import SzProduct
+from senzing_core import SzProductCore
 
 # -----------------------------------------------------------------------------
 # Testcases
@@ -35,12 +35,12 @@ def test_get_version(sz_product: SzProduct) -> None:
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProduct()
+    actual = SzProductCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    assert isinstance(actual, SzProductAbstract)
+    assert isinstance(actual, SzProduct)
 
 
 # NOTE szproduct can be initialized without an instance name
@@ -68,17 +68,17 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProduct()
+    actual = SzProductCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
-    assert isinstance(actual, SzProductAbstract)
+    assert isinstance(actual, SzProduct)
 
 
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
-    actual = SzProduct()
+    actual = SzProductCore()
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
@@ -86,7 +86,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._destroy()  # pylint: disable=W0212
 
 
-def test_exception(sz_product: SzProduct) -> None:
+def test_exception(sz_product: SzProductCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
         sz_product.check_result(-1)
@@ -103,7 +103,7 @@ def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     Single szproduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-    result = SzProduct()
+    result = SzProductCore()
     result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],

@@ -1,23 +1,22 @@
 #! /usr/bin/env python3
 
+from senzing import SzError
 from senzing_truthset import TRUTHSET_DATASOURCES
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters, SzError
+from senzing_core import SzAbstractFactoryCore
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
-    "instance_name": "Example1",
-    "settings": {
-        "PIPELINE": {
-            "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/data",
-        },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+INSTANCE_NAME = "Example"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
     },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
@@ -33,4 +32,4 @@ try:
     sz_configmanager.replace_default_config_id(current_default_config_id, new_default_config_id)
     sz_abstract_factory.reinitialize(new_default_config_id)
 except SzError as err:
-    print(f"\nFile {__file__}:\nError:\n{err}\n")
+    print(f"\nERROR: {err}\n")

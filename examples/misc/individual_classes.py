@@ -10,22 +10,20 @@ from senzing import (
     SzProduct,
 )
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
+from senzing_core import SzAbstractFactoryCore
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
-    "instance_name": "Example",
-    "settings": {
-        "PIPELINE": {
-            "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/data",
-        },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+INSTANCE_NAME = "Example"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
     },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
 
-def try_sz_abstract_factory(sz_abstract_factory_local: SzAbstractFactory) -> None:
+def try_sz_abstract_factory(sz_abstract_factory_local: SzAbstractFactoryCore) -> None:
     """Just a test of parameter typing."""
     _ = sz_abstract_factory_local
 
@@ -56,7 +54,7 @@ def try_sz_product(sz_product_local: SzProduct) -> None:
 
 
 try:
-    sz_abstract_factory = SzAbstractFactory(**FACTORY_PARAMETERS)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
@@ -71,4 +69,4 @@ try:
     try_sz_product(sz_product)
 
 except SzError as err:
-    print(f"\nFile {__file__}:\nError:\n{err}\n")
+    print(f"\nERROR: {err}\n")

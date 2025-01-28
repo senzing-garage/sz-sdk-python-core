@@ -20,7 +20,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_vo
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnostic as SzDiagnosticAbstract
+from senzing import SzDiagnostic
 
 from ._helpers import (
     FreeCResources,
@@ -35,10 +35,10 @@ from ._version import is_supported_senzingapi_version
 
 # Metadata
 
-__all__ = ["SzDiagnostic"]
+__all__ = ["SzDiagnosticCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-27"
+__updated__ = "2025-01-28"
 
 
 # -----------------------------------------------------------------------------
@@ -68,21 +68,22 @@ class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
 
 
 # -----------------------------------------------------------------------------
-# SzDiagnostic class
+# SzDiagnosticCore class
 # -----------------------------------------------------------------------------
 
 
-class SzDiagnostic(SzDiagnosticAbstract):
+class SzDiagnosticCore(SzDiagnostic):
     """
-    Use SzAbstractFactory.create_diagnostic() to create an SzDiagnostic object.
-    The SzDiagnostic object uses the parameters provided to the SzAbstractFactory()
-    function.
+    Use SzAbstractFactoryCore.create_diagnostic() to create an SzDiagnostic object.
+    The SzDiagnostic object uses the parameters provided to SzAbstractFactoryCore().
 
     Example:
 
     .. code-block:: python
 
-        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        from senzing_core import SzAbstractFactoryCore
+
+        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_diagnostic = sz_abstract_factory.create_diagnostic()
 
     Parameters:

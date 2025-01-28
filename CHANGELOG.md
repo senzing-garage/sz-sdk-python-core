@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-01-28
+
+### Changed in 0.3.2
+
+- Change class names to be more specific, e.g., core vs grpc
+- Simplified \_\_init\_\_.py
+- Modify examples to import from senzing and senzing_core
+- Modified workflows and make files to use pytest instead of unittest for examples
+- Cleaned up tne examples
+- With info methods return "" instead of "{}" for simpler checking
+
+### Added in 0.3.2
+
+- Added custom documentation processing to Sphinx
+- Added documentation-requirements.txt
+
+### Fixed in 0.3.2
+
+- Fixed error from building Sphinx doc for html_static_path = ["_static"]
+
 ## [0.3.1] - 2024-12-04
 
 ### Added in 0.3.1

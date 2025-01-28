@@ -20,7 +20,7 @@ from ctypes import c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzProduct as SzProductAbstract
+from senzing import SzProduct
 
 from ._helpers import (
     as_c_char_p,
@@ -33,28 +33,29 @@ from ._helpers import (
 
 # Metadata
 
-__all__ = ["SzProduct"]
+__all__ = ["SzProductCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2023-11-07"
+__updated__ = "2025-01-28"
 
 
 # -----------------------------------------------------------------------------
-# SzProduct class
+# SzProductCore class
 # -----------------------------------------------------------------------------
 
 
-class SzProduct(SzProductAbstract):
+class SzProductCore(SzProduct):
     """
-    Use SzAbstractFactory.create_product() to create an SzProduct object.
-    The SzProduct object uses the parameters provided to the SzAbstractFactory()
-    function.
+    Use SzAbstractFactoryCore.create_product() to create an SzProduct object.
+    The SzProduct object uses the parameters provided to the SzAbstractFactoryCore().
 
     Example:
 
     .. code-block:: python
 
-        sz_abstract_factory = SzAbstractFactory(instance_name, settings)
+        from senzing_core import SzAbstractFactoryCore
+
+        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_product = sz_abstract_factory.create_product()
 
     Parameters:

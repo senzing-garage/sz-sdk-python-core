@@ -1,15 +1,11 @@
 from datetime import datetime
 
 import pytest
-from senzing import SzConfig as SzConfigAbstract
-from senzing import SzConfigManager as SzConfigManagerAbstract
-from senzing import SzDiagnostic as SzDiagnosticAbstract
-from senzing import SzEngine as SzEngineAbstract
-from senzing import SzProduct as SzProductAbstract
+from senzing import SzConfig, SzConfigManager, SzDiagnostic, SzEngine, SzProduct
 
-from senzing_core import SzAbstractFactory, SzAbstractFactoryParameters
+from senzing_core import SzAbstractFactoryCore, SzAbstractFactoryParametersCore
 
-FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
+FACTORY_PARAMETERS: SzAbstractFactoryParametersCore = {
     "instance_name": "Example",
     "settings": {
         "PIPELINE": {
@@ -26,37 +22,37 @@ FACTORY_PARAMETERS: SzAbstractFactoryParameters = {
 # -----------------------------------------------------------------------------
 
 
-def test_create_config(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_config(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzConfig."""
     actual = sz_abstract_factory.create_config()
-    assert isinstance(actual, SzConfigAbstract)
+    assert isinstance(actual, SzConfig)
 
 
-def test_create_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_configmanager(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzConfigManager."""
     actual = sz_abstract_factory.create_configmanager()
-    assert isinstance(actual, SzConfigManagerAbstract)
+    assert isinstance(actual, SzConfigManager)
 
 
-def test_create_diagnostic(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_diagnostic(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzDiagnostic."""
     actual = sz_abstract_factory.create_diagnostic()
-    assert isinstance(actual, SzDiagnosticAbstract)
+    assert isinstance(actual, SzDiagnostic)
 
 
-def test_create_engine(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_engine(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzEngine."""
     actual = sz_abstract_factory.create_engine()
-    assert isinstance(actual, SzEngineAbstract)
+    assert isinstance(actual, SzEngine)
 
 
-def test_create_product(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_create_product(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzProduct."""
     actual = sz_abstract_factory.create_product()
-    assert isinstance(actual, SzProductAbstract)
+    assert isinstance(actual, SzProduct)
 
 
-def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
+def test_reinitialize(sz_abstract_factory: SzAbstractFactoryCore) -> None:
     """Create SzConfig."""
 
     datasources = [f"TEST_DATASOURCE_{datetime.now().timestamp()}"]
@@ -99,11 +95,11 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
 
 
 @pytest.fixture(name="sz_abstract_factory", scope="function")
-def sz_abstract_factory_fixture() -> SzAbstractFactory:
+def sz_abstract_factory_fixture() -> SzAbstractFactoryCore:
     """
-    Single sz_abstractfactory object to use for all tests.
+    Single SzAbstractFactoryCore object to use for all tests.
     """
-    result = SzAbstractFactory(**FACTORY_PARAMETERS)
+    result = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
     return result
 
 

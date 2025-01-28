@@ -5,9 +5,9 @@ TODO: _version.py
 
 import json
 
-from senzing_core import SzError
+from senzing import SzError
 
-from .szproduct import SzProduct
+from .szproduct import SzProductCore
 
 SENZING_VERSION_MINIMUM = "3.8.0"
 SENZING_VERSION_MAXIMUM = "5.0.0"
@@ -82,7 +82,7 @@ def is_supported_senzingapi_version() -> bool:
     :meta private:
     """
 
-    sz_product = SzProduct()
+    sz_product = SzProductCore()
     sz_product._initialize("szversion", "{}")  # pylint: disable=W0212
     version_dict = json.loads(sz_product.get_version())
     senzing_version_current = version_dict.get("VERSION", "0.0.0")

@@ -9,31 +9,38 @@ TODO: szabstractfactory.py
 from types import TracebackType
 from typing import Any, Dict, Type, TypedDict, Union
 
-from senzing import SzAbstractFactory as SzAbstractFactoryAbstract
-from senzing import SzConfig, SzConfigManager, SzDiagnostic, SzEngine, SzProduct
+from senzing import (
+    SzAbstractFactory,
+    SzConfig,
+    SzConfigManager,
+    SzDiagnostic,
+    SzEngine,
+    SzProduct,
+)
 
-from .szconfig import SzConfig as SzConfigCore
-from .szconfigmanager import SzConfigManager as SzConfigManagerCore
-from .szdiagnostic import SzDiagnostic as SzDiagnosticCore
-from .szengine import SzEngine as SzEngineCore
-from .szproduct import SzProduct as SzProductCore
+from .szconfig import SzConfigCore
+from .szconfigmanager import SzConfigManagerCore
+from .szdiagnostic import SzDiagnosticCore
+from .szengine import SzEngineCore
+from .szproduct import SzProductCore
 
 # Metadata
 
-__all__ = ["SzAbstractFactory"]
+__all__ = ["SzAbstractFactoryCore", "SzAbstractFactoryParametersCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-10-21"
-__updated__ = "2024-10-24"
+__updated__ = "2025-01-28"
 
 
 # -----------------------------------------------------------------------------
-# SzAbstractFactoryParameters class
+# SzAbstractFactoryParametersCore class
 # -----------------------------------------------------------------------------
 
 
-class SzAbstractFactoryParameters(TypedDict, total=False):
+class SzAbstractFactoryParametersCore(TypedDict, total=False):
     """
-    SzAbstractFactoryParameters is used to create a dictionary that can be unpacked when creating an SzAbstractFactory.
+    SzAbstractFactoryParametersCore is used to create a dictionary that can be unpacked when creating an
+    SzAbstractFactory.
     """
 
     instance_name: str
@@ -43,13 +50,13 @@ class SzAbstractFactoryParameters(TypedDict, total=False):
 
 
 # -----------------------------------------------------------------------------
-# SzAbstractFactory class
+# SzAbstractFactoryCore class
 # -----------------------------------------------------------------------------
 
 
-class SzAbstractFactory(SzAbstractFactoryAbstract):
+class SzAbstractFactoryCore(SzAbstractFactory):
     """
-    SzAbstractFactory module is a factory pattern for accessing Senzing.
+    SzAbstractFactoryCore is a factory pattern for accessing Senzing.
     """
 
     # -------------------------------------------------------------------------
@@ -194,6 +201,13 @@ class SzAbstractFactory(SzAbstractFactoryAbstract):
 
         self.config_id = config_id
 
+        if self.is_szengine_initialized:
+            sz_engine = SzEngineCore()
+            sz_engine._reinitialize(config_id=config_id)  # pylint: disable=W0212
+
+        if self.is_szdiagnostic_initialized:
+            sz_diagnostic = SzDiagnosticCore()
+            sz_diagnostic._reinitialize(config_id=config_id)  # pylint: disable=W0212
         if self.is_szengine_initialized:
             sz_engine = SzEngineCore()
             sz_engine._reinitialize(config_id=config_id)  # pylint: disable=W0212

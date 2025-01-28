@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install sphinx sphinx_rtd_theme myst_parser autodocsumm sphinx-toolbox
+          python -m pip install --requirement documentation-requirements.txt
 
       - name: Sphinx build
         run: |
