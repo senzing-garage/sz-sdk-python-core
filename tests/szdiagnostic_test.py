@@ -13,7 +13,7 @@ from senzing_core import SzConfigManagerCore, SzDiagnosticCore, SzEngineCore
 
 
 def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
-    """Test SzDiagnosticCore().check_datastore_performance()."""
+    """Test SzDiagnostic().check_datastore_performance()."""
     seconds_to_run = 3
     actual = sz_diagnostic.check_datastore_performance(seconds_to_run)
     actual_as_dict = json.loads(actual)
@@ -23,7 +23,7 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
 def test_check_datastore_performance_bad_seconds_to_run_type(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnosticCore().check_datastore_performance()."""
+    """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = "string"
     with pytest.raises(TypeError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
@@ -32,7 +32,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 def test_check_datastore_performance_bad_seconds_to_run_value(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnosticCore().check_datastore_performance()."""
+    """Test SzDiagnostic().check_datastore_performance()."""
     bad_seconds_to_run = -1
     # with pytest.raises(SzDatabaseError):
     #     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
@@ -42,7 +42,7 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
 
 
 def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
-    """Test SzDiagnosticCore().get_datastore_info()."""
+    """Test SzDiagnostic().get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()
     actual_as_dict = json.loads(actual)
     assert schema(get_datastore_info_schema) == actual_as_dict
@@ -78,30 +78,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["SETTINGS"],
     )
     assert isinstance(actual, SzDiagnostic)
-
-
-# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_instance_name = ""
-#     with pytest.raises(SzError):
-#         actual = SzDiagnosticCore()
-#         actual._initialize(  # pylint: disable=W0212
-#             bad_instance_name,
-#             engine_vars["SETTINGS"],
-#         )
-#         assert isinstance(actual, SzDiagnostic)
-
-
-# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_settings = ""
-#     with pytest.raises(SzError):
-#         actual = SzDiagnosticCore()
-#         actual._initialize(  # pylint: disable=W0212
-#             engine_vars["INSTANCE_NAME"],
-#             bad_settings,
-#         )
-#         assert isinstance(actual, SzDiagnostic)
 
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:

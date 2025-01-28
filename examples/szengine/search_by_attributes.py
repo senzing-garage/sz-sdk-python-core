@@ -1,10 +1,12 @@
 #! /usr/bin/env python3
 
+import json
+
 from senzing import SzEngineFlags, SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-ATTRIBUTES = '{"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"}'
+ATTRIBUTES = json.dumps({"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"})
 FLAGS = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
 INSTANCE_NAME = "Example"
 SEARCH_PROFILE = ""

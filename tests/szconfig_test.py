@@ -13,7 +13,7 @@ from senzing_core import SzConfigCore
 
 
 def test_add_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().add_data_source()."""
+    """Test SzConfig().add_data_source()."""
     data_source_code = "NAME_OF_DATASOURCE"
     config_handle = sz_config.create_config()
     actual = sz_config.add_data_source(config_handle, data_source_code)
@@ -24,7 +24,7 @@ def test_add_data_source(sz_config: SzConfig) -> None:
 
 
 def test_add_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().add_data_source()."""
+    """Test SzConfig().add_data_source()."""
     bad_config_handle = "string"
     data_source_code = "NAME_OF_DATASOURCE"
     with pytest.raises(TypeError):
@@ -32,7 +32,7 @@ def test_add_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
 
 
 def test_add_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().add_data_source()."""
+    """Test SzConfig().add_data_source()."""
     config_handle = sz_config.create_config()
     bad_data_source_code = 0
     try:
@@ -43,7 +43,7 @@ def test_add_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
 
 
 def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().add_data_source()."""
+    """Test SzConfig().add_data_source()."""
     config_handle = sz_config.create_config()
     bad_data_source_code = {"XXXX": "YYYY"}
     try:
@@ -54,14 +54,14 @@ def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None
 
 
 def test_close_config_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().create()."""
+    """Test SzConfig().create()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         sz_config.close_config(bad_config_handle)  # type: ignore[arg-type]
 
 
 def test_create_config(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().create()."""
+    """Test SzConfig().create()."""
     config_handle = sz_config.create_config()
     assert isinstance(config_handle, int)
     assert config_handle > 0
@@ -71,7 +71,7 @@ def test_create_config(sz_config: SzConfig) -> None:
 
 
 def test_delete_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().delete_data_source()."""
+    """Test SzConfig().delete_data_source()."""
     data_source_code = "TEST"
     config_handle = sz_config.create_config()
     sz_config.delete_data_source(config_handle, data_source_code)
@@ -79,7 +79,7 @@ def test_delete_data_source(sz_config: SzConfig) -> None:
 
 
 def test_delete_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().delete_data_source()."""
+    """Test SzConfig().delete_data_source()."""
     data_source_code = "TEST"
     bad_config_handle = "string"
     with pytest.raises(TypeError):
@@ -87,7 +87,7 @@ def test_delete_data_source_bad_config_handle_type(sz_config: SzConfig) -> None:
 
 
 def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().delete_data_source()."""
+    """Test SzConfig().delete_data_source()."""
     bad_data_source_code = 0
     config_handle = sz_config.create_config()
     with pytest.raises(TypeError):
@@ -96,7 +96,7 @@ def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfig) -> No
 
 
 def test_delete_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().delete_data_source()."""
+    """Test SzConfig().delete_data_source()."""
     bad_data_source_code = {"XXXX": "YYYY"}
     config_handle = sz_config.create_config()
     with pytest.raises(TypeError):
@@ -105,7 +105,7 @@ def test_delete_data_source_bad_data_source_code_value(sz_config: SzConfig) -> N
 
 
 def test_get_data_sources(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().get_data_sources()."""
+    """Test SzConfig().get_data_sources()."""
     config_handle = sz_config.create_config()
     actual = sz_config.get_data_sources(config_handle)
     sz_config.close_config(config_handle)
@@ -115,14 +115,14 @@ def test_get_data_sources(sz_config: SzConfig) -> None:
 
 
 def test_get_data_sources_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().list_data_sources()."""
+    """Test SzConfig().list_data_sources()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         sz_config.get_data_sources(bad_config_handle)  # type: ignore[arg-type]
 
 
 def test_import_config(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().import_config()."""
+    """Test SzConfig().import_config()."""
     config_handle = sz_config.create_config()
     config_definition = sz_config.export_config(config_handle)
     config_handle = sz_config.import_config(config_definition)
@@ -132,21 +132,21 @@ def test_import_config(sz_config: SzConfig) -> None:
 
 
 def test_import_config_bad_config_definition_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().import_config()."""
+    """Test SzConfig().import_config()."""
     bad_config_definition = 0
     with pytest.raises(TypeError):
         sz_config.import_config(bad_config_definition)  # type: ignore[arg-type]
 
 
 def test_import_config_bad_config_definition_value(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().import_config()."""
+    """Test SzConfig().import_config()."""
     bad_config_definition = '{"Just": "Junk"}'
     with pytest.raises(SzConfigurationError):
         sz_config.import_config(bad_config_definition)
 
 
 def test_export_config(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().export_config()."""
+    """Test SzConfig().export_config()."""
     config_handle = sz_config.create_config()
     actual = sz_config.export_config(config_handle)
     sz_config.close_config(config_handle)
@@ -156,7 +156,7 @@ def test_export_config(sz_config: SzConfig) -> None:
 
 
 def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfigCore().export_config()."""
+    """Test SzConfig().export_config()."""
     bad_config_handle = "string"
     with pytest.raises(TypeError):
         sz_config.export_config(bad_config_handle)  # type: ignore[arg-type]
@@ -175,30 +175,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
         engine_vars["SETTINGS"],
     )
     assert isinstance(actual, SzConfig)
-
-
-# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_instance_name = ""
-#     with pytest.raises(SzError):
-#         actual = SzConfigCore()
-#         actual._initialize(
-#             bad_instance_name,
-#             engine_vars["SETTINGS"],
-#         )
-#         assert isinstance(actual, SzConfig)
-
-
-# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_settings = ""
-#     with pytest.raises(SzError):
-#         actual = SzConfigCore()
-#         actual._initialize(
-#             engine_vars["INSTANCE_NAME"],
-#             bad_settings,
-#         )
-#         assert isinstance(actual, SzConfig)
 
 
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:

@@ -212,30 +212,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     assert isinstance(actual, SzConfigManager)
 
 
-# def test_constructor_bad_instance_name(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_instance_name = ""
-#     with pytest.raises(SzError):
-#         actual = SzConfigManager()
-#         actual._initialize(
-#             bad_instance_name,
-#             engine_vars["SETTINGS"],
-#         )
-#         assert isinstance(actual, SzConfigManager)
-
-
-# def test_constructor_bad_settings(engine_vars: Dict[Any, Any]) -> None:
-#     """Test constructor."""
-#     bad_settings = ""
-#     with pytest.raises(SzError):
-#         actual = SzConfigManager()
-#         actual._initialize(
-#             engine_vars["INSTANCE_NAME"],
-#             bad_settings,
-#         )
-#         assert isinstance(actual, SzConfigManager)
-
-
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
