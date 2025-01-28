@@ -96,8 +96,8 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
-    )  # pylint: disable=W0212
-    actual._destroy()
+    )
+    actual._destroy()  # pylint: disable=W0212
 
 
 def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
@@ -118,6 +118,7 @@ def test_reinitialize(sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfi
 def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnosticCore().reinit() with current config ID."""
     bad_default_config_id = "string"
+    # pylint: disable=W0212
     with pytest.raises(TypeError):
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
@@ -138,11 +139,11 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManagerCore()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         verbose_logging=0,
-    )  # pylint: disable=W0212
+    )
     return result
 
 
@@ -151,12 +152,12 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
     """Single szdiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnosticCore()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,
         verbose_logging=0,
-    )  # pylint: disable=W0212
+    )
     return result
 
 
@@ -165,12 +166,12 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """Single szengine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzEngineCore()
-    result._initialize(
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,
         verbose_logging=0,
-    )  # pylint: disable=W0212
+    )
     return result
 
 
