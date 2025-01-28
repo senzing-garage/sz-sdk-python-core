@@ -31,7 +31,7 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing import SzEngine, SzEngineFlags
+from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags
 
 from ._helpers import (
     FreeCResources,
@@ -254,9 +254,8 @@ class SzEngineCore(SzEngine):
         # Mask for removing SDK specific flags not supplied to method call
         self.sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
-        # Empty response for methods where with info can optionally be
-        # returned but was not requested
-        self.no_info = "{}"
+        # Empty response for methods where with info can optionally be returned but was not requested
+        self.no_info = SZ_NO_INFO
 
         # Determine if Senzing API version is acceptable.
         is_supported_senzingapi_version()

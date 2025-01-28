@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 
-from senzing import SzEngine, SzError
-
-from senzing_core import SzAbstractFactoryCore
+from senzing import SzAbstractFactory, SzEngine, SzError
 
 __all__ = ["try_using_abstract"]
 
@@ -16,7 +14,7 @@ def get_stats(sz_engine: SzEngine) -> None:
         print(f"\nERROR: {err}\n")
 
 
-def try_using_abstract(sz_abstract_factory: SzAbstractFactoryCore) -> None:
+def try_using_abstract(sz_abstract_factory: SzAbstractFactory) -> None:
     """Example of using SzAbstractFactoryCore"""
     try:
         sz_product = sz_abstract_factory.create_product()
