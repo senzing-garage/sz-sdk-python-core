@@ -61,8 +61,8 @@ Other implementations of the [sz-sdk-python] interface include:
 [Coverage]: https://htmlpreview.github.io/?https://github.com/senzing-garage/sz-sdk-python-core/blob/python-coverage-comment-action-data/htmlcov/index.html
 [Development]: docs/development.md
 [DockerHub]: https://hub.docker.com/r/senzing/sz-sdk-python-core
-[Downloads Badge]: https://static.pepy.tech/badge/sz-sdk-python-core
-[Downloads]: https://pepy.tech/project/sz-sdk-python-core
+[Downloads Badge]: https://static.pepy.tech/badge/senzing-core
+[Downloads]: https://pepy.tech/project/senzing-core
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
 [License Badge]: https://img.shields.io/badge/License-Apache2-brightgreen.svg
