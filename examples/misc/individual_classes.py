@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-
 from senzing import (
+    SzAbstractFactory,
     SzConfig,
     SzConfigManager,
     SzDiagnostic,
@@ -23,7 +23,7 @@ SETTINGS = {
 }
 
 
-def try_sz_abstract_factory(sz_abstract_factory_local: SzAbstractFactoryCore) -> None:
+def try_sz_abstract_factory(sz_abstract_factory_local: SzAbstractFactory) -> None:
     """Just a test of parameter typing."""
     _ = sz_abstract_factory_local
 

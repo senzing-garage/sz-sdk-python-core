@@ -14,11 +14,12 @@ SETTINGS = {
     },
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
+
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
     export_handle = sz_engine.export_json_entity_report(FLAGS)
-    while 1:
+    while True:
         fragment = sz_engine.fetch_next(export_handle)
         if not fragment:
             break

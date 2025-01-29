@@ -4,7 +4,7 @@ from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-# The value of config_id is made up, this example will fail if you run it
+# The value of config_id is made up.  Any object created by this AbstractFactory will fail.
 CONFIG_ID = 2787481550
 INSTANCE_NAME = "Example"
 SETTINGS = {

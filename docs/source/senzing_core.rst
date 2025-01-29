@@ -4,6 +4,14 @@ senzing package
 Submodules
 ----------
 
+senzing_core.szabstractfactory module
+-------------------------------------
+
+.. automodule:: senzing_grpc.szabstractfactory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 senzing_core.szconfig module
 ----------------------------
 

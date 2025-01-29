@@ -171,6 +171,7 @@ cython_debug/
 .vscode/
 .history
 
+.settings
 # Synology NAS files
 .DS_Store
 
