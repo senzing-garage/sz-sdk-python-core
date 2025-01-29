@@ -20,10 +20,10 @@ try:
     sz_engine = sz_abstract_factory.create_engine()
     export_handle = sz_engine.export_json_entity_report(FLAGS)
     while True:
-        FRAGMENT = sz_engine.fetch_next(export_handle)
-        if not FRAGMENT:
+        fragment = sz_engine.fetch_next(export_handle)
+        if not fragment:
             break
-        print(FRAGMENT, end="")
+        print(fragment, end="")
     sz_engine.close_export(export_handle)
 except SzError as err:
     print(f"\nERROR: {err}\n")
