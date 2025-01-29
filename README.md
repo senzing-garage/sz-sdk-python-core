@@ -16,8 +16,9 @@ the recommendation is not to use it yet.
 
 ## Synopsis
 
-The Senzing sz-sdk-python-core packages provide a [Python]
-language Software Development Kit that wraps the Senzing C SDK APIs.
+The Senzing `sz-sdk-python-core` package provides a [Python] Software Development Kit
+adhering to the abstract classes of [sz-sdk-python]
+that wraps the Senzing C SDK APIs.
 
 [![Python 3.11 Badge]][Python 3.11]
 [![PEP8 Badge]][PEP8]
@@ -31,6 +32,18 @@ language Software Development Kit that wraps the Senzing C SDK APIs.
 The Senzing `sz-sdk-python-core` packages enable Python programs to call Senzing library functions.
 Under the covers, Python makes calls to the functions in the Senzing C libraries.
 
+The `sz-sdk-python-core` package implements the following [sz-sdk-python] interfaces:
+
+1. [SzConfig]
+1. [SzConfigMgr]
+1. [SzDiagnostic]
+1. [SzEngine]
+1. [SzProduct]
+
+Other implementations of the [sz-sdk-python] interface include:
+
+- [sz-sdk-python-grpc] - for calling Senzing SDK APIs over gRPC
+
 ## Use
 
 (TODO:)
@@ -42,6 +55,7 @@ Under the covers, Python makes calls to the functions in the Senzing C libraries
 1. [Examples]
 1. Related artifacts:
     1. [DockerHub]
+1. [sz-sdk-python package reference]
 
 [Coverage badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=coverage&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsenzing-garage%2Fsz-sdk-python-core%2Fpython-coverage-comment-action-data%2Fendpoint.json
 [Coverage]: https://htmlpreview.github.io/?https://github.com/senzing-garage/sz-sdk-python-core/blob/python-coverage-comment-action-data/htmlcov/index.html
@@ -63,3 +77,5 @@ Under the covers, Python makes calls to the functions in the Senzing C libraries
 [Senzing Garage]: https://github.com/senzing-garage
 [Senzing Quick Start guides]: https://docs.senzing.com/quickstart/
 [Senzing]: https://senzing.com/
+[sz-sdk-python package reference]: https://hub.senzing.com/sz-sdk-python/
+[sz-sdk-python]: https://github.com/senzing-garage/sz-sdk-python/tree/main/src/senzing
