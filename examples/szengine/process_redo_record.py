@@ -18,7 +18,7 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
-    while 1:
+    while True:
         redo_record = sz_engine.get_redo_record()
         if not redo_record:
             break
