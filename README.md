@@ -69,8 +69,8 @@ Other implementations of the [sz-sdk-python] interface include:
 [License]: https://github.com/senzing-garage/sz-sdk-python-core/blob/main/LICENSE
 [PEP8 Badge]: https://img.shields.io/badge/code%20style-pep8-orange.svg
 [PEP8]: https://www.python.org/dev/peps/pep-0008/
-[PyPI version Badge]: https://badge.fury.io/py/sz-sdk-python-core.svg
-[PyPi version]: https://badge.fury.io/py/sz-sdk-python-core
+[PyPI version Badge]: https://badge.fury.io/py/senzing-core.svg
+[PyPi version]: https://badge.fury.io/py/senzing-core
 [Python 3.11 Badge]: https://img.shields.io/badge/python-3.11-blue.svg
 [Python 3.11]: https://www.python.org/downloads/release/python-3110/
 [Python]: https://www.python.org/
@@ -78,4 +78,10 @@ Other implementations of the [sz-sdk-python] interface include:
 [Senzing Quick Start guides]: https://docs.senzing.com/quickstart/
 [Senzing]: https://senzing.com/
 [sz-sdk-python package reference]: https://hub.senzing.com/sz-sdk-python/
+[sz-sdk-python-grpc]: https://github.com/senzing-garage/sz-sdk-python-grpc
 [sz-sdk-python]: https://github.com/senzing-garage/sz-sdk-python/tree/main/src/senzing
+[SzConfig]: https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing/szconfig.py
+[SzConfigMgr]: https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing/szconfigmanager.py
+[SzDiagnostic]: https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing/szdiagnostic.py
+[SzEngine]: https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing/szengine.py
+[SzProduct]: https://github.com/senzing-garage/sz-sdk-python/blob/main/src/senzing/szproduct.py
