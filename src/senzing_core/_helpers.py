@@ -9,7 +9,7 @@ TODO: _helpers.py
 from __future__ import annotations
 
 import json
-import os
+import platform
 import sys
 import threading
 from contextlib import suppress
@@ -169,18 +169,28 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 # -----------------------------------------------------------------------------
 # Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
-def load_sz_library(lib: str = "") -> CDLL:
+def load_sz_library(lib: str = "", os: str = "") -> CDLL:
     """
     Check the OS name and load the appropriate Senzing library.
 
     :meta private:
     """
+
+    system_name = os if os else platform.uname().system
+
     try:
-        if os.name == "nt":
+        if system_name == "Linux":
+            return cdll.LoadLibrary(lib if lib else "libSz.so")
+
+        if system_name == "Darwin":
+            return cdll.LoadLibrary(lib if lib else "libSz.dylib")
+
+        if system_name == "Windows":
             win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        return cdll.LoadLibrary(lib if lib else "libSz.so")
+        print(f"ERROR: {system_name} is an unsupported operating system, expected Linux, Darwin or Windows")
+        raise sdk_exception(1)
     except OSError as err:
         # TODO Wording & links for V4
         print(

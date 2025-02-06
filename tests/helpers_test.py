@@ -88,6 +88,14 @@ def test_load_sz_library_missing_lib() -> None:
         assert isinstance(actual, SzError)
 
 
+def test_load_sz_library_incorrect_os() -> None:
+    """# TODO"""
+    os = "Android"
+    with pytest.raises(SzError):
+        actual = load_sz_library(os=os)
+        assert isinstance(actual, SzError)
+
+
 # -----------------------------------------------------------------------------
 # _helpers schemas
 # -----------------------------------------------------------------------------
