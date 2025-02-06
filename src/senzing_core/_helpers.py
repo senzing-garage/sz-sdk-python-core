@@ -169,14 +169,14 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 # -----------------------------------------------------------------------------
 # Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
-def load_sz_library(lib: str = "") -> CDLL:
+def load_sz_library(lib: str = "", os: str = "") -> CDLL:
     """
     Check the OS name and load the appropriate Senzing library.
 
     :meta private:
     """
 
-    system_name = platform.uname().system
+    system_name = os if os else platform.uname().system
 
     try:
         if system_name == "Linux":
@@ -189,9 +189,8 @@ def load_sz_library(lib: str = "") -> CDLL:
             win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        print(f"ERROR: {system_name} unsupported operating system., expected Linux, Darwin or Windows")
+        print(f"ERROR: {system_name} is an unsupported operating system, expected Linux, Darwin or Windows")
         raise sdk_exception(1)
-
     except OSError as err:
         # TODO Wording & links for V4
         print(
