@@ -176,18 +176,22 @@ def load_sz_library(lib: str = "") -> CDLL:
     :meta private:
     """
 
-    SYSTEM_NAME = platform.uname().system
+    system_name = platform.uname().system
+
     try:
-        if SYSTEM_NAME == "Linux":
+        if system_name == "Linux":
             return cdll.LoadLibrary(lib if lib else "libSz.so")
-        elif SYSTEM_NAME == "Darwin":
+
+        if system_name == "Darwin":
             return cdll.LoadLibrary(lib if lib else "libSz.dylib")
-        elif SYSTEM_NAME == "Windows":
+
+        if system_name == "Windows":
             win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
-        else:
-            print(f"ERROR: {SYSTEM_NAME} unsupported operating system., expected Linux, Darwin or Windows")
-            raise sdk_exception(1)
+
+        print(f"ERROR: {system_name} unsupported operating system., expected Linux, Darwin or Windows")
+        raise sdk_exception(1)
+
     except OSError as err:
         # TODO Wording & links for V4
         print(
