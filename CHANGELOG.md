@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.3] - 2025-02-06
+
+### Changed in 0.3.3
+
+- On Darwin look for libSz.dylib as the Senzing lib
+
 ## [0.3.2] - 2025-01-28
 
 ### Changed in 0.3.2
