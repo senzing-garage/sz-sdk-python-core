@@ -9,7 +9,7 @@ TODO: _helpers.py
 from __future__ import annotations
 
 import json
-import os
+import platform
 import sys
 import threading
 from contextlib import suppress
@@ -175,12 +175,19 @@ def load_sz_library(lib: str = "") -> CDLL:
 
     :meta private:
     """
+
+    SYSTEM_NAME = platform.uname().system
     try:
-        if os.name == "nt":
+        if SYSTEM_NAME == "Linux":
+            return cdll.LoadLibrary(lib if lib else "libSz.so")
+        elif SYSTEM_NAME == "Darwin":
+            return cdll.LoadLibrary(lib if lib else "libSz.dylib")
+        elif SYSTEM_NAME == "Windows":
             win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
-
-        return cdll.LoadLibrary(lib if lib else "libSz.so")
+        else:
+            print(f"ERROR: {SYSTEM_NAME} unsupported operating system., expected Linux, Darwin or Windows")
+            raise sdk_exception(1)
     except OSError as err:
         # TODO Wording & links for V4
         print(
