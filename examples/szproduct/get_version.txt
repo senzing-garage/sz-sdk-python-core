@@ -1,7 +1,7 @@
 // Output has been formatted for easier reading.
 
 {
-    "PRODUCT_NAME": "Senzing API",
+    "PRODUCT_NAME": "Senzing SDK",
     "VERSION": "4.0.0",
     "BUILD_VERSION": "4.0.0.24289",
     "BUILD_DATE": "2024-10-15",
