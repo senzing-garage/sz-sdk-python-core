@@ -42,6 +42,9 @@ disable = [
     "too-many-positional-arguments",
     "too-many-public-methods"
 ]
+
+extension-pkg-whitelist = ["orjson"]
+
 ignore = [
     "__init__.py",
     "docs/source/conf.py"

@@ -8,7 +8,6 @@ TODO: _helpers.py
 # import is necessary - or string annotation ("_Pointer[c_char]") .
 from __future__ import annotations
 
-import json
 import os
 import sys
 import threading
@@ -32,6 +31,36 @@ from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError
+
+ORJSON_IMPORTED = False
+# TODO -
+# try:
+#     import orjson
+
+#     # TODO -
+#     JSONDecodeError = orjson.JSONDecodeError
+#     ORJSON_IMPORTED = True
+# except ImportError:
+#     import json
+
+#     JSONDecodeError = json.JSONDecodeError
+
+try:
+    import orjson
+
+    def _json_dumps(object_: Any) -> str:
+        return orjson.dumps(object_).decode("utf-8")
+
+    _json_loads = orjson.loads
+
+except ImportError:
+    import json
+
+    def _json_dumps(object_: Any) -> str:
+        return json.dumps(object_, ensure_ascii=False)
+
+    _json_loads = json.loads
+
 
 # TODO
 # if sys.version_info < (3, 10):
@@ -96,7 +125,7 @@ def catch_non_sz_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
         try:
             return func_to_decorate(*args, **kwargs)
-        except (ArgumentError, TypeError, ValueError, json.JSONDecodeError) as err:
+        except (ArgumentError, TypeError, ValueError) as err:
             append_err_msg = ""
 
             # Remove the Senzing engine object from args
@@ -221,7 +250,9 @@ def check_result_rc(
 # -----------------------------------------------------------------------------
 
 
+# TODO - 8th Feb testing
 # TODO - Investigate adding and recalling is working correctly
+# TODO - If orjson is available use it?
 def escape_json_str(to_escape: str) -> str:
     """
     Escape strings when building a new JSON string.
@@ -230,14 +261,17 @@ def escape_json_str(to_escape: str) -> str:
     """
     if not isinstance(to_escape, str):
         # TODO
-        raise TypeError("expected a str")
+        raise TypeError("expected a string")
     # return to_escape
     # TODO ensure_ascii=False = èAnt\\n👍
     # TODO             =True  = \\u00e8Ant\\n\\ud83d\\udc4d'
     # print(f"{to_escape=}")
     # jdumps = json.dumps({"escaped": to_escape}["escaped"])
     # print(f"{jdumps=}")
-    return json.dumps({"escaped": to_escape}["escaped"])
+    # return json.dumps({"escaped": to_escape}["escaped"])
+    # return json.dumps(to_escape)
+    # return orjson.dumps(to_escape).decode("utf-8") if ORJSON_IMPORTED else json.dumps(to_escape, ensure_ascii=False)
+    return _json_dumps(to_escape)
 
 
 def build_dsrc_code_json(dsrc_code: str) -> str:
@@ -322,7 +356,9 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     :meta private:
     """
     if isinstance(candidate_value, dict):
-        return json.dumps(candidate_value)
+        # TODO -
+        # return json.dumps(candidate_value)
+        return _json_dumps(candidate_value)
 
     return candidate_value
 
