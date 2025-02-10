@@ -356,8 +356,6 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     :meta private:
     """
     if isinstance(candidate_value, dict):
-        # TODO -
-        # return json.dumps(candidate_value)
         return _json_dumps(candidate_value)
 
     return candidate_value
@@ -474,7 +472,7 @@ def engine_exception(
 # Helpers for creating SDK specific exceptions
 # -----------------------------------------------------------------------------
 
-# TODO Still needed?
+# TODO Modify to use SzSdkError
 # fmt: off
 SDK_EXCEPTION_MAP = {
     1: "failed to load the Senzing library",                                 # Engine module wasn't able to load the G2 library
