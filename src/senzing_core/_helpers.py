@@ -366,11 +366,6 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     :meta private:
     """
     if isinstance(candidate_value, dict):
-<<<<<<< HEAD
-=======
-        # TODO -
-        # return json.dumps(candidate_value)
->>>>>>> 08bf2c5 (140 - Rebase)
         return _json_dumps(candidate_value)
 
     return candidate_value
