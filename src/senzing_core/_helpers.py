@@ -8,6 +8,7 @@ TODO: _helpers.py
 # import is necessary - or string annotation ("_Pointer[c_char]") .
 from __future__ import annotations
 
+import json
 import platform
 import sys
 import threading
