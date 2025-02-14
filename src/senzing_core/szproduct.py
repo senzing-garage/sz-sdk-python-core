@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
+
 """
-The `szproduct` package is used to inspect the Senzing product.
-It is a wrapper over Senzing's SzProduct C binding.
-It conforms to the interface specified in
-`szproduct_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szproduct_abstract.py>`_
+``senzing_core.szproduct.SzProductCore`` is an implementation
+of the `senzing.szproduct.SzProduct`_ interface that communicates with the Senzing binaries.
 
 To use szproduct,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -12,6 +12,8 @@ Example:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/opt/senzing/er/lib
+
+.. _senzing.szproduct.SzProduct: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szproduct
 """
 
 # pylint: disable=R0903

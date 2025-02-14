@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 
 """
-TODO: szabstractfactory.py
+``senzing_core.szabstractfactory.SzAbstractFactoryCore`` is an implementation
+of the `senzing.szabstractfactory.SzAbstractFactory`_ interface that communicates with the Senzing binaries.
+
+.. _senzing.szabstractfactory.SzAbstractFactory: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szabstractfactory
 """
 
 # pylint: disable=E1101

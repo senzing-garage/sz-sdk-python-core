@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
+
 """
-The `szconfigmanager` package is used to modify Senzing configurations in the Senzing database.
-It is a wrapper over Senzing's SzConfigMgr C binding.
-It conforms to the interface specified in
-`szconfigmanager_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szconfigmanager_abstract.py>`_
+``senzing_core.szconfigmanager.SzConfigManagerCore`` is an implementation
+of the `senzing.szconfigmanager.SzConfigManager`_ interface that communicates with the Senzing binaries.
 
 To use szconfigmanager,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -12,6 +12,8 @@ Example:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/opt/senzing/er/lib
+
+.. _senzing.szconfigmanager.SzConfigManager: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szconfigmanager
 """
 
 # pylint: disable=R0903

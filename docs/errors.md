@@ -1,1 +1,1 @@
-# sz-sdk-python-grpc errors
+# sz-sdk-python-core errors

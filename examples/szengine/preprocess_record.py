@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+import json
+
 from senzing import SzEngineFlags, SzError
 
 from senzing_core import SzAbstractFactoryCore

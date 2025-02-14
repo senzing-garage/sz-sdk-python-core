@@ -84,6 +84,6 @@ szproduct
    :inherited-members:
 
 .. _Abstract Factory Pattern: https://en.wikipedia.org/wiki/Abstract_factory_pattern
-.. _GitHub: https://github.com/senzing-garage/sz-sdk-python-grpc/tree/main/examples
-.. _senzing-core: https://garage.senzing.com/sz-sdk-python-core
-.. _senzing_grpc: https://github.com/senzing-garage/sz-sdk-python-grpc
+.. _GitHub: https://github.com/senzing-garage/sz-sdk-python-core/tree/main/examples
+.. _senzing_core: https://github.com/senzing-garage/sz-sdk-python-core
+.. _senzing-grpc: https://garage.senzing.com/sz-sdk-python-grpc

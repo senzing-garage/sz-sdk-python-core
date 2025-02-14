@@ -3,13 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-`senzing_grpc` Python package documentation
+`senzing_core` Python package documentation
 ===========================================
 
-The `senzing-grpc`_ Python package is a `gRPC`_ implementation of the
-`senzing`_ the interface definition.
-If an implementation is needed to communicate directly with the Senzing binaries,
-use the `senzing-core`_ Python package.
+The `senzing-core`_ Python package is an implementation of the
+`senzing`_ interface definition that communicates with the Senzing binaries.
+If an implementation is needed to communicate over `gRPC`_,
+use the `senzing-grpc`_ Python package.
 
 Senzing has additional Software Development Kits (SDKs)
 for Java, Go, and C#.
@@ -36,6 +36,6 @@ References
 .. _GitHub: https://github.com/senzing-garage/sz-sdk-python/tree/main/examples
 .. _gRPC: https://grpc.io
 .. _Pypi: https://pypi.org/project/senzing/
-.. _senzing-core: https://garage.senzing.com/sz-sdk-python-core
-.. _senzing-grpc: https://github.com/senzing-garage/sz-sdk-python-grpc
+.. _senzing-core: https://github.com/senzing-garage/sz-sdk-python-core
+.. _senzing-grpc: https://garage.senzing.com/sz-sdk-python-grpc
 .. _senzing: https://garage.senzing.com/sz-sdk-python

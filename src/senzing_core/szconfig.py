@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
+
 """
-The `szconfig` package is used to modify the in-memory representation of a Senzing configuration.
-It is a wrapper over Senzing's SzConfig C binding.
-It conforms to the interface specified in
-`szconfig_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szconfig_abstract.py>`_
+``senzing_core.szconfig.SzConfigCore`` is an implementation
+of the `senzing.szconfig.SzConfig`_ interface that communicates with the Senzing binaries.
 
 To use szconfig,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -12,6 +12,8 @@ Example:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/opt/senzing/er/lib
+
+.. _senzing.szconfig.SzConfig: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szconfig
 """
 
 # pylint: disable=R0903

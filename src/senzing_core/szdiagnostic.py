@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
+
 """
-The `szdiagnostic` package is used to inspect the Senzing environment.
-It is a wrapper over Senzing's SzDiagnostic C binding.
-It conforms to the interface specified in
-`szdiagnostic_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szdiagnostic_abstract.py>`_
+``senzing_core.szdiagnostic.SzDiagnosticCore`` is an implementation
+of the `senzing.szdiagnostic.SzDiagnostic`_ interface that communicates with the Senzing binaries.
 
 To use szdiagnostic,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -12,6 +12,8 @@ Example:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/opt/senzing/er/lib
+
+.. _senzing.szdiagnostic.SzDiagnostic: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szdiagnostic
 """
 
 # pylint: disable=R0903
