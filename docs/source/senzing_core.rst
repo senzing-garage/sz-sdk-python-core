@@ -1,19 +1,45 @@
-senzing package
-===============
+senzing_core
+============
 
-Submodules
-----------
+The `senzing_core`_ Python package has 5 major modules / classes.
+Senzing objects are created using an `Abstract Factory Pattern`_.
 
-senzing_core.szabstractfactory module
--------------------------------------
+.. list-table:: Senzing classes
+   :widths: 20 20 60
+   :header-rows: 1
 
-.. automodule:: senzing_grpc.szabstractfactory
+   * - Module
+     - Class
+     - Creation
+   * - szconfig
+     - SzConfigCore
+     - `sz_config = sz_abstract_factory.create_config()`
+   * - szconfigmanager
+     - SzConfigManagerCore
+     - `sz_configmanager = sz_abstract_factory.create_configmanager()`
+   * - szdiagnostic
+     - SzDiagnosticCore
+     - `sz_diagnostic = sz_abstract_factory.create_diagnostic()`
+   * - szengine
+     - SzEngineCore
+     - `sz_engine = sz_abstract_factory.create_engine()`
+   * - szproduct
+     - SzProductCore
+     - `sz_product = sz_abstract_factory.create_product()`
+
+For the full implementation of the documentation examples, visit the source code on
+`GitHub`_.
+
+szabstractfactory
+-----------------
+
+.. automodule:: senzing_core.szabstractfactory
    :members:
    :undoc-members:
    :show-inheritance:
 
-senzing_core.szconfig module
-----------------------------
+szconfig
+--------
 
 .. automodule:: senzing_core.szconfig
    :members:
@@ -21,8 +47,8 @@ senzing_core.szconfig module
    :show-inheritance:
    :inherited-members:
 
-senzing_core.szconfigmanager module
------------------------------------
+szconfigmanager
+---------------
 
 .. automodule:: senzing_core.szconfigmanager
    :members:
@@ -30,8 +56,8 @@ senzing_core.szconfigmanager module
    :show-inheritance:
    :inherited-members:
 
-senzing_core.szdiagnostic module
---------------------------------
+szdiagnostic
+------------
 
 .. automodule:: senzing_core.szdiagnostic
    :members:
@@ -39,8 +65,8 @@ senzing_core.szdiagnostic module
    :show-inheritance:
    :inherited-members:
 
-senzing_core.szengine module
-----------------------------
+szengine
+--------
 
 .. automodule:: senzing_core.szengine
    :members:
@@ -48,8 +74,8 @@ senzing_core.szengine module
    :show-inheritance:
    :inherited-members:
 
-senzing_core.szproduct module
------------------------------
+szproduct
+---------
 
 .. automodule:: senzing_core.szproduct
    :members:
@@ -57,11 +83,7 @@ senzing_core.szproduct module
    :show-inheritance:
    :inherited-members:
 
-Module contents
----------------
-
-.. automodule:: senzing_core
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :inherited-members:
+.. _Abstract Factory Pattern: https://en.wikipedia.org/wiki/Abstract_factory_pattern
+.. _GitHub: https://github.com/senzing-garage/sz-sdk-python-grpc/tree/main/examples
+.. _senzing-core: https://garage.senzing.com/sz-sdk-python-core
+.. _senzing_grpc: https://github.com/senzing-garage/sz-sdk-python-grpc
