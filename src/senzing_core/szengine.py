@@ -1,8 +1,8 @@
+#! /usr/bin/env python3
+
 """
-The szengine package is used to insert, update, delete and query records and entities in the Senzing product.
-It is a wrapper over Senzing's SzEngine C binding.
-It conforms to the interface specified in
-`szengine_abstract.py <https://github.com/senzing-garage/sz-sdk-python-core/blob/main/src/senzing_abstract/szengine_abstract.py>`_
+``senzing_core.szengine.SzEngineCore`` is an implementation
+of the `senzing.szengine.SzEngine`_ interface that communicates with the Senzing binaries.
 
 To use szengine,
 the **LD_LIBRARY_PATH** environment variable must include a path to Senzing's libraries.
@@ -12,6 +12,8 @@ Example:
 .. code-block:: bash
 
     export LD_LIBRARY_PATH=/opt/senzing/er/lib
+
+.. _senzing.szengine.SzEngine: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szengine
 """
 
 # pylint: disable=R0903,C0302,R0915

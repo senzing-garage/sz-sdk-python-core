@@ -75,13 +75,15 @@ jobs:
         run: |
           source ./venv/bin/activate
           set +e
-          pytest examples/szconfig/ \
+          pytest \
+            examples/misc/ \
+            examples/extras/ \
+            examples/szabstractfactory/ \
+            examples/szconfig/ \
             examples/szconfigmanager/ \
             examples/szdiagnostic/ \
             examples/szengine/ \
             examples/szproduct/ \
-            examples/extras/ \
-            examples/misc/ \
             --capture=no \
             -o python_files=*.py \
             --verbose

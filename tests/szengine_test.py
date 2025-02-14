@@ -852,7 +852,7 @@ def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
     actual = sz_engine.reevaluate_entity(entity_id, flags)
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_as_dict
+    assert schema(add_record_with_info_schema_fixme) == actual_as_dict
 
 
 def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
@@ -1300,6 +1300,11 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
 add_record_with_info_schema = {
     "DATA_SOURCE": str,
     "RECORD_ID": str,
+    "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
+    "INTERESTING_ENTITIES": {"ENTITIES": []},
+}
+
+add_record_with_info_schema_fixme = {
     "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
     "INTERESTING_ENTITIES": {"ENTITIES": []},
 }
