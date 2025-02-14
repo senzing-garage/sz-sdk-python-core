@@ -853,7 +853,7 @@ def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
 
-    print(">>>>>>>", actual_as_dict)
+    print(">>>>>>>", actual)
 
     assert schema(add_record_with_info_schema) == actual_as_dict
 
