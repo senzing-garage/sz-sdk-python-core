@@ -50,6 +50,7 @@ jobs:
 
       - name: Add to "Path" environment variable
         run: |
+          # shellcheck disable=SC2028
           echo "$Env:USERPROFILE\Senzing\er\lib" >> "$env:GITHUB_PATH"
 
       - name: Copy /etc files
@@ -63,7 +64,8 @@ jobs:
 
       - name: Run pytest on tests
         run: |
-          $Env:LD_LIBRARY_PATH = "$Env:USERPROFILE\Senzing\er\lib"
+          # shellcheck disable=SC2283
+          "$Env:LD_LIBRARY_PATH" = "$Env:USERPROFILE\Senzing\er\lib"
           .\\venv\\Scripts\\activate
           pytest tests/ --verbose --capture=no --cov=src
 
