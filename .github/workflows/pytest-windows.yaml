@@ -3,7 +3,6 @@ name: pytest windows
 on: [pull_request, workflow_dispatch]
 
 env:
-  LD_LIBRARY_PATH: 'C:\Program Files\Senzing\er\lib'
   PYTHONPATH: 'D:\a\sz-sdk-python-core\sz-sdk-python-core\src'
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db'
 
@@ -51,11 +50,11 @@ jobs:
 
       - name: Add to "Path" environment variable
         run: |
-          printf "C:\Program Files\Senzing\er\lib" | Out-File -FilePath "$env:GITHUB_PATH" -Encoding utf8 -Append
+          echo "$Env:USERPROFILE\Senzing\er\lib" >> "$env:GITHUB_PATH"
 
       - name: Copy /etc files
         run: |
-          copy testdata/senzing-license/g2.lic "C:\Program Files\Senzing\er\etc\g2.lic"
+          copy testdata/senzing-license/g2.lic "$Env:USERPROFILE\Senzing\er\etc\g2.lic"
 
       - name: Copy test database files
         run: |
@@ -64,6 +63,7 @@ jobs:
 
       - name: Run pytest on tests
         run: |
+          $Env:LD_LIBRARY_PATH = "$Env:USERPROFILE\Senzing\er\lib"
           .\\venv\\Scripts\\activate
           pytest tests/ --verbose --capture=no --cov=src
 
