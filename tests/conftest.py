@@ -35,7 +35,7 @@ def engine_vars_fixture() -> Dict[Any, Any]:
         "PIPELINE": {
             "CONFIGPATH": "C:\\Program Files\\Senzing\\er\\etc",
             "RESOURCEPATH": "C:\\Program Files\\Senzing\\er\\resources",
-            "SUPPORTPATH": "C:\\Program Files\\Senzing\\er\\data",
+            "SUPPORTPATH": "C:\\Program Files\\Senzing\\data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@nowhere/C:\\Temp\\sqlite\\G2C.db"},
     }
