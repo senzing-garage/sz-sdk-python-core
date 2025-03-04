@@ -55,7 +55,7 @@ jobs:
             echo "SENZING_PATH=${SENZING_PATH}"
             echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
-            echo "PYTHONPATH=/Users/runner/work/template-python/template-python/src"
+            echo "PYTHONPATH=/Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src"
           } >> "$GITHUB_ENV"
 
       - name: Copy /etc files
