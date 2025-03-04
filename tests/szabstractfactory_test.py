@@ -96,11 +96,11 @@ def sz_abstract_factory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactor
     Single SzAbstractFactoryCore object to use for all tests.
     """
 
-    FACTORY_PARAMETERS = {
+    factory_parameters = {
         "instance_name": "Example",
         "settings": engine_vars.get("SETTINGS_DICT", {}),
     }
-    result = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
+    result = SzAbstractFactoryCore(**factory_parameters)
     return result
 
 
