@@ -1,4 +1,5 @@
 import json
+import os
 import platform
 from typing import Any, Dict
 
@@ -12,6 +13,7 @@ def engine_vars_fixture() -> Dict[Any, Any]:
     """
 
     result = {"INSTANCE_NAME": "Testing", "VERBOSE_LOGGING": 0}
+    senzing_path = os.getenv("SENZING_PATH", "/opt/senzing")
 
     linux_config = {
         "PIPELINE": {
@@ -24,18 +26,18 @@ def engine_vars_fixture() -> Dict[Any, Any]:
 
     darwin_config = {
         "PIPELINE": {
-            "CONFIGPATH": "/opt/senzing/er/etc",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/er/data",
+            "CONFIGPATH": f"{senzing_path}/er/etc",
+            "RESOURCEPATH": f"{senzing_path}/er/resources",
+            "SUPPORTPATH": f"{senzing_path}/data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
     }
 
     windows_config = {
         "PIPELINE": {
-            "CONFIGPATH": "C:\\Program Files\\Senzing\\er\\etc",
-            "RESOURCEPATH": "C:\\Program Files\\Senzing\\er\\resources",
-            "SUPPORTPATH": "C:\\Program Files\\Senzing\\er\\data",
+            "CONFIGPATH": f"{senzing_path}\\er\\etc",
+            "RESOURCEPATH": f"{senzing_path}\\er\\resources",
+            "SUPPORTPATH": f"{senzing_path}\\data",
         },
         "SQL": {"CONNECTION": "sqlite3://na:na@nowhere/C:\\Temp\\sqlite\\G2C.db"},
     }

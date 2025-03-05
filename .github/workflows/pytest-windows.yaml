@@ -3,7 +3,7 @@ name: pytest windows
 on: [pull_request, workflow_dispatch]
 
 env:
-  PYTHONPATH: 'D:\a\sz-sdk-python-core\sz-sdk-python-core\src'
+  PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: 'sqlite3://na:na@nowhere/C:\Temp\sqlite\G2C.db'
 
 permissions:
@@ -11,12 +11,11 @@ permissions:
 
 jobs:
   pytest-windows:
-    name: "pytest Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
-    runs-on: ${{ matrix.os }}
+    name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: windows-latest; Python ${{ matrix.python-version }}"
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         senzingsdk-version: [staging-v4]
 
@@ -50,8 +49,7 @@ jobs:
 
       - name: Add to "Path" environment variable
         run: |
-          # shellcheck disable=SC2028
-          echo "$Env:USERPROFILE\Senzing\er\lib" >> "$env:GITHUB_PATH"
+          Add-Content "$env:GITHUB_PATH" "$Env:USERPROFILE\Senzing\er\lib"
 
       - name: Copy /etc files
         run: |
@@ -62,11 +60,10 @@ jobs:
           mkdir "C:\Temp\sqlite"
           copy testdata/sqlite/G2C.db "C:\Temp\sqlite\G2C.db"
 
-      - name: Run pytest on tests
+      - name: Run pytest
         run: |
-          # shellcheck disable=SC2283
-          "$Env:LD_LIBRARY_PATH" = "$Env:USERPROFILE\Senzing\er\lib"
           .\\venv\\Scripts\\activate
+          $Env:SENZING_PATH = "$Env:USERPROFILE\Senzing"
           pytest tests/ --verbose --capture=no --cov=src
 
       - name: Rename coverage file

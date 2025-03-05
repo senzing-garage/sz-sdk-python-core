@@ -1301,12 +1301,10 @@ add_record_with_info_schema = {
     "DATA_SOURCE": str,
     "RECORD_ID": str,
     "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
-    "INTERESTING_ENTITIES": {"ENTITIES": []},
 }
 
 add_record_with_info_schema_fixme = {
     "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
-    "INTERESTING_ENTITIES": {"ENTITIES": []},
 }
 
 export_json_entity_report_iterator_schema = {

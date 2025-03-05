@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Dict
 
 import pytest
 from senzing import (
@@ -10,19 +11,7 @@ from senzing import (
     SzProduct,
 )
 
-from senzing_core import SzAbstractFactoryCore, SzAbstractFactoryParametersCore
-
-FACTORY_PARAMETERS: SzAbstractFactoryParametersCore = {
-    "instance_name": "Example",
-    "settings": {
-        "PIPELINE": {
-            "CONFIGPATH": "/etc/opt/senzing",
-            "RESOURCEPATH": "/opt/senzing/er/resources",
-            "SUPPORTPATH": "/opt/senzing/data",
-        },
-        "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
-    },
-}
+from senzing_core import SzAbstractFactoryCore
 
 # -----------------------------------------------------------------------------
 # Testcases
@@ -102,11 +91,16 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
 
 
 @pytest.fixture(name="sz_abstract_factory", scope="function")
-def sz_abstract_factory_fixture() -> SzAbstractFactory:
+def sz_abstract_factory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
     """
     Single SzAbstractFactoryCore object to use for all tests.
     """
-    result = SzAbstractFactoryCore(**FACTORY_PARAMETERS)
+
+    factory_parameters = {
+        "instance_name": "Example",
+        "settings": engine_vars.get("SETTINGS_DICT", {}),
+    }
+    result = SzAbstractFactoryCore(**factory_parameters)
     return result
 
 

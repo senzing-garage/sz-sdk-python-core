@@ -3,7 +3,7 @@ name: pytest darwin
 on: [pull_request, workflow_dispatch]
 
 env:
-  PYTHONPATH: /Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src
+  PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 
 permissions:
@@ -11,13 +11,12 @@ permissions:
 
 jobs:
   pytest-darwin:
-    name: "pytest Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        # 3.9 is unsupported on the darwin runner
         python-version: ["3.10", "3.11", "3.12"]
         senzingsdk-version: [staging-v4]
 
@@ -50,22 +49,28 @@ jobs:
         with:
           senzingsdk-repository-path: ${{ secrets.SENZING_OSX_BETA_REPOSITORY }}
 
+      - name: Set environment variables
+        run: |
+          SENZING_PATH="${HOME}/senzing"
+          {
+            echo "SENZING_PATH=${SENZING_PATH}"
+            echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+          } >> "$GITHUB_ENV"
+
       - name: Copy /etc files
         run: |
-          sudo mkdir -p "$HOME"/senzing/er/etc
-          sudo cp testdata/senzing-license/g2.lic "$HOME"/senzing/er/etc/g2.lic
+          sudo mkdir -p "${SENZING_PATH}/etc"
+          sudo cp testdata/senzing-license/g2.lic "${SENZING_PATH}/er/etc/g2.lic"
 
       - name: Copy test database files
         run: |
-          mkdir /tmp/sqlite
-          cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
+          mkdir -p /tmp/sqlite
+          cp testdata/sqlite/G2C.db /tmp/sqlite/
 
-      - name: Run pytest on tests
+      - name: Run pytest
         run: |
           source ./venv/bin/activate
-          # shellcheck disable=SC2034
-          DYLD_LIBRARY_PATH="$HOME"/senzing/er/lib:"$HOME"/senzing/er/lib/macos
-          LD_LIBRARY_PATH="$HOME"/senzing/er/lib:"$HOME"/senzing/er/lib/macos
           pytest tests/ --verbose --capture=no --cov=src
 
       - name: Rename coverage file
