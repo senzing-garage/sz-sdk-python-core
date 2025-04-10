@@ -167,30 +167,27 @@ class SzConfigManagerCore(SzConfigManager):
     # -------------------------------------------------------------------------
 
     @catch_non_sz_exceptions
-    def add_config(
-        self,
-        config_definition: str,
-        config_comment: str,
-    ) -> int:
-        result = self.library_handle.SzConfigMgr_addConfig_helper(
-            as_c_char_p(config_definition),
-            as_c_char_p(config_comment),
-        )
-        self.check_result(result.return_code)
+    def create_config_from_config_id(self, config_id: int) -> SzConfig:
+        # FIXME:
+        result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
+        with FreeCResources(self.library_handle, result.response):
+            self.check_result(result.return_code)
+            return as_python_str(result.response)
 
-        return result.response  # type: ignore[no-any-return]
+    @catch_non_sz_exceptions
+    def create_config_from_string(self, config_definition: str) -> SzConfig:
+        # FIXME:
+        pass
+
+    @catch_non_sz_exceptions
+    def create_config_from_template(self) -> SzConfig:
+        # FIXME:
+        pass
 
     def _destroy(
         self,
     ) -> None:
         _ = self.library_handle.SzConfigMgr_destroy()
-
-    @catch_non_sz_exceptions
-    def get_config(self, config_id: int) -> str:
-        result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
-            return as_python_str(result.response)
 
     def get_configs(self) -> str:
         result = self.library_handle.SzConfigMgr_getConfigList_helper()
@@ -218,6 +215,20 @@ class SzConfigManagerCore(SzConfigManager):
         self.check_result(result)
 
     @catch_non_sz_exceptions
+    def register_config(
+        self,
+        config_definition: str,
+        config_comment: str,
+    ) -> int:
+        result = self.library_handle.SzConfigMgr_addConfig_helper(
+            as_c_char_p(config_definition),
+            as_c_char_p(config_comment),
+        )
+        self.check_result(result.return_code)
+
+        return result.response  # type: ignore[no-any-return]
+
+    @catch_non_sz_exceptions
     def replace_default_config_id(
         self,
         current_default_config_id: int,
@@ -227,6 +238,13 @@ class SzConfigManagerCore(SzConfigManager):
             current_default_config_id, new_default_config_id
         )
         self.check_result(result)
+
+    @catch_non_sz_exceptions
+    def set_default_config(self, config_definition: str, config_comment: str) -> int:
+        _ = config_definition
+        _ = config_comment
+        # FIXME:
+        return 0
 
     @catch_non_sz_exceptions
     def set_default_config_id(self, config_id: int) -> None:

@@ -14,7 +14,6 @@ from typing import Any, Dict, Type, TypedDict, Union
 
 from senzing import (
     SzAbstractFactory,
-    SzConfig,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
@@ -110,17 +109,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     # -------------------------------------------------------------------------
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
-
-    def create_config(self) -> SzConfig:
-        result = SzConfigCore()
-        if not self.is_szconfig_initialized:
-            result._initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                verbose_logging=self.verbose_logging,
-            )
-            self.is_szconfig_initialized = True
-        return result
 
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
