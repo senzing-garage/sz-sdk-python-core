@@ -23,7 +23,7 @@ from typing import Any, Dict, Union
 
 from senzing import SzConfig, SzConfigManager
 
-from . import SzConfigCore
+from .szconfig import SzConfigCore
 from ._helpers import (
     FreeCResources,
     as_c_char_p,

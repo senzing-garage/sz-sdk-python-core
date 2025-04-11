@@ -20,7 +20,6 @@ from senzing import (
     SzProduct,
 )
 
-from .szconfig import SzConfigCore
 from .szconfigmanager import SzConfigManagerCore
 from .szdiagnostic import SzDiagnosticCore
 from .szengine import SzEngineCore
@@ -81,7 +80,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         self.settings = settings
         self.config_id = config_id
         self.verbose_logging = verbose_logging
-        self.is_szconfig_initialized = False
         self.is_szconfigmanager_initialized = False
         self.is_szdiagnostic_initialized = False
         self.is_szengine_initialized = False
@@ -160,11 +158,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def _destroy(self) -> None:
 
         # TODO: Determine if atomic operation is needed.
-
-        if self.is_szconfig_initialized:
-            self.is_szconfig_initialized = False
-            sz_config = SzConfigCore()
-            sz_config._destroy()  # pylint: disable=W0212
 
         if self.is_szconfigmanager_initialized:
             self.is_szconfigmanager_initialized = False
