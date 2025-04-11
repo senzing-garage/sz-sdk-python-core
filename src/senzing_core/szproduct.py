@@ -117,12 +117,20 @@ class SzProductCore(SzProduct):
         _ = self.library_handle.SzProduct_destroy()
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzProduct.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzProduct.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         result = self.library_handle.SzProduct_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),

@@ -17,19 +17,24 @@ SETTINGS = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
-    sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
-    sz_diagnostic = sz_abstract_factory.create_diagnostic()
-    sz_engine = sz_abstract_factory.create_engine()
+    sz_config = sz_configmanager.create_config_from_template()
 
-    current_default_config_id = sz_configmanager.get_default_config_id()
-    OLD_CONFIG_DEFINITION = sz_configmanager.get_config(current_default_config_id)
-    config_handle = sz_config.import_config(OLD_CONFIG_DEFINITION)
+    # Create a new Senzing configuration with additional datasources.
+
+    CURRENT_DEFAULT_CONFIG_ID = sz_configmanager.get_default_config_id()
+    sz_config = sz_configmanager.create_config_from_config_id(CURRENT_DEFAULT_CONFIG_ID)
     for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(config_handle, data_source_code)
-    NEW_CONFIG_DEFINITION = sz_config.export_config(config_handle)
-    new_default_config_id = sz_configmanager.add_config(NEW_CONFIG_DEFINITION, "Add TruthSet datasources")
-    sz_configmanager.replace_default_config_id(current_default_config_id, new_default_config_id)
-    sz_abstract_factory.reinitialize(new_default_config_id)
+        sz_config.add_data_source(data_source_code)
+
+    # Persist new Senzing configuration.
+
+    NEW_CONFIG_DEFINITION = sz_config.export()
+    NEW_DEFAULT_CONFIG_ID = sz_configmanager.register_config(NEW_CONFIG_DEFINITION, "Add TruthSet datasources")
+
+    # Make new Senzing configuration the default and the active configuration.
+
+    sz_configmanager.replace_default_config_id(CURRENT_DEFAULT_CONFIG_ID, NEW_DEFAULT_CONFIG_ID)
+    sz_abstract_factory.reinitialize(NEW_DEFAULT_CONFIG_ID)
 except SzError as err:
     print(f"\nERROR: {err}\n")

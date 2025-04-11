@@ -14,14 +14,12 @@ from typing import Any, Dict, Type, TypedDict, Union
 
 from senzing import (
     SzAbstractFactory,
-    SzConfig,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
     SzProduct,
 )
 
-from .szconfig import SzConfigCore
 from .szconfigmanager import SzConfigManagerCore
 from .szdiagnostic import SzDiagnosticCore
 from .szengine import SzEngineCore
@@ -82,7 +80,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         self.settings = settings
         self.config_id = config_id
         self.verbose_logging = verbose_logging
-        self.is_szconfig_initialized = False
         self.is_szconfigmanager_initialized = False
         self.is_szdiagnostic_initialized = False
         self.is_szengine_initialized = False
@@ -111,21 +108,10 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
-    def create_config(self) -> SzConfig:
-        result = SzConfigCore()
-        if not self.is_szconfig_initialized:
-            result._initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                verbose_logging=self.verbose_logging,
-            )
-            self.is_szconfig_initialized = True
-        return result
-
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
         if not self.is_szconfigmanager_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 verbose_logging=self.verbose_logging,
@@ -136,7 +122,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_diagnostic(self) -> SzDiagnostic:
         result = SzDiagnosticCore()
         if not self.is_szdiagnostic_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 config_id=self.config_id,
@@ -149,7 +135,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         # TODO: Determine if atomic operation is needed.
         result = SzEngineCore()
         if not self.is_szengine_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 config_id=self.config_id,
@@ -161,7 +147,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_product(self) -> SzProduct:
         result = SzProductCore()
         if not self.is_szproduct_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 verbose_logging=self.verbose_logging,
@@ -172,11 +158,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def _destroy(self) -> None:
 
         # TODO: Determine if atomic operation is needed.
-
-        if self.is_szconfig_initialized:
-            self.is_szconfig_initialized = False
-            sz_config = SzConfigCore()
-            sz_config._destroy()  # pylint: disable=W0212
 
         if self.is_szconfigmanager_initialized:
             self.is_szconfigmanager_initialized = False

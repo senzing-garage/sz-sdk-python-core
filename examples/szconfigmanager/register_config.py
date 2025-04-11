@@ -4,8 +4,6 @@ from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-# The value of config_id is made up.  Any object created by this AbstractFactory will fail.
-CONFIG_ID = 2787481550
 INSTANCE_NAME = "Example"
 SETTINGS = {
     "PIPELINE": {
@@ -16,7 +14,13 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
+
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS, CONFIG_ID)
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = sz_abstract_factory.create_configmanager()
+    CONFIG_COMMENT = "Just an empty example"
+    sz_config = sz_configmanager.create_config_from_template()
+    CONFIG_DEFINITION = sz_config.export()
+    CONFIG_ID = sz_configmanager.register_config(CONFIG_DEFINITION, CONFIG_COMMENT)
 except SzError as err:
     print(f"\nERROR: {err}\n")
