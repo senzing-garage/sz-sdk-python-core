@@ -23,7 +23,7 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
 def test_check_datastore_performance_bad_seconds_to_run_type(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic().check_datastore_performance()."""
+    """Test SzDiagnostic().check_datastore_performance_bad_seconds_to_run_type()."""
     bad_seconds_to_run = "string"
     with pytest.raises(TypeError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
@@ -32,7 +32,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 def test_check_datastore_performance_bad_seconds_to_run_value(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic().check_datastore_performance()."""
+    """Test SzDiagnostic().check_datastore_performance_bad_seconds_to_run_value()."""
     bad_seconds_to_run = -1
     # with pytest.raises(SzDatabaseError):
     #     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)

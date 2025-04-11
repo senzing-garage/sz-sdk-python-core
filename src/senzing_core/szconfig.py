@@ -198,6 +198,7 @@ class SzConfigCore(SzConfig):
         # Create an in-memory representation of the Senzing configuration JSON.
 
         load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
         config_handle = load_result.response
 
         # Add DataSource to in-memory representation of the Senzing configuration JSON.
@@ -233,6 +234,7 @@ class SzConfigCore(SzConfig):
         # Create an in-memory representation of the Senzing configuration JSON.
 
         load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
         config_handle = load_result.response
 
         # Delete DataSource from in-memory representation of the Senzing configuration JSON.
@@ -266,6 +268,7 @@ class SzConfigCore(SzConfig):
         # Create an in-memory representation of the Senzing configuration JSON.
 
         load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
         config_handle = load_result.response
 
         # Get the list of datasources.
@@ -315,7 +318,6 @@ class SzConfigCore(SzConfig):
         # Export in-memory representation to a JSON document.
 
         save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
-
         with FreeCResources(self.library_handle, save_result.response):
             self.check_result(save_result.return_code)
             self.config_definition = as_python_str(save_result.response)
@@ -358,6 +360,7 @@ class SzConfigCore(SzConfig):
         # Create an in-memory representation of the Senzing configuration JSON.
 
         load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
+        self.check_result(load_result.return_code)
         config_handle = load_result.response
 
         # Export in-memory representation to a JSON document.
