@@ -1,7 +1,7 @@
 senzing_core
 ============
 
-The `senzing_core`_ Python package has 5 major modules / classes.
+The `senzing_core`_ Python package has 4 major modules / classes.
 Senzing objects are created using an `Abstract Factory Pattern`_.
 
 .. list-table:: Senzing classes
@@ -11,9 +11,6 @@ Senzing objects are created using an `Abstract Factory Pattern`_.
    * - Module
      - Class
      - Creation
-   * - szconfig
-     - SzConfigCore
-     - `sz_config = sz_abstract_factory.create_config()`
    * - szconfigmanager
      - SzConfigManagerCore
      - `sz_configmanager = sz_abstract_factory.create_configmanager()`

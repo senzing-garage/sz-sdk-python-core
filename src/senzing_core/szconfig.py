@@ -185,7 +185,7 @@ class SzConfigCore(SzConfig):
         """Destructor"""
 
     # -------------------------------------------------------------------------
-    # SzConfig methods
+    # SzConfig interface methods
     # -------------------------------------------------------------------------
 
     @catch_non_sz_exceptions
@@ -263,9 +263,6 @@ class SzConfigCore(SzConfig):
 
         return result
 
-    def _destroy(self) -> None:
-        _ = self.library_handle.SzConfig_destroy()
-
     def export(self) -> str:
         return self.config_definition
 
@@ -293,8 +290,36 @@ class SzConfigCore(SzConfig):
 
         return result
 
+    # -------------------------------------------------------------------------
+    # Non-public SzConfigCore methods
+    # -------------------------------------------------------------------------
+
+    def _destroy(self) -> None:
+        _ = self.library_handle.SzConfig_destroy()
+
     def import_config_definition(self, config_definition: str) -> None:
         self.config_definition = config_definition
+
+    @catch_non_sz_exceptions
+    def import_template(
+        self,
+    ) -> None:
+
+        create_result = self.library_handle.SzConfig_create_helper()
+        self.check_result(create_result.return_code)
+        config_handle = create_result.response
+
+        # Export in-memory representation to a JSON document.
+
+        save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, save_result.response):
+            self.check_result(save_result.return_code)
+            self.config_definition = as_python_str(save_result.response)
+
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)
 
     @catch_non_sz_exceptions
     def _initialize(
@@ -312,6 +337,11 @@ class SzConfigCore(SzConfig):
 
     @catch_non_sz_exceptions
     def verify_config_definition(self, config_definition: str) -> None:
+        """
+        Verify that a Senzing configuration JSON document is valid.
+        This method does not update the internal Senzing configuration.
+        If an error is not thrown, the Senzing configuration JSON is valid.
+        """
 
         # Create an in-memory representation of the Senzing configuration JSON.
 

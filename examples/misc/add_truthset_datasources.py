@@ -17,8 +17,8 @@ SETTINGS = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
-    sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_config = sz_configmanager.create_config_from_template()
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
     sz_engine = sz_abstract_factory.create_engine()
 

@@ -21,8 +21,9 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzConfigManager
+from senzing import SzConfig, SzConfigManager
 
+from . import SzConfigCore
 from ._helpers import (
     FreeCResources,
     as_c_char_p,
@@ -159,35 +160,43 @@ class SzConfigManagerCore(SzConfigManager):
         self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
+        self.instance_name = ""
+        self.settings = ""
+        self.config_id = 0
+        self.verbose_logging = 0
+
     def __del__(self) -> None:
         """Destructor"""
 
     # -------------------------------------------------------------------------
-    # SzConfigManager methods
+    # SzConfigManager interface methods
     # -------------------------------------------------------------------------
 
     @catch_non_sz_exceptions
     def create_config_from_config_id(self, config_id: int) -> SzConfig:
-        # FIXME:
-        result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
-            return as_python_str(result.response)
+        get_config_result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
+        with FreeCResources(self.library_handle, get_config_result.response):
+            self.check_result(get_config_result.return_code)
+            config_definition = as_python_str(get_config_result.response)
+        result = SzConfigCore()
+        result.import_config_definition(config_definition)
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        return result
 
     @catch_non_sz_exceptions
     def create_config_from_string(self, config_definition: str) -> SzConfig:
-        # FIXME:
-        pass
+        result = SzConfigCore()
+        result.verify_config_definition(config_definition)
+        result.import_config_definition(config_definition)
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        return result
 
     @catch_non_sz_exceptions
     def create_config_from_template(self) -> SzConfig:
-        # FIXME:
-        pass
-
-    def _destroy(
-        self,
-    ) -> None:
-        _ = self.library_handle.SzConfigMgr_destroy()
+        result = SzConfigCore()
+        result.import_template()
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        return result
 
     def get_configs(self) -> str:
         result = self.library_handle.SzConfigMgr_getConfigList_helper()
@@ -201,20 +210,6 @@ class SzConfigManagerCore(SzConfigManager):
         return result.response  # type: ignore[no-any-return]
 
     @catch_non_sz_exceptions
-    def _initialize(
-        self,
-        instance_name: str,
-        settings: Union[str, Dict[Any, Any]],
-        verbose_logging: int = 0,
-    ) -> None:
-        result = self.library_handle.SzConfigMgr_init(
-            as_c_char_p(instance_name),
-            as_c_char_p(as_str(settings)),
-            verbose_logging,
-        )
-        self.check_result(result)
-
-    @catch_non_sz_exceptions
     def register_config(
         self,
         config_definition: str,
@@ -225,7 +220,6 @@ class SzConfigManagerCore(SzConfigManager):
             as_c_char_p(config_comment),
         )
         self.check_result(result.return_code)
-
         return result.response  # type: ignore[no-any-return]
 
     @catch_non_sz_exceptions
@@ -241,12 +235,37 @@ class SzConfigManagerCore(SzConfigManager):
 
     @catch_non_sz_exceptions
     def set_default_config(self, config_definition: str, config_comment: str) -> int:
-        _ = config_definition
-        _ = config_comment
-        # FIXME:
-        return 0
+        config_id = self.register_config(config_definition, config_comment)
+        self.set_default_config_id(config_id)
+        return config_id
 
     @catch_non_sz_exceptions
     def set_default_config_id(self, config_id: int) -> None:
         result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
+        self.check_result(result)
+
+    # -------------------------------------------------------------------------
+    # Public non-interface methods
+    # -------------------------------------------------------------------------
+
+    def _destroy(
+        self,
+    ) -> None:
+        _ = self.library_handle.SzConfigMgr_destroy()
+
+    @catch_non_sz_exceptions
+    def _initialize(
+        self,
+        instance_name: str,
+        settings: Union[str, Dict[Any, Any]],
+        verbose_logging: int = 0,
+    ) -> None:
+        self.instance_name = instance_name
+        self.settings = settings
+        self.verbose_logging = verbose_logging
+        result = self.library_handle.SzConfigMgr_init(
+            as_c_char_p(instance_name),
+            as_c_char_p(as_str(settings)),
+            verbose_logging,
+        )
         self.check_result(result)
