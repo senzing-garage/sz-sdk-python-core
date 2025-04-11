@@ -187,9 +187,6 @@ def test_set_default_config(sz_configmanager: SzConfigManager) -> None:
     old_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(old_config_id)
     data_source_code = "TEST_DATASOURCE_" + datetime.datetime.now(datetime.timezone.utc).isoformat()
-
-    # FIXME:  here
-
     sz_config.add_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
