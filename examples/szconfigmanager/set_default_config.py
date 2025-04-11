@@ -1,10 +1,24 @@
+#! /usr/bin/env python3
+
 import time
 
 from senzing import SzError
 
-from . import sz_configmanager
+from senzing_core import SzAbstractFactoryCore
+
+INSTANCE_NAME = "Example"
+SETTINGS = {
+    "PIPELINE": {
+        "CONFIGPATH": "/etc/opt/senzing",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
+        "SUPPORTPATH": "/opt/senzing/data",
+    },
+    "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
+}
 
 try:
+    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_configmanager = sz_abstract_factory.create_configmanager()
 
     # Create a new config.
 

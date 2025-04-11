@@ -17,7 +17,7 @@ SETTINGS = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
-    sz_config = sz_abstract_factory.create_config()
+    sz_configmanager = sz_abstract_factory.create_configmanager()
     DATA_SOURCE_CODE = "TEST"
     sz_config = sz_configmanager.create_config_from_template()
     RESULT = sz_config.delete_data_source(DATA_SOURCE_CODE)
