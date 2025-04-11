@@ -35,13 +35,6 @@ def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None
         sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
-def test_close_config_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfig().create()."""
-    bad_config_handle = "string"
-    with pytest.raises(TypeError):
-        sz_config.close_config(bad_config_handle)  # type: ignore[arg-type]
-
-
 def test_delete_data_source(sz_config: SzConfig) -> None:
     """Test SzConfig().delete_data_source()."""
     data_source_code = "TEST"
@@ -70,26 +63,12 @@ def test_get_data_sources(sz_config: SzConfig) -> None:
     assert schema(get_data_sources_schema) == actual_as_dict
 
 
-def test_import_config_bad_config_definition_type(sz_config: SzConfig) -> None:
-    """Test SzConfig().import_config()."""
-    bad_config_definition = 0
-    with pytest.raises(TypeError):
-        sz_config.import_config(bad_config_definition)  # type: ignore[arg-type]
-
-
 def test_export_config(sz_config: SzConfig) -> None:
     """Test SzConfig().export_config()."""
     actual = sz_config.export()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
     assert schema(export_config_schema) == actual_as_dict
-
-
-def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
-    """Test SzConfig().export_config()."""
-    bad_config_handle = "string"
-    with pytest.raises(TypeError):
-        sz_config.export_config(bad_config_handle)  # type: ignore[arg-type]
 
 
 # -----------------------------------------------------------------------------

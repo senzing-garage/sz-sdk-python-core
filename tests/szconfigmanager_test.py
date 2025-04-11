@@ -82,7 +82,7 @@ def test_register_config_bad_config_comment_type(sz_configmanager: SzConfigManag
     config_definition = sz_config.export()
     bad_config_comment = 0
     with pytest.raises(TypeError):
-        sz_configmanager.add_config(config_definition, bad_config_comment)  # type: ignore[arg-type]
+        sz_configmanager.register_config(config_definition, bad_config_comment)  # type: ignore[arg-type]
 
 
 def test_replace_default_config_id(sz_configmanager: SzConfigManager) -> None:

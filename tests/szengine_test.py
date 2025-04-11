@@ -74,11 +74,10 @@ def test_add_truthset_datasources(
     sz_config: SzConfig,
 ) -> None:
     """Add needed datasources for tests."""
-    config_handle = sz_config.create_config()
     for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(config_handle, data_source_code)
-    config_definition = sz_config.export_config(config_handle)
-    config_id = sz_configmanager.add_config(config_definition, "Test")
+        sz_config.add_data_source(data_source_code)
+    config_definition = sz_config.export()
+    config_id = sz_configmanager.register_config(config_definition, "Test")
     sz_configmanager.set_default_config_id(config_id)
     sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 

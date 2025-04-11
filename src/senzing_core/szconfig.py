@@ -210,7 +210,7 @@ class SzConfigCore(SzConfig):
         )
         with FreeCResources(self.library_handle, add_data_source_result.response):
             self.check_result(add_data_source_result.return_code)
-            result = add_data_source_result.response
+            result = as_python_str(add_data_source_result.response)
 
         # Export in-memory representation to a JSON document.
 
@@ -230,7 +230,7 @@ class SzConfigCore(SzConfig):
     def delete_data_source(
         self,
         data_source_code: str,
-    ) -> None:
+    ) -> str:
 
         # Create an in-memory representation of the Senzing configuration JSON.
 
@@ -247,7 +247,7 @@ class SzConfigCore(SzConfig):
         )
         with FreeCResources(self.library_handle, delete_data_source_result.response):
             self.check_result(delete_data_source_result.return_code)
-            result = delete_data_source_result.response
+            result = as_python_str(delete_data_source_result.response)
 
         # Export in-memory representation to a JSON document.
 

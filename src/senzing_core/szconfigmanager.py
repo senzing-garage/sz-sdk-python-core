@@ -269,7 +269,7 @@ class SzConfigManagerCore(SzConfigManager):
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
         self.instance_name = instance_name
-        self.settings = settings
+        self.settings = as_str(settings)
         self.verbose_logging = verbose_logging
         result = self.library_handle.SzConfigMgr_init(
             as_c_char_p(instance_name),
