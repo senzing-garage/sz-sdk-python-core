@@ -260,6 +260,14 @@ class SzConfigManagerCore(SzConfigManager):
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzConfigManager.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzConfigManager.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         self.instance_name = instance_name
         self.settings = settings
         self.verbose_logging = verbose_logging

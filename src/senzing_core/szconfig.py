@@ -298,12 +298,23 @@ class SzConfigCore(SzConfig):
         _ = self.library_handle.SzConfig_destroy()
 
     def import_config_definition(self, config_definition: str) -> None:
+        """
+        Set the internal JSON document.
+
+        Args:
+            config_definition (str): A Senzing configuration JSON document.
+        """
         self.config_definition = config_definition
 
     @catch_non_sz_exceptions
     def import_template(
         self,
     ) -> None:
+        """
+        Retrieves a Senzing configuration from the default template.
+        The default template is the Senzing configuration JSON document file,
+        g2config.json, located in the PIPELINE.RESOURCEPATH path.
+        """
 
         create_result = self.library_handle.SzConfig_create_helper()
         self.check_result(create_result.return_code)
@@ -328,6 +339,14 @@ class SzConfigCore(SzConfig):
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzConfig.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzConfig.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         result = self.library_handle.SzConfig_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
