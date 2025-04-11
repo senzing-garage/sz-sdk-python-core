@@ -870,7 +870,7 @@ class SzEngineCore(SzEngine):
             return as_python_str(result.response)
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],

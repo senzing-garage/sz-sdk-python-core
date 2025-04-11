@@ -73,7 +73,7 @@ def test_get_feature_unknown_id(sz_diagnostic: SzDiagnostic) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -83,7 +83,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -93,7 +93,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -139,7 +139,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """Single szconfigmanager object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManagerCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         verbose_logging=0,
@@ -152,7 +152,7 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
     """Single szdiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnosticCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,
@@ -166,7 +166,7 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """Single szengine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzEngineCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,

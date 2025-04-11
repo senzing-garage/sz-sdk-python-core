@@ -180,7 +180,7 @@ class SzConfigManagerCore(SzConfigManager):
             config_definition = as_python_str(get_config_result.response)
         result = SzConfigCore()
         result.import_config_definition(config_definition)
-        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        result.initialize(self.instance_name, self.settings, self.verbose_logging)
         return result
 
     @catch_non_sz_exceptions
@@ -188,14 +188,14 @@ class SzConfigManagerCore(SzConfigManager):
         result = SzConfigCore()
         result.verify_config_definition(config_definition)
         result.import_config_definition(config_definition)
-        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        result.initialize(self.instance_name, self.settings, self.verbose_logging)
         return result
 
     @catch_non_sz_exceptions
     def create_config_from_template(self) -> SzConfig:
         result = SzConfigCore()
         result.import_template()
-        result._initialize(self.instance_name, self.settings, self.verbose_logging)
+        result.initialize(self.instance_name, self.settings, self.verbose_logging)
         return result
 
     def get_configs(self) -> str:
@@ -254,7 +254,7 @@ class SzConfigManagerCore(SzConfigManager):
         _ = self.library_handle.SzConfigMgr_destroy()
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],

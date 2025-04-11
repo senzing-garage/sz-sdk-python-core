@@ -113,7 +113,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
         if not self.is_szconfigmanager_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 verbose_logging=self.verbose_logging,
@@ -124,7 +124,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_diagnostic(self) -> SzDiagnostic:
         result = SzDiagnosticCore()
         if not self.is_szdiagnostic_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 config_id=self.config_id,
@@ -137,7 +137,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         # TODO: Determine if atomic operation is needed.
         result = SzEngineCore()
         if not self.is_szengine_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 config_id=self.config_id,
@@ -149,7 +149,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_product(self) -> SzProduct:
         result = SzProductCore()
         if not self.is_szproduct_initialized:
-            result._initialize(  # pylint: disable=W0212
+            result.initialize(  # pylint: disable=W0212
                 instance_name=self.instance_name,
                 settings=self.settings,
                 verbose_logging=self.verbose_logging,

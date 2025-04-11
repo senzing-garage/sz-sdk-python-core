@@ -187,7 +187,7 @@ def test_set_default_config_id_bad_config_id_value(
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -197,7 +197,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -207,7 +207,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -231,7 +231,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     build_engine_vars is returned from conftest.pys"""
 
     result = SzConfigManagerCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

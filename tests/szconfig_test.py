@@ -100,7 +100,7 @@ def test_export_config_bad_config_handle_type(sz_config: SzConfig) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -110,7 +110,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -120,7 +120,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -146,7 +146,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
 
     result = SzConfigCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

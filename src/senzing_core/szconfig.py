@@ -322,7 +322,7 @@ class SzConfigCore(SzConfig):
         self.check_result(close_result)
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
