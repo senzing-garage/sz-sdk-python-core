@@ -23,7 +23,6 @@ from typing import Any, Dict, Union
 
 from senzing import SzConfig, SzConfigManager
 
-from .szconfig import SzConfigCore
 from ._helpers import (
     FreeCResources,
     as_c_char_p,
@@ -34,6 +33,7 @@ from ._helpers import (
     load_sz_library,
 )
 from ._version import is_supported_senzingapi_version
+from .szconfig import SzConfigCore
 
 # Metadata
 
@@ -194,8 +194,8 @@ class SzConfigManagerCore(SzConfigManager):
     @catch_non_sz_exceptions
     def create_config_from_template(self) -> SzConfig:
         result = SzConfigCore()
-        result.import_template()
         result.initialize(self.instance_name, self.settings, self.verbose_logging)
+        result.import_template()
         return result
 
     def get_configs(self) -> str:

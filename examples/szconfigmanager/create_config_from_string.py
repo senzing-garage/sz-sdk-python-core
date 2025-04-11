@@ -19,7 +19,7 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_configmanager = sz_abstract_factory.create_configmanager()
-    CONFIG_DEFINITION = json.dumps({})
+    CONFIG_DEFINITION = json.dumps({"G2_CONFIG": {}})
     sz_config = sz_configmanager.create_config_from_string(CONFIG_DEFINITION)
 except SzError as err:
     print(f"\nERROR: {err}\n")

@@ -76,6 +76,7 @@ def test_add_truthset_datasources(
     """Add needed datasources for tests."""
     for data_source_code in TRUTHSET_DATASOURCES:
         sz_config.add_data_source(data_source_code)
+
     config_definition = sz_config.export()
     config_id = sz_configmanager.register_config(config_definition, "Test")
     sz_configmanager.set_default_config_id(config_id)
@@ -1260,6 +1261,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
+    result.import_template()
     return result
 
 
