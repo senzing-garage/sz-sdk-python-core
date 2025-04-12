@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+import json
+
 from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
@@ -16,10 +18,8 @@ SETTINGS = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
-    sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
-    config_id = sz_configmanager.get_default_config_id()
-    CONFIG_DEFINITION = sz_configmanager.get_config(config_id)
-    config_handle = sz_config.import_config(CONFIG_DEFINITION)
+    CONFIG_DEFINITION = json.dumps({"G2_CONFIG": {}})
+    sz_config = sz_configmanager.create_config_from_string(CONFIG_DEFINITION)
 except SzError as err:
     print(f"\nERROR: {err}\n")

@@ -18,7 +18,7 @@ try:
     # Using get_active_config_id for demonstrations purposes.
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
-    config_id = sz_engine.get_active_config_id()
-    sz_abstract_factory.reinitialize(config_id)
+    CONFIG_ID = sz_engine.get_active_config_id()
+    sz_abstract_factory.reinitialize(CONFIG_ID)
 except SzError as err:
     print(f"\nERROR: {err}\n")

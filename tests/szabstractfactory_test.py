@@ -4,7 +4,6 @@ from typing import Any, Dict
 import pytest
 from senzing import (
     SzAbstractFactory,
-    SzConfig,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
@@ -16,12 +15,6 @@ from senzing_core import SzAbstractFactoryCore
 # -----------------------------------------------------------------------------
 # Testcases
 # -----------------------------------------------------------------------------
-
-
-def test_create_config(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzConfig."""
-    actual = sz_abstract_factory.create_config()
-    assert isinstance(actual, SzConfig)
 
 
 def test_create_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
@@ -55,29 +48,22 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
 
     # Create Senzing objects.
 
-    sz_config = sz_abstract_factory.create_config()
     sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_config = sz_configmanager.create_config_from_template()
 
-    # Get existing Senzing configuration.
-
-    old_config_id = sz_configmanager.get_default_config_id()
-    old_json_config = sz_configmanager.get_config(old_config_id)
-    config_handle = sz_config.import_config(old_json_config)
-
-    # Add DataSources to existing Senzing configuration.
+    # Add DataSources to Senzing configuration.
 
     for datasource in datasources:
-        sz_config.add_data_source(config_handle, datasource)
+        sz_config.add_data_source(datasource)
 
     # Persist new Senzing configuration.
 
-    new_json_config = sz_config.export_config(config_handle)
-    new_config_id = sz_configmanager.add_config(new_json_config, "Add My datasources")
-    sz_configmanager.replace_default_config_id(old_config_id, new_config_id)
+    config_definition = sz_config.export()
+    config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
 
     # Update other Senzing objects.
 
-    sz_abstract_factory.reinitialize(new_config_id)
+    sz_abstract_factory.reinitialize(config_id)
 
 
 # -----------------------------------------------------------------------------

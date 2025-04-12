@@ -172,6 +172,8 @@ class SzConfigCore(SzConfig):
         self.library_handle.SzConfig_save_helper.restype = SzConfigSaveResult
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
+        self.config_definition = ""
+
         # if (not self.instance_name) or (len(self.settings) == 0):
         #     raise sdk_exception(2)
 
@@ -183,70 +185,163 @@ class SzConfigCore(SzConfig):
         """Destructor"""
 
     # -------------------------------------------------------------------------
-    # SzConfig methods
+    # SzConfig interface methods
     # -------------------------------------------------------------------------
 
     @catch_non_sz_exceptions
     def add_data_source(
         self,
-        config_handle: int,
         data_source_code: str,
     ) -> str:
-        result = self.library_handle.SzConfig_addDataSource_helper(
+        # WORKING ON:
+
+        # Create an in-memory representation of the Senzing configuration JSON.
+
+        load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
+        config_handle = load_result.response
+
+        # Add DataSource to in-memory representation of the Senzing configuration JSON.
+
+        add_data_source_result = self.library_handle.SzConfig_addDataSource_helper(
             as_c_uintptr_t(config_handle),
             as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
+        with FreeCResources(self.library_handle, add_data_source_result.response):
+            self.check_result(add_data_source_result.return_code)
+            result = as_python_str(add_data_source_result.response)
 
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
-            return as_python_str(result.response)
+        # Export in-memory representation to a JSON document.
 
-    @catch_non_sz_exceptions
-    def close_config(self, config_handle: int) -> None:
-        result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
-        self.check_result(result)
+        save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, save_result.response):
+            self.check_result(save_result.return_code)
+            self.config_definition = as_python_str(save_result.response)
 
-    def create_config(self) -> int:
-        result = self.library_handle.SzConfig_create_helper()
-        self.check_result(result.return_code)
-        return result.response  # type: ignore[no-any-return]
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)
+
+        return result
 
     @catch_non_sz_exceptions
     def delete_data_source(
         self,
-        config_handle: int,
         data_source_code: str,
-    ) -> None:
-        result = self.library_handle.SzConfig_deleteDataSource_helper(
+    ) -> str:
+
+        # Create an in-memory representation of the Senzing configuration JSON.
+
+        load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
+        config_handle = load_result.response
+
+        # Delete DataSource from in-memory representation of the Senzing configuration JSON.
+
+        delete_data_source_result = self.library_handle.SzConfig_deleteDataSource_helper(
             as_c_uintptr_t(config_handle),
             as_c_char_p(build_dsrc_code_json(data_source_code)),
         )
-        self.check_result(result)
+        self.check_result(delete_data_source_result)
+
+        # Export in-memory representation to a JSON document.
+
+        save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, save_result.response):
+            self.check_result(save_result.return_code)
+            self.config_definition = as_python_str(save_result.response)
+
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)
+
+        return ""
+
+    def export(self) -> str:
+        return self.config_definition
+
+    @catch_non_sz_exceptions
+    def get_data_sources(self) -> str:
+
+        # Create an in-memory representation of the Senzing configuration JSON.
+
+        load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(self.config_definition))
+        self.check_result(load_result.return_code)
+        config_handle = load_result.response
+
+        # Get the list of datasources.
+
+        list_data_sources_result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, list_data_sources_result.response):
+            self.check_result(list_data_sources_result.return_code)
+            result = as_python_str(list_data_sources_result.response)
+
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)
+
+        return result
+
+    # -------------------------------------------------------------------------
+    # Non-public SzConfigCore methods
+    # -------------------------------------------------------------------------
 
     def _destroy(self) -> None:
         _ = self.library_handle.SzConfig_destroy()
 
-    @catch_non_sz_exceptions
-    def export_config(self, config_handle: int) -> str:
-        result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
-            return as_python_str(result.response)
+    def import_config_definition(self, config_definition: str) -> None:
+        """
+        Set the internal JSON document.
+
+        Args:
+            config_definition (str): A Senzing configuration JSON document.
+        """
+        self.config_definition = config_definition
 
     @catch_non_sz_exceptions
-    def get_data_sources(self, config_handle: int) -> str:
-        result = self.library_handle.SzConfig_listDataSources_helper(as_c_uintptr_t(config_handle))
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
-            return as_python_str(result.response)
+    def import_template(
+        self,
+    ) -> None:
+        """
+        Retrieves a Senzing configuration from the default template.
+        The default template is the Senzing configuration JSON document file,
+        g2config.json, located in the PIPELINE.RESOURCEPATH path.
+        """
+
+        create_result = self.library_handle.SzConfig_create_helper()
+        self.check_result(create_result.return_code)
+        config_handle = create_result.response
+
+        # Export in-memory representation to a JSON document.
+
+        save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, save_result.response):
+            self.check_result(save_result.return_code)
+            self.config_definition = as_python_str(save_result.response)
+
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzConfig.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzConfig.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         result = self.library_handle.SzConfig_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
@@ -255,7 +350,27 @@ class SzConfigCore(SzConfig):
         self.check_result(result)
 
     @catch_non_sz_exceptions
-    def import_config(self, config_definition: str) -> int:
-        result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
-        self.check_result(result.return_code)
-        return result.response  # type: ignore[no-any-return]
+    def verify_config_definition(self, config_definition: str) -> None:
+        """
+        Verify that a Senzing configuration JSON document is valid.
+        This method does not update the internal Senzing configuration.
+        If an error is not thrown, the Senzing configuration JSON is valid.
+        """
+
+        # Create an in-memory representation of the Senzing configuration JSON.
+
+        load_result = self.library_handle.SzConfig_load_helper(as_c_char_p(config_definition))
+        self.check_result(load_result.return_code)
+        config_handle = load_result.response
+
+        # Export in-memory representation to a JSON document.
+
+        save_result = self.library_handle.SzConfig_save_helper(as_c_uintptr_t(config_handle))
+        with FreeCResources(self.library_handle, save_result.response):
+            self.check_result(save_result.return_code)
+            _ = as_python_str(save_result.response)
+
+        # Delete the in-memory representation of the Senzing configuration JSON.
+
+        close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
+        self.check_result(close_result)

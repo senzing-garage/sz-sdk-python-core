@@ -870,13 +870,21 @@ class SzEngineCore(SzEngine):
             return as_python_str(result.response)
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzEngine.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzEngine.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         if config_id == 0:
             result = self.library_handle.Sz_init(
                 as_c_char_p(instance_name),
