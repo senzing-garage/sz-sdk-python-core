@@ -511,6 +511,7 @@ class SzEngineCore(SzEngine):
             c_char_p,
             c_longlong,
         ]
+        self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
         self.library_handle.Sz_whyRecordInEntity_V2_helper.restype = SzWhyRecordInEntityV2Result
         self.library_handle.Sz_whyRecords_V2_helper.argtypes = [
             c_char_p,
