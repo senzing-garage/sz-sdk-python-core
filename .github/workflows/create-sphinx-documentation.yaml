@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   docs:
+    outputs:
+      status: ${{ job.status }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -44,3 +46,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/
           force_orphan: true
+
+  slack-notification:
+    needs: [docs]
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.docs.outputs.status ) }}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v2
+    with:
+      job-status: ${{ needs.docs.outputs.status }}
