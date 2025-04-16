@@ -38,7 +38,7 @@ from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 try:
     import orjson  # type: ignore
 
-    def _json_dumps(object_: Any) -> str:  # type: ignore[no-any-return]
+    def _json_dumps(object_: Any) -> str:  # type: ignore
         return orjson.dumps(object_).decode("utf-8")
 
     _json_loads = orjson.loads
