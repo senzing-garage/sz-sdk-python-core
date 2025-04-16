@@ -1315,8 +1315,6 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     return result
 
 
-
-
 @pytest.fixture(name="sz_engine", scope="function")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
