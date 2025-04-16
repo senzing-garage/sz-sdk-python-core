@@ -133,10 +133,9 @@ def test_exception(sz_config: SzConfigCore) -> None:
 @pytest.fixture(name="sz_config", scope="function")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single szconfig object to use for all tests.
+    SzConfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-
     result = SzConfigCore()
     result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],

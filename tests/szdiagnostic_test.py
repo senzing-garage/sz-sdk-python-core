@@ -149,7 +149,7 @@ def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None
 
 @pytest.fixture(name="sz_configmanager", scope="function")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """Single szconfigmanager object to use for all tests.
+    """SzConfigManager object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManagerCore()
     result.initialize(  # pylint: disable=W0212
@@ -162,7 +162,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
 
 @pytest.fixture(name="sz_diagnostic", scope="function")
 def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
-    """Single szdiagnostic object to use for all tests.
+    """SzDiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnosticCore()
     result.initialize(  # pylint: disable=W0212
@@ -176,7 +176,7 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
 
 @pytest.fixture(name="sz_engine", scope="function")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
-    """Single szengine object to use for all tests.
+    """SzEngine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzEngineCore()
     result.initialize(  # pylint: disable=W0212

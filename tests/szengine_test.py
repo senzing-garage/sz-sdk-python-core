@@ -831,8 +831,11 @@ def test_prime_engine(sz_engine: SzEngine) -> None:
 
 def test_process_redo_record(sz_engine: SzEngine) -> None:
     """Test SzEngine.process_redo_record()."""
-    _ = sz_engine
-    # TODO: sz_engine.process_redo_record("")
+    flags = SZ_WITHOUT_INFO
+    while sz_engine.count_redo_records() > 0:
+        redo_record = sz_engine.get_redo_record()
+        actual = sz_engine.process_redo_record(redo_record, flags)
+        assert actual == ""
 
 
 def test_reevaluate_entity(sz_engine: SzEngine) -> None:
@@ -867,7 +870,7 @@ def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
     actual = sz_engine.reevaluate_entity(entity_id, flags)
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema_fixme) == actual_as_dict
+    assert schema(add_record_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
@@ -1283,10 +1286,24 @@ def get_entity_id_from_record_id(sz_engine: SzEngine, data_source_code: str, rec
 # -----------------------------------------------------------------------------
 
 
+@pytest.fixture(name="sz_configmanager", scope="function")
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
+    """
+    SzConfigManager object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+    result = SzConfigManagerCore()
+    result.initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    return result
+
+
 @pytest.fixture(name="sz_config", scope="function")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single szconfig object to use for all tests.
+    SzConfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = SzConfigCore()
@@ -1298,27 +1315,14 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     return result
 
 
-@pytest.fixture(name="sz_configmanager", scope="function")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """
-    Single szconfigmanager object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigManagerCore()
-    result.initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    return result
 
 
 @pytest.fixture(name="sz_engine", scope="function")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
-    Single SzEngine object to use for all tests.
+    SzEngine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-
     result = SzEngineCore()
     result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
@@ -1332,12 +1336,6 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
 # -----------------------------------------------------------------------------
 
 add_record_with_info_schema = {
-    "DATA_SOURCE": str,
-    "RECORD_ID": str,
-    "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
-}
-
-add_record_with_info_schema_fixme = {
     "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
 }
 

@@ -294,8 +294,8 @@ def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
 
 @pytest.fixture(name="sz_configmanager", scope="function")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """Single szconfigmanager object to use for all tests.
-    build_engine_vars is returned from conftest.pys"""
+    """SzConfigManager object to use for all tests.
+    engine_vars is returned from conftest.pys"""
 
     result = SzConfigManagerCore()
     result.initialize(  # pylint: disable=W0212

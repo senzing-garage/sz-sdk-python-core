@@ -95,7 +95,7 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
 @pytest.fixture(name="sz_abstractfactory", scope="function")
 def szabstractfactory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
     """
-    Single SzAbstractFactoryCore object to use for all tests.
+    SzAbstractFactory object to use for all tests.
     """
 
     factory_parameters = {

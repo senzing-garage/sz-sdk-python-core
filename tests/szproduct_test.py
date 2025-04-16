@@ -112,7 +112,7 @@ def test_exception(sz_product: SzProductCore) -> None:
 @pytest.fixture(name="sz_product", scope="function")
 def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
-    Single szproduct object to use for all tests.
+    SzProduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = SzProductCore()
