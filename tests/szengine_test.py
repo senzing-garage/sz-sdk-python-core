@@ -82,7 +82,7 @@ def test_add_truthset_datasources(
     config_definition = sz_config.export()
     config_id = sz_configmanager.register_config(config_definition, "Test")
     sz_configmanager.set_default_config_id(config_id)
-    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
+    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -820,11 +820,8 @@ def test_preprocess_record(sz_engine: SzEngine) -> None:
 # TODO This needs fixing first: https://senzing.atlassian.net/browse/GDEV-3924?atlOrigin=eyJpIjoiYjY2OWNkOTc5ZDRiNDgzYmE5ZjE2NjIzOTZiYmNjNTgiLCJwIjoiaiJ9
 # def test_preprocess_record_bad_record(sz_engine: SzEngineTest) -> None:
 #     """Test SzEngine.preprocess_record()."""
-#     record_definition: str = (
-#         '"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert", "DATE_OF_BIRTH": "12/11/1978"}'
-#     )
 #     with pytest.raises(SzBadInputError):
-#         sz_engine.preprocess_record(record_definition)
+#         sz_engine.preprocess_record(json.dumps(record_definition))
 
 
 def test_prime_engine(sz_engine: SzEngine) -> None:
@@ -1198,20 +1195,20 @@ def test_exception(sz_engine: SzEngineCore) -> None:
 def test_reinitialize(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     config_id = sz_engine.get_active_config_id()
-    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
+    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
 
 
 def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     bad_default_config_id = "string"
     with pytest.raises(TypeError):
-        sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_engine.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
-        sz_engine._reinitialize(999)
+        sz_engine.reinitialize(999)
 
 
 # -----------------------------------------------------------------------------

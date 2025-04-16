@@ -123,7 +123,7 @@ def test_reinitialize(sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfi
     """Test SzDiagnosticCore.reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
-        sz_diagnostic._reinitialize(default_config_id)  # pylint: disable=W0212
+        sz_diagnostic.reinitialize(default_config_id)  # pylint: disable=W0212
     except SzError:
         assert False
 
@@ -133,13 +133,13 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     bad_default_config_id = "string"
     # pylint: disable=W0212
     with pytest.raises(TypeError):
-        sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnosticCore.reinit() raising error."""
     with pytest.raises(SzError):
-        sz_diagnostic._reinitialize(999)  # pylint: disable=W0212
+        sz_diagnostic.reinitialize(999)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
