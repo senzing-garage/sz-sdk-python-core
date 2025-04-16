@@ -29,7 +29,7 @@ from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_non_sz_exceptions,
+    catch_sdk_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -154,7 +154,7 @@ class SzDiagnosticCore(SzDiagnostic):
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def check_datastore_performance(self, seconds_to_run: int) -> str:
         result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self.library_handle, result.response):
@@ -171,14 +171,14 @@ class SzDiagnosticCore(SzDiagnostic):
             return as_python_str(result.response)
 
     # NOTE This is included but not to be documented, used by sz_explorer
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_feature(self, feature_id: int) -> str:
         result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def initialize(
         self,
         instance_name: str,
@@ -215,7 +215,7 @@ class SzDiagnosticCore(SzDiagnostic):
         result = self.library_handle.SzDiagnostic_purgeRepository()
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

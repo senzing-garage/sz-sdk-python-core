@@ -11,6 +11,7 @@ from __future__ import annotations
 import platform
 import sys
 import threading
+from collections.abc import Iterable
 from contextlib import suppress
 from ctypes import (
     CDLL,
@@ -38,7 +39,7 @@ from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 try:
     import orjson  # type: ignore
 
-    def _json_dumps(object_: Any) -> str:  # type: ignore[no-any-return]
+    def _json_dumps(object_: Any) -> str:
         return orjson.dumps(object_).decode("utf-8")
 
     _json_loads = orjson.loads
@@ -109,34 +110,172 @@ def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     :meta private:
     """
 
+    # @wraps(func_to_decorate)
+    # def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
+    #     try:
+    #         return func_to_decorate(*args, **kwargs)
+    #     except (ArgumentError, TypeError, ValueError, json.JSONDecodeError) as err:
+    #         append_err_msg = ""
+
+    #         # Remove the Senzing engine object from args
+    #         received_arg_values = list(args[1:])
+
+    #         # Append a custom message if received arguments are likely incorrect type, value, etc. If any positional
+    #         # arguments are missing don't append to the original error message
+    #         missing_positional = bool(err.args and " required positional argument" in err.args[0])
+    #         if (received_arg_values or kwargs) and not missing_positional:
+    #             # Get wrapped function annotation, remove unwanted keys
+    #             annotations_dict = func_to_decorate.__annotations__
+    #             with suppress(KeyError):
+    #                 del annotations_dict["return"]
+    #                 del annotations_dict["kwargs"]
+
+    #             # Get the wrapped functions argument names and determine which, if any, positional args were received
+    #             # and capture the signature names and received values
+    #             func_signature_names = list(annotations_dict.keys())
+    #             received_arg_names = func_signature_names[: len(received_arg_values)]
+    #             received_args = {received_arg_names[a]: received_arg_values[a] for a in range(len(received_arg_names))}
+
+    #             # Add names and values of any key word arguments and order on the wrapped function signature
+    #             all_received = {**received_args, **kwargs}
+    #             all_received_ordered = {k: all_received[k] for k in annotations_dict if k in all_received}
+
+    #             # Get the wrapped function signature names and types and build a string for append to the error message
+    #             func_signature = ", ".join(
+    #                 [
+    #                     f"{name}: {type if isinstance(type, str) else type.__name__}"
+    #                     for name, type in annotations_dict.items()
+    #                 ]
+    #             )
+
+    #             # TODO: Figure out why these lines prevent the error in the ".join(..) command":
+    #             # UnboundLocalError: cannot access local variable 'type' where it is not associated with a value
+    #             # See https://docs.python.org/3.12/whatsnew/changelog.html#id28 gh-118513
+    #             # See https://github.com/python/cpython/issues/118513
+
+    #             join_list = []
+    #             for name, value in all_received_ordered.items():
+    #                 join_list.append(f"{name}: {type(value).__name__}")
+    #             func_received = ", ".join(join_list)
+
+    #             # Get the wrapped functions received argument names and types
+    #             # func_received = ", ".join(
+    #             #     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
+    #             # )
+
+    #             # print(f"\n{all_received_ordered = }", flush=True)
+    #             # Get the wrapped functions received argument names and types
+    #             # func_received = ", ".join(
+    #             #     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
+    #             # )
+    #             # TODO
+    #             # print(f"\n{func_received = }", flush=True)
+
+    #             append_err_msg = f" - [Called: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature}) - Received: {func_received}]"
+
+    #         err_args = err.args
+    #         arg_0 = append_err_msg if not err_args else f"{err_args[0]}{append_err_msg}"
+    #         err.args = (arg_0,) + err_args[1:]
+
+    #         if err.__class__.__name__ == "ArgumentError":
+    #             raise TypeError(err) from err
+    #         raise err
+
+    # return wrapped_func
+
     @wraps(func_to_decorate)
-    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:
+    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:  # pylint: disable=too-many-locals
         try:
             return func_to_decorate(*args, **kwargs)
         except (ArgumentError, TypeError, ValueError) as err:
-            # Get wrapped function annotation, remove unwanted keys
-            annotations_dict = func_to_decorate.__annotations__
-            with suppress(KeyError):
-                del annotations_dict["return"]
-                del annotations_dict["kwargs"]
+            append_err_msg = ""
 
-            # Get the wrapped function signature names and types and build a string to append to the error message
-            func_signature = ", ".join(
-                [
-                    f"{name}: {type if isinstance(type, str) else type.__name__}"
-                    for name, type in annotations_dict.items()
-                ]
+            # Remove the Senzing engine object from args
+            received_arg_values = list(args[1:])
+
+            # Append a custom message if received arguments are likely incorrect type, value, etc. If any positional
+            # arguments are missing don't append to the original error message
+            missing_positional = bool(err.args and " required positional argument" in err.args[0])
+
+            if (received_arg_values or kwargs) and not missing_positional:
+                # Get wrapped function annotation, remove unwanted keys
+                annotations_dict = func_to_decorate.__annotations__
+                with suppress(KeyError):
+                    del annotations_dict["return"]
+                    del annotations_dict["kwargs"]
+
+                # Get the wrapped functions argument names and determine which, if any, positional args were received
+                # and capture the signature names and received values
+                func_signature_names = list(annotations_dict.keys())
+                received_arg_names = func_signature_names[: len(received_arg_values)]
+                received_args = {received_arg_names[a]: received_arg_values[a] for a in range(len(received_arg_names))}
+
+                # Add names and values of any key word arguments and order on the wrapped function signature
+                all_received = {**received_args, **kwargs}
+                all_received_ordered = {k: all_received[k] for k in annotations_dict if k in all_received}
+
+                # TODO -
+                # print(f"\n{annotations_dict = }", flush=True)
+                # print(f"\n{all_received_ordered = }", flush=True)
+                # print(f"\n{type(all_received_ordered) = }", flush=True)
+
+                # Get the wrapped function signature names and types and build a string to append to the error message
+                func_signature = ", ".join(
+                    [
+                        f"{name}: {type if isinstance(type, str) else type.__name__}"
+                        for name, type in annotations_dict.items()
+                    ]
+                )
+
+                # new_func_signature = {}
+                # for name, value in annotations_dict.items():
+                #     new_func_signature[name] = {"function_argument": value}
+                #     type_str = value if isinstance(value, str) else value.__name__
+                #     if type_str.startswith("Optional["):
+                #         new_func_signature[name] = {"optional": True}
+                #         type_str = type_str.lstrip("Optional[").rstrip("]")
+                #     else:
+                #         new_func_signature[name] = {"optional": False}
+
+                #     type_details = type_str.split("[")
+                #     new_func_signature[name]["type_details"] = type_details
+
+                # NOTE: Don't use comprehension, and error occurs
+                # UnboundLocalError: cannot access local variable 'type' where it is not associated with a value
+                # See https://docs.python.org/3.12/whatsnew/changelog.html#id28 gh-118513
+                # See https://github.com/python/cpython/issues/118513
+                # func_received = ", ".join(
+                #     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
+                # )
+
+                # Get the wrapped functions received argument names and types
+                received_join = []
+                for name, value in all_received_ordered.items():
+                    received_join.append(f"{name}: {value}")
+                func_received = ", ".join(received_join)
+
+                # print(f"\n{all_received_ordered = }", flush=True)
+                # Get the wrapped functions received argument names and types
+                # func_received = ", ".join(
+                #     [f"{name}: {type(value).__name__}" for name, value in all_received_ordered.items()]
+                # )
+                # TODO
+                # print(f"\n{func_received = }", flush=True)
+
+                # TODO -
+                # append_err_msg = f" - [Called: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature}) - Received: {func_received}]"
+                # append_err_msg = f" - [Called: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature}) - Received: {func_received}]"
+
+            # TODO -
+            append_err_msg = (
+                f" - method signature: {func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature})"
             )
+            err_args = err.args
+            arg_0 = append_err_msg if not err_args else f"{err_args[0]}{append_err_msg}"
+            err.args = (arg_0,) + err_args[1:]
 
-            method_and_signature = f"{func_to_decorate.__module__}.{func_to_decorate.__name__}({func_signature})"
-            append_err_msg = f" - expected: {method_and_signature}"
-
-            arg_0 = err.args[0]
-            if " missing " in err.args[0] and " required positional argument" in err.args[0]:
-                arg_0 = " ".join(err.args[0].split()[1:])
-            new_arg_0 = f"calling {method_and_signature}" if not err.args else f"{arg_0}{append_err_msg}"
-            err.args = (new_arg_0,) + err.args[1:]
-
+            # TODO -
+            print(f"\n{err.args = }", flush=True)
             raise SzSdkError(err) from err
 
     return wrapped_func
@@ -260,8 +399,8 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     if not isinstance(dsrc_codes, list):
         raise TypeError(f"value {dsrc_codes} has type {type(dsrc_codes).__name__}, should be a list")
 
-    # TODO - Check changed to generator
-    if not all(isinstance(d, str) for d in dsrc_codes):
+    # TODO -
+    if not all([isinstance(d, str) for d in dsrc_codes]):
         element_types_str = ", ".join({type(t).__name__ for t in dsrc_codes if not isinstance(t, str)})
         raise TypeError(f"elements in {dsrc_codes} should be str(s), there are {element_types_str}")
 
@@ -286,8 +425,8 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     if not isinstance(entity_ids, list):
         raise TypeError(f"value {entity_ids} has type {type(entity_ids).__name__}, should be a list of int(s)")
 
-    # TODO - Check changed to generator
-    if not all(isinstance(e, int) for e in entity_ids):
+    # TODO -
+    if not all([isinstance(e, int) for e in entity_ids]):
         element_types_str = ", ".join({type(t).__name__ for t in entity_ids if not isinstance(t, int)})
         raise TypeError(f"elements in {entity_ids} should be int(s), there are {element_types_str}")
 
@@ -313,8 +452,8 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     record_keys_with_elements = [rk for rk in record_keys if rk]
     wrong_types = set()
 
-    # TODO - Check changed to generator
-    if not all(isinstance(e, tuple) for e in record_keys_with_elements):
+    # TODO -
+    if not all([isinstance(e, tuple) for e in record_keys_with_elements]):
         element_types_str = ", ".join({type(t).__name__ for t in record_keys_with_elements if not isinstance(t, tuple)})
         raise TypeError(f"elements in {record_keys} should be tuple(s), there are {element_types_str}")
 

@@ -44,7 +44,7 @@ from ._helpers import (
     build_data_sources_json,
     build_entities_json,
     build_records_json,
-    catch_non_sz_exceptions,
+    catch_sdk_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -522,7 +522,7 @@ class SzEngineCore(SzEngine):
     # -------------------------------------------------------------------------
 
     # TODO Needed in final?
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def bulk_load(
         self,
         records: List[str],
@@ -546,7 +546,7 @@ class SzEngineCore(SzEngine):
 
         return self.no_info
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def add_record(
         self,
         data_source_code: str,
@@ -574,7 +574,7 @@ class SzEngineCore(SzEngine):
         self.check_result(result)
         return self.no_info
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def close_export(self, export_handle: int) -> None:
         result = self.library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
         self.check_result(result)
@@ -585,7 +585,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result)
         return result
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def delete_record(
         self,
         data_source_code: str,
@@ -613,7 +613,7 @@ class SzEngineCore(SzEngine):
     def _destroy(self) -> None:
         _ = self.library_handle.Sz_destroy()
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def export_csv_entity_report(
         self,
         csv_column_list: str,
@@ -631,7 +631,7 @@ class SzEngineCore(SzEngine):
         self.check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def fetch_next(self, export_handle: int) -> str:
         result = self.library_handle.Sz_fetchNext_helper(as_c_uintptr_t(export_handle))
         with FreeCResources(self.library_handle, result.response):
@@ -639,7 +639,7 @@ class SzEngineCore(SzEngine):
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
@@ -647,7 +647,7 @@ class SzEngineCore(SzEngine):
             return as_python_str(result.response)
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_interesting_entities_by_record_id(
         self,
         data_source_code: str,
@@ -661,7 +661,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_network_by_entity_id(
         self,
         entity_ids: List[int],
@@ -682,7 +682,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_network_by_record_id(
         self,
         record_keys: List[Tuple[str, str]],
@@ -702,7 +702,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_path_by_entity_id(
         self,
         start_entity_id: int,
@@ -740,7 +740,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def find_path_by_record_id(
         self,
         start_data_source_code: str,
@@ -791,7 +791,7 @@ class SzEngineCore(SzEngine):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_entity_by_entity_id(
         self,
         entity_id: int,
@@ -802,7 +802,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_entity_by_record_id(
         self,
         data_source_code: str,
@@ -816,7 +816,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_record(
         self,
         data_source_code: str,
@@ -844,7 +844,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_virtual_entity_by_record_id(
         self,
         record_keys: List[Tuple[str, str]],
@@ -858,7 +858,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def how_entity_by_entity_id(
         self,
         entity_id: int,
@@ -869,7 +869,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def initialize(
         self,
         instance_name: str,
@@ -902,7 +902,7 @@ class SzEngineCore(SzEngine):
         )
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def preprocess_record(
         self,
         record_definition: str,
@@ -920,7 +920,7 @@ class SzEngineCore(SzEngine):
         result = self.library_handle.Sz_primeEngine()
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def process_redo_record(self, redo_record: str, flags: int = 0) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -935,7 +935,7 @@ class SzEngineCore(SzEngine):
         self.check_result(result)
         return self.no_info
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def reevaluate_entity(self, entity_id: int, flags: int = 0) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -952,7 +952,7 @@ class SzEngineCore(SzEngine):
         self.check_result(result)
         return self.no_info
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def reevaluate_record(
         self,
         data_source_code: str,
@@ -975,12 +975,12 @@ class SzEngineCore(SzEngine):
         self.check_result(result)
         return self.no_info
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def _reinitialize(self, config_id: int) -> None:
         result = self.library_handle.Sz_reinit(config_id)
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def search_by_attributes(
         self,
         attributes: str,
@@ -996,7 +996,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def why_entities(
         self,
         entity_id_1: int,
@@ -1012,7 +1012,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def why_records(
         self,
         data_source_code_1: str,
@@ -1032,7 +1032,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def why_record_in_entity(
         self,
         data_source_code: str,

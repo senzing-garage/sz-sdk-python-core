@@ -28,7 +28,7 @@ from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_non_sz_exceptions,
+    catch_sdk_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -116,7 +116,7 @@ class SzProductCore(SzProduct):
     def _destroy(self) -> None:
         _ = self.library_handle.SzProduct_destroy()
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def initialize(
         self,
         instance_name: str,
