@@ -38,15 +38,12 @@ try:
     def _json_dumps(object_: Any) -> str:
         return orjson.dumps(object_).decode("utf-8")
 
-    _json_loads = orjson.loads
-
 except ImportError:
     import json
 
     def _json_dumps(object_: Any) -> str:
         return json.dumps(object_, ensure_ascii=False)
 
-    _json_loads = json.loads
 
 if sys.version_info < (3, 11):
     from typing_extensions import ParamSpec, Self
