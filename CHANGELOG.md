@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.6] - 2025-04-17
+
+### Added in 0.3.6
+
+- Expanded test coverage
+- Check and raise SzSdkError for wrong types in _helpers.py build functions
+
+### Changed in 0.3.6
+
+- Simplified escaping JSON strings in _helpers.py
+- Changed exception capturing, raising, and messages for errors occurring within the SDK
+- Tests previously catching TypeError now catch SzSdkError
+
+### Removed in 0.3.6
+
+- SDK_EXCEPTION_MAP and functions, replaced with use of SzSdkError
+- Shebang in modules
+
 ## [0.3.5] - 2025-04-16
 
 ### Added in 0.3.5
