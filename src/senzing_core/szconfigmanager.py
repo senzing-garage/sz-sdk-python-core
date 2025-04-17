@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szconfigmanager.SzConfigManagerCore`` is an implementation
 of the `senzing.szconfigmanager.SzConfigManager`_ interface that communicates with the Senzing binaries.

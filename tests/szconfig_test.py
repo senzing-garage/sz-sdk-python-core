@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import Optional, Or, schema
-from senzing import SzConfig
+from senzing import SzConfig, SzSdkError
 
 from senzing_core import SzConfigCore
 
@@ -13,7 +13,7 @@ from senzing_core import SzConfigCore
 
 
 def test_add_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfig().add_data_source()."""
+    """Test SzConfig.add_data_source()."""
     data_source_code = "NAME_OF_DATASOURCE"
     actual = sz_config.add_data_source(data_source_code)
     assert isinstance(actual, str)
@@ -22,42 +22,42 @@ def test_add_data_source(sz_config: SzConfig) -> None:
 
 
 def test_add_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig().add_data_source_bad_data_source_code_type()."""
+    """Test SzConfig.add_data_source_bad_data_source_code_type()."""
     bad_data_source_code = 0
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig().add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
+    """Test SzConfig.add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
     ()."""
     bad_data_source_code = {"XXXX": "YYYY"}
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_delete_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfig().delete_data_source()."""
+    """Test SzConfig.delete_data_source()."""
     data_source_code = "TEST"
     sz_config.delete_data_source(data_source_code)
 
 
 def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig().delete_data_source_bad_data_source_code_type()."""
+    """Test SzConfig.delete_data_source_bad_data_source_code_type()."""
     bad_data_source_code = 0
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_delete_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig().delete_data_source_bad_data_source_code_value()."""
+    """Test SzConfig.delete_data_source_bad_data_source_code_value()."""
     bad_data_source_code = {"XXXX": "YYYY"}
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_export(sz_config: SzConfig) -> None:
-    """Test SzConfig().export()."""
+    """Test SzConfig.export()."""
     actual = sz_config.export()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
@@ -65,7 +65,7 @@ def test_export(sz_config: SzConfig) -> None:
 
 
 def test_get_data_sources(sz_config: SzConfig) -> None:
-    """Test SzConfig().get_data_sources()."""
+    """Test SzConfig.get_data_sources()."""
     actual = sz_config.get_data_sources()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)

@@ -1,5 +1,5 @@
 """
-TODO: _helpers.py
+SDK Helper functions
 """
 
 # NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
@@ -30,16 +30,13 @@ from functools import wraps
 from types import TracebackType
 from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 
-# TODO -
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
-# TODO - Tests with both orjson and json
-# Use orjson if it is available
 try:
     import orjson  # type: ignore
 
-    def _json_dumps(object_: Any) -> str:  # type: ignore
-        return orjson.dumps(object_).decode("utf-8")
+    def _json_dumps(object_: Any) -> str:
+        return orjson.dumps(object_).decode("utf-8")  # type: ignore
 
     _json_loads = orjson.loads
 
@@ -97,7 +94,6 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
-# TODO - Change name?
 def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
     The Python SDK methods convert Python types to ctypes and utilize helper functions. If incorrect types/values are
@@ -165,9 +161,6 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
             win_path = find_library(lib if lib else "Sz")
             return cdll.LoadLibrary(win_path if win_path else "")
 
-        # TODO -
-        # print(f"ERROR: {system_name} is an unsupported operating system, expected Linux, Darwin or Windows")
-        # raise sdk_exception(1)
         raise SzSdkError(f"{system_name} is an unsupported operating system")
     except OSError as err:
         # TODO Wording & links for V4
@@ -177,8 +170,6 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
             "       For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
             "       If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
         )
-        # TODO -
-        # raise sdk_exception(1) from err
         raise SzSdkError("failed to load the Senzing library") from err
 
 
@@ -211,17 +202,10 @@ def check_result_rc(
 # -----------------------------------------------------------------------------
 
 
-# TODO - Investigate adding and recalling is working correctly
 def escape_json_str(to_escape: str) -> str:
     """
     Escape strings when building a new JSON string. Glyphs, emojis, etc are not converted to ASCII code points. UTF-8 code
     points are converted to their glyphs, emojis, etc.
-
-    'Testing"' will result in "Testing\\""
-    "TestingΩ" with remain unchanged
-    "Testing\u03a9" will result in "TestingΩ"
-    "Testing🤗" will remain unchanged
-    "Testing\U0001f917" will result in "Testing🤗"
 
     :meta private:
     """
@@ -260,7 +244,6 @@ def build_data_sources_json(dsrc_codes: list[str]) -> str:
     if not isinstance(dsrc_codes, list):
         raise TypeError(f"value {dsrc_codes} has type {type(dsrc_codes).__name__}, should be a list")
 
-    # TODO - Check changed to generator
     if not all(isinstance(d, str) for d in dsrc_codes):
         element_types_str = ", ".join({type(t).__name__ for t in dsrc_codes if not isinstance(t, str)})
         raise TypeError(f"elements in {dsrc_codes} should be str(s), there are {element_types_str}")
@@ -286,7 +269,6 @@ def build_entities_json(entity_ids: Union[List[int], None]) -> str:
     if not isinstance(entity_ids, list):
         raise TypeError(f"value {entity_ids} has type {type(entity_ids).__name__}, should be a list of int(s)")
 
-    # TODO - Check changed to generator
     if not all(isinstance(e, int) for e in entity_ids):
         element_types_str = ", ".join({type(t).__name__ for t in entity_ids if not isinstance(t, int)})
         raise TypeError(f"elements in {entity_ids} should be int(s), there are {element_types_str}")
@@ -309,21 +291,16 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     if not record_keys or (isinstance(record_keys, list) and len(record_keys) == 0):
         return ""
 
-    # TODO -
     record_keys_with_elements = [rk for rk in record_keys if rk]
     wrong_types = set()
 
-    # TODO - Check changed to generator
     if not all(isinstance(e, tuple) for e in record_keys_with_elements):
         element_types_str = ", ".join({type(t).__name__ for t in record_keys_with_elements if not isinstance(t, tuple)})
         raise TypeError(f"elements in {record_keys} should be tuple(s), there are {element_types_str}")
 
-    # TODO -
     if not all({len(e) == 2 for e in record_keys_with_elements}):
         element_len_str = ", ".join({str(len(t)) for t in record_keys_with_elements})
         raise TypeError(f"tuple(s) length in {record_keys} should be 2, there are lengths(s) of {element_len_str}")
-
-    # TODO -
 
     if rk_wrong_types := [
         rk for rk in record_keys_with_elements if not isinstance(rk[0], str) or not isinstance(rk[1], str)
@@ -356,8 +333,6 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
     :meta private:
     """
     if isinstance(candidate_value, dict):
-        # TODO -
-        # return json.dumps(candidate_value)
         return _json_dumps(candidate_value)
 
     return candidate_value
@@ -467,26 +442,3 @@ def engine_exception(
     sz_error_text = get_senzing_error_text(get_last_exception, clear_last_exception)
     senzing_error_class = ENGINE_EXCEPTION_MAP.get(sz_error_code, SzError)
     return senzing_error_class(sz_error_text)
-
-
-# TODO -
-# # -----------------------------------------------------------------------------
-# # Helpers for creating SDK specific exceptions
-# # -----------------------------------------------------------------------------
-
-# # TODO Still needed?
-# # fmt: off
-# SDK_EXCEPTION_MAP = {
-#     1: "failed to load the Senzing library",                                 # Engine module wasn't able to load the G2 library
-#     2: "instance_name and settings arguments must be specified",        # Engine module constructor didn't receive correct arguments
-# }
-# # fmt: on
-
-
-# def sdk_exception(msg_code: int) -> Exception:
-#     """
-#     Raise general SzError for SDK issues.
-
-#     :meta private:
-#     """
-#     return SzError(SDK_EXCEPTION_MAP.get(msg_code, f"No message for index {msg_code}."))

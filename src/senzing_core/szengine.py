@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szengine.SzEngineCore`` is an implementation
 of the `senzing.szengine.SzEngine`_ interface that communicates with the Senzing binaries.

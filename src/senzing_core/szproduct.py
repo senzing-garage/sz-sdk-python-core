@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szproduct.SzProductCore`` is an implementation
 of the `senzing.szproduct.SzProduct`_ interface that communicates with the Senzing binaries.

@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szdiagnostic.SzDiagnosticCore`` is an implementation
 of the `senzing.szdiagnostic.SzDiagnostic`_ interface that communicates with the Senzing binaries.

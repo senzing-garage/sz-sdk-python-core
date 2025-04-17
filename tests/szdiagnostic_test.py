@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import pytest
 from pytest_schema import schema
-from senzing import SzConfigManager, SzDiagnostic, SzEngine, SzError
+from senzing import SzConfigManager, SzDiagnostic, SzEngine, SzError, SzSdkError
 
 from senzing_core import SzConfigManagerCore, SzDiagnosticCore, SzEngineCore
 
@@ -13,7 +13,7 @@ from senzing_core import SzConfigManagerCore, SzDiagnosticCore, SzEngineCore
 
 
 def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
-    """Test SzDiagnostic().check_datastore_performance()."""
+    """Test SzDiagnostic.check_datastore_performance()."""
     seconds_to_run = 3
     actual = sz_diagnostic.check_datastore_performance(seconds_to_run)
     actual_as_dict = json.loads(actual)
@@ -23,16 +23,16 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
 def test_check_datastore_performance_bad_seconds_to_run_type(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic().check_datastore_performance_bad_seconds_to_run_type()."""
+    """Test SzDiagnostic.check_datastore_performance_bad_seconds_to_run_type()."""
     bad_seconds_to_run = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
 
 
 def test_check_datastore_performance_bad_seconds_to_run_value(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic().check_datastore_performance_bad_seconds_to_run_value()."""
+    """Test SzDiagnostic.check_datastore_performance_bad_seconds_to_run_value()."""
     bad_seconds_to_run = -1
     # with pytest.raises(SzDatabaseError):
     #     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
@@ -42,14 +42,14 @@ def test_check_datastore_performance_bad_seconds_to_run_value(
 
 
 def test_get_datastore_info(sz_diagnostic: SzDiagnostic) -> None:
-    """Test SzDiagnostic().get_datastore_info()."""
+    """Test SzDiagnostic.get_datastore_info()."""
     actual = sz_diagnostic.get_datastore_info()
     actual_as_dict = json.loads(actual)
     assert schema(get_datastore_info_schema) == actual_as_dict
 
 
 def test_get_feature(sz_diagnostic: SzDiagnostic, sz_engine: SzEngine) -> None:
-    """# TODO"""
+    """Test SzDiagnostic.get_feature()."""
     data_source_code = "TEST"
     record_id = "1"
     record_definition: str = '{"NAME_FULL": "Joe Blogs", "DATE_OF_BIRTH": "07/07/1976"}'
@@ -60,7 +60,7 @@ def test_get_feature(sz_diagnostic: SzDiagnostic, sz_engine: SzEngine) -> None:
 
 
 def test_get_feature_unknown_id(sz_diagnostic: SzDiagnostic) -> None:
-    """# TODO"""
+    """Test SzDiagnostic.get_feature()."""
     with pytest.raises(SzError):
         _ = sz_diagnostic.get_feature(111111111111111111)
 
@@ -119,7 +119,7 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnosticCore().reinit() with current config ID."""
     bad_default_config_id = "string"
     # pylint: disable=W0212
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
