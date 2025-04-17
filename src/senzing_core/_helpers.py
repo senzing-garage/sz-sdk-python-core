@@ -351,7 +351,7 @@ def as_c_uintptr_t(candidate_value: int) -> _Pointer[c_uint]:
     """
 
     # Test if candidate_value can be used with the ctype and is an int. If not a
-    # TypeError is raised and caught by the catch_non_sz_exceptions decorator
+    # TypeError is raised and caught by the catch_sdk_exceptions decorator
     _ = c_uint(candidate_value)
 
     return cast(candidate_value, POINTER(c_uint))

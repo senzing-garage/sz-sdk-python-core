@@ -133,7 +133,7 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     bad_default_config_id = "string"
     # pylint: disable=W0212
     with pytest.raises(SzSdkError):
-        sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None:

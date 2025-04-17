@@ -1190,7 +1190,7 @@ def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     bad_default_config_id = "string"
     with pytest.raises(SzSdkError):
-        sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_engine.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_engine: SzEngineCore) -> None:

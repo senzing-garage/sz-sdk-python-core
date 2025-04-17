@@ -189,7 +189,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
         if self.is_szdiagnostic_initialized:
             sz_diagnostic = SzDiagnosticCore()
-            sz_diagnostic._reinitialize(config_id=config_id)  # pylint: disable=W0212
+            sz_diagnostic.reinitialize(config_id=config_id)  # pylint: disable=W0212
 
         if self.is_szengine_initialized:
             sz_engine = SzEngineCore()

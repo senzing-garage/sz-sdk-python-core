@@ -1072,7 +1072,7 @@ class SzEngineCore(SzEngine):
             self.check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def why_search(
         self,
         attributes: str,
