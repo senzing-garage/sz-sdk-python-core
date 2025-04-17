@@ -33,10 +33,10 @@ from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
 try:
-    import orjson  # type: ignore
+    import orjson
 
     def _json_dumps(object_: Any) -> str:
-        return orjson.dumps(object_).decode("utf-8")  # type: ignore
+        return orjson.dumps(object_).decode("utf-8")
 
     _json_loads = orjson.loads
 
