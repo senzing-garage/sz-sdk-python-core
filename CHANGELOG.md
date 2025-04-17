@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.5] - 2025-04-16
+
+### Added in 0.3.5
+
+- `SzEngine.why_search`
+
+## [0.3.4] - 2025-04-11
+
+### Changed in 0.3.4
+
+- Restructure `SzConfig` and `SzConfigManager`
+
 ## [0.3.3] - 2025-02-06
 
 ### Changed in 0.3.3

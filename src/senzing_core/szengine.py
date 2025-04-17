@@ -215,6 +215,14 @@ class SzWhyRecordsV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_whyRecords_V2_result"""
 
 
+class SzWhySearchResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h Sz_whyEntities_result"""
+
+
+class SzWhySearchV2Result(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h Sz_whyEntities_V2_result"""
+
+
 # -----------------------------------------------------------------------------
 # SzEngineCore class
 # -----------------------------------------------------------------------------
@@ -503,6 +511,7 @@ class SzEngineCore(SzEngine):
             c_char_p,
             c_longlong,
         ]
+        self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
         self.library_handle.Sz_whyRecordInEntity_V2_helper.restype = SzWhyRecordInEntityV2Result
         self.library_handle.Sz_whyRecords_V2_helper.argtypes = [
             c_char_p,
@@ -511,7 +520,19 @@ class SzEngineCore(SzEngine):
             c_char_p,
             c_longlong,
         ]
-        self.library_handle.Sz_whyRecords_V2_helper.restype = SzWhyRecordsV2Result
+        self.library_handle.Sz_whySearch_helper.restype = SzWhySearchResult
+        self.library_handle.Sz_whySearch_helper.argtypes = [
+            c_char_p,
+            c_longlong,
+            c_char_p,
+        ]
+        self.library_handle.Sz_whySearch_V2_helper.restype = SzWhySearchV2Result
+        self.library_handle.Sz_whySearch_V2_helper.argtypes = [
+            c_char_p,
+            c_longlong,
+            c_char_p,
+            c_longlong,
+        ]
         self.library_handle.SzHelper_free.argtypes = [c_void_p]
 
     def __del__(self) -> None:
@@ -870,13 +891,21 @@ class SzEngineCore(SzEngine):
             return as_python_str(result.response)
 
     @catch_non_sz_exceptions
-    def _initialize(
+    def initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
+        """
+        Initialize the C-based Senzing SzEngine.
+
+        Args:
+            instance_name (str): A name to distinguish this instance of the SzEngine.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
+        """
         if config_id == 0:
             result = self.library_handle.Sz_init(
                 as_c_char_p(instance_name),
@@ -968,7 +997,12 @@ class SzEngineCore(SzEngine):
         return self.no_info
 
     @catch_non_sz_exceptions
-    def _reinitialize(self, config_id: int) -> None:
+    def reinitialize(self, config_id: int) -> None:
+        """
+        The `reinitialize` method reinitializes the Senzing object using a specific configuration
+        identifier. A list of available configuration identifiers can be retrieved using
+        `szconfigmanager.get_configs`.
+        """
         result = self.library_handle.Sz_reinit(config_id)
         self.check_result(result)
 
@@ -1034,6 +1068,24 @@ class SzEngineCore(SzEngine):
         result = self.library_handle.Sz_whyRecordInEntity_V2_helper(
             as_c_char_p(data_source_code),
             as_c_char_p(record_id),
+            flags,
+        )
+        with FreeCResources(self.library_handle, result.response):
+            self.check_result(result.return_code)
+            return as_python_str(result.response)
+
+    @catch_non_sz_exceptions
+    def why_search(
+        self,
+        attributes: str,
+        entity_id: int,
+        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
+        search_profile: str = "",
+    ) -> str:
+        result = self.library_handle.Sz_whySearch_V2_helper(
+            as_c_char_p(attributes),
+            entity_id,
+            as_c_char_p(search_profile),
             flags,
         )
         with FreeCResources(self.library_handle, result.response):

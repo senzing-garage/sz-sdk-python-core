@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import json
 from typing import Any, Dict
 
@@ -8,12 +10,12 @@ from senzing import SzProduct
 from senzing_core import SzProductCore
 
 # -----------------------------------------------------------------------------
-# Testcases
+# Test cases
 # -----------------------------------------------------------------------------
 
 
 def test_get_license(sz_product: SzProduct) -> None:
-    """Test Senzing license."""
+    """Test SzProduct.get_license()."""
     actual = sz_product.get_license()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
@@ -21,11 +23,21 @@ def test_get_license(sz_product: SzProduct) -> None:
 
 
 def test_get_version(sz_product: SzProduct) -> None:
-    """Test Senzing version."""
+    """Test SzProduct.get_version()."""
     actual = sz_product.get_version()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
     assert schema(get_version_schema) == actual_as_dict
+
+
+def test_help_1(sz_product: SzProduct) -> None:
+    """Test SzProduct.help()."""
+    sz_product.help()
+
+
+def test_help_2(sz_product: SzProduct) -> None:
+    """Test SzProduct.help(...)."""
+    sz_product.help("get_license")
 
 
 # -----------------------------------------------------------------------------
@@ -36,7 +48,7 @@ def test_get_version(sz_product: SzProduct) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -69,7 +81,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -79,7 +91,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual._initialize(  # pylint: disable=W0212
+    actual.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -100,11 +112,11 @@ def test_exception(sz_product: SzProductCore) -> None:
 @pytest.fixture(name="sz_product", scope="function")
 def szproduct_fixture(engine_vars: Dict[Any, Any]) -> SzProduct:
     """
-    Single szproduct object to use for all tests.
+    SzProduct object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = SzProductCore()
-    result._initialize(  # pylint: disable=W0212
+    result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

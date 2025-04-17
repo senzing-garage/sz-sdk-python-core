@@ -1,10 +1,16 @@
+#! /usr/bin/env python3
+
+"""
+TODO: szabstractfactory_test.py
+"""
+
+
 from datetime import datetime
 from typing import Any, Dict
 
 import pytest
 from senzing import (
     SzAbstractFactory,
-    SzConfig,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
@@ -14,70 +20,66 @@ from senzing import (
 from senzing_core import SzAbstractFactoryCore
 
 # -----------------------------------------------------------------------------
-# Testcases
+# Test cases
 # -----------------------------------------------------------------------------
 
 
-def test_create_config(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzConfig."""
-    actual = sz_abstract_factory.create_config()
-    assert isinstance(actual, SzConfig)
-
-
-def test_create_configmanager(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzConfigManager."""
-    actual = sz_abstract_factory.create_configmanager()
+def test_create_configmanager(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_configmanager()."""
+    actual = sz_abstractfactory.create_configmanager()
     assert isinstance(actual, SzConfigManager)
 
 
-def test_create_diagnostic(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzDiagnostic."""
-    actual = sz_abstract_factory.create_diagnostic()
+def test_create_diagnostic(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_diagnostic()."""
+    actual = sz_abstractfactory.create_diagnostic()
     assert isinstance(actual, SzDiagnostic)
 
 
-def test_create_engine(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzEngine."""
-    actual = sz_abstract_factory.create_engine()
+def test_create_engine(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_engine()."""
+    actual = sz_abstractfactory.create_engine()
     assert isinstance(actual, SzEngine)
 
 
-def test_create_product(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzProduct."""
-    actual = sz_abstract_factory.create_product()
+def test_create_product(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_product()."""
+    actual = sz_abstractfactory.create_product()
     assert isinstance(actual, SzProduct)
 
 
-def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
-    """Create SzConfig."""
+def test_help_1(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.help()."""
+    sz_abstractfactory.help()
 
+
+def test_help_2(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.help(...)."""
+    sz_abstractfactory.help("create_configmanager")
+
+
+def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.reinitialize()."""
     datasources = [f"TEST_DATASOURCE_{datetime.now().timestamp()}"]
 
     # Create Senzing objects.
 
-    sz_config = sz_abstract_factory.create_config()
-    sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_configmanager = sz_abstractfactory.create_configmanager()
+    sz_config = sz_configmanager.create_config_from_template()
 
-    # Get existing Senzing configuration.
-
-    old_config_id = sz_configmanager.get_default_config_id()
-    old_json_config = sz_configmanager.get_config(old_config_id)
-    config_handle = sz_config.import_config(old_json_config)
-
-    # Add DataSources to existing Senzing configuration.
+    # Add DataSources to Senzing configuration.
 
     for datasource in datasources:
-        sz_config.add_data_source(config_handle, datasource)
+        sz_config.add_data_source(datasource)
 
     # Persist new Senzing configuration.
 
-    new_json_config = sz_config.export_config(config_handle)
-    new_config_id = sz_configmanager.add_config(new_json_config, "Add My datasources")
-    sz_configmanager.replace_default_config_id(old_config_id, new_config_id)
+    config_definition = sz_config.export()
+    config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
 
     # Update other Senzing objects.
 
-    sz_abstract_factory.reinitialize(new_config_id)
+    sz_abstractfactory.reinitialize(config_id)
 
 
 # -----------------------------------------------------------------------------
@@ -90,10 +92,10 @@ def test_reinitialize(sz_abstract_factory: SzAbstractFactory) -> None:
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_abstract_factory", scope="function")
-def sz_abstract_factory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
+@pytest.fixture(name="sz_abstractfactory", scope="function")
+def szabstractfactory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
     """
-    Single SzAbstractFactoryCore object to use for all tests.
+    SzAbstractFactory object to use for all tests.
     """
 
     factory_parameters = {

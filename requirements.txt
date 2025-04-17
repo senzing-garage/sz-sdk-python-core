@@ -1,2 +1,2 @@
 orjson==3.10.16
-senzing==0.2.4
+senzing==0.2.6

@@ -17,8 +17,8 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_configmanager = sz_abstract_factory.create_configmanager()
-    config_id = sz_configmanager.get_default_config_id()
-    CONFIG_DEFINITION = sz_configmanager.get_config(config_id)
+    sz_config = sz_configmanager.create_config_from_template()
+    CONFIG_DEFINITION = sz_config.export()
     print(f"\n{CONFIG_DEFINITION}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
