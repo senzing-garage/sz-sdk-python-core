@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 # pylint: disable=C0302
 
 import json
@@ -81,11 +83,11 @@ def test_add_truthset_datasources(
     config_definition = sz_config.export()
     config_id = sz_configmanager.register_config(config_definition, "Test")
     sz_configmanager.set_default_config_id(config_id)
-    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
+    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
-# Testcases
+# Test cases
 # -----------------------------------------------------------------------------
 
 
@@ -100,7 +102,7 @@ def test_add_record(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
-    """Test SzEngine.add_record()."""
+    """Test SzEngine.add_record() with bad data_source_code datatype."""
     bad_data_source_code = 1
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -110,7 +112,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_bad_data_source_code_value(sz_engine: SzEngine) -> None:
-    """Test SzEngine.add_record()."""
+    """Test SzEngine.add_record() with bad data_source_code value."""
     bad_data_source_code = "DOESN'T EXIST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
@@ -131,7 +133,7 @@ def test_add_record_with_info(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_bad_record(sz_engine: SzEngine) -> None:
-    """Test add_record with bad JSON string."""
+    """Test SzEngine.add_record() with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     bad_record_definition = RECORD_STR_BAD
@@ -140,7 +142,7 @@ def test_add_record_bad_record(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_bad_record_id_type(sz_engine: SzEngine) -> None:
-    """Test add_record with incorrect record id type."""
+    """Test SzEngine.add_record() with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
     record_definition = RECORD_STR
@@ -149,7 +151,7 @@ def test_add_record_bad_record_id_type(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_data_source_code_empty(sz_engine: SzEngine) -> None:
-    """Test add_record with empty data source code."""
+    """Test SzEngine.add_record() with empty data source code."""
     bad_data_source_code = ""
     record_id = "1"
     record_definition = RECORD_STR
@@ -158,7 +160,7 @@ def test_add_record_data_source_code_empty(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_record_str_empty(sz_engine: SzEngine) -> None:
-    """Test add_record with empty record as a string"""
+    """Test SzEngine.add_record() with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
     record_definition = ""
@@ -167,7 +169,7 @@ def test_add_record_record_str_empty(sz_engine: SzEngine) -> None:
 
 
 def x_test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
-    """Test add_record with flag to return with_info where the record is a dict."""
+    """Test SzEngine.add_record() with flag to return with_info where the record is a dict."""
     data_source_code = "TEST"
     record_id = "1"
     record_definition = RECORD_STR
@@ -178,7 +180,7 @@ def x_test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
-    """Test add_record with flag to return with_info where the record is a JSON string."""
+    """Test SzEngine.add_record() with flag to return with_info where the record is a JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     record_definition = RECORD_STR
@@ -213,7 +215,7 @@ def test_add_record_with_info_bad_data_source_code_value(
 
 
 def test_add_record_with_info_bad_record(sz_engine: SzEngine) -> None:
-    """Test add_record with flag to return with_info with bad JSON string."""
+    """Test SzEngine.add_record() with flag to return with_info with bad JSON string."""
     data_source_code = "TEST"
     record_id = "1"
     bad_record_definition = RECORD_STR_BAD
@@ -223,7 +225,7 @@ def test_add_record_with_info_bad_record(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngine) -> None:
-    """Test add_record with flag to return with_info with incorrect record id type."""
+    """Test SzEngine.add_record() with flag to return with_info with incorrect record id type."""
     data_source_code = "TEST"
     bad_record_id = 1
     record_definition = RECORD_DICT
@@ -233,7 +235,7 @@ def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngine) -> None:
 
 
 def test_add_record_with_info_record_str_empty(sz_engine: SzEngine) -> None:
-    """Test add_record_with_info with empty record as a string"""
+    """Test SzEngine.add_record_with_info() with empty record as a string"""
     data_source_code = "TEST"
     record_id = "1"
     record_definition = ""
@@ -721,7 +723,7 @@ def test_get_redo_record(sz_engine: SzEngine) -> None:
 
 
 def test_get_stats(sz_engine: SzEngine) -> None:
-    """Test SzEngine.stats()."""
+    """Test SzEngine.get_stats()."""
     actual = sz_engine.get_stats()
     actual_as_dict = json.loads(actual)
     assert schema(stats_schema) == actual_as_dict
@@ -765,6 +767,16 @@ def test_get_virtual_entity_by_record_id_bad_record_ids(
     flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.get_virtual_entity_by_record_id(bad_record_list, flags)
+
+
+def test_help_1(sz_engine: SzEngine) -> None:
+    """Test SzEngine.help()."""
+    sz_engine.help()
+
+
+def test_help_2(sz_engine: SzEngine) -> None:
+    """Test SzEngine.help(...)."""
+    sz_engine.help("get_stats")
 
 
 def test_how_entity_by_entity_id(sz_engine: SzEngine) -> None:
@@ -812,8 +824,17 @@ def test_prime_engine(sz_engine: SzEngine) -> None:
     sz_engine.prime_engine()
 
 
+def test_process_redo_record(sz_engine: SzEngine) -> None:
+    """Test SzEngine.process_redo_record()."""
+    flags = SZ_WITHOUT_INFO
+    while sz_engine.count_redo_records() > 0:
+        redo_record = sz_engine.get_redo_record()
+        actual = sz_engine.process_redo_record(redo_record, flags)
+        assert actual == ""
+
+
 def test_reevaluate_entity(sz_engine: SzEngine) -> None:
-    """Test SzEngine.get_entity_id_from_record_id()."""
+    """Test SzEngine.reevaluate_entity()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -826,7 +847,7 @@ def test_reevaluate_entity(sz_engine: SzEngine) -> None:
 
 
 def test_reevaluate_entity_bad_entity_id(sz_engine: SzEngine) -> None:
-    """Test SzEngine.get_entity_id_from_record_id()."""
+    """Test SzEngine.reevaluate_entity()."""
     bad_entity_id = 0
     flags = SZ_WITHOUT_INFO
     actual = sz_engine.reevaluate_entity(bad_entity_id, flags)
@@ -857,7 +878,7 @@ def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
 
 
 def test_reevaluate_record(sz_engine: SzEngine) -> None:
-    """Test SzEngine.get_entity_id_from_record_id()."""
+    """Test SzEngine.reevaluate_record()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
     ]
@@ -925,8 +946,7 @@ def test_reevaluate_record_with_info_bad_record_id(sz_engine: SzEngine) -> None:
 
 
 def test_search_by_attributes(sz_engine: SzEngine) -> None:
-    """Test SzEngine.search_by_attributes
-    ()."""
+    """Test SzEngine.search_by_attributes()."""
     test_records: List[Tuple[str, str]] = [
         ("CUSTOMERS", "1001"),
         ("CUSTOMERS", "1002"),
@@ -1042,6 +1062,25 @@ def test_why_records_bad_record_id(sz_engine: SzEngine) -> None:
         _ = sz_engine.why_records(data_source_code_1, record_id_1, data_source_code_2, bad_record_id_2, flags)
 
 
+def test_why_search(sz_engine: SzEngine) -> None:
+    """Test SzEngine.why_search()."""
+    test_records: List[Tuple[str, str]] = [
+        ("CUSTOMERS", "1001"),
+        ("CUSTOMERS", "1002"),
+        ("CUSTOMERS", "1003"),
+    ]
+    add_records(sz_engine, test_records)
+    attributes = json.dumps({"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"})
+    entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
+    search_profile = "SEARCH"
+    flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
+    actual = sz_engine.why_search(attributes, entity_id, flags, search_profile)
+    delete_records(sz_engine, test_records)
+    if len(actual) > 0:
+        actual_as_dict = json.loads(actual)
+        assert schema(why_search_schema) == actual_as_dict
+
+
 # -----------------------------------------------------------------------------
 # Unique testcases
 # -----------------------------------------------------------------------------
@@ -1144,7 +1183,7 @@ def test_exception(sz_engine: SzEngineCore) -> None:
 def test_reinitialize(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     config_id = sz_engine.get_active_config_id()
-    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
+    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
 
 
 def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
@@ -1157,7 +1196,7 @@ def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
 def test_reinitialize_missing_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
-        sz_engine._reinitialize(999)
+        sz_engine.reinitialize(999)
 
 
 # -----------------------------------------------------------------------------
@@ -1232,10 +1271,24 @@ def get_entity_id_from_record_id(sz_engine: SzEngine, data_source_code: str, rec
 # -----------------------------------------------------------------------------
 
 
+@pytest.fixture(name="sz_configmanager", scope="function")
+def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
+    """
+    SzConfigManager object to use for all tests.
+    engine_vars is returned from conftest.py.
+    """
+    result = SzConfigManagerCore()
+    result.initialize(  # pylint: disable=W0212
+        engine_vars["INSTANCE_NAME"],
+        engine_vars["SETTINGS"],
+    )
+    return result
+
+
 @pytest.fixture(name="sz_config", scope="function")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single szconfig object to use for all tests.
+    SzConfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
     result = SzConfigCore()
@@ -1247,27 +1300,12 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     return result
 
 
-@pytest.fixture(name="sz_configmanager", scope="function")
-def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """
-    Single szconfigmanager object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigManagerCore()
-    result.initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    return result
-
-
 @pytest.fixture(name="sz_engine", scope="function")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
-    Single SzEngine object to use for all tests.
+    SzEngine object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-
     result = SzEngineCore()
     result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
@@ -1984,6 +2022,33 @@ why_entity_results_schema = {
                     "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
                 }
             ],
+        }
+    ],
+}
+
+
+why_search_schema = {
+    "WHY_RESULTS": [
+        {
+            "ENTITY_ID": int,
+            "MATCH_INFO": {
+                "WHY_KEY": str,
+                "WHY_ERRULE_CODE": str,
+                "MATCH_LEVEL_CODE": str,
+                "CANDIDATE_KEYS": {},
+                "FEATURE_SCORES": {},
+                "DISCLOSED_RELATIONS": {},
+            },
+        }
+    ],
+    "ENTITIES": [
+        {
+            "RESOLVED_ENTITY": {
+                "ENTITY_ID": int,
+                "ENTITY_NAME": str,
+                "FEATURES": {},
+                "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
+            }
         }
     ],
 }

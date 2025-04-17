@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+
+
 import json
 from typing import Any, Dict
 
@@ -8,7 +11,7 @@ from senzing import SzConfigManager, SzDiagnostic, SzEngine, SzError, SzSdkError
 from senzing_core import SzConfigManagerCore, SzDiagnosticCore, SzEngineCore
 
 # -----------------------------------------------------------------------------
-# Testcases
+# Test cases
 # -----------------------------------------------------------------------------
 
 
@@ -23,7 +26,7 @@ def test_check_datastore_performance(sz_diagnostic: SzDiagnostic) -> None:
 def test_check_datastore_performance_bad_seconds_to_run_type(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic.check_datastore_performance_bad_seconds_to_run_type()."""
+    """Test SzDiagnostic.check_datastore_performance()."""
     bad_seconds_to_run = "string"
     with pytest.raises(SzSdkError):
         sz_diagnostic.check_datastore_performance(bad_seconds_to_run)  # type: ignore[arg-type]
@@ -32,7 +35,7 @@ def test_check_datastore_performance_bad_seconds_to_run_type(
 def test_check_datastore_performance_bad_seconds_to_run_value(
     sz_diagnostic: SzDiagnostic,
 ) -> None:
-    """Test SzDiagnostic.check_datastore_performance_bad_seconds_to_run_value()."""
+    """Test SzDiagnostic.check_datastore_performance()."""
     bad_seconds_to_run = -1
     # with pytest.raises(SzDatabaseError):
     #     sz_diagnostic.check_datastore_performance(bad_seconds_to_run)
@@ -63,6 +66,16 @@ def test_get_feature_unknown_id(sz_diagnostic: SzDiagnostic) -> None:
     """Test SzDiagnostic.get_feature()."""
     with pytest.raises(SzError):
         _ = sz_diagnostic.get_feature(111111111111111111)
+
+
+def test_help_1(sz_diagnostic: SzDiagnostic) -> None:
+    """Test SzDiagnostic.help()."""
+    sz_diagnostic.help()
+
+
+def test_help_2(sz_diagnostic: SzDiagnostic) -> None:
+    """Test SzDiagnostic.help(...)."""
+    sz_diagnostic.help("check_datastore_performance")
 
 
 # -----------------------------------------------------------------------------
@@ -107,16 +120,16 @@ def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
 
 
 def test_reinitialize(sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfigManagerCore) -> None:
-    """Test SzDiagnosticCore().reinit() with current config ID."""
+    """Test SzDiagnosticCore.reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
-        sz_diagnostic._reinitialize(default_config_id)  # pylint: disable=W0212
+        sz_diagnostic.reinitialize(default_config_id)  # pylint: disable=W0212
     except SzError:
         assert False
 
 
 def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
-    """Test SzDiagnosticCore().reinit() with current config ID."""
+    """Test SzDiagnosticCore.reinit() with current config ID."""
     bad_default_config_id = "string"
     # pylint: disable=W0212
     with pytest.raises(SzSdkError):
@@ -124,9 +137,9 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
 
 
 def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
-    """Test SzDiagnosticCore().reinit() raising error."""
+    """Test SzDiagnosticCore.reinit() raising error."""
     with pytest.raises(SzError):
-        sz_diagnostic._reinitialize(999)  # pylint: disable=W0212
+        sz_diagnostic.reinitialize(999)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -136,7 +149,7 @@ def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None
 
 @pytest.fixture(name="sz_configmanager", scope="function")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
-    """Single szconfigmanager object to use for all tests.
+    """SzConfigManager object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManagerCore()
     result.initialize(  # pylint: disable=W0212
@@ -149,7 +162,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
 
 @pytest.fixture(name="sz_diagnostic", scope="function")
 def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
-    """Single szdiagnostic object to use for all tests.
+    """SzDiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnosticCore()
     result.initialize(  # pylint: disable=W0212
@@ -163,7 +176,7 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
 
 @pytest.fixture(name="sz_engine", scope="function")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
-    """Single szengine object to use for all tests.
+    """SzEngine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzEngineCore()
     result.initialize(  # pylint: disable=W0212

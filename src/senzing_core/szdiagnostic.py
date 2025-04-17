@@ -214,6 +214,11 @@ class SzDiagnosticCore(SzDiagnostic):
         self.check_result(result)
 
     @catch_sdk_exceptions
-    def _reinitialize(self, config_id: int) -> None:
+    def reinitialize(self, config_id: int) -> None:
+        """
+        The `reinitialize` method reinitializes the Senzing object using a specific configuration
+        identifier. A list of available configuration identifiers can be retrieved using
+        `szconfigmanager.get_configs`.
+        """
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

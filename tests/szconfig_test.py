@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+
+
 import json
 from typing import Any, Dict
 
@@ -8,7 +11,7 @@ from senzing import SzConfig, SzSdkError
 from senzing_core import SzConfigCore
 
 # -----------------------------------------------------------------------------
-# Testcases
+# Test cases
 # -----------------------------------------------------------------------------
 
 
@@ -22,15 +25,14 @@ def test_add_data_source(sz_config: SzConfig) -> None:
 
 
 def test_add_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source_bad_data_source_code_type()."""
+    """Test SzConfig.add_data_source()."""
     bad_data_source_code = 0
     with pytest.raises(SzSdkError):
         sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    ()."""
+    """Test SzConfig.add_data_source()."""
     bad_data_source_code = {"XXXX": "YYYY"}
     with pytest.raises(SzSdkError):
         sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
@@ -43,14 +45,14 @@ def test_delete_data_source(sz_config: SzConfig) -> None:
 
 
 def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source_bad_data_source_code_type()."""
+    """Test SzConfig.delete_data_source()."""
     bad_data_source_code = 0
     with pytest.raises(SzSdkError):
         sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
 
 
 def test_delete_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source_bad_data_source_code_value()."""
+    """Test SzConfig.delete_data_source()."""
     bad_data_source_code = {"XXXX": "YYYY"}
     with pytest.raises(SzSdkError):
         sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
@@ -70,6 +72,16 @@ def test_get_data_sources(sz_config: SzConfig) -> None:
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
     assert schema(get_data_sources_schema) == actual_as_dict
+
+
+def test_help_1(sz_config: SzConfig) -> None:
+    """Test SzConfig.help()."""
+    sz_config.help()
+
+
+def test_help_2(sz_config: SzConfig) -> None:
+    """Test SzConfig.help(...)."""
+    sz_config.help("add_data_source")
 
 
 # -----------------------------------------------------------------------------
@@ -121,10 +133,9 @@ def test_exception(sz_config: SzConfigCore) -> None:
 @pytest.fixture(name="sz_config", scope="function")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
-    Single szconfig object to use for all tests.
+    SzConfig object to use for all tests.
     engine_vars is returned from conftest.py.
     """
-
     result = SzConfigCore()
     result.initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
