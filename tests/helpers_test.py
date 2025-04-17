@@ -41,7 +41,8 @@ def test_as_str() -> None:
         "test2": 5,
         "test3": {"test3.1": "Wilma"},
     }
-    actual = json.dumps(a_dict)
+    # NOTE replace() is needed, dumps() adds spaces but as_str() doesn't
+    actual = json.dumps(a_dict).replace(" ", "")
     result1 = as_str(a_dict)
     assert isinstance(result1, str)
     assert result1 == actual
