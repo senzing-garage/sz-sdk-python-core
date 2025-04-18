@@ -22,7 +22,7 @@ try:
         redo_record = sz_engine.get_redo_record()
         if not redo_record:
             break
-        RESULT = sz_engine.process_redo_record(redo_record, FLAGS)
-        print(RESULT)
+        result = sz_engine.process_redo_record(redo_record, FLAGS)
+        print(result)
 except SzError as err:
     print(f"\nERROR: {err}\n")

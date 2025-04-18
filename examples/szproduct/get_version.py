@@ -17,7 +17,7 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_product = sz_abstract_factory.create_product()
-    RESULT = sz_product.get_version()
-    print(f"\n{RESULT}\n")
+    result = sz_product.get_version()
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

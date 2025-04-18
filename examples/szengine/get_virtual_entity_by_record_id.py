@@ -22,7 +22,7 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
-    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
-    print(f"\n{RESULT}\n")
+    result = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

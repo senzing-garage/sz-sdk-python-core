@@ -27,7 +27,7 @@ START_RECORD_ID = "1001"
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
-    RESULT = sz_engine.find_path_by_record_id(
+    result = sz_engine.find_path_by_record_id(
         START_DATA_SOURCE_CODE,
         START_RECORD_ID,
         END_DATA_SOURCE_CODE,
@@ -37,6 +37,6 @@ try:
         REQUIRED_DATA_SOURCES,
         FLAGS,
     )
-    print(f"\n{RESULT}\n")
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

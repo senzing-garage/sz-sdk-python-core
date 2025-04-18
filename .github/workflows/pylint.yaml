@@ -30,7 +30,7 @@ jobs:
           echo "PATH=${PATH}" >> "${GITHUB_ENV}"
           python -m pip install --upgrade pip
           python -m pip install --requirement requirements.txt
-          python -m pip install psutil pylint pytest pytest_schema
+          python -m pip install psutil pylint pylint-per-file-ignores pytest pytest_schema
 
       - name: Analysing the code with pylint
         run: |

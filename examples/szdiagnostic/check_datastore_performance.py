@@ -19,7 +19,7 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
-    RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
-    print(f"\n{RESULT}\n")
+    result = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
