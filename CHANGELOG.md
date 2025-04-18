@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.7] - 2025-04-18
+
+### Changed in 0.3.7
+
+- Case on example variables
+
+### Removed in 0.3.7
+
+- Empty example files for early adaptor methods that are not documented
+
 ## [0.3.6] - 2025-04-17
 
 ### Added in 0.3.6

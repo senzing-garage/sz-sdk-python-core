@@ -20,11 +20,11 @@ SETTINGS = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
     sz_engine = sz_abstract_factory.create_engine()
-    RESULT = sz_engine.why_entities(
+    result = sz_engine.why_entities(
         ENTITY_ID_1,
         ENTITY_ID_2,
         FLAGS,
     )
-    print(f"\n{RESULT}\n")
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

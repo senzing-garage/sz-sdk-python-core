@@ -32,6 +32,9 @@ module = "pytest_schema.*"
 ignore_missing_imports = "true"
 
 [tool.pylint]
+load-plugins = [
+    "pylint_per_file_ignores",
+]
 disable = [
     "duplicate-code",
     "line-too-long",
@@ -50,3 +53,7 @@ notes = [
     "FIXME"
 ]
 extension-pkg-whitelist = ["orjson"]
+# NOTE Paths are regular expressions
+per-file-ignores = """
+    /examples/:invalid-name
+""" 

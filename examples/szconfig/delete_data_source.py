@@ -20,7 +20,7 @@ try:
     sz_configmanager = sz_abstract_factory.create_configmanager()
     DATA_SOURCE_CODE = "TEST"
     sz_config = sz_configmanager.create_config_from_template()
-    RESULT = sz_config.delete_data_source(DATA_SOURCE_CODE)
-    print(f"\n{RESULT}\n")
+    result = sz_config.delete_data_source(DATA_SOURCE_CODE)
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
