@@ -12,6 +12,7 @@ from senzing import (
     SzConfigManager,
     SzConfigurationError,
     SzReplaceConflictError,
+    SzSdkError,
 )
 from senzing_truthset import TRUTHSET_DATASOURCES
 
@@ -34,7 +35,7 @@ def test_create_config_from_config_id(sz_configmanager: SzConfigManager) -> None
 def test_create_config_from_config_id_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.create_config_from_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.create_config_from_config_id(bad_config_id)  # type: ignore[arg-type]
 
 
@@ -110,7 +111,7 @@ def test_register_config_bad_config_definition_type(sz_configmanager: SzConfigMa
     """Test SzConfigManager.register_config()."""
     bad_config_definition = 0
     config_comment = "Test"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.register_config(bad_config_definition, config_comment)  # type: ignore[arg-type]
 
 
@@ -128,7 +129,7 @@ def test_register_config_bad_config_comment_type(sz_configmanager: SzConfigManag
     sz_config = sz_configmanager.create_config_from_template()
     config_definition = sz_config.export()
     bad_config_comment = 0
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.register_config(config_definition, bad_config_comment)  # type: ignore[arg-type]
 
 
@@ -153,7 +154,7 @@ def test_replace_default_config_id_bad_new_default_config_id_type(sz_configmanag
     """Test SzConfigManager.replace_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     bad_new_default_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.replace_default_config_id(
             current_default_config_id, bad_new_default_config_id  # type: ignore[arg-type]
         )
@@ -176,7 +177,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(sz_configm
     config_definition = sz_config.export()
     config_comment = "Test"
     new_default_config_id = sz_configmanager.register_config(config_definition, config_comment)
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.replace_default_config_id(
             bad_current_default_config_id, new_default_config_id  # type: ignore[arg-type]
         )
@@ -233,7 +234,7 @@ def test_set_default_config_id(sz_configmanager: SzConfigManager) -> None:
 def test_set_default_config_id_bad_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.set_default_config_id()."""
     bad_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_configmanager.set_default_config_id(bad_config_id)  # type: ignore[arg-type]
 
 

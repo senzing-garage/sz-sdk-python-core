@@ -1,4 +1,3 @@
-# TODO: Move in szhelpers?
 """
 TODO: _version.py
 """

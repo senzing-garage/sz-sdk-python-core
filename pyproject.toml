@@ -49,3 +49,4 @@ ignore = [
 notes = [
     "FIXME"
 ]
+extension-pkg-whitelist = ["orjson"]

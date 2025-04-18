@@ -17,6 +17,7 @@ from senzing import (
     SzEngineFlags,
     SzError,
     SzNotFoundError,
+    SzSdkError,
     SzUnknownDataSourceError,
 )
 from senzing_truthset import (
@@ -106,7 +107,7 @@ def test_add_record_bad_data_source_code_type(sz_engine: SzEngine) -> None:
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SZ_WITHOUT_INFO
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)  # type: ignore[arg-type]
 
 
@@ -145,7 +146,7 @@ def test_add_record_bad_record_id_type(sz_engine: SzEngine) -> None:
     data_source_code = "TEST"
     bad_record_id = 1
     record_definition = RECORD_STR
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_engine.add_record(data_source_code, bad_record_id, record_definition)  # type: ignore[arg-type]
 
 
@@ -165,13 +166,6 @@ def test_add_record_record_str_empty(sz_engine: SzEngine) -> None:
     record_definition = ""
     with pytest.raises(SzError):
         sz_engine.add_record(data_source_code, record_id, record_definition)
-
-
-# NOTE This doesn't throw an exception because json dumps results in a valid json str '{}'
-# def test_add_record_record_dict_empty(sz_engine: SzEngineTest) -> None:
-#     """Test add_record with empty record as a dictionary"""
-#     with pytest.raises(g2exception.SzError):
-#         sz_engine.add_record(data_source_code, record_id, {})
 
 
 def x_test_add_record_with_info_dict(sz_engine: SzEngine) -> None:
@@ -196,7 +190,6 @@ def test_add_record_with_info_str(sz_engine: SzEngine) -> None:
     assert schema(add_record_with_info_schema) == actual_as_dict
 
 
-# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
 def test_add_record_with_info_bad_data_source_code_type(
     sz_engine: SzEngine,
 ) -> None:
@@ -205,7 +198,7 @@ def test_add_record_with_info_bad_data_source_code_type(
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         _ = sz_engine.add_record(bad_data_source_code, record_id, record_definition, flags)  # type: ignore[arg-type]
 
 
@@ -237,7 +230,7 @@ def test_add_record_with_info_bad_record_id_type(sz_engine: SzEngine) -> None:
     bad_record_id = 1
     record_definition = RECORD_DICT
     flags = SzEngineFlags.SZ_WITH_INFO
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_engine.add_record(data_source_code, bad_record_id, record_definition, flags)  # type: ignore[arg-type]
 
 
@@ -250,9 +243,9 @@ def test_add_record_with_info_record_str_empty(sz_engine: SzEngine) -> None:
         sz_engine.add_record(data_source_code, record_id, record_definition)
 
 
-def test_close_export() -> None:
-    """Test SzEngine.close_export()."""
-    # TODO: implement.
+# NOTE Implemented in test_export_csv_entity_report()
+# def test_close_export() -> None:
+#     """Test SzEngine.close_export()."""
 
 
 def test_count_redo_records(sz_engine: SzEngine) -> None:
@@ -356,9 +349,9 @@ def test_export_json_entity_report(sz_engine: SzEngine) -> None:
             assert schema(export_json_entity_report_iterator_schema) == actual_as_dict
 
 
-def test_fetch_next() -> None:
-    """Test SzEngine.fetch_next."""
-    # TODO: implement test_fetch_next.
+# NOTE Implemented in test_export_csv_entity_report()
+# def test_fetch_next() -> None:
+#     """Test SzEngine.fetch_next."""
 
 
 def test_find_interesting_entities_by_entity_id(sz_engine: SzEngine) -> None:
@@ -817,11 +810,13 @@ def test_preprocess_record(sz_engine: SzEngine) -> None:
     assert schema(preprocess_record_schema) == actual_as_dict
 
 
-# TODO This needs fixing first: https://senzing.atlassian.net/browse/GDEV-3924?atlOrigin=eyJpIjoiYjY2OWNkOTc5ZDRiNDgzYmE5ZjE2NjIzOTZiYmNjNTgiLCJwIjoiaiJ9
-# def test_preprocess_record_bad_record(sz_engine: SzEngineTest) -> None:
-#     """Test SzEngine.preprocess_record()."""
-#     with pytest.raises(SzBadInputError):
-#         sz_engine.preprocess_record(json.dumps(record_definition))
+def test_preprocess_record_bad_record(sz_engine: SzEngine) -> None:
+    """Test SzEngine.preprocess_record()."""
+    record_definition: str = (
+        '"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert", "DATE_OF_BIRTH": "12/11/1978"}'
+    )
+    with pytest.raises(SzBadInputError):
+        sz_engine.preprocess_record(record_definition)
 
 
 def test_prime_engine(sz_engine: SzEngine) -> None:
@@ -870,14 +865,16 @@ def test_reevaluate_entity_with_info(sz_engine: SzEngine) -> None:
     actual = sz_engine.reevaluate_entity(entity_id, flags)
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_as_dict
+    assert schema(reevaluate_entity_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_entity_with_info_bad_entity_id(sz_engine: SzEngine) -> None:
     """Test SzEngine.reevaluate_entity_with_info()."""
     bad_entity_id = 0
     flags = SzEngineFlags.SZ_WITH_INFO
-    _ = sz_engine.reevaluate_entity(bad_entity_id, flags)
+    actual = sz_engine.reevaluate_entity(bad_entity_id, flags)
+    actual_as_dict = json.loads(actual)
+    assert schema(reevaluate_entity_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_record(sz_engine: SzEngine) -> None:
@@ -912,11 +909,6 @@ def test_reevaluate_record_bad_record_id(sz_engine: SzEngine) -> None:
     assert actual == ""
 
 
-# TODO: Fix test after GDEV-3790
-# with pytest.raises(SzNotFoundError):
-#     sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
-
-
 def test_reevaluate_record_with_info(sz_engine: SzEngine) -> None:
     """Test SzEngine.reevaluate_entity_with_info()."""
     test_records: List[Tuple[str, str]] = [
@@ -929,7 +921,7 @@ def test_reevaluate_record_with_info(sz_engine: SzEngine) -> None:
     actual = sz_engine.reevaluate_record(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
-    assert schema(add_record_with_info_schema) == actual_as_dict
+    assert schema(reevaluate_entity_with_info_schema) == actual_as_dict
 
 
 def test_reevaluate_record_with_info_bad_data_source_code(
@@ -948,10 +940,9 @@ def test_reevaluate_record_with_info_bad_record_id(sz_engine: SzEngine) -> None:
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
     flags = SzEngineFlags.SZ_WITH_INFO
-    sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
-    # TODO: Fix test after GDEV-3790
-    # with pytest.raises(SzNotFoundError):
-    #     _ = sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
+    actual = sz_engine.reevaluate_record(data_source_code, bad_record_id, flags)
+    actual_as_dict = json.loads(actual)
+    assert schema(reevaluate_entity_with_info_schema) == actual_as_dict
 
 
 def test_search_by_attributes(sz_engine: SzEngine) -> None:
@@ -1006,9 +997,29 @@ def test_why_entities_bad_entity_ids(sz_engine: SzEngine) -> None:
         _ = sz_engine.why_entities(bad_entity_id_1, entity_id_2, flags)
 
 
-def test_why_record_in_entity() -> None:
+def test_why_record_in_entity(sz_engine: SzEngine) -> None:
     """Test SzEngine.why_record_in_entity()."""
-    # TODO: implement.
+    data_source_code = "TEST"
+    record_id = "1"
+    actual = sz_engine.why_record_in_entity(data_source_code, record_id)
+    actual_as_dict = json.loads(actual)
+    assert schema(why_entity_results_schema) == actual_as_dict
+
+
+def test_why_record_in_entity_bad_data_source_code(sz_engine: SzEngine) -> None:
+    """Test SzEngine.why_record_in_entity()."""
+    data_source_code = "XXXX"
+    record_id = "1001"
+    with pytest.raises(SzBadInputError):
+        _ = sz_engine.why_record_in_entity(data_source_code, record_id)
+
+
+def test_why_record_in_entity_bad_record_id(sz_engine: SzEngine) -> None:
+    """Test SzEngine.why_record_in_entity()."""
+    data_source_code = "CUSTOMERS"
+    record_id = "9999"
+    with pytest.raises(SzBadInputError):
+        _ = sz_engine.why_record_in_entity(data_source_code, record_id)
 
 
 def test_why_records(sz_engine: SzEngine) -> None:
@@ -1084,43 +1095,22 @@ def test_add_record_str(sz_engine: SzEngine) -> None:
     assert actual == ""
 
 
-# TODO: Modify as_python_bytes to convert int to str? More robust and allows mistakes to continue
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_type(sz_engine: SzEngineTest) -> None:
-#     """Test add_record with incorrect data source code type."""
-#     data_source_code = 1
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     with pytest.raises(TypeError):
-#         sz_engine.add_record(data_source_code, record_id, json_data)
+def test_add_record_bad_data_source_code_type_dict(sz_engine: SzEngine) -> None:
+    """Test add_record with incorrect data source code type."""
+    data_source_code = 1
+    record_id = "1"
+    json_data = RECORD_DICT
+    with pytest.raises(SzError):
+        sz_engine.add_record(data_source_code, record_id, json_data)  # type: ignore[arg-type]
 
 
-# TODO: Uncomment testcase after Senzing code build 2024_05_01__07_22.
-# def test_add_record_bad_data_source_code_value(sz_engine: SzEngineTest) -> None:
-#     """Test add_record with non-existent data source code."""
-#     data_source_code = "DOESN'T EXIST"
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     with pytest.raises(SzError):
-#         sz_engine.add_record(data_source_code, record_id, json_data)
-
-# def test_add_record_dict(sz_engine: SzEngineTest) -> None:
-#     """Test add_record where the record is a dict."""
-#     data_source_code = "TEST"
-#     record_id = "1"
-#     json_data = RECORD_DICT
-#     sz_engine.add_record(data_source_code, record_id, json_data)
-
-
-# def test_add_truthset_data(engine_vars: Dict[Any, Any]) -> None:
-#     """Add truthset data for tests"""
-#     sz_engine = SzEngineTest()
-#     sz_engine._initialize(  # pylint: disable=W0212
-#         engine_vars["INSTANCE_NAME"],
-#         engine_vars["SETTINGS"],
-#         engine_vars["VERBOSE_LOGGING"],
-#     )
-#     add_records_truthset(sz_engine)
+def test_add_record_bad_data_source_code_value_dict_2(sz_engine: SzEngine) -> None:
+    """Test add_record with non-existent data source code."""
+    data_source_code = "DOESN'T EXIST"
+    record_id = "1"
+    json_data = RECORD_DICT
+    with pytest.raises(SzError):
+        sz_engine.add_record(data_source_code, record_id, json_data)  # type: ignore[arg-type]
 
 
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
@@ -1153,11 +1143,6 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 #             engine_vars["INSTANCE_NAME"],
 #             bad_settings,
 #         )
-
-
-# TODO: Was having issues with the as_c_ini in init
-# def test_constructor_bad_verbose_logging(engine_vars: Dict[Any, Any]):
-#     """Test constructor."""
 
 
 # def test_initialize_bad_config_id(engine_vars: Dict[Any, Any]) -> None:
@@ -1204,7 +1189,7 @@ def test_reinitialize(sz_engine: SzEngineCore) -> None:
 def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     bad_default_config_id = "string"
-    with pytest.raises(TypeError):
+    with pytest.raises(SzSdkError):
         sz_engine.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
@@ -1334,6 +1319,14 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
 # -----------------------------------------------------------------------------
 
 add_record_with_info_schema = {
+    "DATA_SOURCE": str,
+    "RECORD_ID": str,
+    "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
+}
+
+reevaluate_entity_with_info_schema = {
+    Optional("DATA_SOURCE"): str,
+    Optional("RECORD_ID"): str,
     "AFFECTED_ENTITIES": [{"ENTITY_ID": int}],
 }
 
