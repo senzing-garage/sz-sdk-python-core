@@ -53,7 +53,9 @@ notes = [
     "FIXME"
 ]
 extension-pkg-whitelist = ["orjson"]
-# NOTE Paths are regular expressions
+# NOTE - Ignore invalid-name only in examples for simplified code without pylint complaining variables in global scope
+#        aren't uppercase. 
+# NOTE - Paths are regular expressions
 per-file-ignores = """
     /examples/:invalid-name
 """ 

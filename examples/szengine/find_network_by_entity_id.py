@@ -1,16 +1,14 @@
-#! /usr/bin/env python3
-
 from senzing import SzEngineFlags, SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-BUILD_OUT_DEGREES = 1
-ENTITY_LIST = [1, 4]
-FLAGS = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
-INSTANCE_NAME = "Example"
-MAX_DEGREES = 2
-MAX_ENTITIES = 10
-SETTINGS = {
+build_out_degrees = 1
+entity_list = [1, 4]
+flags = SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS
+instance_name = "Example"
+max_degrees = 2
+max_entities = 10
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/er/resources",
@@ -20,9 +18,9 @@ SETTINGS = {
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_engine = sz_abstract_factory.create_engine()
-    result = sz_engine.find_network_by_entity_id(ENTITY_LIST, MAX_DEGREES, BUILD_OUT_DEGREES, MAX_ENTITIES, FLAGS)
+    result = sz_engine.find_network_by_entity_id(entity_list, max_degrees, build_out_degrees, max_entities, flags)
     print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
