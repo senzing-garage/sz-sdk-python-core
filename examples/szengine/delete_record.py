@@ -1,14 +1,12 @@
-#! /usr/bin/env python3
-
 from senzing import SzEngineFlags, SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-DATA_SOURCE_CODE = "TEST"
-FLAGS = SzEngineFlags.SZ_WITH_INFO
-INSTANCE_NAME = "Example"
-RECORD_ID = "1"
-SETTINGS = {
+data_source_code = "TEST"
+flags = SzEngineFlags.SZ_WITH_INFO
+instance_name = "Example"
+record_id = "1"
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/er/resources",
@@ -18,9 +16,9 @@ SETTINGS = {
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_engine = sz_abstract_factory.create_engine()
-    result = sz_engine.delete_record(DATA_SOURCE_CODE, RECORD_ID, FLAGS)
+    result = sz_engine.delete_record(data_source_code, record_id, flags)
     print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
