@@ -1077,7 +1077,7 @@ class SzEngineCore(SzEngine):
         self,
         attributes: str,
         entity_id: int,
-        flags: int = SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_WHY_SEARCH_DEFAULT_FLAGS,
         search_profile: str = "",
     ) -> str:
         result = self.library_handle.Sz_whySearch_V2_helper(
