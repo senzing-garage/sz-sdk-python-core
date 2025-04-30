@@ -6,7 +6,7 @@ from senzing_core import SzAbstractFactoryCore
 
 attributes = json.dumps({"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"})
 entity_id = 1
-flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
+flags = SzEngineFlags.SZ_WHY_SEARCH_DEFAULT_FLAGS
 instance_name = "Example"
 settings = {
     "PIPELINE": {

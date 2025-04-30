@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.9] - 2025-04-30
+
+### Changed in 0.3.9
+
+- Changed default flag for why_search() to SZ_WHY_SEARCH_DEFAULT_FLAGS
+
 ## [0.3.8] - 2025-04-21
 
 ### Changed in 0.3.8
