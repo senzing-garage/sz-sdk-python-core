@@ -1,12 +1,10 @@
-#! /usr/bin/env python3
-
 from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-INSTANCE_NAME = "Example"
-SECONDS_TO_RUN = 3
-SETTINGS = {
+instance_name = "Example"
+seconds_to_run = 3
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/er/resources",
@@ -15,11 +13,10 @@ SETTINGS = {
     "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"},
 }
 
-
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_diagnostic = sz_abstract_factory.create_diagnostic()
-    RESULT = sz_diagnostic.check_datastore_performance(SECONDS_TO_RUN)
-    print(f"\n{RESULT}\n")
+    result = sz_diagnostic.check_datastore_performance(seconds_to_run)
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

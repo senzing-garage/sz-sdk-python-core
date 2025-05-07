@@ -1,16 +1,14 @@
-#! /usr/bin/env python3
-
 from senzing import SzEngineFlags, SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-FLAGS = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
-INSTANCE_NAME = "Example"
-RECORD_LIST = [
+flags = SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS
+instance_name = "Example"
+record_list = [
     ("CUSTOMERS", "1001"),
     ("CUSTOMERS", "1002"),
 ]
-SETTINGS = {
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/er/resources",
@@ -20,9 +18,9 @@ SETTINGS = {
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_engine = sz_abstract_factory.create_engine()
-    RESULT = sz_engine.get_virtual_entity_by_record_id(RECORD_LIST, FLAGS)
-    print(f"\n{RESULT}\n")
+    result = sz_engine.get_virtual_entity_by_record_id(record_list, flags)
+    print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

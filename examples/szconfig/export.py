@@ -1,11 +1,9 @@
-#! /usr/bin/env python3
-
 from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-INSTANCE_NAME = "Example"
-SETTINGS = {
+instance_name = "Example"
+settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
         "RESOURCEPATH": "/opt/senzing/er/resources",
@@ -15,10 +13,10 @@ SETTINGS = {
 }
 
 try:
-    sz_abstract_factory = SzAbstractFactoryCore(INSTANCE_NAME, SETTINGS)
+    sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_configmanager = sz_abstract_factory.create_configmanager()
     sz_config = sz_configmanager.create_config_from_template()
-    CONFIG_DEFINITION = sz_config.export()
-    print(f"\n{CONFIG_DEFINITION}\n")
+    config_definition = sz_config.export()
+    print(f"\n{config_definition}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

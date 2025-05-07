@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szabstractfactory.SzAbstractFactoryCore`` is an implementation
 of the `senzing.szabstractfactory.SzAbstractFactory`_ interface that communicates with the Senzing binaries.
@@ -192,6 +190,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         if self.is_szdiagnostic_initialized:
             sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic.reinitialize(config_id=config_id)  # pylint: disable=W0212
+
         if self.is_szengine_initialized:
             sz_engine = SzEngineCore()
             sz_engine.reinitialize(config_id=config_id)  # pylint: disable=W0212

@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szconfigmanager.SzConfigManagerCore`` is an implementation
 of the `senzing.szconfigmanager.SzConfigManager`_ interface that communicates with the Senzing binaries.
@@ -28,7 +26,7 @@ from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
-    catch_non_sz_exceptions,
+    catch_sdk_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -172,7 +170,7 @@ class SzConfigManagerCore(SzConfigManager):
     # SzConfigManager interface methods
     # -------------------------------------------------------------------------
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def create_config_from_config_id(self, config_id: int) -> SzConfig:
         get_config_result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
         with FreeCResources(self.library_handle, get_config_result.response):
@@ -183,7 +181,7 @@ class SzConfigManagerCore(SzConfigManager):
         result.initialize(self.instance_name, self.settings, self.verbose_logging)
         return result
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def create_config_from_string(self, config_definition: str) -> SzConfig:
         result = SzConfigCore()
         result.verify_config_definition(config_definition)
@@ -191,7 +189,7 @@ class SzConfigManagerCore(SzConfigManager):
         result.initialize(self.instance_name, self.settings, self.verbose_logging)
         return result
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def create_config_from_template(self) -> SzConfig:
         result = SzConfigCore()
         result.initialize(self.instance_name, self.settings, self.verbose_logging)
@@ -209,7 +207,7 @@ class SzConfigManagerCore(SzConfigManager):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def register_config(
         self,
         config_definition: str,
@@ -222,7 +220,7 @@ class SzConfigManagerCore(SzConfigManager):
         self.check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def replace_default_config_id(
         self,
         current_default_config_id: int,
@@ -233,13 +231,13 @@ class SzConfigManagerCore(SzConfigManager):
         )
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def set_default_config(self, config_definition: str, config_comment: str) -> int:
         config_id = self.register_config(config_definition, config_comment)
         self.set_default_config_id(config_id)
         return config_id
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def set_default_config_id(self, config_id: int) -> None:
         result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
         self.check_result(result)
@@ -253,7 +251,7 @@ class SzConfigManagerCore(SzConfigManager):
     ) -> None:
         _ = self.library_handle.SzConfigMgr_destroy()
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def initialize(
         self,
         instance_name: str,

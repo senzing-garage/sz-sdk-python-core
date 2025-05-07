@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 """
 ``senzing_core.szconfig.SzConfigCore`` is an implementation
 of the `senzing.szconfig.SzConfig`_ interface that communicates with the Senzing binaries.
@@ -31,7 +29,7 @@ from ._helpers import (
     as_python_str,
     as_str,
     build_dsrc_code_json,
-    catch_non_sz_exceptions,
+    catch_sdk_exceptions,
     check_result_rc,
     load_sz_library,
 )
@@ -188,7 +186,7 @@ class SzConfigCore(SzConfig):
     # SzConfig interface methods
     # -------------------------------------------------------------------------
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def add_data_source(
         self,
         data_source_code: str,
@@ -225,7 +223,7 @@ class SzConfigCore(SzConfig):
 
         return result
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def delete_data_source(
         self,
         data_source_code: str,
@@ -262,7 +260,7 @@ class SzConfigCore(SzConfig):
     def export(self) -> str:
         return self.config_definition
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def get_data_sources(self) -> str:
 
         # Create an in-memory representation of the Senzing configuration JSON.
@@ -301,7 +299,7 @@ class SzConfigCore(SzConfig):
         """
         self.config_definition = config_definition
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def import_template(
         self,
     ) -> None:
@@ -327,7 +325,7 @@ class SzConfigCore(SzConfig):
         close_result = self.library_handle.SzConfig_close_helper(as_c_uintptr_t(config_handle))
         self.check_result(close_result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def initialize(
         self,
         instance_name: str,
@@ -349,7 +347,7 @@ class SzConfigCore(SzConfig):
         )
         self.check_result(result)
 
-    @catch_non_sz_exceptions
+    @catch_sdk_exceptions
     def verify_config_definition(self, config_definition: str) -> None:
         """
         Verify that a Senzing configuration JSON document is valid.

@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.10] - 2025-05-02
+
+### Added in 0.3.10
+
+- Migration guide
+
+## [0.3.9] - 2025-04-30
+
+### Changed in 0.3.9
+
+- Changed default flag for why_search() to SZ_WHY_SEARCH_DEFAULT_FLAGS
+
+## [0.3.8] - 2025-04-21
+
+### Changed in 0.3.8
+
+- Simplify and clean up examples
+
+## [0.3.7] - 2025-04-18
+
+### Changed in 0.3.7
+
+- Case on example variables
+
+### Removed in 0.3.7
+
+- Empty example files for early adaptor methods that are not documented
+
+## [0.3.6] - 2025-04-17
+
+### Added in 0.3.6
+
+- Expanded test coverage
+- Check and raise SzSdkError for wrong types in _helpers.py build functions
+
+### Changed in 0.3.6
+
+- Simplified escaping JSON strings in _helpers.py
+- Changed exception capturing, raising, and messages for errors occurring within the SDK
+- Tests previously catching TypeError now catch SzSdkError
+
+### Removed in 0.3.6
+
+- SDK_EXCEPTION_MAP and functions, replaced with use of SzSdkError
+- Shebang in modules
+
 ## [0.3.5] - 2025-04-16
 
 ### Added in 0.3.5
