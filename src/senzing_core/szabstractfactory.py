@@ -70,18 +70,22 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         verbose_logging: int = 0,
     ) -> None:
         """
-        Constructor
+        Initializer.
 
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
+        Args:
+            instance_name (str): A name to distinguish the instances of engine objects.
+            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
+            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
-        self.instance_name = instance_name
-        self.settings = settings
-        self.config_id = config_id
-        self.verbose_logging = verbose_logging
-        self.is_szconfigmanager_initialized = False
-        self.is_szdiagnostic_initialized = False
-        self.is_szengine_initialized = False
-        self.is_szproduct_initialized = False
+        self._instance_name = instance_name
+        self._settings = settings
+        self._config_id = config_id
+        self._verbose_logging = verbose_logging
+        self._is_szconfigmanager_initialized = False
+        self._is_szdiagnostic_initialized = False
+        self._is_szengine_initialized = False
+        self._is_szproduct_initialized = False
 
     def __enter__(
         self,
@@ -102,99 +106,104 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         """Context Manager method."""
         self._destroy()
 
+    @property
+    def instance_name(self):
+        """Get the instance name the abstract factory was instantiated with."""
+        return self._instance_name
+
+    @property
+    def settings(self):
+        """Get the settings the abstract factory was instantiated with."""
+        return self._settings
+
+    @property
+    def config_id(self):
+        """Get the config ID the abstract factory was instantiated with."""
+        return self._config_id
+
+    @property
+    def verbose_logging(self):
+        """Get the verbose logging value the abstract factory was instantiated with."""
+        return self._verbose_logging
+
     # -------------------------------------------------------------------------
     # SzAbstractFactory methods
     # -------------------------------------------------------------------------
 
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
-        if not self.is_szconfigmanager_initialized:
+        if not self._is_szconfigmanager_initialized:
             result.initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                verbose_logging=self.verbose_logging,
+                instance_name=self._instance_name,
+                settings=self._settings,
+                verbose_logging=self._verbose_logging,
             )
-            self.is_szconfigmanager_initialized = True
+            self._is_szconfigmanager_initialized = True
         return result
 
     def create_diagnostic(self) -> SzDiagnostic:
         result = SzDiagnosticCore()
-        if not self.is_szdiagnostic_initialized:
+        if not self._is_szdiagnostic_initialized:
             result.initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                config_id=self.config_id,
-                verbose_logging=self.verbose_logging,
+                instance_name=self._instance_name,
+                settings=self._settings,
+                config_id=self._config_id,
+                verbose_logging=self._verbose_logging,
             )
-            self.is_szdiagnostic_initialized = True
+            self._is_szdiagnostic_initialized = True
         return result
 
     def create_engine(self) -> SzEngine:
-        # TODO: Determine if atomic operation is needed.
         result = SzEngineCore()
-        if not self.is_szengine_initialized:
+        if not self._is_szengine_initialized:
             result.initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                config_id=self.config_id,
-                verbose_logging=self.verbose_logging,
+                instance_name=self._instance_name,
+                settings=self._settings,
+                config_id=self._config_id,
+                verbose_logging=self._verbose_logging,
             )
-            self.is_szengine_initialized = True
+            self._is_szengine_initialized = True
         return result
 
     def create_product(self) -> SzProduct:
         result = SzProductCore()
-        if not self.is_szproduct_initialized:
+        if not self._is_szproduct_initialized:
             result.initialize(  # pylint: disable=W0212
-                instance_name=self.instance_name,
-                settings=self.settings,
-                verbose_logging=self.verbose_logging,
+                instance_name=self._instance_name,
+                settings=self._settings,
+                verbose_logging=self._verbose_logging,
             )
-            self.is_szproduct_initialized = True
+            self._is_szproduct_initialized = True
         return result
 
     def _destroy(self) -> None:
-
-        # TODO: Determine if atomic operation is needed.
-
-        if self.is_szconfigmanager_initialized:
-            self.is_szconfigmanager_initialized = False
+        if self._is_szconfigmanager_initialized:
+            self._is_szconfigmanager_initialized = False
             sz_configmanager = SzConfigManagerCore()
             sz_configmanager._destroy()  # pylint: disable=W0212
 
-        if self.is_szdiagnostic_initialized:
-            self.is_szdiagnostic_initialized = False
+        if self._is_szdiagnostic_initialized:
+            self._is_szdiagnostic_initialized = False
             sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic._destroy()  # pylint: disable=W0212
 
-        if self.is_szengine_initialized:
-            self.is_szengine_initialized = False
+        if self._is_szengine_initialized:
+            self._is_szengine_initialized = False
             sz_engine = SzEngineCore()
             sz_engine._destroy()  # pylint: disable=W0212
 
-        if self.is_szproduct_initialized:
-            self.is_szproduct_initialized = False
+        if self._is_szproduct_initialized:
+            self._is_szproduct_initialized = False
             sz_product = SzProductCore()
             sz_product._destroy()  # pylint: disable=W0212
 
     def reinitialize(self, config_id: int) -> None:
+        self._config_id = config_id
 
-        # TODO: Determine if atomic operation is needed.
-
-        self.config_id = config_id
-
-        if self.is_szengine_initialized:
+        if self._is_szengine_initialized:
             sz_engine = SzEngineCore()
             sz_engine.reinitialize(config_id=config_id)  # pylint: disable=W0212
 
-        if self.is_szdiagnostic_initialized:
-            sz_diagnostic = SzDiagnosticCore()
-            sz_diagnostic.reinitialize(config_id=config_id)  # pylint: disable=W0212
-
-        if self.is_szengine_initialized:
-            sz_engine = SzEngineCore()
-            sz_engine.reinitialize(config_id=config_id)  # pylint: disable=W0212
-
-        if self.is_szdiagnostic_initialized:
+        if self._is_szdiagnostic_initialized:
             sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic.reinitialize(config_id=config_id)  # pylint: disable=W0212
