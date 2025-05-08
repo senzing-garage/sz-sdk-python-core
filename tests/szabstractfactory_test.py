@@ -85,7 +85,7 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
 def test_property_instance_name(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.instance_name."""
     actual = sz_abstractfactory.instance_name
-    assert isinstance(actual, SzEngine)
+    assert isinstance(actual, str)
 
 
 # -----------------------------------------------------------------------------
