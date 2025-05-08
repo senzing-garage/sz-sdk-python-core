@@ -82,6 +82,31 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_abstractfactory.reinitialize(config_id)
 
 
+# NOTE - ignore is for https://github.com/python/mypy/issues/1465
+def test_property_instance_name(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.instance_name."""
+    actual = sz_abstractfactory.instance_name  # type: ignore[attr-defined]
+    assert isinstance(actual, str)
+
+
+def test_property_settings(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.settings."""
+    actual = sz_abstractfactory.settings  # type: ignore[attr-defined]
+    assert isinstance(actual, (str, dict))
+
+
+def test_property_config_id(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.config_id."""
+    actual = sz_abstractfactory.config_id  # type: ignore[attr-defined]
+    assert isinstance(actual, int)
+
+
+def test_property_verbose_logging(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.verbose_logging."""
+    actual = sz_abstractfactory.verbose_logging  # type: ignore[attr-defined]
+    assert isinstance(actual, int)
+
+
 # -----------------------------------------------------------------------------
 # Unique testcases
 # -----------------------------------------------------------------------------
