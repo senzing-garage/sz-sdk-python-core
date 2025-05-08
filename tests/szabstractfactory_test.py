@@ -82,6 +82,12 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_abstractfactory.reinitialize(config_id)
 
 
+def test_property_instance_name(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.instance_name."""
+    actual = sz_abstractfactory.instance_name
+    assert isinstance(actual, SzEngine)
+
+
 # -----------------------------------------------------------------------------
 # Unique testcases
 # -----------------------------------------------------------------------------
