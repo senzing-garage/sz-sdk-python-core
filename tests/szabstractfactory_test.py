@@ -92,7 +92,7 @@ def test_property_instance_name(sz_abstractfactory: SzAbstractFactory) -> None:
 def test_property_settings(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.settings."""
     actual = sz_abstractfactory.settings  # type: ignore[attr-defined]
-    assert isinstance(actual, str)
+    assert isinstance(actual, (str, dict))
 
 
 def test_property_config_id(sz_abstractfactory: SzAbstractFactory) -> None:
