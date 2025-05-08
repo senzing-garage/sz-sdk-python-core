@@ -107,22 +107,22 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         self._destroy()
 
     @property
-    def instance_name(self):
+    def instance_name(self) -> str:
         """Get the instance name the abstract factory was instantiated with."""
         return self._instance_name
 
     @property
-    def settings(self):
+    def settings(self) -> Union[str, Dict[Any, Any]]:
         """Get the settings the abstract factory was instantiated with."""
         return self._settings
 
     @property
-    def config_id(self):
+    def config_id(self) -> int:
         """Get the config ID the abstract factory was instantiated with."""
         return self._config_id
 
     @property
-    def verbose_logging(self):
+    def verbose_logging(self) -> int:
         """Get the verbose logging value the abstract factory was instantiated with."""
         return self._verbose_logging
 
