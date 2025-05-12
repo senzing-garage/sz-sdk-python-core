@@ -229,7 +229,7 @@ class SzWhySearchV2Result(SzResponseReturnCodeResult):
 class SzEngineCore(SzEngine):
     """
     Use SzAbstractFactoryCore.create_engine() to create an SzEngine object.
-    The SzEngine object uses the parameters provided to SzAbstractFactoryCore().
+    The SzEngine object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -240,7 +240,7 @@ class SzEngineCore(SzEngine):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_engine = sz_abstract_factory.create_engine()
 
-    Parameters:
+    Args:
 
     Raises:
 

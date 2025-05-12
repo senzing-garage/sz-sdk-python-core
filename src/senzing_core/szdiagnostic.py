@@ -75,7 +75,7 @@ class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
 class SzDiagnosticCore(SzDiagnostic):
     """
     Use SzAbstractFactoryCore.create_diagnostic() to create an SzDiagnostic object.
-    The SzDiagnostic object uses the parameters provided to SzAbstractFactoryCore().
+    The SzDiagnostic object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -86,7 +86,7 @@ class SzDiagnosticCore(SzDiagnostic):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_diagnostic = sz_abstract_factory.create_diagnostic()
 
-    Parameters:
+    Args:
 
     Raises:
 

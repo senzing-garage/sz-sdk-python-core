@@ -75,7 +75,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         Args:
             instance_name (str): A name to distinguish the instances of engine objects.
             settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
+            config_id (int, optional): Initialize with a specific configuration ID. Defaults to 0 which uses the current system DEFAULTCONFIGID.
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
         self._instance_name = instance_name
@@ -118,7 +118,8 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
     @property
     def config_id(self) -> int:
-        """Get the config ID the abstract factory was instantiated with."""
+        """Get the config ID the abstract factory was instantiated with. If this is 0 no config ID was specified and
+        the current system DEFAULTCONFIGID was used."""
         return self._config_id
 
     @property
