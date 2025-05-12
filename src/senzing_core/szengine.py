@@ -229,7 +229,7 @@ class SzWhySearchV2Result(SzResponseReturnCodeResult):
 class SzEngineCore(SzEngine):
     """
     Use SzAbstractFactoryCore.create_engine() to create an SzEngine object.
-    The SzEngine object uses the parameters provided to SzAbstractFactoryCore().
+    The SzEngine object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -240,7 +240,7 @@ class SzEngineCore(SzEngine):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_engine = sz_abstract_factory.create_engine()
 
-    Parameters:
+    Args:
 
     Raises:
 
@@ -902,6 +902,7 @@ class SzEngineCore(SzEngine):
         Args:
             instance_name (str): A name to distinguish this instance of the SzEngine.
             settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
         if config_id == 0:

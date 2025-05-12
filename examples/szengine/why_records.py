@@ -4,7 +4,7 @@ from senzing_core import SzAbstractFactoryCore
 
 data_source_code_1 = "CUSTOMERS"
 data_source_code_2 = "CUSTOMERS"
-flags = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
+flags = SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS
 instance_name = "Example"
 record_id_1 = "1001"
 record_id_2 = "1002"
