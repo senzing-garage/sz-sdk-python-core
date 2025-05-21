@@ -29,5 +29,6 @@ try:
 
     config_definition = sz_config.export()
     config_id = sz_configmanager.set_default_config(config_definition, config_comment)
+    print(config_id)
 except SzError as err:
     print(f"\nERROR: {err}\n")

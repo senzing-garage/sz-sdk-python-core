@@ -1,191 +1,482 @@
 // Output has been formatted for easier reading.
+
 {
-    "RESOLVED_ENTITIES": [
-        {
-            "MATCH_INFO": {
-                "MATCH_LEVEL_CODE": "RESOLVED",
-                "MATCH_KEY": "+NAME+EMAIL",
-                "ERRULE_CODE": "SF1_CNAME",
-                "FEATURE_SCORES": {
-                    "EMAIL": [
-                        {
-                            "INBOUND_FEAT_ID": 5,
-                            "INBOUND_FEAT_DESC": "bsmith@work.com",
-                            "INBOUND_FEAT_USAGE_TYPE": "",
-                            "CANDIDATE_FEAT_ID": 5,
-                            "CANDIDATE_FEAT_DESC": "bsmith@work.com",
-                            "CANDIDATE_FEAT_USAGE_TYPE": "",
-                            "SCORE": 100,
-                            "ADDITIONAL_SCORES": {
-                                "FULL_SCORE": 100
-                            },
-                            "SCORE_BUCKET": "SAME",
-                            "SCORE_BEHAVIOR": "F1"
-                        }
-                    ],
-                    "NAME": [
-                        {
-                            "INBOUND_FEAT_ID": -2,
-                            "INBOUND_FEAT_DESC": "BOB SMITH",
-                            "INBOUND_FEAT_USAGE_TYPE": "",
-                            "CANDIDATE_FEAT_ID": 38,
-                            "CANDIDATE_FEAT_DESC": "Bob J Smith",
-                            "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
-                            "SCORE": 93,
-                            "ADDITIONAL_SCORES": {
-                                "GENERATION_MATCH": -1,
-                                "GNR_FN": 93,
-                                "GNR_GN": -1,
-                                "GNR_ON": -1,
-                                "GNR_SN": -1
-                            },
-                            "SCORE_BUCKET": "CLOSE",
-                            "SCORE_BEHAVIOR": "NAME"
-                        },
-                        {
-                            "INBOUND_FEAT_ID": -2,
-                            "INBOUND_FEAT_DESC": "BOB SMITH",
-                            "INBOUND_FEAT_USAGE_TYPE": "",
-                            "CANDIDATE_FEAT_ID": 1,
-                            "CANDIDATE_FEAT_DESC": "Robert Smith",
-                            "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
-                            "SCORE": 97,
-                            "ADDITIONAL_SCORES": {
-                                "GENERATION_MATCH": -1,
-                                "GNR_FN": 97,
-                                "GNR_GN": -1,
-                                "GNR_ON": -1,
-                                "GNR_SN": -1
-                            },
-                            "SCORE_BUCKET": "CLOSE",
-                            "SCORE_BEHAVIOR": "NAME"
-                        }
-                    ]
-                }
-            },
-            "ENTITY": {
-                "RESOLVED_ENTITY": {
-                    "ENTITY_ID": 35,
-                    "ENTITY_NAME": "Robert Smith",
-                    "FEATURES": {
-                        "ADDRESS": [
-                            {
-                                "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
-                                "LIB_FEAT_ID": 22,
-                                "USAGE_TYPE": "HOME",
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
-                                        "LIB_FEAT_ID": 22
-                                    }
-                                ]
-                            },
-                            {
-                                "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
-                                "LIB_FEAT_ID": 3,
-                                "USAGE_TYPE": "MAILING",
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
-                                        "LIB_FEAT_ID": 3
-                                    }
-                                ]
-                            }
-                        ],
-                        "DOB": [
-                            {
-                                "FEAT_DESC": "12/11/1978",
-                                "LIB_FEAT_ID": 2,
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "12/11/1978",
-                                        "LIB_FEAT_ID": 2
-                                    },
-                                    {
-                                        "FEAT_DESC": "11/12/1978",
-                                        "LIB_FEAT_ID": 21
-                                    }
-                                ]
-                            }
-                        ],
-                        "EMAIL": [
-                            {
-                                "FEAT_DESC": "bsmith@work.com",
-                                "LIB_FEAT_ID": 5,
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "bsmith@work.com",
-                                        "LIB_FEAT_ID": 5
-                                    }
-                                ]
-                            }
-                        ],
-                        "NAME": [
-                            {
-                                "FEAT_DESC": "Robert Smith",
-                                "LIB_FEAT_ID": 1,
-                                "USAGE_TYPE": "PRIMARY",
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "Robert Smith",
-                                        "LIB_FEAT_ID": 1
-                                    },
-                                    {
-                                        "FEAT_DESC": "Bob J Smith",
-                                        "LIB_FEAT_ID": 38
-                                    },
-                                    {
-                                        "FEAT_DESC": "Bob Smith",
-                                        "LIB_FEAT_ID": 20
-                                    }
-                                ]
-                            }
-                        ],
-                        "PHONE": [
-                            {
-                                "FEAT_DESC": "702-919-1300",
-                                "LIB_FEAT_ID": 4,
-                                "USAGE_TYPE": "HOME",
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "702-919-1300",
-                                        "LIB_FEAT_ID": 4
-                                    }
-                                ]
-                            },
-                            {
-                                "FEAT_DESC": "702-919-1300",
-                                "LIB_FEAT_ID": 4,
-                                "USAGE_TYPE": "MOBILE",
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "702-919-1300",
-                                        "LIB_FEAT_ID": 4
-                                    }
-                                ]
-                            }
-                        ],
-                        "RECORD_TYPE": [
-                            {
-                                "FEAT_DESC": "PERSON",
-                                "LIB_FEAT_ID": 10,
-                                "FEAT_DESC_VALUES": [
-                                    {
-                                        "FEAT_DESC": "PERSON",
-                                        "LIB_FEAT_ID": 10
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "RECORD_SUMMARY": [
-                        {
-                            "DATA_SOURCE": "CUSTOMERS",
-                            "RECORD_COUNT": 3
-                        }
-                    ]
-                }
+  "RESOLVED_ENTITIES": [
+    {
+      "MATCH_INFO": {
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "MATCH_KEY": "+NAME+EMAIL",
+        "ERRULE_CODE": "SF1_CNAME",
+        "CANDIDATE_KEYS": {
+          "EMAIL_KEY": [
+            {
+              "FEAT_ID": 11,
+              "FEAT_DESC": "bsmith@WORK.COM"
             }
+          ],
+          "NAME_KEY": [
+            {
+              "FEAT_ID": 6,
+              "FEAT_DESC": "RPRT|SM0"
+            },
+            {
+              "FEAT_ID": 200002,
+              "FEAT_DESC": "PP|SM0"
+            }
+          ]
+        },
+        "FEATURE_SCORES": {
+          "EMAIL": [
+            {
+              "INBOUND_FEAT_ID": 5,
+              "INBOUND_FEAT_DESC": "bsmith@work.com",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 5,
+              "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+              "CANDIDATE_FEAT_USAGE_TYPE": "",
+              "SCORE": 100,
+              "ADDITIONAL_SCORES": {
+                "FULL_SCORE": 100
+              },
+              "SCORE_BUCKET": "SAME",
+              "SCORE_BEHAVIOR": "F1"
+            }
+          ],
+          "NAME": [
+            {
+              "INBOUND_FEAT_ID": -2,
+              "INBOUND_FEAT_DESC": "Bob Smith",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 1,
+              "CANDIDATE_FEAT_DESC": "Robert Smith",
+              "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+              "SCORE": 97,
+              "ADDITIONAL_SCORES": {
+                "GNR_FN": 97,
+                "GNR_SN": -1,
+                "GNR_GN": -1,
+                "GENERATION_MATCH": -1,
+                "GNR_ON": -1
+              },
+              "SCORE_BUCKET": "CLOSE",
+              "SCORE_BEHAVIOR": "NAME"
+            }
+          ]
         }
-    ]
+      },
+      "ENTITY": {
+        "RESOLVED_ENTITY": {
+          "ENTITY_ID": 1,
+          "ENTITY_NAME": "Robert Smith",
+          "FEATURES": {
+            "ADDRESS": [
+              {
+                "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                "LIB_FEAT_ID": 200059,
+                "USAGE_TYPE": "HOME",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                    "LIB_FEAT_ID": 200059
+                  },
+                  {
+                    "FEAT_DESC": "1515 Adela Ln Las Vegas NV 89132",
+                    "LIB_FEAT_ID": 200046
+                  }
+                ]
+              },
+              {
+                "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                "LIB_FEAT_ID": 3,
+                "USAGE_TYPE": "MAILING",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                    "LIB_FEAT_ID": 3
+                  }
+                ]
+              }
+            ],
+            "DOB": [
+              {
+                "FEAT_DESC": "11/12/1979",
+                "LIB_FEAT_ID": 200045,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "11/12/1979",
+                    "LIB_FEAT_ID": 200045
+                  }
+                ]
+              },
+              {
+                "FEAT_DESC": "12/11/1978",
+                "LIB_FEAT_ID": 2,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "12/11/1978",
+                    "LIB_FEAT_ID": 2
+                  },
+                  {
+                    "FEAT_DESC": "11/12/1978",
+                    "LIB_FEAT_ID": 200058
+                  }
+                ]
+              }
+            ],
+            "EMAIL": [
+              {
+                "FEAT_DESC": "bsmith@work.com",
+                "LIB_FEAT_ID": 5,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "bsmith@work.com",
+                    "LIB_FEAT_ID": 5
+                  }
+                ]
+              }
+            ],
+            "NAME": [
+              {
+                "FEAT_DESC": "B Smith",
+                "LIB_FEAT_ID": 200044,
+                "USAGE_TYPE": "PRIMARY",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "B Smith",
+                    "LIB_FEAT_ID": 200044
+                  }
+                ]
+              },
+              {
+                "FEAT_DESC": "Robert Smith",
+                "LIB_FEAT_ID": 1,
+                "USAGE_TYPE": "PRIMARY",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "Robert Smith",
+                    "LIB_FEAT_ID": 1
+                  },
+                  {
+                    "FEAT_DESC": "Bob J Smith",
+                    "LIB_FEAT_ID": 200001
+                  },
+                  {
+                    "FEAT_DESC": "Bob Smith",
+                    "LIB_FEAT_ID": 200057
+                  }
+                ]
+              }
+            ],
+            "PHONE": [
+              {
+                "FEAT_DESC": "702-919-1300",
+                "LIB_FEAT_ID": 4,
+                "USAGE_TYPE": "HOME",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "702-919-1300",
+                    "LIB_FEAT_ID": 4
+                  }
+                ]
+              },
+              {
+                "FEAT_DESC": "702-919-1300",
+                "LIB_FEAT_ID": 4,
+                "USAGE_TYPE": "MOBILE",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "702-919-1300",
+                    "LIB_FEAT_ID": 4
+                  }
+                ]
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "FEAT_DESC": "PERSON",
+                "LIB_FEAT_ID": 10,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "PERSON",
+                    "LIB_FEAT_ID": 10
+                  }
+                ]
+              }
+            ]
+          },
+          "RECORD_SUMMARY": [
+            {
+              "DATA_SOURCE": "TEST",
+              "RECORD_COUNT": 1
+            },
+            {
+              "DATA_SOURCE": "CUSTOMERS",
+              "RECORD_COUNT": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "MATCH_INFO": {
+        "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+        "MATCH_KEY": "+NAME",
+        "ERRULE_CODE": "SNAME",
+        "CANDIDATE_KEYS": {
+          "NAME_KEY": [
+            {
+              "FEAT_ID": 6,
+              "FEAT_DESC": "RPRT|SM0"
+            }
+          ]
+        },
+        "FEATURE_SCORES": {
+          "NAME": [
+            {
+              "INBOUND_FEAT_ID": -2,
+              "INBOUND_FEAT_DESC": "Bob Smith",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 200087,
+              "CANDIDATE_FEAT_DESC": "Robbie Smith",
+              "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+              "SCORE": 97,
+              "ADDITIONAL_SCORES": {
+                "GNR_FN": 97,
+                "GNR_SN": -1,
+                "GNR_GN": -1,
+                "GENERATION_MATCH": -1,
+                "GNR_ON": -1
+              },
+              "SCORE_BUCKET": "CLOSE",
+              "SCORE_BEHAVIOR": "NAME"
+            }
+          ]
+        }
+      },
+      "ENTITY": {
+        "RESOLVED_ENTITY": {
+          "ENTITY_ID": 400015,
+          "ENTITY_NAME": "Robert E Smith Sr",
+          "FEATURES": {
+            "ADDRESS": [
+              {
+                "FEAT_DESC": "123 E Main St Henderson NV 89132",
+                "LIB_FEAT_ID": 200088,
+                "USAGE_TYPE": "MAILING",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "123 E Main St Henderson NV 89132",
+                    "LIB_FEAT_ID": 200088
+                  }
+                ]
+              },
+              {
+                "FEAT_DESC": "123 Main St, Las Vegas",
+                "LIB_FEAT_ID": 201464,
+                "USAGE_TYPE": "MAILING",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "123 Main St, Las Vegas",
+                    "LIB_FEAT_ID": 201464
+                  }
+                ]
+              }
+            ],
+            "DOB": [
+              {
+                "FEAT_DESC": "3/31/1954",
+                "LIB_FEAT_ID": 201463,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "3/31/1954",
+                    "LIB_FEAT_ID": 201463
+                  }
+                ]
+              }
+            ],
+            "DRLIC": [
+              {
+                "FEAT_DESC": "112233 NV",
+                "LIB_FEAT_ID": 200089,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "112233 NV",
+                    "LIB_FEAT_ID": 200089
+                  }
+                ]
+              }
+            ],
+            "NAME": [
+              {
+                "FEAT_DESC": "Robert E Smith Sr",
+                "LIB_FEAT_ID": 201462,
+                "USAGE_TYPE": "PRIMARY",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "Robert E Smith Sr",
+                    "LIB_FEAT_ID": 201462
+                  },
+                  {
+                    "FEAT_DESC": "Robbie Smith",
+                    "LIB_FEAT_ID": 200087
+                  }
+                ]
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "FEAT_DESC": "PERSON",
+                "LIB_FEAT_ID": 10,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "PERSON",
+                    "LIB_FEAT_ID": 10
+                  }
+                ]
+              }
+            ]
+          },
+          "RECORD_SUMMARY": [
+            {
+              "DATA_SOURCE": "CUSTOMERS",
+              "RECORD_COUNT": 1
+            },
+            {
+              "DATA_SOURCE": "WATCHLIST",
+              "RECORD_COUNT": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "MATCH_INFO": {
+        "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+        "MATCH_KEY": "+NAME",
+        "ERRULE_CODE": "SNAME",
+        "CANDIDATE_KEYS": {
+          "NAME_KEY": [
+            {
+              "FEAT_ID": 6,
+              "FEAT_DESC": "RPRT|SM0"
+            }
+          ]
+        },
+        "FEATURE_SCORES": {
+          "EMAIL": [
+            {
+              "INBOUND_FEAT_ID": 5,
+              "INBOUND_FEAT_DESC": "bsmith@work.com",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 201427,
+              "CANDIDATE_FEAT_DESC": "robert.smith@email.com",
+              "CANDIDATE_FEAT_USAGE_TYPE": "",
+              "SCORE": 0,
+              "ADDITIONAL_SCORES": {
+                "FULL_SCORE": 0
+              },
+              "SCORE_BUCKET": "NO_CHANCE",
+              "SCORE_BEHAVIOR": "F1"
+            }
+          ],
+          "NAME": [
+            {
+              "INBOUND_FEAT_ID": -2,
+              "INBOUND_FEAT_DESC": "Bob Smith",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 1,
+              "CANDIDATE_FEAT_DESC": "Robert Smith",
+              "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+              "SCORE": 97,
+              "ADDITIONAL_SCORES": {
+                "GNR_FN": 97,
+                "GNR_SN": -1,
+                "GNR_GN": -1,
+                "GENERATION_MATCH": -1,
+                "GNR_ON": -1
+              },
+              "SCORE_BUCKET": "CLOSE",
+              "SCORE_BEHAVIOR": "NAME"
+            }
+          ]
+        }
+      },
+      "ENTITY": {
+        "RESOLVED_ENTITY": {
+          "ENTITY_ID": 400204,
+          "ENTITY_NAME": "Robert Smith",
+          "FEATURES": {
+            "EMAIL": [
+              {
+                "FEAT_DESC": "robert.smith@email.com",
+                "LIB_FEAT_ID": 201427,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "robert.smith@email.com",
+                    "LIB_FEAT_ID": 201427
+                  }
+                ]
+              }
+            ],
+            "NAME": [
+              {
+                "FEAT_DESC": "Robert Smith",
+                "LIB_FEAT_ID": 1,
+                "USAGE_TYPE": "PRIMARY",
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "Robert Smith",
+                    "LIB_FEAT_ID": 1
+                  }
+                ]
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "FEAT_DESC": "PERSON",
+                "LIB_FEAT_ID": 10,
+                "FEAT_DESC_VALUES": [
+                  {
+                    "FEAT_DESC": "PERSON",
+                    "LIB_FEAT_ID": 10
+                  }
+                ]
+              }
+            ]
+          },
+          "RECORD_SUMMARY": [
+            {
+              "DATA_SOURCE": "WATCHLIST",
+              "RECORD_COUNT": 1
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "SEARCH_STATISTICS": [
+    {
+      "CANDIDATE_KEYS": {
+        "FEATURE_TYPES": [
+          {
+            "FTYPE_CODE": "NAME_KEY",
+            "FOUND": 2,
+            "NOT_FOUND": 0,
+            "GENERIC": 0
+          },
+          {
+            "FTYPE_CODE": "EMAIL_KEY",
+            "FOUND": 1,
+            "NOT_FOUND": 0,
+            "GENERIC": 0
+          }
+        ],
+        "SUMMARY": {
+          "FOUND": 3,
+          "NOT_FOUND": 0,
+          "GENERIC": 0
+        }
+      }
+    }
+  ]
 }

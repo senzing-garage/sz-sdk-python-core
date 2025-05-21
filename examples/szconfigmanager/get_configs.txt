@@ -1,16 +1,16 @@
 // Output has been formatted for easier reading.
 
 {
-    "CONFIGS": [
-        {
-            "CONFIG_ID": 41320074,
-            "CONFIG_COMMENTS": "Default Senzing configuration",
-            "SYS_CREATE_DT": "YYYY-MM-DD HH:MM:SS.mmm"
-        },
-        {
-            "CONFIG_ID": 490826130,
-            "CONFIG_COMMENTS": "Test",
-            "SYS_CREATE_DT": "YYYY-MM-DD HH:MM:SS.mmm"
-        }
-    ]
+  "CONFIGS": [
+    {
+      "CONFIG_ID": 2521619849,
+      "CONFIG_COMMENTS": "New default configuration added by sz_setup_config.",
+      "SYS_CREATE_DT": "2025-05-20T14:11:59Z"
+    },
+    {
+      "CONFIG_ID": 2918709094,
+      "CONFIG_COMMENTS": "Updated by sz_configtool",
+      "SYS_CREATE_DT": "2025-05-20T15:28:52Z"
+    }
+  ]
 }

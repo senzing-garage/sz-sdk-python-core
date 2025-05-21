@@ -1,38 +1,55 @@
 // Output has been formatted for easier reading.
 
 {
-    "ENTITY_PATHS": [
-        {
-            "START_ENTITY_ID": 35,
-            "END_ENTITY_ID": 38,
-            "ENTITIES": []
-        }
-    ],
-    "ENTITY_PATH_LINKS": [],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": 35,
-                "ENTITY_NAME": "Robert Smith",
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": "CUSTOMERS",
-                        "RECORD_COUNT": 3
-                    }
-                ]
-            }
-        },
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": 38,
-                "ENTITY_NAME": "Edward Kusha",
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": "CUSTOMERS",
-                        "RECORD_COUNT": 1
-                    }
-                ]
-            }
-        }
-    ]
+  "ENTITY_PATHS": [
+    {
+      "START_ENTITY_ID": 1,
+      "END_ENTITY_ID": 400215,
+      "ENTITIES": [
+        1,
+        400215
+      ]
+    }
+  ],
+  "ENTITY_PATH_LINKS": [
+    {
+      "MIN_ENTITY_ID": 1,
+      "MAX_ENTITY_ID": 400215,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+SURNAME",
+      "ERRULE_CODE": "CFF_SURNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    }
+  ],
+  "ENTITIES": [
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 1,
+        "ENTITY_NAME": "Robert Smith",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "TEST",
+            "RECORD_COUNT": 1
+          },
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 4
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400215,
+        "ENTITY_NAME": "Patricia Smith",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    }
+  ]
 }

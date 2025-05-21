@@ -1,26 +1,781 @@
 // Output has been formatted for easier reading.
 
 {
-    "HOW_RESULTS": {
-        "RESOLUTION_STEPS": [],
-        "FINAL_STATE": {
-            "NEED_REEVALUATION": 0,
-            "VIRTUAL_ENTITIES": [
+  "HOW_RESULTS": {
+    "RESOLUTION_STEPS": [
+      {
+        "STEP": 1,
+        "VIRTUAL_ENTITY_1": {
+          "VIRTUAL_ENTITY_ID": "V400010",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 400010,
+              "RECORDS": [
                 {
-                    "VIRTUAL_ENTITY_ID": "V1",
-                    "MEMBER_RECORDS": [
-                        {
-                            "INTERNAL_ID": 1,
-                            "RECORDS": [
-                                {
-                                    "DATA_SOURCE": "TEST",
-                                    "RECORD_ID": "2"
-                                }
-                            ]
-                        }
-                    ]
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1004"
                 }
+              ]
+            }
+          ]
+        },
+        "VIRTUAL_ENTITY_2": {
+          "VIRTUAL_ENTITY_ID": "V400011",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 400011,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1002"
+                }
+              ]
+            }
+          ]
+        },
+        "INBOUND_VIRTUAL_ENTITY_ID": "V400010",
+        "RESULT_VIRTUAL_ENTITY_ID": "V400010-S1",
+        "MATCH_INFO": {
+          "MATCH_KEY": "+NAME+DOB+ADDRESS",
+          "ERRULE_CODE": "CNAME_CFF_CEXCL",
+          "CANDIDATE_KEYS": {
+            "ADDR_KEY": [
+              {
+                "FEAT_ID": 200048,
+                "FEAT_DESC": "1515|ATL||LS FKS"
+              }
             ]
+          },
+          "FEATURE_SCORES": {
+            "ADDRESS": [
+              {
+                "INBOUND_FEAT_ID": 200046,
+                "INBOUND_FEAT_DESC": "1515 Adela Ln Las Vegas NV 89132",
+                "INBOUND_FEAT_USAGE_TYPE": "HOME",
+                "CANDIDATE_FEAT_ID": 200059,
+                "CANDIDATE_FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                "CANDIDATE_FEAT_USAGE_TYPE": "HOME",
+                "SCORE": 96,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 96
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "FF"
+              }
+            ],
+            "DOB": [
+              {
+                "INBOUND_FEAT_ID": 200045,
+                "INBOUND_FEAT_DESC": "11/12/1979",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 200058,
+                "CANDIDATE_FEAT_DESC": "11/12/1978",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 92,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 92
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "FMES"
+              }
+            ],
+            "NAME": [
+              {
+                "INBOUND_FEAT_ID": 200044,
+                "INBOUND_FEAT_DESC": "B Smith",
+                "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                "CANDIDATE_FEAT_ID": 200057,
+                "CANDIDATE_FEAT_DESC": "Bob Smith",
+                "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                "SCORE": 92,
+                "ADDITIONAL_SCORES": {
+                  "GNR_FN": 92,
+                  "GNR_SN": 100,
+                  "GNR_GN": 85,
+                  "GENERATION_MATCH": -1,
+                  "GNR_ON": -1
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "NAME"
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "INBOUND_FEAT_ID": 10,
+                "INBOUND_FEAT_DESC": "PERSON",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 10,
+                "CANDIDATE_FEAT_DESC": "PERSON",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FVME"
+              }
+            ]
+          }
         }
+      },
+      {
+        "STEP": 2,
+        "VIRTUAL_ENTITY_1": {
+          "VIRTUAL_ENTITY_ID": "V1",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 1,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "TEST",
+                  "RECORD_ID": "1"
+                }
+              ]
+            }
+          ]
+        },
+        "VIRTUAL_ENTITY_2": {
+          "VIRTUAL_ENTITY_ID": "V400010-S1",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 400010,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1004"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400011,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1002"
+                }
+              ]
+            }
+          ]
+        },
+        "INBOUND_VIRTUAL_ENTITY_ID": "V400010-S1",
+        "RESULT_VIRTUAL_ENTITY_ID": "V1-S2",
+        "MATCH_INFO": {
+          "MATCH_KEY": "+NAME+DOB+PHONE+EMAIL",
+          "ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+          "CANDIDATE_KEYS": {
+            "EMAIL_KEY": [
+              {
+                "FEAT_ID": 11,
+                "FEAT_DESC": "bsmith@WORK.COM"
+              }
+            ],
+            "NAMEDATE_KEY": [
+              {
+                "FEAT_ID": 14,
+                "FEAT_DESC": "RPRT|SM0|DOB.MMDD_HASH=1211"
+              },
+              {
+                "FEAT_ID": 15,
+                "FEAT_DESC": "RPRT|SM0|DOB=71211"
+              }
+            ],
+            "NAMEPHONE_KEY": [
+              {
+                "FEAT_ID": 19,
+                "FEAT_DESC": "RPRT|SM0|PHONE.PHONE_LAST_5=91300"
+              }
+            ],
+            "NAMEREGION_KEY": [
+              {
+                "FEAT_ID": 18,
+                "FEAT_DESC": "RPRT|SM0|ADDRESS.CITY_STD=LS FKS"
+              }
+            ],
+            "NAME_KEY": [
+              {
+                "FEAT_ID": 6,
+                "FEAT_DESC": "RPRT|SM0"
+              }
+            ],
+            "PHONE_KEY": [
+              {
+                "FEAT_ID": 9,
+                "FEAT_DESC": "7029191300"
+              }
+            ]
+          },
+          "FEATURE_SCORES": {
+            "ADDRESS": [
+              {
+                "INBOUND_FEAT_ID": 200059,
+                "INBOUND_FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+                "INBOUND_FEAT_USAGE_TYPE": "HOME",
+                "CANDIDATE_FEAT_ID": 3,
+                "CANDIDATE_FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                "CANDIDATE_FEAT_USAGE_TYPE": "MAILING",
+                "SCORE": 42,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 42
+                },
+                "SCORE_BUCKET": "NO_CHANCE",
+                "SCORE_BEHAVIOR": "FF"
+              }
+            ],
+            "DOB": [
+              {
+                "INBOUND_FEAT_ID": 200058,
+                "INBOUND_FEAT_DESC": "11/12/1978",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 2,
+                "CANDIDATE_FEAT_DESC": "12/11/1978",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 95,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 95
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "FMES"
+              }
+            ],
+            "EMAIL": [
+              {
+                "INBOUND_FEAT_ID": 5,
+                "INBOUND_FEAT_DESC": "bsmith@work.com",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 5,
+                "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "F1"
+              }
+            ],
+            "NAME": [
+              {
+                "INBOUND_FEAT_ID": 200057,
+                "INBOUND_FEAT_DESC": "Bob Smith",
+                "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                "CANDIDATE_FEAT_ID": 1,
+                "CANDIDATE_FEAT_DESC": "Robert Smith",
+                "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                "SCORE": 97,
+                "ADDITIONAL_SCORES": {
+                  "GNR_FN": 97,
+                  "GNR_SN": 100,
+                  "GNR_GN": 95,
+                  "GENERATION_MATCH": -1,
+                  "GNR_ON": -1
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "NAME"
+              }
+            ],
+            "PHONE": [
+              {
+                "INBOUND_FEAT_ID": 4,
+                "INBOUND_FEAT_DESC": "702-919-1300",
+                "INBOUND_FEAT_USAGE_TYPE": "MOBILE",
+                "CANDIDATE_FEAT_ID": 4,
+                "CANDIDATE_FEAT_DESC": "702-919-1300",
+                "CANDIDATE_FEAT_USAGE_TYPE": "HOME",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FF"
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "INBOUND_FEAT_ID": 10,
+                "INBOUND_FEAT_DESC": "PERSON",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 10,
+                "CANDIDATE_FEAT_DESC": "PERSON",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FVME"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "STEP": 3,
+        "VIRTUAL_ENTITY_1": {
+          "VIRTUAL_ENTITY_ID": "V1-S2",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 1,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "TEST",
+                  "RECORD_ID": "1"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400010,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1004"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400011,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1002"
+                }
+              ]
+            }
+          ]
+        },
+        "VIRTUAL_ENTITY_2": {
+          "VIRTUAL_ENTITY_ID": "V500001",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 500001,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1001"
+                }
+              ]
+            }
+          ]
+        },
+        "INBOUND_VIRTUAL_ENTITY_ID": "V1-S2",
+        "RESULT_VIRTUAL_ENTITY_ID": "V1-S3",
+        "MATCH_INFO": {
+          "MATCH_KEY": "+NAME+DOB+ADDRESS+PHONE+EMAIL",
+          "ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+          "CANDIDATE_KEYS": {
+            "ADDR_KEY": [
+              {
+                "FEAT_ID": 7,
+                "FEAT_DESC": "123|MN||LS FKS"
+              },
+              {
+                "FEAT_ID": 8,
+                "FEAT_DESC": "123|MN||89132"
+              }
+            ],
+            "DOB": [
+              {
+                "FEAT_ID": 2,
+                "FEAT_DESC": "12/11/1978"
+              }
+            ],
+            "EMAIL_KEY": [
+              {
+                "FEAT_ID": 11,
+                "FEAT_DESC": "bsmith@WORK.COM"
+              }
+            ],
+            "NAMEADDR_KEY": [
+              {
+                "FEAT_ID": 12,
+                "FEAT_DESC": "RPRT|SM0|ADDR_KEY.EXPRESSION=123|MN||89132"
+              },
+              {
+                "FEAT_ID": 13,
+                "FEAT_DESC": "RPRT|SM0|ADDR_KEY.EXPRESSION=123|MN||LS FKS"
+              }
+            ],
+            "NAMEDATE_KEY": [
+              {
+                "FEAT_ID": 14,
+                "FEAT_DESC": "RPRT|SM0|DOB.MMDD_HASH=1211"
+              },
+              {
+                "FEAT_ID": 15,
+                "FEAT_DESC": "RPRT|SM0|DOB=71211"
+              },
+              {
+                "FEAT_ID": 16,
+                "FEAT_DESC": "RPRT|SM0|DOB.MMYY_HASH=1278"
+              }
+            ],
+            "NAMEPHONE_KEY": [
+              {
+                "FEAT_ID": 19,
+                "FEAT_DESC": "RPRT|SM0|PHONE.PHONE_LAST_5=91300"
+              }
+            ],
+            "NAMEREGION_KEY": [
+              {
+                "FEAT_ID": 17,
+                "FEAT_DESC": "RPRT|SM0|POST=89132"
+              },
+              {
+                "FEAT_ID": 18,
+                "FEAT_DESC": "RPRT|SM0|ADDRESS.CITY_STD=LS FKS"
+              }
+            ],
+            "NAME_KEY": [
+              {
+                "FEAT_ID": 6,
+                "FEAT_DESC": "RPRT|SM0"
+              }
+            ],
+            "PHONE_KEY": [
+              {
+                "FEAT_ID": 9,
+                "FEAT_DESC": "7029191300"
+              }
+            ]
+          },
+          "FEATURE_SCORES": {
+            "ADDRESS": [
+              {
+                "INBOUND_FEAT_ID": 3,
+                "INBOUND_FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                "INBOUND_FEAT_USAGE_TYPE": "MAILING",
+                "CANDIDATE_FEAT_ID": 3,
+                "CANDIDATE_FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+                "CANDIDATE_FEAT_USAGE_TYPE": "MAILING",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FF"
+              }
+            ],
+            "DOB": [
+              {
+                "INBOUND_FEAT_ID": 2,
+                "INBOUND_FEAT_DESC": "12/11/1978",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 2,
+                "CANDIDATE_FEAT_DESC": "12/11/1978",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FMES"
+              }
+            ],
+            "EMAIL": [
+              {
+                "INBOUND_FEAT_ID": 5,
+                "INBOUND_FEAT_DESC": "bsmith@work.com",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 5,
+                "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "F1"
+              }
+            ],
+            "NAME": [
+              {
+                "INBOUND_FEAT_ID": 1,
+                "INBOUND_FEAT_DESC": "Robert Smith",
+                "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                "CANDIDATE_FEAT_ID": 1,
+                "CANDIDATE_FEAT_DESC": "Robert Smith",
+                "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "GNR_FN": 100,
+                  "GNR_SN": 100,
+                  "GNR_GN": 100,
+                  "GENERATION_MATCH": -1,
+                  "GNR_ON": -1
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "NAME"
+              }
+            ],
+            "PHONE": [
+              {
+                "INBOUND_FEAT_ID": 4,
+                "INBOUND_FEAT_DESC": "702-919-1300",
+                "INBOUND_FEAT_USAGE_TYPE": "HOME",
+                "CANDIDATE_FEAT_ID": 4,
+                "CANDIDATE_FEAT_DESC": "702-919-1300",
+                "CANDIDATE_FEAT_USAGE_TYPE": "HOME",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FF"
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "INBOUND_FEAT_ID": 10,
+                "INBOUND_FEAT_DESC": "PERSON",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 10,
+                "CANDIDATE_FEAT_DESC": "PERSON",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FVME"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "STEP": 4,
+        "VIRTUAL_ENTITY_1": {
+          "VIRTUAL_ENTITY_ID": "V1-S3",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 1,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "TEST",
+                  "RECORD_ID": "1"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400010,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1004"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400011,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1002"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 500001,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1001"
+                }
+              ]
+            }
+          ]
+        },
+        "VIRTUAL_ENTITY_2": {
+          "VIRTUAL_ENTITY_ID": "V400001",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 400001,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1003"
+                }
+              ]
+            }
+          ]
+        },
+        "INBOUND_VIRTUAL_ENTITY_ID": "V1-S3",
+        "RESULT_VIRTUAL_ENTITY_ID": "V1-S4",
+        "MATCH_INFO": {
+          "MATCH_KEY": "+NAME+DOB+EMAIL",
+          "ERRULE_CODE": "SF1_PNAME_CSTAB",
+          "CANDIDATE_KEYS": {
+            "DOB": [
+              {
+                "FEAT_ID": 2,
+                "FEAT_DESC": "12/11/1978"
+              }
+            ],
+            "EMAIL_KEY": [
+              {
+                "FEAT_ID": 11,
+                "FEAT_DESC": "bsmith@WORK.COM"
+              }
+            ],
+            "NAMEDATE_KEY": [
+              {
+                "FEAT_ID": 14,
+                "FEAT_DESC": "RPRT|SM0|DOB.MMDD_HASH=1211"
+              },
+              {
+                "FEAT_ID": 15,
+                "FEAT_DESC": "RPRT|SM0|DOB=71211"
+              },
+              {
+                "FEAT_ID": 16,
+                "FEAT_DESC": "RPRT|SM0|DOB.MMYY_HASH=1278"
+              },
+              {
+                "FEAT_ID": 200005,
+                "FEAT_DESC": "PP|SM0|DOB=71211"
+              },
+              {
+                "FEAT_ID": 200007,
+                "FEAT_DESC": "PP|SM0|DOB.MMDD_HASH=1211"
+              }
+            ],
+            "NAME_KEY": [
+              {
+                "FEAT_ID": 6,
+                "FEAT_DESC": "RPRT|SM0"
+              },
+              {
+                "FEAT_ID": 200002,
+                "FEAT_DESC": "PP|SM0"
+              }
+            ]
+          },
+          "FEATURE_SCORES": {
+            "DOB": [
+              {
+                "INBOUND_FEAT_ID": 2,
+                "INBOUND_FEAT_DESC": "12/11/1978",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 2,
+                "CANDIDATE_FEAT_DESC": "12/11/1978",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FMES"
+              }
+            ],
+            "EMAIL": [
+              {
+                "INBOUND_FEAT_ID": 5,
+                "INBOUND_FEAT_DESC": "bsmith@work.com",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 5,
+                "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "F1"
+              }
+            ],
+            "NAME": [
+              {
+                "INBOUND_FEAT_ID": 200057,
+                "INBOUND_FEAT_DESC": "Bob Smith",
+                "INBOUND_FEAT_USAGE_TYPE": "PRIMARY",
+                "CANDIDATE_FEAT_ID": 200001,
+                "CANDIDATE_FEAT_DESC": "Bob J Smith",
+                "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+                "SCORE": 93,
+                "ADDITIONAL_SCORES": {
+                  "GNR_FN": 93,
+                  "GNR_SN": 100,
+                  "GNR_GN": 93,
+                  "GENERATION_MATCH": -1,
+                  "GNR_ON": -1
+                },
+                "SCORE_BUCKET": "CLOSE",
+                "SCORE_BEHAVIOR": "NAME"
+              }
+            ],
+            "RECORD_TYPE": [
+              {
+                "INBOUND_FEAT_ID": 10,
+                "INBOUND_FEAT_DESC": "PERSON",
+                "INBOUND_FEAT_USAGE_TYPE": "",
+                "CANDIDATE_FEAT_ID": 10,
+                "CANDIDATE_FEAT_DESC": "PERSON",
+                "CANDIDATE_FEAT_USAGE_TYPE": "",
+                "SCORE": 100,
+                "ADDITIONAL_SCORES": {
+                  "FULL_SCORE": 100
+                },
+                "SCORE_BUCKET": "SAME",
+                "SCORE_BEHAVIOR": "FVME"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "FINAL_STATE": {
+      "NEED_REEVALUATION": 0,
+      "VIRTUAL_ENTITIES": [
+        {
+          "VIRTUAL_ENTITY_ID": "V1-S4",
+          "MEMBER_RECORDS": [
+            {
+              "INTERNAL_ID": 1,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "TEST",
+                  "RECORD_ID": "1"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400001,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1003"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400010,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1004"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 400011,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1002"
+                }
+              ]
+            },
+            {
+              "INTERNAL_ID": 500001,
+              "RECORDS": [
+                {
+                  "DATA_SOURCE": "CUSTOMERS",
+                  "RECORD_ID": "1001"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
+  }
 }

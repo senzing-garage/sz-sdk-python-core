@@ -1,20 +1,170 @@
 // Output has been formatted for easier reading.
+
 {
-    "WHY_RESULTS": [
-        {
-            "ENTITY_ID": 1,
-            "MATCH_INFO": {
-                "WHY_KEY": "+PNAME+EMAIL",
-                "WHY_ERRULE_CODE": "SF1",
-                "MATCH_LEVEL_CODE": "POSSIBLY_RELATED"
+  "WHY_RESULTS": [
+    {
+      "ENTITY_ID": 1,
+      "MATCH_INFO": {
+        "WHY_KEY": "+NAME+EMAIL",
+        "WHY_ERRULE_CODE": "SF1_CNAME",
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "CANDIDATE_KEYS": {
+          "EMAIL_KEY": [
+            {
+              "FEAT_ID": 11,
+              "FEAT_DESC": "bsmith@WORK.COM"
             }
-        }
-    ],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": 1
+          ],
+          "NAME_KEY": [
+            {
+              "FEAT_ID": 6,
+              "FEAT_DESC": "RPRT|SM0"
+            },
+            {
+              "FEAT_ID": 200002,
+              "FEAT_DESC": "PP|SM0"
             }
+          ]
+        },
+        "FEATURE_SCORES": {
+          "EMAIL": [
+            {
+              "INBOUND_FEAT_ID": 5,
+              "INBOUND_FEAT_DESC": "bsmith@work.com",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 5,
+              "CANDIDATE_FEAT_DESC": "bsmith@work.com",
+              "CANDIDATE_FEAT_USAGE_TYPE": "",
+              "SCORE": 100,
+              "ADDITIONAL_SCORES": {
+                "FULL_SCORE": 100
+              },
+              "SCORE_BUCKET": "SAME",
+              "SCORE_BEHAVIOR": "F1"
+            }
+          ],
+          "NAME": [
+            {
+              "INBOUND_FEAT_ID": -2,
+              "INBOUND_FEAT_DESC": "BOB SMITH",
+              "INBOUND_FEAT_USAGE_TYPE": "",
+              "CANDIDATE_FEAT_ID": 1,
+              "CANDIDATE_FEAT_DESC": "Robert Smith",
+              "CANDIDATE_FEAT_USAGE_TYPE": "PRIMARY",
+              "SCORE": 97,
+              "ADDITIONAL_SCORES": {
+                "GNR_FN": 97,
+                "GNR_SN": -1,
+                "GNR_GN": -1,
+                "GENERATION_MATCH": -1,
+                "GNR_ON": -1
+              },
+              "SCORE_BUCKET": "CLOSE",
+              "SCORE_BEHAVIOR": "NAME"
+            }
+          ]
+        },
+        "DISCLOSED_RELATIONS": {}
+      }
+    }
+  ],
+  "SEARCH_REQUEST": {
+    "JSON_DATA": "{\"NAME_FULL\": \"BOB SMITH\", \"EMAIL_ADDRESS\": \"bsmith@work.com\"}",
+    "SEARCH_PROFILE": "SEARCH",
+    "FEATURES": {
+      "NAME": [
+        {
+          "LIB_FEAT_ID": -2,
+          "USAGE_TYPE": "",
+          "FEAT_DESC": "BOB SMITH",
+          "ATTRIBUTES": {
+            "NAME_FULL": "BOB SMITH"
+          },
+          "USED_FOR_CAND": "N",
+          "USED_FOR_SCORING": "Y",
+          "ENTITY_COUNT": 0,
+          "CANDIDATE_CAP_REACHED": "N",
+          "SCORING_CAP_REACHED": "N"
         }
-    ]
+      ],
+      "EMAIL": [
+        {
+          "LIB_FEAT_ID": 5,
+          "USAGE_TYPE": "",
+          "FEAT_DESC": "bsmith@work.com",
+          "ATTRIBUTES": {
+            "EMAIL_ADDRESS": "bsmith@work.com"
+          },
+          "USED_FOR_CAND": "N",
+          "USED_FOR_SCORING": "Y",
+          "ENTITY_COUNT": 1,
+          "CANDIDATE_CAP_REACHED": "N",
+          "SCORING_CAP_REACHED": "N"
+        }
+      ],
+      "NAME_KEY": [
+        {
+          "LIB_FEAT_ID": 6,
+          "FEAT_DESC": "RPRT|SM0",
+          "USED_FOR_CAND": "Y",
+          "USED_FOR_SCORING": "N",
+          "ENTITY_COUNT": 3,
+          "CANDIDATE_CAP_REACHED": "N",
+          "SCORING_CAP_REACHED": "N"
+        },
+        {
+          "LIB_FEAT_ID": 200002,
+          "FEAT_DESC": "PP|SM0",
+          "USED_FOR_CAND": "Y",
+          "USED_FOR_SCORING": "N",
+          "ENTITY_COUNT": 1,
+          "CANDIDATE_CAP_REACHED": "N",
+          "SCORING_CAP_REACHED": "N"
+        }
+      ],
+      "EMAIL_KEY": [
+        {
+          "LIB_FEAT_ID": 11,
+          "FEAT_DESC": "bsmith@WORK.COM",
+          "USED_FOR_CAND": "Y",
+          "USED_FOR_SCORING": "N",
+          "ENTITY_COUNT": 1,
+          "CANDIDATE_CAP_REACHED": "N",
+          "SCORING_CAP_REACHED": "N"
+        }
+      ]
+    }
+  },
+  "SEARCH_STATISTICS": [
+    {
+      "CANDIDATE_KEYS": {
+        "FEATURE_TYPES": [
+          {
+            "FTYPE_CODE": "NAME_KEY",
+            "FOUND": 2,
+            "NOT_FOUND": 0,
+            "GENERIC": 0
+          },
+          {
+            "FTYPE_CODE": "EMAIL_KEY",
+            "FOUND": 1,
+            "NOT_FOUND": 0,
+            "GENERIC": 0
+          }
+        ],
+        "SUMMARY": {
+          "FOUND": 3,
+          "NOT_FOUND": 0,
+          "GENERIC": 0
+        }
+      }
+    }
+  ],
+  "ENTITIES": [
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 1
+      }
+    }
+  ]
 }

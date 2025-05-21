@@ -1,12 +1,12 @@
 // Output has been formatted for easier reading.
 
 {
-    "customer": "Senzing Public Test License",
-    "contract": "EVALUATION - support@senzing.com",
-    "issueDate": "2024-10-15",
-    "licenseType": "EVAL (Solely for non-productive use)",
-    "licenseLevel": "STANDARD",
-    "billing": "MONTHLY",
-    "expireDate": "2025-10-16",
-    "recordLimit": 500
+  "customer": "Senzing Public Test License",
+  "contract": "EVALUATION - support@senzing.com",
+  "issueDate": "2024-10-15",
+  "licenseType": "EVAL (Solely for non-productive use)",
+  "licenseLevel": "STANDARD",
+  "billing": "MONTHLY",
+  "expireDate": "2025-10-16",
+  "recordLimit": 500
 }
