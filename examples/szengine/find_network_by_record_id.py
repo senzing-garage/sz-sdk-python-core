@@ -24,8 +24,5 @@ try:
         record_list, max_degrees, build_out_degrees, build_out_max_entities, flags
     )
     print(f"\n{result}\n")
-    import json
-
-    print(json.loads(result))
 except SzError as err:
     print(f"\nERROR: {err}\n")
