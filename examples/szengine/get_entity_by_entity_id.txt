@@ -1,28 +1,257 @@
 // Output has been formatted for easier reading.
 
 {
-    "RESOLVED_ENTITY": {
-        "ENTITY_ID": 1,
-        "ENTITY_NAME": "",
-        "FEATURES": {},
-        "RECORD_SUMMARY": [
+  "RESOLVED_ENTITY": {
+    "ENTITY_ID": 1,
+    "ENTITY_NAME": "Robert Smith",
+    "FEATURES": {
+      "ADDRESS": [
+        {
+          "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+          "LIB_FEAT_ID": 200059,
+          "USAGE_TYPE": "HOME",
+          "FEAT_DESC_VALUES": [
             {
-                "DATA_SOURCE": "TEST",
-                "RECORD_COUNT": 1
-            }
-        ],
-        "RECORDS": [
+              "FEAT_DESC": "1515 Adela Lane Las Vegas NV 89111",
+              "LIB_FEAT_ID": 200059
+            },
             {
-                "DATA_SOURCE": "TEST",
-                "RECORD_ID": "2",
-                "INTERNAL_ID": 1,
-                "MATCH_KEY": "",
-                "MATCH_LEVEL_CODE": "",
-                "ERRULE_CODE": "",
-                "FIRST_SEEN_DT": "YYYY-MM-DDThh:mm:ssZ",
-                "LAST_SEEN_DT": "YYYY-MM-DDThh:mm:ssZ"
+              "FEAT_DESC": "1515 Adela Ln Las Vegas NV 89132",
+              "LIB_FEAT_ID": 200046
             }
-        ]
+          ]
+        },
+        {
+          "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+          "LIB_FEAT_ID": 3,
+          "USAGE_TYPE": "MAILING",
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+              "LIB_FEAT_ID": 3
+            }
+          ]
+        }
+      ],
+      "DOB": [
+        {
+          "FEAT_DESC": "11/12/1979",
+          "LIB_FEAT_ID": 200045,
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "11/12/1979",
+              "LIB_FEAT_ID": 200045
+            }
+          ]
+        },
+        {
+          "FEAT_DESC": "12/11/1978",
+          "LIB_FEAT_ID": 2,
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "12/11/1978",
+              "LIB_FEAT_ID": 2
+            },
+            {
+              "FEAT_DESC": "11/12/1978",
+              "LIB_FEAT_ID": 200058
+            }
+          ]
+        }
+      ],
+      "EMAIL": [
+        {
+          "FEAT_DESC": "bsmith@work.com",
+          "LIB_FEAT_ID": 5,
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "bsmith@work.com",
+              "LIB_FEAT_ID": 5
+            }
+          ]
+        }
+      ],
+      "NAME": [
+        {
+          "FEAT_DESC": "B Smith",
+          "LIB_FEAT_ID": 200044,
+          "USAGE_TYPE": "PRIMARY",
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "B Smith",
+              "LIB_FEAT_ID": 200044
+            }
+          ]
+        },
+        {
+          "FEAT_DESC": "Robert Smith",
+          "LIB_FEAT_ID": 1,
+          "USAGE_TYPE": "PRIMARY",
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "Robert Smith",
+              "LIB_FEAT_ID": 1
+            },
+            {
+              "FEAT_DESC": "Bob J Smith",
+              "LIB_FEAT_ID": 200001
+            },
+            {
+              "FEAT_DESC": "Bob Smith",
+              "LIB_FEAT_ID": 200057
+            }
+          ]
+        }
+      ],
+      "PHONE": [
+        {
+          "FEAT_DESC": "702-919-1300",
+          "LIB_FEAT_ID": 4,
+          "USAGE_TYPE": "HOME",
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "702-919-1300",
+              "LIB_FEAT_ID": 4
+            }
+          ]
+        },
+        {
+          "FEAT_DESC": "702-919-1300",
+          "LIB_FEAT_ID": 4,
+          "USAGE_TYPE": "MOBILE",
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "702-919-1300",
+              "LIB_FEAT_ID": 4
+            }
+          ]
+        }
+      ],
+      "RECORD_TYPE": [
+        {
+          "FEAT_DESC": "PERSON",
+          "LIB_FEAT_ID": 10,
+          "FEAT_DESC_VALUES": [
+            {
+              "FEAT_DESC": "PERSON",
+              "LIB_FEAT_ID": 10
+            }
+          ]
+        }
+      ]
     },
-    "RELATED_ENTITIES": []
+    "RECORD_SUMMARY": [
+      {
+        "DATA_SOURCE": "TEST",
+        "RECORD_COUNT": 1
+      },
+      {
+        "DATA_SOURCE": "CUSTOMERS",
+        "RECORD_COUNT": 4
+      }
+    ],
+    "RECORDS": [
+      {
+        "DATA_SOURCE": "CUSTOMERS",
+        "RECORD_ID": "1004",
+        "INTERNAL_ID": 400010,
+        "MATCH_KEY": "",
+        "MATCH_LEVEL_CODE": "",
+        "ERRULE_CODE": "",
+        "FIRST_SEEN_DT": "2025-05-20T16:04:03Z",
+        "LAST_SEEN_DT": "2025-05-20T16:17:16Z"
+      },
+      {
+        "DATA_SOURCE": "TEST",
+        "RECORD_ID": "1",
+        "INTERNAL_ID": 1,
+        "MATCH_KEY": "+NAME+DOB+PHONE+EMAIL",
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+        "FIRST_SEEN_DT": "2025-05-20T14:26:26Z",
+        "LAST_SEEN_DT": "2025-05-20T14:33:12Z"
+      },
+      {
+        "DATA_SOURCE": "CUSTOMERS",
+        "RECORD_ID": "1003",
+        "INTERNAL_ID": 400001,
+        "MATCH_KEY": "+NAME+DOB+EMAIL",
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "ERRULE_CODE": "SF1_PNAME_CSTAB",
+        "FIRST_SEEN_DT": "2025-05-20T16:04:03Z",
+        "LAST_SEEN_DT": "2025-05-20T16:17:16Z"
+      },
+      {
+        "DATA_SOURCE": "CUSTOMERS",
+        "RECORD_ID": "1002",
+        "INTERNAL_ID": 400011,
+        "MATCH_KEY": "+NAME+DOB+ADDRESS",
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "ERRULE_CODE": "CNAME_CFF_CEXCL",
+        "FIRST_SEEN_DT": "2025-05-20T16:04:03Z",
+        "LAST_SEEN_DT": "2025-05-20T16:17:16Z"
+      },
+      {
+        "DATA_SOURCE": "CUSTOMERS",
+        "RECORD_ID": "1001",
+        "INTERNAL_ID": 500001,
+        "MATCH_KEY": "+NAME+DOB+ADDRESS+PHONE+EMAIL",
+        "MATCH_LEVEL_CODE": "RESOLVED",
+        "ERRULE_CODE": "SF1_SNAME_CFF_CSTAB",
+        "FIRST_SEEN_DT": "2025-05-20T16:17:16Z",
+        "LAST_SEEN_DT": "2025-05-20T16:17:16Z"
+      }
+    ]
+  },
+  "RELATED_ENTITIES": [
+    {
+      "ENTITY_ID": 400015,
+      "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+      "MATCH_KEY": "+NAME+ADDRESS-DOB",
+      "ERRULE_CODE": "CNAME_CFF_DEXCL",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0,
+      "ENTITY_NAME": "Robert E Smith Sr",
+      "RECORD_SUMMARY": [
+        {
+          "DATA_SOURCE": "CUSTOMERS",
+          "RECORD_COUNT": 1
+        },
+        {
+          "DATA_SOURCE": "WATCHLIST",
+          "RECORD_COUNT": 1
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": 400204,
+      "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+      "MATCH_KEY": "+NAME",
+      "ERRULE_CODE": "SNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0,
+      "ENTITY_NAME": "Robert Smith",
+      "RECORD_SUMMARY": [
+        {
+          "DATA_SOURCE": "WATCHLIST",
+          "RECORD_COUNT": 1
+        }
+      ]
+    },
+    {
+      "ENTITY_ID": 400215,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+SURNAME+ADDRESS",
+      "ERRULE_CODE": "CFF_SURNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0,
+      "ENTITY_NAME": "Patricia Smith",
+      "RECORD_SUMMARY": [
+        {
+          "DATA_SOURCE": "WATCHLIST",
+          "RECORD_COUNT": 1
+        }
+      ]
+    }
+  ]
 }

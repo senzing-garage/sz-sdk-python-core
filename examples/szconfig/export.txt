@@ -2,46 +2,46 @@
 // To view a complete configuration, visit /opt/senzing/er/resources/templates/g2config.json
 
 {
-    "G2_CONFIG": {
-        "CFG_ATTR": [],
-        "CFG_CFBOM": [],
-        "CFG_CFCALL": [],
-        "CFG_CFRTN": [],
-        "CFG_CFUNC": [],
-        "CFG_DFBOM": [],
-        "CFG_DFCALL": [],
-        "CFG_DFUNC": [],
-        "CFG_DSRC": [],
-        "CFG_DSRC_INTEREST": [],
-        "CFG_ECLASS": [],
-        "CFG_EFBOM": [],
-        "CFG_EFCALL": [],
-        "CFG_EFUNC": [],
-        "CFG_ERFRAG": [],
-        "CFG_ERRULE": [],
-        "CFG_ETYPE": [],
-        "CFG_FBOM": [],
-        "CFG_FBOVR": [],
-        "CFG_FCLASS": [],
-        "CFG_FELEM": [],
-        "CFG_FTYPE": [],
-        "CFG_GENERIC_THRESHOLD": [],
-        "CFG_GPLAN": [],
-        "CFG_LENS": [],
-        "CFG_LENSRL": [],
-        "CFG_RCLASS": [],
-        "CFG_RTYPE": [],
-        "CFG_SFCALL": [],
-        "CFG_SFUNC": [],
-        "SYS_OOM": [],
-        "CONFIG_BASE_VERSION": {
-            "VERSION": "4.0.0",
-            "BUILD_VERSION": "4.0.0.00000",
-            "BUILD_DATE": "2025-01-01",
-            "BUILD_NUMBER": "00000",
-            "COMPATIBILITY_VERSION": {
-                "CONFIG_VERSION": "11"
-            }
-        }
+  "G2_CONFIG": {
+    "CFG_ATTR": [],
+    "CFG_CFBOM": [],
+    "CFG_CFCALL": [],
+    "CFG_CFRTN": [],
+    "CFG_CFUNC": [],
+    "CFG_DFBOM": [],
+    "CFG_DFCALL": [],
+    "CFG_DFUNC": [],
+    "CFG_DSRC": [],
+    "CFG_DSRC_INTEREST": [],
+    "CFG_ECLASS": [],
+    "CFG_EFBOM": [],
+    "CFG_EFCALL": [],
+    "CFG_EFUNC": [],
+    "CFG_ERFRAG": [],
+    "CFG_ERRULE": [],
+    "CFG_ETYPE": [],
+    "CFG_FBOM": [],
+    "CFG_FBOVR": [],
+    "CFG_FCLASS": [],
+    "CFG_FELEM": [],
+    "CFG_FTYPE": [],
+    "CFG_GENERIC_THRESHOLD": [],
+    "CFG_GPLAN": [],
+    "CFG_LENS": [],
+    "CFG_LENSRL": [],
+    "CFG_RCLASS": [],
+    "CFG_RTYPE": [],
+    "CFG_SFCALL": [],
+    "CFG_SFUNC": [],
+    "SYS_OOM": [],
+    "CONFIG_BASE_VERSION": {
+      "VERSION": "4.0.0",
+      "BUILD_VERSION": "4.0.0.00000",
+      "BUILD_DATE": "2025-01-01",
+      "BUILD_NUMBER": "00000",
+      "COMPATIBILITY_VERSION": {
+        "CONFIG_VERSION": "11"
+      }
     }
+  }
 }

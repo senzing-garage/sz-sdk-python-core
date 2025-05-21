@@ -1,38 +1,217 @@
 // Output has been formatted for easier reading.
 
 {
-    "ENTITY_PATHS": [
-        {
-            "START_ENTITY_ID": 1,
-            "END_ENTITY_ID": 35,
-            "ENTITIES": []
-        }
-    ],
-    "ENTITY_NETWORK_LINKS": [],
-    "ENTITIES": [
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": 1,
-                "ENTITY_NAME": "",
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": "TEST",
-                        "RECORD_COUNT": 1
-                    }
-                ]
-            }
-        },
-        {
-            "RESOLVED_ENTITY": {
-                "ENTITY_ID": 35,
-                "ENTITY_NAME": "Robert Smith",
-                "RECORD_SUMMARY": [
-                    {
-                        "DATA_SOURCE": "CUSTOMERS",
-                        "RECORD_COUNT": 3
-                    }
-                ]
-            }
-        }
-    ]
+  "ENTITY_PATHS": [
+    {
+      "START_ENTITY_ID": 1,
+      "END_ENTITY_ID": 400018,
+      "ENTITIES": []
+    }
+  ],
+  "ENTITY_NETWORK_LINKS": [
+    {
+      "MIN_ENTITY_ID": 1,
+      "MAX_ENTITY_ID": 400015,
+      "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+      "MATCH_KEY": "+NAME+ADDRESS-DOB",
+      "ERRULE_CODE": "CNAME_CFF_DEXCL",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 1,
+      "MAX_ENTITY_ID": 400204,
+      "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+      "MATCH_KEY": "+NAME",
+      "ERRULE_CODE": "SNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 1,
+      "MAX_ENTITY_ID": 400215,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+SURNAME",
+      "ERRULE_CODE": "CFF_SURNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400002,
+      "MAX_ENTITY_ID": 400018,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+EMAIL+SURNAME-DOB-SSN",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400002,
+      "MAX_ENTITY_ID": 400020,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+EMAIL+PNAME-DOB",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400002,
+      "MAX_ENTITY_ID": 400022,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+EMAIL+SURNAME-DOB-SSN",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400015,
+      "MAX_ENTITY_ID": 400204,
+      "MATCH_LEVEL_CODE": "POSSIBLY_SAME",
+      "MATCH_KEY": "+NAME",
+      "ERRULE_CODE": "SNAME",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400018,
+      "MAX_ENTITY_ID": 400020,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+EMAIL+SURNAME-DOB",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400018,
+      "MAX_ENTITY_ID": 400022,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+ADDRESS+EMAIL+SURNAME-DOB-SSN",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    },
+    {
+      "MIN_ENTITY_ID": 400020,
+      "MAX_ENTITY_ID": 400022,
+      "MATCH_LEVEL_CODE": "POSSIBLY_RELATED",
+      "MATCH_KEY": "+DOB+ADDRESS+EMAIL+SURNAME",
+      "ERRULE_CODE": "SF1",
+      "IS_DISCLOSED": 0,
+      "IS_AMBIGUOUS": 0
+    }
+  ],
+  "ENTITIES": [
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 1,
+        "ENTITY_NAME": "Robert Smith",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "TEST",
+            "RECORD_COUNT": 1
+          },
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 4
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400002,
+        "ENTITY_NAME": "Marie Kusha",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 4
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400015,
+        "ENTITY_NAME": "Robert E Smith Sr",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 1
+          },
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400018,
+        "ENTITY_NAME": "Eddie Kusha",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 3
+          },
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 2
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400020,
+        "ENTITY_NAME": "Mark Kusha",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400022,
+        "ENTITY_NAME": "Marsha Kusha",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "CUSTOMERS",
+            "RECORD_COUNT": 1
+          },
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400204,
+        "ENTITY_NAME": "Robert Smith",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    },
+    {
+      "RESOLVED_ENTITY": {
+        "ENTITY_ID": 400215,
+        "ENTITY_NAME": "Patricia Smith",
+        "RECORD_SUMMARY": [
+          {
+            "DATA_SOURCE": "WATCHLIST",
+            "RECORD_COUNT": 1
+          }
+        ]
+      }
+    }
+  ]
 }

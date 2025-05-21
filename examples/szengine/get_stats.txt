@@ -1,346 +1,160 @@
 // Output has been formatted for easier reading.
 
 {
-    "workload": {
-        "apiVersion": "4.0.0.24289",
-        "loadedRecords": 6,
-        "addedRecords": 20,
-        "bulkAddedRecords": 0,
-        "optimizedOut": 3,
-        "optimizedOutSkipped": 6,
-        "newObsEnt": 18,
-        "obsEntHashSame": 4,
-        "obsEntHashDiff": 1,
-        "partiallyResolved": 0,
-        "deletedRecords": 15,
-        "changeDeletes": 4,
-        "reevaluations": 4,
-        "repairedEntities": 6,
-        "duration": 96,
-        "retries": 0,
-        "candidates": 11,
-        "actualAmbiguousTest": 0,
-        "cachedAmbiguousTest": 0,
-        "libFeatCacheHit": 706,
-        "libFeatCacheMiss": 589,
-        "resFeatStatCacheHit": 6211,
-        "resFeatStatCacheMiss": 1052,
-        "libFeatInsert": 28,
-        "resFeatStatInsert": 28,
-        "resFeatStatUpdateAttempt": 522,
-        "resFeatStatUpdateFail": 0,
-        "unresolveTest": 4,
-        "abortedUnresolve": 0,
-        "lockWaits": {
-            "maxRefreshLocksMS": 0,
-            "totalRefreshLocksMS": 0,
-            "countRefreshLocks": 0
+  "workload": {
+    "apiVersion": "4.0.0.25134",
+    "loadedRecords": -1,
+    "addedRecords": 0,
+    "bulkAddedRecords": 0,
+    "optimizedOut": 0,
+    "optimizedOutSkipped": 0,
+    "newObsEnt": 0,
+    "obsEntHashSame": 0,
+    "obsEntHashDiff": 0,
+    "partiallyResolved": 0,
+    "deletedRecords": 0,
+    "changeDeletes": 0,
+    "reevaluations": 0,
+    "repairedEntities": 0,
+    "duration": 0,
+    "retries": 0,
+    "candidates": 0,
+    "actualAmbiguousTest": 0,
+    "cachedAmbiguousTest": 0,
+    "libFeatCacheHit": 93,
+    "libFeatCacheMiss": 67,
+    "resFeatStatCacheHit": 0,
+    "resFeatStatCacheMiss": 0,
+    "libFeatInsert": 0,
+    "resFeatStatInsert": 0,
+    "resFeatStatUpdateAttempt": 0,
+    "resFeatStatUpdateFail": 0,
+    "unresolveTest": 0,
+    "abortedUnresolve": 0,
+    "lockWaits": {
+      "maxRefreshLocksMS": 0,
+      "totalRefreshLocksMS": 0,
+      "countRefreshLocks": 0
+    },
+    "unresolveTriggers": {
+      "normalResolve": 0,
+      "update": 0,
+      "relLink": 0,
+      "extensiveResolve": 0,
+      "ambiguousNoResolve": 0,
+      "ambiguousMultiResolve": 0
+    },
+    "reresolveTriggers": {
+      "abortRetry": 0,
+      "unresolveMovement": 0,
+      "multipleResolvableCandidates": 0,
+      "resolveNewFeatures": 0,
+      "newFeatureFTypes": []
+    },
+    "reresolveSkipped": 0,
+    "filteredObsFeat": 0,
+    "expressedFeatureCalls": [],
+    "expressedFeaturesCreated": [],
+    "scoredPairs": [
+      {
+        "ADDRESS": 2
+      },
+      {
+        "DOB": 4
+      },
+      {
+        "NAME": 6
+      }
+    ],
+    "cacheHit": [],
+    "cacheMiss": [
+      {
+        "ADDRESS": 2
+      },
+      {
+        "DOB": 4
+      },
+      {
+        "NAME": 6
+      }
+    ],
+    "redoTriggers": [],
+    "latchContention": [],
+    "highContentionFeat": [],
+    "highContentionResEnt": [],
+    "genericDetect": [],
+    "candidateBuilders": [],
+    "suppressedCandidateBuilders": [],
+    "suppressedScoredFeatureType": [],
+    "suppressedCandidateBuildersForReresolve": [],
+    "suppressedScoredFeatureTypeForReresolve": [],
+    "suppressedDisclosedRelationshipDomainCount": 0,
+    "corruptEntityTestDiagnosis": {
+      "corruptionTypes": 0
+    },
+    "threadState": {
+      "active": 0,
+      "idle": 1,
+      "governorContention": 0,
+      "sqlExecuting": 0,
+      "loader": 0,
+      "resolver": 0,
+      "scoring": 0,
+      "dataLatchContention": 0,
+      "obsEntContention": 0,
+      "resEntContention": 0
+    },
+    "systemResources": {
+      "initResources": [
+        {
+          "physicalCores": 10
         },
-        "unresolveTriggers": {
-            "normalResolve": 0,
-            "update": 0,
-            "relLink": 0,
-            "extensiveResolve": 4,
-            "ambiguousNoResolve": 0,
-            "ambiguousMultiResolve": 0
+        {
+          "logicalCores": 10
         },
-        "reresolveTriggers": {
-            "abortRetry": 0,
-            "unresolveMovement": 0,
-            "multipleResolvableCandidates": 0,
-            "resolveNewFeatures": 7,
-            "newFeatureFTypes": [
-                {
-                    "ADDRESS": 5
-                },
-                {
-                    "ADDR_KEY": 5
-                },
-                {
-                    "DOB": 5
-                },
-                {
-                    "NAME": 7
-                },
-                {
-                    "NAMEADDR_KEY": 5
-                },
-                {
-                    "NAMEDATE_KEY": 7
-                },
-                {
-                    "NAMEPHONE_KEY": 5
-                },
-                {
-                    "NAMEREGION_KEY": 5
-                },
-                {
-                    "NAME_KEY": 7
-                },
-                {
-                    "PHONE": 5
-                }
-            ]
+        {
+          "totalMemory": "31.3GB"
         },
-        "reresolveSkipped": 1,
-        "filteredObsFeat": 0,
-        "expressedFeatureCalls": [
-            {
-                "EFCALL_ID": 1,
-                "EFUNC_CODE": "PHONE_HASHER",
-                "numCalls": 20
-            },
-            {
-                "EFCALL_ID": 7,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 45
-            },
-            {
-                "EFCALL_ID": 9,
-                "EFUNC_CODE": "ADDR_HASHER",
-                "numCalls": 21
-            },
-            {
-                "EFCALL_ID": 10,
-                "EFUNC_CODE": "EXPRESS_BOM",
-                "numCalls": 1
-            },
-            {
-                "EFCALL_ID": 16,
-                "EFUNC_CODE": "EXPRESS_ID",
-                "numCalls": 1
-            },
-            {
-                "EFCALL_ID": 34,
-                "EFUNC_CODE": "FEAT_BUILDER",
-                "numCalls": 19
-            },
-            {
-                "EFCALL_ID": 92,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 21
-            },
-            {
-                "EFCALL_ID": 94,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 45
-            },
-            {
-                "EFCALL_ID": 95,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 2
-            },
-            {
-                "EFCALL_ID": 96,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 45
-            },
-            {
-                "EFCALL_ID": 97,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 45
-            },
-            {
-                "EFCALL_ID": 98,
-                "EFUNC_CODE": "NAME_HASHER",
-                "numCalls": 45
-            }
-        ],
-        "expressedFeaturesCreated": [
-            {
-                "ADDR_KEY": 42
-            },
-            {
-                "EMAIL_KEY": 19
-            },
-            {
-                "ID_KEY": 1
-            },
-            {
-                "NAMEADDR_KEY": 54
-            },
-            {
-                "NAMEDATE_KEY": 99
-            },
-            {
-                "NAMEID_KEY": 2
-            },
-            {
-                "NAMEPHONE_KEY": 25
-            },
-            {
-                "NAMEREGION_KEY": 54
-            },
-            {
-                "NAME_KEY": 35
-            },
-            {
-                "PHONE_KEY": 20
-            },
-            {
-                "SEARCH_KEY": 1
-            }
-        ],
-        "scoredPairs": [
-            {
-                "ADDRESS": 8
-            },
-            {
-                "DOB": 18
-            },
-            {
-                "EMAIL": 5
-            },
-            {
-                "NAME": 29
-            },
-            {
-                "PHONE": 9
-            },
-            {
-                "RECORD_TYPE": 10
-            }
-        ],
-        "cacheHit": [
-            {
-                "DOB": 1
-            },
-            {
-                "NAME": 3
-            }
-        ],
-        "cacheMiss": [
-            {
-                "ADDRESS": 8
-            },
-            {
-                "DOB": 17
-            },
-            {
-                "EMAIL": 5
-            },
-            {
-                "NAME": 26
-            },
-            {
-                "PHONE": 9
-            }
-        ],
-        "redoTriggers": [
-            {
-                "DEFERRED_DELETE": 6
-            }
-        ],
-        "latchContention": [],
-        "highContentionFeat": [],
-        "highContentionResEnt": [],
-        "genericDetect": [],
-        "candidateBuilders": [
-            {
-                "ADDR_KEY": 34
-            },
-            {
-                "DOB": 36
-            },
-            {
-                "EMAIL_KEY": 32
-            },
-            {
-                "ID_KEY": 1
-            },
-            {
-                "NAMEADDR_KEY": 34
-            },
-            {
-                "NAMEDATE_KEY": 36
-            },
-            {
-                "NAMEID_KEY": 1
-            },
-            {
-                "NAMEPHONE_KEY": 33
-            },
-            {
-                "NAMEREGION_KEY": 34
-            },
-            {
-                "NAME_KEY": 37
-            },
-            {
-                "PHONE_KEY": 33
-            },
-            {
-                "SEARCH_KEY": 1
-            },
-            {
-                "SSN": 1
-            }
-        ],
-        "suppressedCandidateBuilders": [],
-        "suppressedScoredFeatureType": [],
-        "suppressedCandidateBuildersForReresolve": [],
-        "suppressedScoredFeatureTypeForReresolve": [],
-        "suppressedDisclosedRelationshipDomainCount": 0,
-        "corruptEntityTestDiagnosis": {
-            "corruptionTypes": 0
-        },
-        "threadState": {
-            "active": 0,
-            "idle": 8,
-            "governorContention": 0,
-            "sqlExecuting": 0,
-            "loader": 0,
-            "resolver": 0,
-            "scoring": 0,
-            "dataLatchContention": 0,
-            "obsEntContention": 0,
-            "resEntContention": 0
-        },
-        "systemResources": {
-            "initResources": [
-                {
-                    "physicalCores": 16
-                },
-                {
-                    "logicalCores": 16
-                },
-                {
-                    "totalMemory": "62.6GB"
-                },
-                {
-                    "availableMemory": "52.7GB"
-                }
-            ],
-            "currResources": [
-                {
-                    "availableMemory": "48.5GB"
-                },
-                {
-                    "activeThreads": 0
-                },
-                {
-                    "workerThreads": 8
-                },
-                {
-                    "systemLoad": [
-                        {
-                            "cpuUser": 5.160142
-                        },
-                        {
-                            "cpuSystem": 3.932384
-                        },
-                        {
-                            "cpuIdle": 90.800713
-                        },
-                        {
-                            "cpuWait": 0.071174
-                        },
-                        {
-                            "cpuSoftIrq": 0.035587
-                        }
-                    ]
-                }
-            ]
+        {
+          "availableMemory": "21.4GB"
         }
+      ],
+      "currResources": [
+        {
+          "availableMemory": "17.8GB"
+        },
+        {
+          "processMemory": "2.0GB"
+        },
+        {
+          "activeThreads": 0
+        },
+        {
+          "workerThreads": 1
+        },
+        {
+          "systemLoad": [
+            {
+              "cpuUser": 5.697687
+            },
+            {
+              "cpuNice": 0.000053
+            },
+            {
+              "cpuSystem": 14.274692
+            },
+            {
+              "cpuIdle": 79.633011
+            },
+            {
+              "cpuWait": 0.060391
+            },
+            {
+              "cpuSoftIrq": 0.334167
+            }
+          ]
+        }
+      ]
     }
+  }
 }

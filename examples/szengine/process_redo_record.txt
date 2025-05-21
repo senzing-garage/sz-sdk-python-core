@@ -7,8 +7,5 @@
     {
       "ENTITY_ID": 305
     }
-  ],
-  "INTERESTING_ENTITIES": {
-    "ENTITIES": []
-  }
+  ]
 }
