@@ -43,7 +43,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",  # to read Google-style or Numpy-style docstrings
     "sphinxext.remoteliteralinclude",  # extends literalinclude to be able to pull files from URLs
-    "sphinx.ext.viewcode",  # to allow vieing the source code in the web page
+    "sphinx.ext.viewcode",  # to allow viewing the source code in the web page
 ]
 
 exclude_patterns = ["*.py"]

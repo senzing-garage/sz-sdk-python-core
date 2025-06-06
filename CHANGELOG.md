@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Removed in 0.3.11
 
-- Examples for szengineflags class methods removed from abstract 
+- Examples for szengineflags class methods removed from abstract
 
 ## [0.3.10] - 2025-05-02
 
@@ -181,7 +181,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Added to 0.0.6
 
-- Continued updates to inital version
+- Continued updates to initial version
 
 ## [0.0.5] - 2024-05-07
 

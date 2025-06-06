@@ -363,7 +363,7 @@ new_config = bytearray()
 new_config_id = bytearray()
 
 try:
-    # Initialize 
+    # Initialize
     g2_config_mgr = G2ConfigMgr()
     g2_config_mgr.init("g2ConfigMgr", ini_params, False)
     g2_config = G2Config()
@@ -394,7 +394,7 @@ In version 4.0, the `SzConfig` module is subordinate to the `SzConfigManager` an
 sz_factory = SzAbstractFactoryCore(MODULE_NAME, SETTINGS, verbose_logging=False)
 
 try:
-    # Get the config manager from the abstract factory    
+    # Get the config manager from the abstract factory
     sz_configmanager = sz_factory.create_configmanager()
 
     # Create a new config
