@@ -1,17 +1,14 @@
 // Output has been formatted for easier reading.
 
 {
-    "DATA_SOURCE": "TEST",
-    "RECORD_ID": "1",
-    "AFFECTED_ENTITIES": [
-        {
-            "ENTITY_ID": 1
-        },
-        {
-            "ENTITY_ID": 35
-        }
-    ],
-    "INTERESTING_ENTITIES": {
-        "ENTITIES": []
+  "DATA_SOURCE": "TEST",
+  "RECORD_ID": "1",
+  "AFFECTED_ENTITIES": [
+    {
+      "ENTITY_ID": 1
+    },
+    {
+      "ENTITY_ID": 35
     }
+  ]
 }

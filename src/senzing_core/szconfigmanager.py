@@ -88,7 +88,7 @@ class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
 class SzConfigManagerCore(SzConfigManager):
     """
     Use SzAbstractFactoryCore.create_configmanager() to create an SzConfigManager object.
-    The SzConfigManager object uses the parameters provided to SzAbstractFactoryCore().
+    The SzConfigManager object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -99,7 +99,7 @@ class SzConfigManagerCore(SzConfigManager):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_config_manager = sz_abstract_factory.create_configmanager()
 
-    Parameters:
+    Args:
 
     Raises:
 

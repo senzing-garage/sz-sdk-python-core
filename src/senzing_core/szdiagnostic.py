@@ -75,7 +75,7 @@ class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
 class SzDiagnosticCore(SzDiagnostic):
     """
     Use SzAbstractFactoryCore.create_diagnostic() to create an SzDiagnostic object.
-    The SzDiagnostic object uses the parameters provided to SzAbstractFactoryCore().
+    The SzDiagnostic object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -86,7 +86,7 @@ class SzDiagnosticCore(SzDiagnostic):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_diagnostic = sz_abstract_factory.create_diagnostic()
 
-    Parameters:
+    Args:
 
     Raises:
 
@@ -190,6 +190,7 @@ class SzDiagnosticCore(SzDiagnostic):
         Args:
             instance_name (str): A name to distinguish this instance of the SzDiagnostic.
             settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
+            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
         if config_id == 0:

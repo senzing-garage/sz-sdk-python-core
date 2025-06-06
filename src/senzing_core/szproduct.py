@@ -47,7 +47,7 @@ __updated__ = "2025-01-28"
 class SzProductCore(SzProduct):
     """
     Use SzAbstractFactoryCore.create_product() to create an SzProduct object.
-    The SzProduct object uses the parameters provided to the SzAbstractFactoryCore().
+    The SzProduct object uses the arguments provided to the SzAbstractFactoryCore().
 
     Example:
 
@@ -58,7 +58,7 @@ class SzProductCore(SzProduct):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_product = sz_abstract_factory.create_product()
 
-    Parameters:
+    Args:
 
     Raises:
 

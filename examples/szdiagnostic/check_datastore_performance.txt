@@ -1,6 +1,6 @@
 // Output has been formatted for easier reading.
 
 {
-    "numRecordsInserted": 0,
-    "insertTime": 0
+  "numRecordsInserted": 227321,
+  "insertTime": 3000
 }

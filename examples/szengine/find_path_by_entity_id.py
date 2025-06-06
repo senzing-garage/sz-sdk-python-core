@@ -5,7 +5,7 @@ from senzing import SzEngineFlags, SzError
 from senzing_core import SzAbstractFactoryCore
 
 avoid_entity_ids: List[int] = []
-end_entity_id = 4
+end_entity_id = 400215
 flags = SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS
 instance_name = "Example"
 max_degrees = 2

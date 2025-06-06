@@ -94,7 +94,7 @@ class SzConfigSaveResult(SzResponseAsCharPointerResult):
 class SzConfigCore(SzConfig):
     """
     Use SzAbstractFactoryCore.create_config() to create an SzConfig object.
-    The SzConfig object uses the parameters provided to SzAbstractFactoryCore().
+    The SzConfig object uses the arguments provided to SzAbstractFactoryCore().
 
     Example:
 
@@ -105,7 +105,7 @@ class SzConfigCore(SzConfig):
         sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
         sz_config = sz_abstract_factory.create_config()
 
-    Parameters:
+    Args:
 
     Raises:
 

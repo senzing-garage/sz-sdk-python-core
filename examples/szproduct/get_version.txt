@@ -1,17 +1,17 @@
 // Output has been formatted for easier reading.
 
 {
-    "PRODUCT_NAME": "Senzing SDK",
-    "VERSION": "4.0.0",
-    "BUILD_VERSION": "4.0.0.24289",
-    "BUILD_DATE": "2024-10-15",
-    "BUILD_NUMBER": "2024_10_15__14_21",
-    "COMPATIBILITY_VERSION": {
-        "CONFIG_VERSION": "11"
-    },
-    "SCHEMA_VERSION": {
-        "ENGINE_SCHEMA_VERSION": "4.0",
-        "MINIMUM_REQUIRED_SCHEMA_VERSION": "4.0",
-        "MAXIMUM_REQUIRED_SCHEMA_VERSION": "4.99"
-    }
+  "PRODUCT_NAME": "Senzing SDK",
+  "VERSION": "4.0.0",
+  "BUILD_VERSION": "4.0.0.24289",
+  "BUILD_DATE": "2024-10-15",
+  "BUILD_NUMBER": "2024_10_15__14_21",
+  "COMPATIBILITY_VERSION": {
+    "CONFIG_VERSION": "11"
+  },
+  "SCHEMA_VERSION": {
+    "ENGINE_SCHEMA_VERSION": "4.0",
+    "MINIMUM_REQUIRED_SCHEMA_VERSION": "4.0",
+    "MAXIMUM_REQUIRED_SCHEMA_VERSION": "4.99"
+  }
 }

@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.12] - 2025-05-21
+
+### Added in 0.3.12
+
+- New tests for szconfig
+
+### Changed in 0.3.12
+
+- Examples cleanup
+
+## [0.3.11] - 2025-05-08
+
+### Added in 0.3.11
+
+- Improved docstring to SzAbstractFactoryCore initializer
+- Added config_id argument to docstring for initialize in szengine and szdiagnostic
+
+### Changed in 0.3.11
+
+- Added getter property to szabstractfactory for public instance variables
+- Marked internal instance variables private for szabstractfactory
+
+### Removed in 0.3.11
+
+- Examples for szengineflags class methods removed from abstract 
+
 ## [0.3.10] - 2025-05-02
 
 ### Added in 0.3.10

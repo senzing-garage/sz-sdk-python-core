@@ -3,7 +3,7 @@ from senzing import SzEngineFlags, SzError
 from senzing_core import SzAbstractFactoryCore
 
 entity_id_1 = 1
-entity_id_2 = 4
+entity_id_2 = 400215
 flags = SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS
 instance_name = "Example"
 settings = {
