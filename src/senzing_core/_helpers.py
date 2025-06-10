@@ -46,12 +46,15 @@ from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
 # TODO -
 try:
+    # TODO -
+    print("\nTrying orjson...", flush=True)
     import orjson  # type: ignore[import-not-found]
 
     def _json_dumps(object_: Any) -> str:
         return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return]
 
 except ImportError:
+    print("\nTrying json...", flush=True)
     import json
 
     def _json_dumps(object_: Any) -> str:
