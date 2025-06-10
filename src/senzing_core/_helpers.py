@@ -2,15 +2,14 @@
 SDK Helper functions
 """
 
-# NOTE - This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
-# on _Pointer[c_char]) for FreeCResources
-# ctypes._Pointer is generic for type checkers, but at runtime it's not generic, so annotations
-# import is necessary - or string annotation ("_Pointer[c_char]") .
+# NOTE - This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable  on _Pointer[c_char]) for
+# NOTE - FreeCResources ctypes._Pointer is generic for type checkers, but at runtime it's not generic, so annotations
+# NOTE - import is necessary - or string annotation ("_Pointer[c_char]") .
 from __future__ import annotations
 
 import platform
-import sys
 import threading
+from collections.abc import Callable
 from contextlib import suppress
 from ctypes import (
     CDLL,
@@ -28,64 +27,30 @@ from ctypes import (
 from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
-
-# TODO - Dict etc
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
+from typing import cast as typing_cast
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
-# TODO -
 try:
-    # TODO -
-    # print("\nTrying orjson...", flush=True)
     import orjson  # type: ignore[import-not-found]
 
     def _json_dumps(object_: Any) -> str:
         return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return]
 
-
-# TODO -
 except ImportError:
-    # except (ImportError, AttributeError):
-    # print("\nTrying json...", flush=True)
     import json
 
+    # NOTE - separators= is used to be consistent with Sz engine and orjson output
     def _json_dumps(object_: Any) -> str:
-        # return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
-        return json.dumps(object_, ensure_ascii=False)
+        return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
 
 
-# TODO -
-# if sys.version_info < (3, 11):
-#     from typing_extensions import ParamSpec, Self
-# else:
-#     from typing import ParamSpec, Self
-if TYPE_CHECKING:
-    if sys.version_info >= (3, 10):
-        from typing import ParamSpec, Self
-    else:
-        from typing_extensions import ParamSpec, Self
-else:
-    try:
-        from typing import ParamSpec, Self
-    except ImportError:
-        try:
-            from typing_extensions import ParamSpec, Self
-        except ImportError:
-            ParamSpec, Self = None, None
-
-T = TypeVar("T")
-P = ParamSpec("P")
+# NOTE - Using earlier Python version typing to support v3.9 still and not rely on typing_extensions.
+# NOTE - F can be changed to use ParamSpec when no longer need to support v3.9.
+# NOTE - SelfFreeCResources can be changed to use Self at v3.11.
+F = TypeVar("F", bound=Callable[..., Any])
+SelfFreeCResources = TypeVar("SelfFreeCResources", bound="FreeCResources")
 
 START_DSRC_JSON = '{"DATA_SOURCES": ['
 START_ENTITIES_JSON = '{"ENTITIES": ['
@@ -108,7 +73,7 @@ class FreeCResources:
         self.handle = handle
         self.resource = resource
 
-    def __enter__(self) -> Self:
+    def __enter__(self: SelfFreeCResources) -> SelfFreeCResources:
         return self
 
     def __exit__(
@@ -125,7 +90,8 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
-def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
+# def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
+def catch_sdk_exceptions(func_to_decorate: F) -> F:
     """
     The Python SDK methods convert Python types to ctypes and utilize helper functions. If incorrect types/values are
     used standard library exceptions are raised not SzError exceptions as the Senzing library hasn't been called
@@ -137,9 +103,9 @@ def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
     """
 
     @wraps(func_to_decorate)
-    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> T:
+    def wrapped_func(*args: Any, **kwargs: Any) -> F:
         try:
-            return func_to_decorate(*args, **kwargs)
+            return typing_cast(F, func_to_decorate(*args, **kwargs))
         except (ArgumentError, TypeError, ValueError) as err:
             # Get wrapped function annotation, remove unwanted keys
             annotations_dict = func_to_decorate.__annotations__
@@ -166,7 +132,7 @@ def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 
             raise SzSdkError(err) from err
 
-    return wrapped_func
+    return typing_cast(F, wrapped_func)
 
 
 # -----------------------------------------------------------------------------
@@ -194,7 +160,7 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
 
         raise SzSdkError(f"{system_name} is an unsupported operating system")
     except OSError as err:
-        # TODO Wording & links for V4
+        # TODO - Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
             "       Did you remember to setup your environment by sourcing the setupEnv file?\n"

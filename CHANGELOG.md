@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.13] - 2025-06-10
+
+### Changed in 0.3.13
+
+- To be consistent with Sz engine and orjson, if json.dumps() is used (orjson not available) in _helpers.py don't add spaces after : and , separators
+
+### Removed in 0.3.13
+
+- `from typing_extensions import ...` in _helpers.py is removed to simplify product requirements
+
 ## [0.3.12] - 2025-05-21
 
 ### Added in 0.3.12
