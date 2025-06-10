@@ -34,6 +34,22 @@ def test_as_python_bytes_none() -> None:
     assert len(actual) == 0
 
 
+# NOTE - If this fails orjson is installed and is used by as_str()
+# In [3]: json.dumps(a_dict)
+# Out[3]: '{"test1": "Fred", "test2": 5, "test3": {"test3.1": "Wilma"}}'
+
+# In [4]: orjson.dumps(a_dict)
+# Out[4]: b'{"test1":"Fred","test2":5,"test3":{"test3.1":"Wilma"}}'
+
+# In [5]: orjson.dumps(a_dict).decode("utf-8")
+# Out[5]: '{"test1":"Fred","test2":5,"test3":{"test3.1":"Wilma"}}'
+
+# In [6]: from senzing_core._helpers import as_str
+
+# In [7]: as_str(a_dict)
+# Out[7]: '{"test1":"Fred","test2":5,"test3":{"test3.1":"Wilma"}}'
+
+
 def test_as_str() -> None:
     """Test as_str."""
     a_dict = {
@@ -41,9 +57,10 @@ def test_as_str() -> None:
         "test2": 5,
         "test3": {"test3.1": "Wilma"},
     }
-    # actual = json.dumps(a_dict, separators=(",", ":"))
-    actual = json.dumps(a_dict, separators=(",", ":"))
+    actual = json.dumps(a_dict)
     result1 = as_str(a_dict)
+    if '": "' in result1:
+        result1 = result1.replace('": "', '":"').replace('", "', '","').replace(', "', ',"')
     assert isinstance(result1, str)
     assert result1 == actual
     result2 = as_str(actual)
