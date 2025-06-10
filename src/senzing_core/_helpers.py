@@ -2,7 +2,7 @@
 SDK Helper functions
 """
 
-# NOTE This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
+# NOTE - This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable
 # on _Pointer[c_char]) for FreeCResources
 # ctypes._Pointer is generic for type checkers, but at runtime it's not generic, so annotations
 # import is necessary - or string annotation ("_Pointer[c_char]") .
@@ -28,15 +28,28 @@ from ctypes import (
 from ctypes.util import find_library
 from functools import wraps
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
+
+# TODO - Dict etc
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
+# TODO -
 try:
-    import orjson
+    import orjson  # type: ignore[import-not-found]
 
     def _json_dumps(object_: Any) -> str:
-        return orjson.dumps(object_).decode("utf-8")
+        return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return]
 
 except ImportError:
     import json
@@ -45,10 +58,24 @@ except ImportError:
         return json.dumps(object_, ensure_ascii=False)
 
 
-if sys.version_info < (3, 11):
-    from typing_extensions import ParamSpec, Self
+# TODO -
+# if sys.version_info < (3, 11):
+#     from typing_extensions import ParamSpec, Self
+# else:
+#     from typing import ParamSpec, Self
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 10):
+        from typing import ParamSpec, Self
+    else:
+        from typing_extensions import ParamSpec, Self
 else:
-    from typing import ParamSpec, Self
+    try:
+        from typing import ParamSpec, Self
+    except ImportError:
+        try:
+            from typing_extensions import ParamSpec, Self
+        except ImportError:
+            ParamSpec, Self = None, None
 
 T = TypeVar("T")
 P = ParamSpec("P")
