@@ -53,7 +53,10 @@ try:
     def _json_dumps(object_: Any) -> str:
         return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return]
 
-except ImportError:
+
+# TODO -
+# except ImportError:
+except (ImportError, AttributeError):
     print("\nTrying json...", flush=True)
     import json
 
