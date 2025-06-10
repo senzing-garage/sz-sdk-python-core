@@ -55,7 +55,7 @@ except ImportError:
     import json
 
     def _json_dumps(object_: Any) -> str:
-        return json.dumps(object_, ensure_ascii=False)
+        return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
 
 
 # TODO -

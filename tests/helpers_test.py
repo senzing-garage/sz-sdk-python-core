@@ -57,10 +57,11 @@ def test_as_str() -> None:
         "test2": 5,
         "test3": {"test3.1": "Wilma"},
     }
-    actual = json.dumps(a_dict)
+    actual = json.dumps(a_dict, separators=(",", ":"))
     result1 = as_str(a_dict)
     if '": "' in result1:
-        result1 = result1.replace('": "', '":"').replace('", "', '","').replace(', "', ',"')
+        # result1 = result1.replace('": "', '":"').replace('", "', '","').replace(', "', ',"')
+        result1 = json.dumps(json.loads(result1), separators=(",", ":"))
     assert isinstance(result1, str)
     assert result1 == actual
     result2 = as_str(actual)
