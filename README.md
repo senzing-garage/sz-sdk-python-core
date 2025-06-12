@@ -11,7 +11,7 @@
 | src/senzing\_core/szconfig.py          |      120 |        0 |    100% |           |
 | src/senzing\_core/szconfigmanager.py   |      105 |        0 |    100% |           |
 | src/senzing\_core/szdiagnostic.py      |       71 |        4 |     94% |205-211, 214-215 |
-| src/senzing\_core/szengine.py          |      386 |       25 |     94% |551-566, 604, 735, 752, 775, 796, 917-923, 946-950 |
+| src/senzing\_core/szengine.py          |      386 |       25 |     94% |551-566, 604, 737, 754, 777, 798, 919-925, 948-952 |
 | src/senzing\_core/szproduct.py         |       34 |        0 |    100% |           |
 |                              **TOTAL** |  **988** |   **43** | **96%** |           |
 
