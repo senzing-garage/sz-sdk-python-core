@@ -1746,16 +1746,16 @@ preprocess_record_schema = {
 #     "FEATURES": {
 #         "NAME": [
 #             {
-#                 "LIB_FEAT_ID": 1455,
+#                 "LIB_FEAT_ID": 100002,
 #                 "USAGE_TYPE": "PRIMARY",
 #                 "FEAT_DESC": "Robert Smith",
 #                 "ATTRIBUTES": {"PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert"},
 #             }
 #         ],
-#         "DOB": [{"LIB_FEAT_ID": 8, "FEAT_DESC": "12/11/1978", "ATTRIBUTES": {"DATE_OF_BIRTH": "12/11/1978"}}],
+#         "DOB": [{"LIB_FEAT_ID": 100003, "FEAT_DESC": "12/11/1978", "ATTRIBUTES": {"DATE_OF_BIRTH": "12/11/1978"}}],
 #         "ADDRESS": [
 #             {
-#                 "LIB_FEAT_ID": 100001,
+#                 "LIB_FEAT_ID": 100004,
 #                 "USAGE_TYPE": "MAILING",
 #                 "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
 #                 "ATTRIBUTES": {"ADDR_LINE1": "123 Main Street, Las Vegas NV 89132"},
@@ -1763,26 +1763,18 @@ preprocess_record_schema = {
 #         ],
 #         "PHONE": [
 #             {
-#                 "LIB_FEAT_ID": 35,
+#                 "LIB_FEAT_ID": 100005,
 #                 "USAGE_TYPE": "HOME",
 #                 "FEAT_DESC": "702-919-1300",
 #                 "ATTRIBUTES": {"PHONE_NUMBER": "702-919-1300"},
 #             }
 #         ],
 #         "EMAIL": [
-#             {"LIB_FEAT_ID": 9, "FEAT_DESC": "bsmith@work.com", "ATTRIBUTES": {"EMAIL_ADDRESS": "bsmith@work.com"}}
+#             {"LIB_FEAT_ID": 100006, "FEAT_DESC": "bsmith@work.com", "ATTRIBUTES": {"EMAIL_ADDRESS": "bsmith@work.com"}}
 #         ],
-#         "RECORD_TYPE": [{"LIB_FEAT_ID": 5, "FEAT_DESC": "PERSON", "ATTRIBUTES": {"RECORD_TYPE": "PERSON"}}],
+#         "RECORD_TYPE": [{"LIB_FEAT_ID": 100011, "FEAT_DESC": "PERSON", "ATTRIBUTES": {"RECORD_TYPE": "PERSON"}}],
 #     }
 # }
-# {
-#     "FEATURES": {
-#         "NAME": [{"LIB_FEAT_ID": -2, "FEAT_DESC": "Robert Smith", "ATTRIBUTES": {"NAME_FULL": "Robert Smith"}}],
-#         "DOB": [{"LIB_FEAT_ID": -3, "FEAT_DESC": "7/4/1976", "ATTRIBUTES": {"DATE_OF_BIRTH": "7/4/1976"}}],
-#         "PHONE": [{"LIB_FEAT_ID": -4, "FEAT_DESC": "787-767-2088", "ATTRIBUTES": {"PHONE_NUMBER": "787-767-2088"}}],
-#     }
-# }
-
 process_withinfo_schema = {
     "DATA_SOURCE": str,
     "RECORD_ID": str,
