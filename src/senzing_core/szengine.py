@@ -571,7 +571,7 @@ class SzEngineCore(SzEngine):
         data_source_code: str,
         record_id: str,
         record_definition: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_ADD_RECORD_DEFAULT_FLAGS,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -609,7 +609,7 @@ class SzEngineCore(SzEngine):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_DELETE_RECORD_DEFAULT_FLAGS,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
@@ -659,7 +659,9 @@ class SzEngineCore(SzEngine):
 
     # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
     @catch_sdk_exceptions
-    def find_interesting_entities_by_entity_id(self, entity_id: int, flags: int = 0) -> str:
+    def find_interesting_entities_by_entity_id(
+        self, entity_id: int, flags: int = SzEngineFlags.SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS
+    ) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByEntityID_helper(entity_id, flags)
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)
@@ -671,7 +673,7 @@ class SzEngineCore(SzEngine):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS,
     ) -> str:
         result = self.library_handle.Sz_findInterestingEntitiesByRecordID_helper(
             as_c_char_p(data_source_code), as_c_char_p(record_id), flags
@@ -926,7 +928,7 @@ class SzEngineCore(SzEngine):
     def preprocess_record(
         self,
         record_definition: str,
-        flags: int = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS,
+        flags: int = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS,
     ) -> str:
         result = self.library_handle.Sz_preprocessRecord_helper(
             as_c_char_p(record_definition),
@@ -956,7 +958,7 @@ class SzEngineCore(SzEngine):
         return self.no_info
 
     @catch_sdk_exceptions
-    def reevaluate_entity(self, entity_id: int, flags: int = 0) -> str:
+    def reevaluate_entity(self, entity_id: int, flags: int = SzEngineFlags.SZ_REEVALUATE_RECORD_DEFAULT_FLAGS) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask
             result = self.library_handle.Sz_reevaluateEntityWithInfo_helper(
@@ -977,7 +979,7 @@ class SzEngineCore(SzEngine):
         self,
         data_source_code: str,
         record_id: str,
-        flags: int = 0,
+        flags: int = SzEngineFlags.SZ_REEVALUATE_RECORD_DEFAULT_FLAGS,
     ) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             base_flags = flags & self.sdk_flags_mask

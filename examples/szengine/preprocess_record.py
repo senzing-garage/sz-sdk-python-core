@@ -5,8 +5,7 @@ from senzing import SzEngineFlags, SzError
 from senzing_core import SzAbstractFactoryCore
 
 instance_name = "Example"
-# TODO - Change when new default is in V4
-flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
+flags = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS
 record_definition = json.dumps(
     {
         "RECORD_TYPE": "PERSON",

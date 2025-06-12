@@ -105,9 +105,6 @@ class SzConfigManagerCore(SzConfigManager):
 
     """
 
-    # TODO: Consider making usual constructor private (`SzConfig.SzConfig()`)
-    # and replacing it with static constructor (i.e. `SzConfig.NewABC(str,str)`, `SzConfig.NewDEF(str,dict))`
-
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------

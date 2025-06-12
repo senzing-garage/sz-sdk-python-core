@@ -1,5 +1,0 @@
-// Output has been formatted for easier reading.
-
-{
-    "DSRC_ID": 1001
-}
