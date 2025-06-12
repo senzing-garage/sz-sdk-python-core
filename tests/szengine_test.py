@@ -1733,11 +1733,55 @@ path_schema = {
     ],
 }
 
+# preprocess_record_schema = {
+#     "JSON_DATA": {str: str},
+#     Optional("FEATURES"): {},
+#     Optional("UNMAPPED_DATA"): {},
+# }
 preprocess_record_schema = {
-    "JSON_DATA": {str: str},
-    Optional("FEATURES"): {},
-    Optional("UNMAPPED_DATA"): {},
+    "FEATURES": {str: [{"LIB_FEAT_ID": int, "USAGE_TYPE": str, "FEAT_DESC": str, "ATTRIBUTES": {str, str}}]}
 }
+
+# {
+#     "FEATURES": {
+#         "NAME": [
+#             {
+#                 "LIB_FEAT_ID": 1455,
+#                 "USAGE_TYPE": "PRIMARY",
+#                 "FEAT_DESC": "Robert Smith",
+#                 "ATTRIBUTES": {"PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert"},
+#             }
+#         ],
+#         "DOB": [{"LIB_FEAT_ID": 8, "FEAT_DESC": "12/11/1978", "ATTRIBUTES": {"DATE_OF_BIRTH": "12/11/1978"}}],
+#         "ADDRESS": [
+#             {
+#                 "LIB_FEAT_ID": 100001,
+#                 "USAGE_TYPE": "MAILING",
+#                 "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+#                 "ATTRIBUTES": {"ADDR_LINE1": "123 Main Street, Las Vegas NV 89132"},
+#             }
+#         ],
+#         "PHONE": [
+#             {
+#                 "LIB_FEAT_ID": 35,
+#                 "USAGE_TYPE": "HOME",
+#                 "FEAT_DESC": "702-919-1300",
+#                 "ATTRIBUTES": {"PHONE_NUMBER": "702-919-1300"},
+#             }
+#         ],
+#         "EMAIL": [
+#             {"LIB_FEAT_ID": 9, "FEAT_DESC": "bsmith@work.com", "ATTRIBUTES": {"EMAIL_ADDRESS": "bsmith@work.com"}}
+#         ],
+#         "RECORD_TYPE": [{"LIB_FEAT_ID": 5, "FEAT_DESC": "PERSON", "ATTRIBUTES": {"RECORD_TYPE": "PERSON"}}],
+#     }
+# }
+# {
+#     "FEATURES": {
+#         "NAME": [{"LIB_FEAT_ID": -2, "FEAT_DESC": "Robert Smith", "ATTRIBUTES": {"NAME_FULL": "Robert Smith"}}],
+#         "DOB": [{"LIB_FEAT_ID": -3, "FEAT_DESC": "7/4/1976", "ATTRIBUTES": {"DATE_OF_BIRTH": "7/4/1976"}}],
+#         "PHONE": [{"LIB_FEAT_ID": -4, "FEAT_DESC": "787-767-2088", "ATTRIBUTES": {"PHONE_NUMBER": "787-767-2088"}}],
+#     }
+# }
 
 process_withinfo_schema = {
     "DATA_SOURCE": str,
@@ -2040,13 +2084,35 @@ why_search_schema = {
             },
         }
     ],
+    "SEARCH_REQUEST": {
+        "JSON_DATA": str,
+        "SEARCH_PROFILE": str,
+        "FEATURES": {
+            str: [
+                {
+                    "LIB_FEAT_ID": int,
+                    "FEAT_DESC": str,
+                    "ATTRIBUTES": {str, str},
+                    "USED_FOR_CAND": str,
+                    "ENTITY_COUNT": int,
+                    "CANDIDATE_CAP_REACHED": str,
+                    "SCORING_CAP_REACHED": str,
+                }
+            ]
+        },
+    },
+    "SEARCH_STATISTICS": [
+        {
+            "CANDIDATE_KEYS": {
+                "FEATURE_TYPES": [{"FTYPE_CODE": str, "FOUND": int, "NOT_FOUND": int, "GENERIC": int}],
+                "SUMMARY": {"FOUND": int, "NOT_FOUND": int, "GENERIC": int},
+            }
+        }
+    ],
     "ENTITIES": [
         {
             "RESOLVED_ENTITY": {
                 "ENTITY_ID": int,
-                "ENTITY_NAME": str,
-                "FEATURES": {},
-                "RECORD_SUMMARY": [{"DATA_SOURCE": str, "RECORD_COUNT": int}],
             }
         }
     ],
