@@ -242,7 +242,7 @@ def test_add_record_with_info_record_str_empty(sz_engine: SzEngine) -> None:
         sz_engine.add_record(data_source_code, record_id, record_definition)
 
 
-# NOTE Implemented in test_export_csv_entity_report()
+# NOTE - Implemented in test_export_csv_entity_report()
 # def test_close_export() -> None:
 #     """Test SzEngine.close_export()."""
 
@@ -348,7 +348,7 @@ def test_export_json_entity_report(sz_engine: SzEngine) -> None:
             assert schema(export_json_entity_report_iterator_schema) == actual_as_dict
 
 
-# NOTE Implemented in test_export_csv_entity_report()
+# NOTE - Implemented in test_export_csv_entity_report()
 # def test_fetch_next() -> None:
 #     """Test SzEngine.fetch_next."""
 
@@ -1733,48 +1733,11 @@ path_schema = {
     ],
 }
 
-# preprocess_record_schema = {
-#     "JSON_DATA": {str: str},
-#     Optional("FEATURES"): {},
-#     Optional("UNMAPPED_DATA"): {},
-# }
 preprocess_record_schema = {
-    "FEATURES": {str: [{"LIB_FEAT_ID": int, "USAGE_TYPE": str, "FEAT_DESC": str, "ATTRIBUTES": {str, str}}]}
+    "FEATURES": {str: [{"ATTRIBUTES": {str: str}, "FEAT_DESC": str, "LIB_FEAT_ID": int, Optional("USAGE_TYPE"): str}]}
 }
 
-# {
-#     "FEATURES": {
-#         "NAME": [
-#             {
-#                 "LIB_FEAT_ID": 100002,
-#                 "USAGE_TYPE": "PRIMARY",
-#                 "FEAT_DESC": "Robert Smith",
-#                 "ATTRIBUTES": {"PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert"},
-#             }
-#         ],
-#         "DOB": [{"LIB_FEAT_ID": 100003, "FEAT_DESC": "12/11/1978", "ATTRIBUTES": {"DATE_OF_BIRTH": "12/11/1978"}}],
-#         "ADDRESS": [
-#             {
-#                 "LIB_FEAT_ID": 100004,
-#                 "USAGE_TYPE": "MAILING",
-#                 "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
-#                 "ATTRIBUTES": {"ADDR_LINE1": "123 Main Street, Las Vegas NV 89132"},
-#             }
-#         ],
-#         "PHONE": [
-#             {
-#                 "LIB_FEAT_ID": 100005,
-#                 "USAGE_TYPE": "HOME",
-#                 "FEAT_DESC": "702-919-1300",
-#                 "ATTRIBUTES": {"PHONE_NUMBER": "702-919-1300"},
-#             }
-#         ],
-#         "EMAIL": [
-#             {"LIB_FEAT_ID": 100006, "FEAT_DESC": "bsmith@work.com", "ATTRIBUTES": {"EMAIL_ADDRESS": "bsmith@work.com"}}
-#         ],
-#         "RECORD_TYPE": [{"LIB_FEAT_ID": 100011, "FEAT_DESC": "PERSON", "ATTRIBUTES": {"RECORD_TYPE": "PERSON"}}],
-#     }
-# }
+
 process_withinfo_schema = {
     "DATA_SOURCE": str,
     "RECORD_ID": str,
@@ -2070,8 +2033,21 @@ why_search_schema = {
                 "WHY_KEY": str,
                 "WHY_ERRULE_CODE": str,
                 "MATCH_LEVEL_CODE": str,
-                "CANDIDATE_KEYS": {},
-                "FEATURE_SCORES": {},
+                "CANDIDATE_KEYS": {str: [{"FEAT_ID": int, "FEAT_DESC": str}]},
+                "FEATURE_SCORES": {
+                    str: [
+                        {
+                            "INBOUND_FEAT_ID": int,
+                            "INBOUND_FEAT_DESC": str,
+                            "CANDIDATE_FEAT_ID": int,
+                            "CANDIDATE_FEAT_DESC": str,
+                            "SCORE": int,
+                            "ADDITIONAL_SCORES": {str: int},
+                            "SCORE_BUCKET": str,
+                            "SCORE_BEHAVIOR": str,
+                        }
+                    ]
+                },
                 "DISCLOSED_RELATIONS": {},
             },
         }
@@ -2084,8 +2060,8 @@ why_search_schema = {
                 {
                     "LIB_FEAT_ID": int,
                     "FEAT_DESC": str,
-                    "ATTRIBUTES": {str, str},
                     "USED_FOR_CAND": str,
+                    "USED_FOR_SCORING": str,
                     "ENTITY_COUNT": int,
                     "CANDIDATE_CAP_REACHED": str,
                     "SCORING_CAP_REACHED": str,
