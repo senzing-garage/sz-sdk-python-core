@@ -8,7 +8,6 @@ from typing import Any, Dict, List, Tuple
 import pytest
 from pytest_schema import Optional, Or, schema
 from senzing import (
-    SZ_NO_FLAGS,
     SZ_WITHOUT_INFO,
     SzBadInputError,
     SzConfig,
@@ -361,7 +360,7 @@ def test_find_interesting_entities_by_entity_id(sz_engine: SzEngine) -> None:
     ]
     add_records(sz_engine, test_records)
     entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
-    flags = SZ_NO_FLAGS
+    flags = SzEngineFlags.SZ_NO_FLAGS
     actual = sz_engine.find_interesting_entities_by_entity_id(entity_id, flags)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
@@ -374,7 +373,7 @@ def test_find_interesting_entities_by_entity_id_bad_entity_id(
 ) -> None:
     """Test SzEngine.find_interesting_entities_by_entity_id()."""
     bad_entity_id = 0
-    flags = SZ_NO_FLAGS
+    flags = SzEngineFlags.SZ_NO_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_interesting_entities_by_entity_id(bad_entity_id, flags)
 
@@ -387,7 +386,7 @@ def test_find_interesting_entities_by_record_id(sz_engine: SzEngine) -> None:
     add_records(sz_engine, test_records)
     data_source_code = "CUSTOMERS"
     record_id = "1001"
-    flags = SZ_NO_FLAGS
+    flags = SzEngineFlags.SZ_NO_FLAGS
     actual = sz_engine.find_interesting_entities_by_record_id(data_source_code, record_id, flags)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
@@ -401,7 +400,7 @@ def test_find_interesting_entities_by_record_id_bad_data_source_code(
     """Test SzEngine.find_interesting_entities_by_record_id()."""
     bad_data_source_code = "XXXX"
     record_id = "9999"
-    flags = SZ_NO_FLAGS
+    flags = SzEngineFlags.SZ_NO_FLAGS
     with pytest.raises(SzUnknownDataSourceError):
         _ = sz_engine.find_interesting_entities_by_record_id(bad_data_source_code, record_id, flags)
 
@@ -412,7 +411,7 @@ def test_find_interesting_entities_by_record_id_bad_record_id(
     """Test SzEngine.find_interesting_entities_by_record_id()."""
     data_source_code = "CUSTOMERS"
     bad_record_id = "9999"
-    flags = SZ_NO_FLAGS
+    flags = SzEngineFlags.SZ_NO_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.find_interesting_entities_by_record_id(data_source_code, bad_record_id, flags)
 
@@ -804,7 +803,7 @@ def test_how_entity_by_entity_id_bad_entity_id(sz_engine: SzEngine) -> None:
 def test_preprocess_record(sz_engine: SzEngine) -> None:
     """Test SzEngine.preprocess_record()."""
     record_definition: str = DATA_SOURCES.get("CUSTOMERS", {}).get("1001", {}).get("Json", {})
-    flags = SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS
+    flags = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS
     actual = sz_engine.preprocess_record(record_definition, flags)
     actual_as_dict = json.loads(actual)
     assert schema(preprocess_record_schema) == actual_as_dict
@@ -1073,7 +1072,7 @@ def test_why_search(sz_engine: SzEngine) -> None:
     attributes = json.dumps({"NAME_FULL": "BOB SMITH", "EMAIL_ADDRESS": "bsmith@work.com"})
     entity_id = get_entity_id_from_record_id(sz_engine, "CUSTOMERS", "1001")
     search_profile = "SEARCH"
-    flags = SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS
+    flags = SzEngineFlags.SZ_WHY_SEARCH_DEFAULT_FLAGS
     actual = sz_engine.why_search(attributes, entity_id, flags, search_profile)
     delete_records(sz_engine, test_records)
     if len(actual) > 0:
