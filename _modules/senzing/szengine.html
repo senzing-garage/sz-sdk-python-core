@@ -1,0 +1,1097 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing.szengine &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">senzing.szengine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for senzing.szengine</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python3</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">szengine.py is the abstract class for all implementations of SzEngine.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=C0302</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szengineflags</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzEngineFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szhelpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_help</span>
+
+<span class="c1"># Metadata</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SzEngine&quot;</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.1&quot;</span>  <span class="c1"># See https://www.python.org/dev/peps/pep-0396/</span>
+<span class="n">__date__</span> <span class="o">=</span> <span class="s2">&quot;2023-10-30&quot;</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s2">&quot;2025-01-28&quot;</span>
+
+
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># Classes</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzEngine</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Senzing engine module access library</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Interface definition</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ADD_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `add_record` method adds a record into the Senzing repository.</span>
+<span class="sd">        Can be called as many times as desired and from multiple threads at the same time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            record_definition (str): A JSON document containing the record to be added to the Senzing repository.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_ADD_RECORD_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: If flags are set to return the WITH_INFO response a JSON document containing the details, otherwise an empty string.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/add_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/add_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_handle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `close_export` method closes the exported document created by `export_json_entity_report`.</span>
+<span class="sd">        It is part of the `export_json_entity_report`, `fetch_next`, `close_export`</span>
+<span class="sd">        lifecycle of a list of sized entities.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            export_handle (int): A handle created by `export_json_entity_report` or `export_csv_entity_report`.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_redo_records</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `count_redo_records` method returns the number of records in need of redo-ing.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The number of redo records in Senzing&#39;s redo queue.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/count_redo_records.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/count_redo_records.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: guess</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_DELETE_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `delete_record` method deletes a record from the Senzing repository.</span>
+<span class="sd">        Can be called as many times as desired and from multiple threads at the same time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_DELETE_RECORD_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: If flags are set to return the WITH_INFO response a JSON document containing the details, otherwise an empty string.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/delete_record.py</span>
+<span class="sd">                :linenos:</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/delete_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_csv_entity_report</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">csv_column_list</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_EXPORT_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        **Warning:** `export_csv_entity_report` is not recommended for large systems as it does not scale.</span>
+<span class="sd">        It is recommended larger systems implement real-time replication to a data warehouse.</span>
+
+<span class="sd">        The `export_csv_entity_report` method initializes a cursor over a document of exported entities.</span>
+<span class="sd">        It is part of the `export_csv_entity_report`, `fetch_next`, `close_export`</span>
+<span class="sd">        lifecycle of a list of entities to export.</span>
+
+<span class="sd">        Available CSV columns: RESOLVED_ENTITY_ID, RESOLVED_ENTITY_NAME, RELATED_ENTITY_ID, MATCH_LEVEL,</span>
+<span class="sd">                               MATCH_LEVEL_CODE, MATCH_KEY, MATCH_KEY_DETAILS,I S_DISCLOSED, IS_AMBIGUOUS,</span>
+<span class="sd">                               DATA_SOURCE, RECORD_ID, JSON_DATA, FIRST_SEEN_DT, LAST_SEEN_DT, UNMAPPED_DATA,</span>
+<span class="sd">                               ERRULE_CODE, RELATED_ENTITY_NAME</span>
+
+<span class="sd">        Suggested CSV columns: RESOLVED_ENTITY_ID, RELATED_ENTITY_ID, RESOLVED_ENTITY_NAME, MATCH_LEVEL,</span>
+<span class="sd">                               MATCH_KEY, DATA_SOURCE, RECORD_ID</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            csv_column_list (str): A comma-separated list of column names for the CSV export.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: A handle that identifies the document to be scrolled through using `fetch_next`.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_csv_fetch_close.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_csv_fetch_close.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: guess</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_json_entity_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_EXPORT_DEFAULT_FLAGS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        **Warning:** `export_json_entity_report` is not recommended for large systems as it does not scale.</span>
+<span class="sd">        It is recommended larger systems implement real-time replication to a data warehouse.</span>
+
+<span class="sd">        The `export_json_entity_report` method initializes a cursor over a document of exported entities.</span>
+<span class="sd">        It is part of the `export_json_entity_report`, `fetch_next`, `close_export`</span>
+<span class="sd">        lifecycle of a list of entities to export.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: A handle that identifies the document to be scrolled through using `fetch_next`.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_handle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `fetch_next` method is used to scroll through an exported document one entity at a time.</span>
+<span class="sd">        Successive calls of `fetch_next` will export successive rows of entity data until there is no more.</span>
+<span class="sd">        It is part of the `export_json_entity_report` or `export_json_entity_report`, `fetch_next`, `close_export`</span>
+<span class="sd">        lifecycle of a list of exported entities.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            export_handle (int): A handle created by `export_json_entity_report` or `export_json_entity_report`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: TODO:</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/export_json_fetch_close.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: disable=empty-docstring</span>
+    <span class="c1"># NOTE - Not to be documented or examples, early adaptor feature, needs manual additions to config</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_interesting_entities_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="c1"># NOTE - Not to be documented or examples, early adaptor feature, needs manual additions to config</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_interesting_entities_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: enable=empty-docstring</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_network_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_max_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_NETWORK_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `find_network_by_entity_id` method finds all entities surrounding a requested set of entities.</span>
+<span class="sd">        This includes the requested entities, paths between them, and relations to other nearby entities.</span>
+<span class="sd">        Returns a JSON document that identifies the path between the each set of search entities (if the path exists),</span>
+<span class="sd">        and the information for the entities in the path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity_ids (list(int)): The entity IDs to find the network between.</span>
+<span class="sd">            max_degrees (int): The maximum number of degrees in paths between search entities.</span>
+<span class="sd">            build_out_degrees (int): The number of degrees of relationships to show around each search entity.</span>
+<span class="sd">            build_out_max_entities (int): The maximum number of entities to return in the discovered network.</span>
+<span class="sd">            flags (int, optional): The maximum number of entities to return in the discovered network. Defaults to SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_network_by_entity_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_network_by_entity_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_network_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_max_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_NETWORK_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `find_network_by_record_id` method finds all entities surrounding a requested set of entities by their RECORD_ID values.</span>
+<span class="sd">        This includes the requested entities, paths between them, and relations to other nearby entities.</span>
+<span class="sd">        Returns a JSON document that identifies the path between the each set of search entities (if the path exists),</span>
+<span class="sd">        and the information for the entities in the path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            record_keys (list(tuple(str, str))): The data source codes and record IDs to find the network between.</span>
+<span class="sd">            max_degrees (int): The maximum number of degrees in paths between search entities.</span>
+<span class="sd">            build_out_degrees (int): The number of degrees of relationships to show around each search entity.</span>
+<span class="sd">            build_out_max_entities (int): The maximum number of entities to return in the discovered network.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_NETWORK_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_network_by_record_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_network_by_record_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_path_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">end_entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">avoid_entity_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_data_sources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_PATH_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `find_path_by_entity_id` method finds the most efficient relationship between two entities path based on the parameters</span>
+<span class="sd">        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.</span>
+<span class="sd">        The ENTITIES sections details information on the entities. Paths are found using known relationships with other entities.</span>
+<span class="sd">        Paths are found using known relationships with other entities.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_entity_id (int): The entity ID for the starting entity of the search path.</span>
+<span class="sd">            end_entity_id (int): The entity ID for the ending entity of the search path.</span>
+<span class="sd">            max_degrees (int): The maximum number of degrees in paths between search entities.</span>
+<span class="sd">            avoid_entity_ids (list(int), optional): The entity IDs to avoid when finding a path.</span>
+<span class="sd">            required_data_sources (list(str), optional): The data source code(s) that must be in a path.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document with an ENTITY_PATHS section that details the path between the entities.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_path_by_entity_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_path_by_entity_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_path_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">start_record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">end_data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">end_record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">avoid_record_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_data_sources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_PATH_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `find_path_by_record_id` method finds the most efficient relationship between</span>
+<span class="sd">        two entities path based on the parameters by RECORD_ID values</span>
+<span class="sd">        and returns a JSON document with an ENTITY_PATHS section that details the path between the entities.</span>
+<span class="sd">        The ENTITIES sections details information on the entities.</span>
+<span class="sd">        Paths are found using known relationships with other entities.</span>
+<span class="sd">        The entities are identified by starting and ending records.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_data_source_code (str): Identifies the provenance of the record for the starting entity of the search path.</span>
+<span class="sd">            start_record_id (str): The unique identifier within the records of the same data source for the starting entity of the search path.</span>
+<span class="sd">            end_data_source_code (str): Identifies the provenance of the record for the ending entity of the search path.</span>
+<span class="sd">            end_record_id (str): The unique identifier within the records of the same data source for the ending entity of the search path.</span>
+<span class="sd">            max_degrees (int): The maximum number of degrees in paths between search entities.</span>
+<span class="sd">            avoid_record_keys (list(tuple(str, str)), optional): The data source codes and record IDs to avoid when finding a path.</span>
+<span class="sd">            required_data_sources (list(str), optional): The data source code(s) that must be in a path.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_FIND_PATH_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_path_by_record_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/find_path_by_record_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_active_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_active_config_id` method returns the identifier of the currently active Senzing engine configuration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The identifier of the active Senzing Engine configuration.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_active_config_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_active_config_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_entity_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_entity_by_entity_id` method returns entity data based on the ID of a resolved identity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity_id (int): The unique identifier of an entity.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_entity_by_entity_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_entity_by_entity_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_entity_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_entity_by_record_id` method returns entity data based on the ID of a record which is a member of the entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_entity_by_record_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_entity_by_record_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_record` method returns a JSON document of a single record from the Senzing repository.</span>
+<span class="sd">        Can be called as many times as desired and from multiple threads at the same time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_RECORD_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document of a single record.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_redo_record</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_redo_record` method returns the next internally queued redo record from the Senzing repository.</span>
+<span class="sd">        The `process_redo_record` method is called to process the redo record retrieved by `get_redo_record`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_redo_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_redo_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_stats` method retrieves workload statistics for the current process.</span>
+<span class="sd">        These statistics will automatically reset after retrieval.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str:  A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_stats.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_stats.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_virtual_entity_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_virtual_entity_by_record_id` method creates a view of a virtual entity</span>
+<span class="sd">        using a list of existing loaded records.</span>
+<span class="sd">        The virtual entity is composed of only those records and their features.</span>
+<span class="sd">        Entity resolution is not performed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            record_keys (list(tuple(str, str))): The data source codes and record IDs identifying records to create the virtual entity from.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str:  A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_virtual_entity_by_record_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/get_virtual_entity_by_record_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">how_entity_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_HOW_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `how_entity_by_entity_id` method determines and details steps-by-step *how* records resolved to a single entity.</span>
+
+<span class="sd">        In most cases, *how* provides more detailed information than *why* as the resolution is detailed step-by-step.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity_id (int): The unique identifier of an entity.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/how_entity_by_entity_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/how_entity_by_entity_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_PREPROCESS_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `preprocess_record` method tests adding a record into the Senzing datastore.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            record_definition (str): A JSON document containing the record to be tested.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document containing metadata as specified by the flags.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/preprocess_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/preprocess_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prime_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `prime_engine` method initializes high resource consumption components of Senzing</span>
+<span class="sd">        used in some functions. If this call is not made, these resources are initialized the</span>
+<span class="sd">        first time they are needed and can cause unusually long processing times the first time</span>
+<span class="sd">        a function is called that requires these resources.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/prime_engine.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_redo_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redo_record</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `process_redo_record` method is called to process the redo record retrieved by `get_redo_record`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            redo_record (str): A redo record retrieved from get_redo_record.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to 0.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/process_redo_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/process_redo_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reevaluate_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_REEVALUATE_ENTITY_DEFAULT_FLAGS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `reevaluate_entity` method reevaluates the specified entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity_id (int): The unique identifier of an entity.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_REEVALUATE_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/reevaluate_entity.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/reevaluate_entity.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reevaluate_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_REEVALUATE_RECORD_DEFAULT_FLAGS</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `reevaluate_record` method reevaluates a specific record.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional):  Flags used to control information returned. Defaults to SzEngineFlags.SZ_REEVALUATE_RECORD_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: If flags are set to return the WITH_INFO response a JSON document containing the details, otherwise an empty string.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/reevaluate_record.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/reevaluate_record.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_by_attributes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS</span><span class="p">,</span>
+        <span class="n">search_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `search_by_attributes` method retrieves entity data based on a user-specified set of entity attributes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attributes (str): A JSON document with the attribute data to search for.</span>
+<span class="sd">            flags (int, optional): _description_. Defaults to SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS.</span>
+<span class="sd">            search_profile (str): The name of a configured search profile. Defaults to SEARCH.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/search_by_attributes.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/search_by_attributes.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id_1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">entity_id_2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_ENTITIES_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `why_entities` method determines why entities did not resolve or why they do relate.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity_id_1 (int): The entity ID for the starting entity of the search path.</span>
+<span class="sd">            entity_id_2 (int): The entity ID for the ending entity of the search path.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_ENTITIES_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_entities.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_entities.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_record_in_entity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `why_record_in_entity` method determines why a record is included in an entity.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_record_in_entity.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_record_in_entity.txt</span>
+<span class="sd">                    :linenos:</span>
+<span class="sd">                    :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_records</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_source_code_2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id_2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_RECORDS_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `why_records` determines if any two records can or cannot resolve together, or if they relate.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_source_code_1 (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id_1 (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            data_source_code_2 (str): Identifies the provenance of the data.</span>
+<span class="sd">            record_id_2 (str): The unique identifier within the records of the same data source.</span>
+<span class="sd">            flags (int, optional): Flags used to control information returned. Defaults to SzEngineFlags.SZ_WHY_RECORDS_DEFAULT_FLAGS.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_records.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_records.txt</span>
+<span class="sd">                    :linenos:</span>
+<span class="sd">                    :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_search</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_SEARCH_DEFAULT_FLAGS</span><span class="p">,</span>
+        <span class="n">search_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `why_search` method retrieves entity data based on a specific entity Id and a</span>
+<span class="sd">        user-specified set of entity attributes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attributes (str): A JSON document with the attribute data to search for.</span>
+<span class="sd">            entity_id (int): The identifier of the entity to retrieve.</span>
+<span class="sd">            flags (int, optional): _description_. Defaults to SzEngineFlags.SZ_WHY_SEARCH_DEFAULT_FLAGS.</span>
+<span class="sd">            search_profile (str): The name of a configured search profile. Defaults to SEARCH.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document.</span>
+
+<span class="sd">        Raises:</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_search.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szengine/why_search.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Convenience methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the help for a particular message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method_name (str): The name of the method. (e.g. &quot;init&quot;). If empty, a list of methods and descriptions is returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The Help information about the requested method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">construct_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
