@@ -74,9 +74,9 @@ def test_create_config_from_template(sz_configmanager: SzConfigManager) -> None:
     assert schema(config_schema) == actual_as_dict
 
 
-def test_get_configs(sz_configmanager: SzConfigManager) -> None:
-    """Test SzConfigManager.get_configs()."""
-    actual = sz_configmanager.get_configs()
+def test_get_config_registry(sz_configmanager: SzConfigManager) -> None:
+    """Test SzConfigManager.get_config_registry()."""
+    actual = sz_configmanager.get_config_registry()
     actual_as_dict = json.loads(actual)
     assert schema(config_list_schema) == actual_as_dict
 

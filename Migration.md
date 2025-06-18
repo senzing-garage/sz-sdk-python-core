@@ -448,7 +448,7 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | getConfig | create_config_from_config_id |
 |  | create_config_from_string |
 |  | create_config_from_template |
-| getConfigList | get_configs |
+| getConfigList | get_config_registry |
 | getDefaultConfigID | get_default_config_id |
 |  | register_config |
 | replaceDefaultConfigID | replace_default_config_id |
