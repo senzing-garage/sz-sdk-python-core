@@ -219,7 +219,7 @@ class SzDiagnosticCore(SzDiagnostic):
         """
         The `reinitialize` method reinitializes the Senzing object using a specific configuration
         identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmanager.get_configs`.
+        `szconfigmanager.get_config_registry`.
         """
         result = self.library_handle.SzDiagnostic_reinit(config_id)
         self.check_result(result)

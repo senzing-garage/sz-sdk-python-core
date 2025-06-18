@@ -1,19 +1,62 @@
-// Output has been formatted for easier reading.
-
 {
-  "JSON_DATA": {
-    "RECORD_TYPE": "PERSON",
-    "NAME_TYPE": "PRIMARY",
-    "NAME_LAST": "Smith",
-    "NAME_FIRST": "Robert",
-    "DATE_OF_BIRTH": "12/11/1978",
-    "ADDR_TYPE": "MAILING",
-    "ADDR_FULL": "123 Main Street, Las Vegas NV 89132",
-    "PHONE_TYPE": "HOME",
-    "PHONE_NUMBER": "702-919-1300",
-    "EMAIL_ADDRESS": "bsmith@work.com",
-    "DATE": "1/2/18",
-    "STATUS": "Active",
-    "AMOUNT": "100"
+  "FEATURES": {
+    "NAME": [
+      {
+        "LIB_FEAT_ID": -2,
+        "USAGE_TYPE": "PRIMARY",
+        "FEAT_DESC": "Robert Smith",
+        "ATTRIBUTES": {
+          "PRIMARY_NAME_LAST": "Smith",
+          "PRIMARY_NAME_FIRST": "Robert"
+        }
+      }
+    ],
+    "DOB": [
+      {
+        "LIB_FEAT_ID": -3,
+        "FEAT_DESC": "12/11/1978",
+        "ATTRIBUTES": {
+          "DATE_OF_BIRTH": "12/11/1978"
+        }
+      }
+    ],
+    "ADDRESS": [
+      {
+        "LIB_FEAT_ID": -4,
+        "USAGE_TYPE": "MAILING",
+        "FEAT_DESC": "123 Main Street, Las Vegas NV 89132",
+        "ATTRIBUTES": {
+          "ADDR_LINE1": "123 Main Street, Las Vegas NV 89132"
+        }
+      }
+    ],
+    "PHONE": [
+      {
+        "LIB_FEAT_ID": -5,
+        "USAGE_TYPE": "HOME",
+        "FEAT_DESC": "702-919-1300",
+        "ATTRIBUTES": {
+          "PHONE_NUMBER": "702-919-1300"
+        }
+      }
+    ],
+    "EMAIL": [
+      {
+        "LIB_FEAT_ID": -6,
+        "FEAT_DESC": "bsmith@work.com",
+        "ATTRIBUTES": {
+          "EMAIL_ADDRESS": "bsmith@work.com"
+        }
+      }
+    ],
+    "RECORD_TYPE": [
+      {
+        "LIB_FEAT_ID": -11,
+        "FEAT_DESC": "PERSON",
+        "ATTRIBUTES": {
+          "RECORD_TYPE": "PERSON"
+        }
+      }
+    ]
   }
 }

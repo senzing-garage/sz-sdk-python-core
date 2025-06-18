@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.15] - 2025-06-18
+
+### Changed in 0.3.15
+
+- szconfigmanager.get_configs changed to szconfigmanager.get_config_registry
+
+### Fixed in 0.3.15
+
+- Example output for preprocess_record updated
+
 ## [0.3.14] - 2025-06-12
 
 ### Changed in 0.3.14

@@ -193,7 +193,7 @@ class SzConfigManagerCore(SzConfigManager):
         result.import_template()
         return result
 
-    def get_configs(self) -> str:
+    def get_config_registry(self) -> str:
         result = self.library_handle.SzConfigMgr_getConfigList_helper()
         with FreeCResources(self.library_handle, result.response):
             self.check_result(result.return_code)

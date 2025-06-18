@@ -15,7 +15,7 @@ settings = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_configmanager = sz_abstract_factory.create_configmanager()
-    config_list = sz_configmanager.get_configs()
+    config_list = sz_configmanager.get_config_registry()
     print(f"\n{config_list}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")
