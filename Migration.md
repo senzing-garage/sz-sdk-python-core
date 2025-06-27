@@ -6,7 +6,7 @@ If you haven't already, also check [breaking changes][breaking-changes]. This co
 
 ## The G2 Naming and Prefix Retired
 
-Artifacts such as modules, classes, exceptions and tools previously used the term "G2", this is typically observed as a prefix to the aforementioned artifacts. Senzing version 4.0 has, for the most part, replaced G2 with the term SZ, Sz, or sz depending on the context. You may still notice G2 used in some of the overall product files, but the version 4.0 SDK Python artifacts now use variant of SZ. A couple of examples of such changes:
+Artifacts such as modules, classes, exceptions and tools previously used the term "G2", this is typically observed as a prefix to the aforementioned artifacts. Senzing version 4.0 has, for the most part, replaced G2 with the term SZ, Sz, or sz depending on the context. You may still notice G2 used in some of the overall product files, but the version 4.0 SDK Python artifacts now use a variant of SZ. A few examples of such changes:
 
 - Python SDK module naming, G2 is replaced with sz
   - G2Engine&period;py -> szengine&period;py
@@ -52,10 +52,6 @@ try:
    ...
 except G2Exception as err:
     raise err
-finally:
-    g2_diagnostic.destroy()
-    g2_engine.destroy()
-    g2_product.destroy()
 ```
 
 The version 4.0 SDK uses an abstract factory pattern for the creation and initialization of engine objects. The abstract factory is instantiated with the required configuration settings. Subsequent engine objects requested from the abstract factory use the same single set of configuration settings. This simplifies instantiation of engines and removes the possibility of inadvertently introducing configuration errors. The same code for version 4.0:
@@ -65,7 +61,7 @@ from senzing import SzError
 from senzing_core import SzAbstractFactoryCore
 
 try:
-    sz_factory = SzAbstractFactoryCore('example', engine_config, False)
+    sz_factory = SzAbstractFactoryCore('example', engine_config, verbose_logging=False)
     sz_diagnostic = sz_factory.create_diagnostic()
     sz_engine = sz_factory.create_engine()
     sz_product = sz_factory.create_product()
@@ -77,8 +73,6 @@ try:
    ...
 except SZError as err:
     raise err
-finally:
-    sz_factory.destroy()
 ```
 
 ## Method Response Assignment
@@ -102,7 +96,7 @@ This has been improved in version 4.0, allowing the SDK to access the return cod
 
 ```python
 try:
-    response = sz_engine.searchByAttributes(record_json_str, SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS)
+    response = sz_engine.search_by_attributes(record_json_str, SzEngineFlags.SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS)
 except SzError as err:
     raise err
 print(response)
@@ -249,7 +243,7 @@ g2_engine.findNetworkByRecordID(
 The equivalent method in version 4.0 -  `find_network_by_record_id` - accepts a list of tuples, each consisting of 2 strings. The first string represents the data source, the second the record ID.
 
 ```python
-response = sz_engine.findNetworkByRecordID([("CUSTOMERS", "1001"), ("WATCHLIST", "1007"), ("WATCHLIST", "1010")], 6, 4, 5) # No need to JSON-encode the argument anymore
+response = sz_engine.find_network_by_record_id([("CUSTOMERS", "1001"), ("WATCHLIST", "1007"), ("WATCHLIST", "1010")], 6, 4, 5) # No need to JSON-encode the argument anymore
 ```
 
 Similarly, a call to `findPathIncludingSourceByEntityID` with the version 3.x SDK:
@@ -288,7 +282,7 @@ These are the methods in the version 4.0 SDK with arguments no longer requiring 
 
 ## Less is more
 
-In addition to the `with info` methods [being removed in version 4.0](#with-info), other methods have been collapsed into fewer methods; such as for find path. There are six methods in the version 3.x SDK for find path; three for finding paths by entity IDs and three for finding paths by record IDs. You would choose one depending on if you were interested in excluding entities/records in the path or finding paths that contain specific data sources.
+In addition to the `with info` methods [being removed in version 4.0](#with-info), other methods have been collapsed into fewer methods; such as for find path. There are six methods in the version 3.x SDK for find path; three for finding paths by entity IDs and three for finding paths by record IDs. You would choose one depending on if you were interested in excluding by entities or records in the path or, finding paths that contain specific data sources.
 
 - `findPathByEntityID`
 - `findPathByRecordID`
@@ -302,7 +296,7 @@ There are now 2 methods in the version 4.0 SDK, one for using entity IDs, the ot
 - `find_path_by_entity_id`
 - `find_path_by_record_id`
 
-The version 4.0 SDK methods take optional arguments for avoiding specific entities/records, and/or the path having specific data sources along it.
+The version 4.0 SDK methods take optional arguments for avoiding specific entities or records, and/or the path having specific data sources along it.
 
 ### findPathByEntityID -> find_path_by_entity_id
 

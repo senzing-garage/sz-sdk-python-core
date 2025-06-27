@@ -93,9 +93,10 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         """Context Manager method."""
         return self
 
-    def __del__(self) -> None:
-        """Destructor"""
-        self._destroy()
+    # TODO -
+    # def __del__(self) -> None:
+    #     """Destructor"""
+    #     self._destroy()
 
     def __exit__(
         self,
@@ -134,6 +135,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
         if not self._is_szconfigmanager_initialized:
+            # TODO - disable needed?
             result.initialize(  # pylint: disable=W0212
                 instance_name=self._instance_name,
                 settings=self._settings,

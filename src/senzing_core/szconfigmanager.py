@@ -27,10 +27,14 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
+    check_requirements,
     check_result_rc,
     load_sz_library,
 )
-from ._version import is_supported_senzingapi_version
+
+# TODO -
+# from ._version import check_requirements
+from ._version import get_senzingsdk_version
 from .szconfig import SzConfigCore
 
 # Metadata
@@ -118,42 +122,44 @@ class SzConfigManagerCore(SzConfigManager):
 
         _ = kwargs
 
-        # Determine if Senzing API version is acceptable.
-        is_supported_senzingapi_version()
+        # Determine if Python and Senzing SDK binary versions are supported.
+        # TODO -
+        # check_requirements()
+        check_requirements(get_senzingsdk_version())
 
         # Load binary library.
-        self.library_handle = load_sz_library()
+        self._library_handle = load_sz_library()
 
         # Partial function to use this modules self.library_handle for exception handling
-        self.check_result = partial(
+        self._check_result = partial(
             check_result_rc,
-            self.library_handle.SzConfigMgr_getLastException,
-            self.library_handle.SzConfigMgr_clearLastException,
-            self.library_handle.SzConfigMgr_getLastExceptionCode,
+            self._library_handle.SzConfigMgr_getLastException,
+            self._library_handle.SzConfigMgr_clearLastException,
+            self._library_handle.SzConfigMgr_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results.
         # Synchronized with er/sdk/c/libSzConfigMgr.h
 
-        self.library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
-        self.library_handle.SzConfigMgr_addConfig_helper.restype = SzConfigMgrAddConfigResult
-        self.library_handle.SzConfigMgr_destroy.argtypes = []
-        self.library_handle.SzConfigMgr_destroy.restype = c_longlong
-        self.library_handle.SzConfigMgr_getConfig_helper.argtypes = [c_longlong]
-        self.library_handle.SzConfigMgr_getConfig_helper.restype = SzConfigMgrGetConfigResult
-        self.library_handle.SzConfigMgr_getConfigList_helper.argtypes = []
-        self.library_handle.SzConfigMgr_getConfigList_helper.restype = SzConfigMgrGetConfigListResult
-        self.library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = SzConfigMgrGetDefaultConfigIDResult
-        self.library_handle.SzConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
-        self.library_handle.SzConfigMgr_init.restype = c_longlong
-        self.library_handle.SzConfigMgr_replaceDefaultConfigID.argtypes = [
+        self._library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
+        self._library_handle.SzConfigMgr_addConfig_helper.restype = SzConfigMgrAddConfigResult
+        self._library_handle.SzConfigMgr_destroy.argtypes = []
+        self._library_handle.SzConfigMgr_destroy.restype = c_longlong
+        self._library_handle.SzConfigMgr_getConfig_helper.argtypes = [c_longlong]
+        self._library_handle.SzConfigMgr_getConfig_helper.restype = SzConfigMgrGetConfigResult
+        self._library_handle.SzConfigMgr_getConfigList_helper.argtypes = []
+        self._library_handle.SzConfigMgr_getConfigList_helper.restype = SzConfigMgrGetConfigListResult
+        self._library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = SzConfigMgrGetDefaultConfigIDResult
+        self._library_handle.SzConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
+        self._library_handle.SzConfigMgr_init.restype = c_longlong
+        self._library_handle.SzConfigMgr_replaceDefaultConfigID.argtypes = [
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
-        self.library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
-        self.library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_void_p]
+        self._library_handle.SzConfigMgr_replaceDefaultConfigID.restype = c_longlong
+        self._library_handle.SzConfigMgr_setDefaultConfigID.argtypes = [c_longlong]
+        self._library_handle.SzConfigMgr_setDefaultConfigID.restype = c_longlong
+        self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
         self.instance_name = ""
         self.settings = ""
@@ -169,9 +175,9 @@ class SzConfigManagerCore(SzConfigManager):
 
     @catch_sdk_exceptions
     def create_config_from_config_id(self, config_id: int) -> SzConfig:
-        get_config_result = self.library_handle.SzConfigMgr_getConfig_helper(config_id)
-        with FreeCResources(self.library_handle, get_config_result.response):
-            self.check_result(get_config_result.return_code)
+        get_config_result = self._library_handle.SzConfigMgr_getConfig_helper(config_id)
+        with FreeCResources(self._library_handle, get_config_result.response):
+            self._check_result(get_config_result.return_code)
             config_definition = as_python_str(get_config_result.response)
         result = SzConfigCore()
         result.import_config_definition(config_definition)
@@ -194,14 +200,14 @@ class SzConfigManagerCore(SzConfigManager):
         return result
 
     def get_config_registry(self) -> str:
-        result = self.library_handle.SzConfigMgr_getConfigList_helper()
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
+        result = self._library_handle.SzConfigMgr_getConfigList_helper()
+        with FreeCResources(self._library_handle, result.response):
+            self._check_result(result.return_code)
             return as_python_str(result.response)
 
     def get_default_config_id(self) -> int:
-        result = self.library_handle.SzConfigMgr_getDefaultConfigID_helper()
-        self.check_result(result.return_code)
+        result = self._library_handle.SzConfigMgr_getDefaultConfigID_helper()
+        self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
     @catch_sdk_exceptions
@@ -210,11 +216,11 @@ class SzConfigManagerCore(SzConfigManager):
         config_definition: str,
         config_comment: str,
     ) -> int:
-        result = self.library_handle.SzConfigMgr_addConfig_helper(
+        result = self._library_handle.SzConfigMgr_addConfig_helper(
             as_c_char_p(config_definition),
             as_c_char_p(config_comment),
         )
-        self.check_result(result.return_code)
+        self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
     @catch_sdk_exceptions
@@ -223,10 +229,10 @@ class SzConfigManagerCore(SzConfigManager):
         current_default_config_id: int,
         new_default_config_id: int,
     ) -> None:
-        result = self.library_handle.SzConfigMgr_replaceDefaultConfigID(
+        result = self._library_handle.SzConfigMgr_replaceDefaultConfigID(
             current_default_config_id, new_default_config_id
         )
-        self.check_result(result)
+        self._check_result(result)
 
     @catch_sdk_exceptions
     def set_default_config(self, config_definition: str, config_comment: str) -> int:
@@ -236,8 +242,8 @@ class SzConfigManagerCore(SzConfigManager):
 
     @catch_sdk_exceptions
     def set_default_config_id(self, config_id: int) -> None:
-        result = self.library_handle.SzConfigMgr_setDefaultConfigID(config_id)
-        self.check_result(result)
+        result = self._library_handle.SzConfigMgr_setDefaultConfigID(config_id)
+        self._check_result(result)
 
     # -------------------------------------------------------------------------
     # Public non-interface methods
@@ -246,7 +252,7 @@ class SzConfigManagerCore(SzConfigManager):
     def _destroy(
         self,
     ) -> None:
-        _ = self.library_handle.SzConfigMgr_destroy()
+        _ = self._library_handle.SzConfigMgr_destroy()
 
     @catch_sdk_exceptions
     def initialize(
@@ -266,9 +272,9 @@ class SzConfigManagerCore(SzConfigManager):
         self.instance_name = instance_name
         self.settings = as_str(settings)
         self.verbose_logging = verbose_logging
-        result = self.library_handle.SzConfigMgr_init(
+        result = self._library_handle.SzConfigMgr_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        self.check_result(result)
+        self._check_result(result)

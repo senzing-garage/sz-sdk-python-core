@@ -116,7 +116,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_configmanager.check_result(-1)
+        sz_configmanager._check_result(-1)
 
 
 def test_reinitialize(sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfigManagerCore) -> None:

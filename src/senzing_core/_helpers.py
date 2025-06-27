@@ -1,5 +1,5 @@
 """
-SDK Helper functions
+SDK Helpers
 """
 
 # NOTE - This is to prevent TypeError: '_ctypes.PyCPointerType' object is not subscriptable  on _Pointer[c_char]) for
@@ -26,25 +26,63 @@ from ctypes import (
 )
 from ctypes.util import find_library
 from functools import wraps
+from sys import version_info
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 from typing import cast as typing_cast
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
-try:
-    import orjson  # type: ignore[import-not-found, unused-ignore]
+# TODO - Move to constants?
+PYTHON_VERSION_MINIMUM = "3.9"
+SENZING_VERSION_MINIMUM = "4.0.0"
+SENZING_VERSION_MAXIMUM = "5.0.0"
 
-    def _json_dumps(object_: Any) -> str:
-        return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
+# TODO -
+# try:
+#     import orjson  # type: ignore[import-not-found, unused-ignore]
+
+#     def _json_dumps(object_: Any) -> str:
+#         return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
+
+# except ImportError:
+#     import json
+
+#     # NOTE - separators= is used to be consistent with Sz engine and orjson output
+#     def _json_dumps(object_: Any) -> str:
+#         return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
+try:
+    import orjson
+
+    JSON_LIB = orjson.__name__
+
+    # TODO - Test all
+    def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
+        return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")
+
+    def _json_loads(_obj: Any, *args: Any, **kwargs: Any) -> Any:
+        return orjson.loads(_obj, *args, **kwargs)
 
 except ImportError:
     import json
 
-    # NOTE - separators= is used to be consistent with Sz engine and orjson output
-    def _json_dumps(object_: Any) -> str:
-        return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
+    JSON_LIB = json.__name__
 
+    def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
+        return json.dumps(_obj, ensure_ascii=False, *args, **kwargs)
+
+    def _json_loads(_obj: Any, *args: Any, **kwargs: Any) -> Any:
+        return json.loads(_obj, *args, **kwargs)
+
+finally:
+    if JSON_LIB == "orjson":
+        JSON_INDENT = {"option": orjson.OPT_INDENT_2}
+        # JSONDecodeError = orjson.JSONDecodeError
+        # TODO - Only in orjson, need to handle?
+        # orjson.JSONEncodeError
+    else:
+        JSON_INDENT = {"indent": 2}
+        # JSONDecodeError = json.JSONDecodeError
 
 # NOTE - Using earlier Python version typing to support v3.9 still and not rely on typing_extensions.
 # NOTE - F can be changed to use ParamSpec when no longer need to support v3.9.
@@ -90,6 +128,7 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
+# TODO -
 # def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 def catch_sdk_exceptions(func_to_decorate: F) -> F:
     """
@@ -138,6 +177,8 @@ def catch_sdk_exceptions(func_to_decorate: F) -> F:
 # -----------------------------------------------------------------------------
 # Helpers for loading Senzing C library
 # -----------------------------------------------------------------------------
+
+
 def load_sz_library(lib: str = "", os: str = "") -> CDLL:
     """
     Check the OS name and load the appropriate Senzing library.
@@ -163,11 +204,159 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
         # TODO - Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
-            "       Did you remember to setup your environment by sourcing the setupEnv file?\n"
-            "       For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
-            "       If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
+            "        Did you remember to setup your environment by sourcing the setupEnv file?\n"
+            "        For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
+            "        If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
         )
         raise SzSdkError("failed to load the Senzing library") from err
+
+
+# TODO -
+# -----------------------------------------------------------------------------
+# Helpers for checking and handling results from C library calls
+# -----------------------------------------------------------------------------
+
+
+# TODO -
+def get_version_from_json_string(json_str: str) -> str:
+    """#TODO"""
+    # TODO - try
+    version: str = _json_loads(json_str).get("VERSION", "0.0.0")
+    return version
+
+
+def normalize_semantic_version(semantic_version: str) -> int:
+    """
+    From a semantic version string (e.g. "M.m.P") create an integer for comparison.
+
+    Note:  The current implementation supports up to 2 digit Major, Minor, and Patch integers. (see 10**4, 10**2)
+           Either Major, Minor and Patch or Major, Minor
+
+    Args:
+        semantic_version (str): A string in the form 'M.m.P'
+
+    Returns:
+        int: An integer representation of the Semantic Version string. Suitable for comparison.
+
+    :meta private:
+    """
+    semantic_version_splits = semantic_version.split(".")
+    if len(semantic_version_splits) == 3:
+        result = (
+            (int(semantic_version_splits[0]) * 10**4)
+            + (int(semantic_version_splits[1]) * 10**2)
+            + (int(semantic_version_splits[2]))
+        )
+    elif len(semantic_version_splits) == 2:
+        result = (int(semantic_version_splits[0]) * 10**4) + (int(semantic_version_splits[1]) * 10**2)
+    else:
+        message = "semantic_version should either be M.m.P or M.m, e.g., 4.0.0 or 4.0"
+        raise SzSdkError(message)
+
+    return result
+
+
+# TODO -
+# def supports_senzingsdk_version(
+def is_senzing_binary_version_supported(
+    # TODO -
+    # min_semantic_version: str, max_semantic_version: str, current_semantic_version: str
+    current_semantic_version: str,
+    min_semantic_version: str = SENZING_VERSION_MINIMUM,
+    max_semantic_version: str = SENZING_VERSION_MAXIMUM,
+) -> bool:
+    """
+    Determine if the Senzing SDK binary is supported by this version of the Senzing Python SDK.
+
+    Args:
+        min_semantic_version (str): String in form 'M.m.P' representing lowest version supported.
+        max_semantic_version (str): String in form 'M.m.P' representing the version where support stops.
+        current_semantic_version (str): String in form 'M.m.P' representing current version.
+
+    Raises:
+        SzSdkError: Current Senzing SDK is not supported.
+
+    Returns:
+        bool: Returns True if current Senzing SDK binary version is supported.
+
+    :meta private:
+    """
+    min_version = normalize_semantic_version(min_semantic_version)
+    max_version = normalize_semantic_version(max_semantic_version)
+    current_version = normalize_semantic_version(current_semantic_version)
+
+    if (current_version < min_version) or (current_version >= max_version):
+        message = f"Current Senzing SDK binary version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}."
+        raise SzSdkError(message)
+
+    return True
+
+
+# def is_supported_senzingsdk_version() -> bool:
+#     """
+#     Determine if the Senzing SDK binary is supported by this version of the Senzing Python SDK.
+
+#     Raises:
+#         SzSdkError: Current Senzing SDK is not supported.
+
+#     Returns:
+#         bool: Returns True if current Senzing SDK binary version is supported.
+
+#     :meta private:
+#     """
+#     sz_product = SzProductCore()
+#     sz_product.initialize("_version", "{}")  # pylint: disable=W0212
+#     version_dict = json.loads(sz_product.get_version())
+#     senzing_version_current = version_dict.get("VERSION", "0.0.0")
+#     result = supports_senzingsdk_version(SENZING_VERSION_MINIMUM, SENZING_VERSION_MAXIMUM, senzing_version_current)
+
+#     return result
+
+
+def is_python_version_supported(min_version: str = PYTHON_VERSION_MINIMUM) -> bool:
+    """
+    Determine if the minimum Python version is supported.
+
+    Raises:
+        SzSdkError: Current Python version is not supported.
+
+    Returns:
+        bool: Returns True if current Python version is supported.
+
+    :meta private:
+    """
+    min_version_normalized = normalize_semantic_version(min_version)
+    runtime_version = f"{version_info.major}.{version_info.minor}"
+    runtime_version_normalized = normalize_semantic_version(runtime_version)
+
+    if runtime_version_normalized < min_version_normalized:
+        message = f"Current Python version of {runtime_version} doesn't meet minimum requirement of {min_version}"
+        raise SzSdkError(message)
+
+    return True
+
+
+# TODO -
+def check_requirements(senzingsdk_current_version: str, min_python_version: str = PYTHON_VERSION_MINIMUM) -> bool:
+    """
+    Determine if the minimum Python and Senzing SDK binary versions are supported.
+
+    Raises:
+        SzSdkError: One or both versions are not supported.
+
+    Returns:
+        bool: Returns True if Python and Senzing SDK binary versions are supported.
+
+    :meta private:
+    """
+    # TODO - and change python function name
+    # return all((is_supported_python_version(min_python_version), is_supported_senzingsdk_version()))
+    return all(
+        (
+            is_python_version_supported(min_python_version),
+            is_senzing_binary_version_supported(current_semantic_version=senzingsdk_current_version),
+        )
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -288,7 +477,7 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
     if not record_keys or (isinstance(record_keys, list) and len(record_keys) == 0):
         return ""
 
-    record_keys_with_elements = [rk for rk in record_keys if rk]
+    record_keys_with_elements = [record_key for record_key in record_keys if record_key]
     wrong_types = set()
 
     if not all(isinstance(e, tuple) for e in record_keys_with_elements):
@@ -300,7 +489,9 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
         raise TypeError(f"tuple(s) length in {record_keys} should be 2, there are lengths(s) of {element_len_str}")
 
     if rk_wrong_types := [
-        rk for rk in record_keys_with_elements if not isinstance(rk[0], str) or not isinstance(rk[1], str)
+        record_key
+        for record_key in record_keys_with_elements
+        if not isinstance(record_key[0], str) or not isinstance(record_key[1], str)
     ]:
         wrong_types = {(type(w[0]).__name__, type(w[1]).__name__) for w in rk_wrong_types}
 
@@ -310,8 +501,8 @@ def build_records_json(record_keys: Union[List[tuple[str, str]], None]) -> str:
 
     records = ", ".join(
         [
-            f'{{"DATA_SOURCE": {escape_json_str(ds)}, "RECORD_ID": {escape_json_str(rec_id)}}}'
-            for ds, rec_id in record_keys_with_elements
+            f'{{"DATA_SOURCE": {escape_json_str(data_source)}, "RECORD_ID": {escape_json_str(record_id)}}}'
+            for data_source, record_id in record_keys_with_elements
         ]
     )
 

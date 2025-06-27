@@ -101,7 +101,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_product: SzProductCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_product.check_result(-1)
+        sz_product._check_result(-1)
 
 
 # -----------------------------------------------------------------------------

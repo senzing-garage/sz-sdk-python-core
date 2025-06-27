@@ -136,7 +136,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_config: SzConfigCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_config.check_result(-1)
+        sz_config._check_result(-1)
 
 
 # -----------------------------------------------------------------------------
