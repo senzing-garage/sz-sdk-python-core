@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">148 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">141<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">7<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">140<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">8<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_e60963f5f1680052__version_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.9.1">coverage.py v7.9.1</a>,
-            created at 2025-06-30 07:40 +0000
+            created at 2025-07-01 07:37 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -234,11 +234,11 @@
     <p class="mis show_mis"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">            <span class="key">return</span> <span class="nam">cdll</span><span class="op">.</span><span class="nam">LoadLibrary</span><span class="op">(</span><span class="nam">lib</span> <span class="key">if</span> <span class="nam">lib</span> <span class="key">else</span> <span class="str">"libSz.so"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t154" href="#t154">154</a></span><span class="t">        <span class="key">if</span> <span class="nam">system_name</span> <span class="op">==</span> <span class="str">"Darwin"</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">            <span class="key">return</span> <span class="nam">cdll</span><span class="op">.</span><span class="nam">LoadLibrary</span><span class="op">(</span><span class="nam">lib</span> <span class="key">if</span> <span class="nam">lib</span> <span class="key">else</span> <span class="str">"libSz.dylib"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">            <span class="key">return</span> <span class="nam">cdll</span><span class="op">.</span><span class="nam">LoadLibrary</span><span class="op">(</span><span class="nam">lib</span> <span class="key">if</span> <span class="nam">lib</span> <span class="key">else</span> <span class="str">"libSz.dylib"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t156" href="#t156">156</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">        <span class="key">if</span> <span class="nam">system_name</span> <span class="op">==</span> <span class="str">"Windows"</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">            <span class="nam">win_path</span> <span class="op">=</span> <span class="nam">find_library</span><span class="op">(</span><span class="nam">lib</span> <span class="key">if</span> <span class="nam">lib</span> <span class="key">else</span> <span class="str">"Sz"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">            <span class="key">return</span> <span class="nam">cdll</span><span class="op">.</span><span class="nam">LoadLibrary</span><span class="op">(</span><span class="nam">win_path</span> <span class="key">if</span> <span class="nam">win_path</span> <span class="key">else</span> <span class="str">""</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">            <span class="nam">win_path</span> <span class="op">=</span> <span class="nam">find_library</span><span class="op">(</span><span class="nam">lib</span> <span class="key">if</span> <span class="nam">lib</span> <span class="key">else</span> <span class="str">"Sz"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">            <span class="key">return</span> <span class="nam">cdll</span><span class="op">.</span><span class="nam">LoadLibrary</span><span class="op">(</span><span class="nam">win_path</span> <span class="key">if</span> <span class="nam">win_path</span> <span class="key">else</span> <span class="str">""</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">        <span class="key">raise</span> <span class="nam">SzSdkError</span><span class="op">(</span><span class="fst">f"</span><span class="op">{</span><span class="nam">system_name</span><span class="op">}</span><span class="fst"> is an unsupported operating system</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">    <span class="key">except</span> <span class="nam">OSError</span> <span class="key">as</span> <span class="nam">err</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -530,7 +530,7 @@
             <a class="nav" href="z_e60963f5f1680052__version_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.9.1">coverage.py v7.9.1</a>,
-            created at 2025-06-30 07:40 +0000
+            created at 2025-07-01 07:37 +0000
         </p>
     </div>
 </footer>
