@@ -31,9 +31,6 @@ from ._helpers import (
     check_result_rc,
     load_sz_library,
 )
-
-# TODO -
-# from ._version import check_requirements
 from ._version import get_senzingsdk_version
 from .szconfig import SzConfigCore
 
@@ -122,12 +119,7 @@ class SzConfigManagerCore(SzConfigManager):
 
         _ = kwargs
 
-        # Determine if Python and Senzing SDK binary versions are supported.
-        # TODO -
-        # check_requirements()
         check_requirements(get_senzingsdk_version())
-
-        # Load binary library.
         self._library_handle = load_sz_library()
 
         # Partial function to use this modules self.library_handle for exception handling

@@ -33,7 +33,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags
 
-from ._helpers import (  # TODO -
+from ._helpers import (
     FreeCResources,
     as_c_char_p,
     as_c_uintptr_t,
@@ -47,9 +47,6 @@ from ._helpers import (  # TODO -
     check_result_rc,
     load_sz_library,
 )
-
-# TODO -
-# from ._version import check_requirements
 from ._version import get_senzingsdk_version
 
 # Metadata
@@ -263,19 +260,15 @@ class SzEngineCore(SzEngine):
 
         _ = kwargs
 
-        # Determine if Python and Senzing SDK binary versions are supported.
-        # TODO -
-        # check_requirements()
         check_requirements(get_senzingsdk_version())
+        self._library_handle = load_sz_library()
 
         # Mask for removing SDK specific flags not supplied to method call
         self._sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
+        # TODO - Just use SZ_NO_INFO
         # Empty response for methods where with info can optionally be returned but was not requested
         self._no_info = SZ_NO_INFO
-
-        # Load binary library.
-        self._library_handle = load_sz_library()
 
         # Partial function to use this modules self.library_handle for exception handling
         self._check_result = partial(

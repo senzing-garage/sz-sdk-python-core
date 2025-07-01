@@ -20,16 +20,14 @@ from ctypes import c_char_p, c_int, c_longlong, c_void_p
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzProduct, SzSdkError
+from senzing import SzProduct
 
-from ._helpers import (  # TODO -; supports_senzingsdk_version,
+from ._helpers import (
     as_c_char_p,
     as_python_str,
     as_str,
     catch_sdk_exceptions,
-    check_requirements,
     check_result_rc,
-    get_version_from_json_string,
     is_python_version_supported,
     load_sz_library,
 )
@@ -80,19 +78,8 @@ class SzProductCore(SzProduct):
 
         _ = kwargs
 
-        # Load binary library.
-        self._library_handle = load_sz_library()
-
-        # TODO -
         is_python_version_supported()
-        # try:
-        #     self._library_handle.SzProduct_version.argtypes = []
-        #     self._library_handle.SzProduct_version.restype = c_char_p
-        #     version = get_version_from_json_string(as_python_str(self._library_handle.SzProduct_version()))
-        #     check_requirements(senzingsdk_current_version=version)
-        # # TODO - There could be a SzError too
-        # except AttributeError as err:
-        #     raise SzSdkError("Yes attribute error") from err
+        self._library_handle = load_sz_library()
 
         # Partial function to use this modules self.library_handle for exception handling
         self._check_result = partial(
@@ -111,7 +98,6 @@ class SzProductCore(SzProduct):
         self._library_handle.SzProduct_init.restype = c_longlong
         self._library_handle.SzProduct_license.argtypes = []
         self._library_handle.SzProduct_license.restype = c_char_p
-        # TODO -
         self._library_handle.SzProduct_version.argtypes = []
         self._library_handle.SzProduct_version.restype = c_char_p
         self._library_handle.SzHelper_free.argtypes = [c_void_p]

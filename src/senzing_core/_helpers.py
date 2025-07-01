@@ -33,6 +33,9 @@ from typing import cast as typing_cast
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
+# TODO -
+# from .szproduct import SzProductCore
+
 # TODO - Move to constants?
 PYTHON_VERSION_MINIMUM = "3.9"
 SENZING_VERSION_MINIMUM = "4.0.0"
@@ -213,11 +216,31 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
 
 # TODO -
 # -----------------------------------------------------------------------------
-# Helpers for checking and handling results from C library calls
+# Helpers for
 # -----------------------------------------------------------------------------
 
 
 # TODO -
+# def get_senzingsdk_version() -> str:
+#     """
+#     Use szproduct to return the Senzing SDK binary version.
+
+#     Raises:
+
+#     Returns:
+#         str: Returns the Senzing SDK binary version.
+
+#     :meta private:
+#     """
+
+#     sz_product = SzProductCore()
+#     sz_product.initialize("_version", "{}")
+#     version: str = json.loads(sz_product.get_version()).get("VERSION", "0.0.0")
+
+#     return version
+
+
+# TODO - Is this being used still?
 def get_version_from_json_string(json_str: str) -> str:
     """#TODO"""
     # TODO - try

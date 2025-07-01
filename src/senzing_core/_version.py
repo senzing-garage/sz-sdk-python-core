@@ -3,18 +3,22 @@ Check if supported versions for the Senzing SDK binary and Python
 """
 
 import json
-from sys import version_info
-
-from senzing import SzSdkError
 
 from .szproduct import SzProductCore
 
-PYTHON_VERSION_MINIMUM = "3.9"
-SENZING_VERSION_MINIMUM = "4.0.0"
-SENZING_VERSION_MAXIMUM = "5.0.0"
+# TODO - Clean up, rename to versions? Take back out of _helpers? If szabstract factory python check is in here use SzSDkError
+# import sys
+# from sys import version_info
+
+# from senzing import SzSdkError
 
 
-# TODO -
+# PYTHON_VERSION_MINIMUM = "3.9"
+# SENZING_VERSION_MINIMUM = "4.0.0"
+# SENZING_VERSION_MAXIMUM = "5.0.0"
+
+
+# # TODO -
 def get_senzingsdk_version() -> str:
     """
     Use szproduct to return the Senzing SDK binary version.
@@ -91,6 +95,41 @@ def get_senzingsdk_version() -> str:
 #     if (current_version < min_version) or (current_version >= max_version):
 #         message = f"Current Senzing SDK binary version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}."
 #         raise SzSdkError(message)
+#     return True
+
+
+# # TODO -
+# def is_senzing_binary_version_supported(
+#     # TODO -
+#     # min_semantic_version: str, max_semantic_version: str, current_semantic_version: str
+#     current_semantic_version: str,
+#     min_semantic_version: str = SENZING_VERSION_MINIMUM,
+#     max_semantic_version: str = SENZING_VERSION_MAXIMUM,
+# ) -> bool:
+#     """
+#     Determine if the Senzing SDK binary is supported by this version of the Senzing Python SDK.
+
+#     Args:
+#         min_semantic_version (str): String in form 'M.m.P' representing lowest version supported.
+#         max_semantic_version (str): String in form 'M.m.P' representing the version where support stops.
+#         current_semantic_version (str): String in form 'M.m.P' representing current version.
+
+#     Raises:
+#         SzSdkError: Current Senzing SDK is not supported.
+
+#     Returns:
+#         bool: Returns True if current Senzing SDK binary version is supported.
+
+#     :meta private:
+#     """
+#     min_version = normalize_semantic_version(min_semantic_version)
+#     max_version = normalize_semantic_version(max_semantic_version)
+#     current_version = normalize_semantic_version(current_semantic_version)
+
+#     if (current_version < min_version) or (current_version >= max_version):
+#         message = f"Current Senzing SDK binary version of {current_semantic_version} not in range {min_semantic_version} <= version < {max_semantic_version}."
+#         raise SzSdkError(message)
+
 #     return True
 
 
