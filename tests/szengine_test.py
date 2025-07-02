@@ -1176,7 +1176,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_engine: SzEngineCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_engine.check_result(-1)
+        sz_engine._check_result(-1)
 
 
 def test_reinitialize(sz_engine: SzEngineCore) -> None:

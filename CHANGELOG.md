@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.16] - 2025-07-02
+
+### Added in 0.3.16
+
+- Senzing binary and Python version checks
+
+### Changed in 0.3.16
+
+- Internal refactoring, clean up, and corrections
+
+### Removed in 0.3.16
+
+- _version.py, merged into _helpers.py 
+
 ## [0.3.15] - 2025-06-18
 
 ### Changed in 0.3.15

@@ -255,7 +255,7 @@ def test_set_default_config_id_bad_config_id_value(
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -265,7 +265,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -275,7 +275,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -285,7 +285,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_configmanager: SzConfigManagerCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_configmanager.check_result(-1)
+        sz_configmanager._check_result(-1)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------

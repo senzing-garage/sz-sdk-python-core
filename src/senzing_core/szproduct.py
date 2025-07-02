@@ -69,47 +69,38 @@ class SzProductCore(SzProduct):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        # Load binary library.
-        self.library_handle = load_sz_library()
+        self._library_handle = load_sz_library()
 
-        # Partial function to use this modules self.library_handle for exception handling
-        self.check_result = partial(
+        # Partial function to use this modules self._library_handle for exception handling
+        self._check_result = partial(
             check_result_rc,
-            self.library_handle.SzProduct_getLastException,
-            self.library_handle.SzProduct_clearLastException,
-            self.library_handle.SzProduct_getLastExceptionCode,
+            self._library_handle.SzProduct_getLastException,
+            self._library_handle.SzProduct_clearLastException,
+            self._library_handle.SzProduct_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results
         # Must be synchronized with /opt/senzing/er/sdk/c/libSzProduct.h
-
-        self.library_handle.SzProduct_destroy.argtypes = []
-        self.library_handle.SzProduct_destroy.restype = c_longlong
-        self.library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.SzProduct_init.restype = c_longlong
-        self.library_handle.SzProduct_license.argtypes = []
-        self.library_handle.SzProduct_license.restype = c_char_p
-        self.library_handle.SzProduct_version.argtypes = []
-        self.library_handle.SzProduct_version.restype = c_char_p
-        self.library_handle.SzHelper_free.argtypes = [c_void_p]
-
-    def __del__(self) -> None:
-        """Destructor"""
+        self._library_handle.SzProduct_destroy.argtypes = []
+        self._library_handle.SzProduct_destroy.restype = c_longlong
+        self._library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
+        self._library_handle.SzProduct_init.restype = c_longlong
+        self._library_handle.SzProduct_license.argtypes = []
+        self._library_handle.SzProduct_license.restype = c_char_p
+        self._library_handle.SzProduct_version.argtypes = []
+        self._library_handle.SzProduct_version.restype = c_char_p
+        self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
     # -------------------------------------------------------------------------
     # SzProduct methods
     # -------------------------------------------------------------------------
 
     def _destroy(self) -> None:
-        _ = self.library_handle.SzProduct_destroy()
+        _ = self._library_handle.SzProduct_destroy()
 
     @catch_sdk_exceptions
     def initialize(
@@ -126,17 +117,17 @@ class SzProductCore(SzProduct):
             settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
-        result = self.library_handle.SzProduct_init(
+        result = self._library_handle.SzProduct_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             verbose_logging,
         )
-        self.check_result(result)
+        self._check_result(result)
 
     def get_license(self) -> str:
-        return as_python_str(self.library_handle.SzProduct_license())
+        return as_python_str(self._library_handle.SzProduct_license())
 
     def get_version(
         self,
     ) -> str:
-        return as_python_str(self.library_handle.SzProduct_version())
+        return as_python_str(self._library_handle.SzProduct_version())

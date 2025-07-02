@@ -31,7 +31,6 @@ from ._helpers import (
     check_result_rc,
     load_sz_library,
 )
-from ._version import is_supported_senzingapi_version
 
 # Metadata
 
@@ -97,56 +96,44 @@ class SzDiagnosticCore(SzDiagnostic):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        # Determine if Senzing API version is acceptable.
-        is_supported_senzingapi_version()
+        self._library_handle = load_sz_library()
 
-        # Load binary library.
-        self.library_handle = load_sz_library()
-
-        # Partial function to use this modules self.library_handle for exception handling
-        self.check_result = partial(
+        # Partial function to use this modules self._library_handle for exception handling
+        self._check_result = partial(
             check_result_rc,
-            self.library_handle.SzDiagnostic_getLastException,
-            self.library_handle.SzDiagnostic_clearLastException,
-            self.library_handle.SzDiagnostic_getLastExceptionCode,
+            self._library_handle.SzDiagnostic_getLastException,
+            self._library_handle.SzDiagnostic_clearLastException,
+            self._library_handle.SzDiagnostic_getLastExceptionCode,
         )
 
         # Initialize C function input parameters and results.
         # Must be synchronized with er/sdk/c/libSzDiagnostic.h
-
-        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
-        self.library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
+        self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
+        self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
             SzDiagnosticCheckDatastorePerformanceResult
         )
-        self.library_handle.SzDiagnostic_destroy.argtypes = []
-        self.library_handle.SzDiagnostic_destroy.restype = c_longlong
-        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
-        self.library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = SzDiagnosticGetDatastoreInfoResult
-        self.library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
-        self.library_handle.SzDiagnostic_getFeature_helper.restype = SzDiagnosticGetFeatureResult
-        self.library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
-        self.library_handle.SzDiagnostic_init.restype = c_longlong
-        self.library_handle.SzDiagnostic_initWithConfigID.argtypes = [
+        self._library_handle.SzDiagnostic_destroy.argtypes = []
+        self._library_handle.SzDiagnostic_destroy.restype = c_longlong
+        self._library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
+        self._library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = SzDiagnosticGetDatastoreInfoResult
+        self._library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
+        self._library_handle.SzDiagnostic_getFeature_helper.restype = SzDiagnosticGetFeatureResult
+        self._library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
+        self._library_handle.SzDiagnostic_init.restype = c_longlong
+        self._library_handle.SzDiagnostic_initWithConfigID.argtypes = [
             c_char_p,
             c_char_p,
             c_longlong,
             c_longlong,
         ]
-        self.library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
-        self.library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
-        self.library_handle.SzDiagnostic_reinit.restype = c_longlong
-        self.library_handle.SzHelper_free.argtypes = [c_void_p]
-
-    def __del__(self) -> None:
-        """Destructor"""
+        self._library_handle.SzDiagnostic_initWithConfigID.restype = c_longlong
+        self._library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
+        self._library_handle.SzDiagnostic_reinit.restype = c_longlong
+        self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
@@ -154,26 +141,25 @@ class SzDiagnosticCore(SzDiagnostic):
 
     @catch_sdk_exceptions
     def check_datastore_performance(self, seconds_to_run: int) -> str:
-        result = self.library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
+        result = self._library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
+        with FreeCResources(self._library_handle, result.response):
+            self._check_result(result.return_code)
             return as_python_str(result.response)
 
     def _destroy(self) -> None:
-        _ = self.library_handle.SzDiagnostic_destroy()
+        _ = self._library_handle.SzDiagnostic_destroy()
 
     def get_datastore_info(self) -> str:
-        result = self.library_handle.SzDiagnostic_getDatastoreInfo_helper()
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
+        result = self._library_handle.SzDiagnostic_getDatastoreInfo_helper()
+        with FreeCResources(self._library_handle, result.response):
+            self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    # NOTE This is included but not to be documented, used by sz_explorer
     @catch_sdk_exceptions
     def get_feature(self, feature_id: int) -> str:
-        result = self.library_handle.SzDiagnostic_getFeature_helper(feature_id)
-        with FreeCResources(self.library_handle, result.response):
-            self.check_result(result.return_code)
+        result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
+        with FreeCResources(self._library_handle, result.response):
+            self._check_result(result.return_code)
             return as_python_str(result.response)
 
     @catch_sdk_exceptions
@@ -194,25 +180,25 @@ class SzDiagnosticCore(SzDiagnostic):
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
         if config_id == 0:
-            result = self.library_handle.SzDiagnostic_init(
+            result = self._library_handle.SzDiagnostic_init(
                 as_c_char_p(instance_name),
                 as_c_char_p(as_str(settings)),
                 verbose_logging,
             )
-            self.check_result(result)
+            self._check_result(result)
             return
 
-        result = self.library_handle.SzDiagnostic_initWithConfigID(
+        result = self._library_handle.SzDiagnostic_initWithConfigID(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
             config_id,
             verbose_logging,
         )
-        self.check_result(result)
+        self._check_result(result)
 
     def purge_repository(self) -> None:
-        result = self.library_handle.SzDiagnostic_purgeRepository()
-        self.check_result(result)
+        result = self._library_handle.SzDiagnostic_purgeRepository()
+        self._check_result(result)
 
     @catch_sdk_exceptions
     def reinitialize(self, config_id: int) -> None:
@@ -221,5 +207,5 @@ class SzDiagnosticCore(SzDiagnostic):
         identifier. A list of available configuration identifiers can be retrieved using
         `szconfigmanager.get_config_registry`.
         """
-        result = self.library_handle.SzDiagnostic_reinit(config_id)
-        self.check_result(result)
+        result = self._library_handle.SzDiagnostic_reinit(config_id)
+        self._check_result(result)
