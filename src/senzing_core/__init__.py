@@ -1,8 +1,7 @@
 try:
     import json
 
-    from _helpers import is_senzing_binary_version_supported  # type: ignore
-
+    from ._helpers import is_senzing_binary_version_supported
     from .szabstractfactory import (
         SzAbstractFactoryCore,
         SzAbstractFactoryParametersCore,
