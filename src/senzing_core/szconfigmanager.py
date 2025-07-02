@@ -27,11 +27,9 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
-    check_requirements,
     check_result_rc,
     load_sz_library,
 )
-from ._version import get_senzingsdk_version
 from .szconfig import SzConfigCore
 
 # Metadata
@@ -111,18 +109,13 @@ class SzConfigManagerCore(SzConfigManager):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        check_requirements(get_senzingsdk_version())
         self._library_handle = load_sz_library()
 
-        # Partial function to use this modules self.library_handle for exception handling
+        # Partial function to use this modules self._library_handle for exception handling
         self._check_result = partial(
             check_result_rc,
             self._library_handle.SzConfigMgr_getLastException,
@@ -132,7 +125,6 @@ class SzConfigManagerCore(SzConfigManager):
 
         # Initialize C function input parameters and results.
         # Synchronized with er/sdk/c/libSzConfigMgr.h
-
         self._library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
         self._library_handle.SzConfigMgr_addConfig_helper.restype = SzConfigMgrAddConfigResult
         self._library_handle.SzConfigMgr_destroy.argtypes = []
@@ -157,9 +149,6 @@ class SzConfigManagerCore(SzConfigManager):
         self.settings = ""
         self.config_id = 0
         self.verbose_logging = 0
-
-    def __del__(self) -> None:
-        """Destructor"""
 
     # -------------------------------------------------------------------------
     # SzConfigManager interface methods

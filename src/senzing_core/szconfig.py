@@ -30,11 +30,9 @@ from ._helpers import (
     as_str,
     build_dsrc_code_json,
     catch_sdk_exceptions,
-    check_requirements,
     check_result_rc,
     load_sz_library,
 )
-from ._version import get_senzingsdk_version
 
 # Metadata
 
@@ -117,18 +115,12 @@ class SzConfigCore(SzConfig):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
-
-        check_requirements(get_senzingsdk_version())
         self._library_handle = load_sz_library()
 
-        # Partial function to use this modules self.library_handle for exception handling
+        # Partial function to use this modules self._library_handle for exception handling
         self._check_result = partial(
             check_result_rc,
             self._library_handle.SzConfig_getLastException,
@@ -138,7 +130,6 @@ class SzConfigCore(SzConfig):
 
         # Initialize C function input parameters and results.
         # Synchronized with er/sdk/c/libSzConfig.h
-
         self._library_handle.SzConfig_addDataSource_helper.argtypes = [
             POINTER(c_uint),
             c_char_p,
@@ -166,16 +157,6 @@ class SzConfigCore(SzConfig):
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
         self.config_definition = ""
-
-        # if (not self.instance_name) or (len(self.settings) == 0):
-        #     raise sdk_exception(2)
-
-        # Initialize Senzing engine.
-        # self._initialize(self.instance_name, self.settings, self.verbose_logging)
-        # self.initialized = True
-
-    def __del__(self) -> None:
-        """Destructor"""
 
     # -------------------------------------------------------------------------
     # SzConfig interface methods

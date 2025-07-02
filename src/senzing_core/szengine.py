@@ -43,11 +43,9 @@ from ._helpers import (
     build_entities_json,
     build_records_json,
     catch_sdk_exceptions,
-    check_requirements,
     check_result_rc,
     load_sz_library,
 )
-from ._version import get_senzingsdk_version
 
 # Metadata
 
@@ -252,25 +250,16 @@ class SzEngineCore(SzEngine):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        check_requirements(get_senzingsdk_version())
         self._library_handle = load_sz_library()
 
         # Mask for removing SDK specific flags not supplied to method call
         self._sdk_flags_mask = ~(SzEngineFlags.SZ_WITH_INFO)
 
-        # TODO - Just use SZ_NO_INFO
-        # Empty response for methods where with info can optionally be returned but was not requested
-        self._no_info = SZ_NO_INFO
-
-        # Partial function to use this modules self.library_handle for exception handling
+        # Partial function to use this modules self._library_handle for exception handling
         self._check_result = partial(
             check_result_rc,
             self._library_handle.Sz_getLastException,
@@ -530,9 +519,6 @@ class SzEngineCore(SzEngine):
         ]
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
-    def __del__(self) -> None:
-        """Destructor"""
-
     # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
@@ -554,9 +540,8 @@ class SzEngineCore(SzEngine):
         except Exception as err:
             print(err)
             raise
-        return self._no_info
+        return SZ_NO_INFO
 
-    # TODO - Wrapper for check_result?
     @catch_sdk_exceptions
     def add_record(
         self,
@@ -582,7 +567,7 @@ class SzEngineCore(SzEngine):
             as_c_char_p(record_definition),
         )
         self._check_result(result)
-        return self._no_info
+        return SZ_NO_INFO
 
     @catch_sdk_exceptions
     def close_export(self, export_handle: int) -> None:
@@ -617,7 +602,7 @@ class SzEngineCore(SzEngine):
             as_c_char_p(record_id),
         )
         self._check_result(result)
-        return self._no_info
+        return SZ_NO_INFO
 
     def _destroy(self) -> None:
         _ = self._library_handle.Sz_destroy()
@@ -946,7 +931,7 @@ class SzEngineCore(SzEngine):
             as_c_char_p(redo_record),
         )
         self._check_result(result)
-        return self._no_info
+        return SZ_NO_INFO
 
     @catch_sdk_exceptions
     def reevaluate_entity(self, entity_id: int, flags: int = SzEngineFlags.SZ_REEVALUATE_RECORD_DEFAULT_FLAGS) -> str:
@@ -958,11 +943,11 @@ class SzEngineCore(SzEngine):
             with FreeCResources(self._library_handle, result.response):
                 self._check_result(result.return_code)
                 response_str = as_python_str(result.response)
-                return response_str if response_str else self._no_info
+                return response_str if response_str else SZ_NO_INFO
 
         result = self._library_handle.Sz_reevaluateEntity(entity_id, flags)
         self._check_result(result)
-        return self._no_info
+        return SZ_NO_INFO
 
     @catch_sdk_exceptions
     def reevaluate_record(
@@ -980,11 +965,11 @@ class SzEngineCore(SzEngine):
             with FreeCResources(self._library_handle, result.response):
                 self._check_result(result.return_code)
                 response_str = as_python_str(result.response)
-                return response_str if response_str else self._no_info
+                return response_str if response_str else SZ_NO_INFO
 
         result = self._library_handle.Sz_reevaluateRecord(as_c_char_p(data_source_code), as_c_char_p(record_id), flags)
         self._check_result(result)
-        return self._no_info
+        return SZ_NO_INFO
 
     @catch_sdk_exceptions
     def reinitialize(self, config_id: int) -> None:

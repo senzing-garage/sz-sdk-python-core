@@ -26,66 +26,34 @@ from ctypes import (
 )
 from ctypes.util import find_library
 from functools import wraps
-from sys import version_info
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 from typing import cast as typing_cast
 
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
-# TODO -
-# from .szproduct import SzProductCore
-
-# TODO - Move to constants?
-PYTHON_VERSION_MINIMUM = "3.9"
-SENZING_VERSION_MINIMUM = "4.0.0"
-SENZING_VERSION_MAXIMUM = "5.0.0"
-
-# TODO -
-# try:
-#     import orjson  # type: ignore[import-not-found, unused-ignore]
-
-#     def _json_dumps(object_: Any) -> str:
-#         return orjson.dumps(object_).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
-
-# except ImportError:
-#     import json
-
-#     # NOTE - separators= is used to be consistent with Sz engine and orjson output
-#     def _json_dumps(object_: Any) -> str:
-#         return json.dumps(object_, ensure_ascii=False, separators=(",", ":"))
 try:
     import orjson
 
     JSON_LIB = orjson.__name__
 
-    # TODO - Test all
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
         return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")
-
-    def _json_loads(_obj: Any, *args: Any, **kwargs: Any) -> Any:
-        return orjson.loads(_obj, *args, **kwargs)
 
 except ImportError:
     import json
 
     JSON_LIB = json.__name__
 
+    # NOTE - separators= is used to be consistent with Sz engine and orjson output
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
-        return json.dumps(_obj, ensure_ascii=False, *args, **kwargs)
-
-    def _json_loads(_obj: Any, *args: Any, **kwargs: Any) -> Any:
-        return json.loads(_obj, *args, **kwargs)
+        return json.dumps(_obj, ensure_ascii=False, separators=(",", ":"), *args, **kwargs)
 
 finally:
     if JSON_LIB == "orjson":
         JSON_INDENT = {"option": orjson.OPT_INDENT_2}
-        # JSONDecodeError = orjson.JSONDecodeError
-        # TODO - Only in orjson, need to handle?
-        # orjson.JSONEncodeError
     else:
         JSON_INDENT = {"indent": 2}
-        # JSONDecodeError = json.JSONDecodeError
 
 # NOTE - Using earlier Python version typing to support v3.9 still and not rely on typing_extensions.
 # NOTE - F can be changed to use ParamSpec when no longer need to support v3.9.
@@ -93,6 +61,9 @@ finally:
 F = TypeVar("F", bound=Callable[..., Any])
 SelfFreeCResources = TypeVar("SelfFreeCResources", bound="FreeCResources")
 
+PYTHON_VERSION_MINIMUM = "3.9"
+SENZING_VERSION_MINIMUM = "4.0.0"
+SENZING_VERSION_MAXIMUM = "5.0.0"
 START_DSRC_JSON = '{"DATA_SOURCES": ['
 START_ENTITIES_JSON = '{"ENTITIES": ['
 START_RECORDS_JSON = '{"RECORDS": ['
@@ -131,8 +102,6 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
-# TODO -
-# def catch_sdk_exceptions(func_to_decorate: Callable[P, T]) -> Callable[P, T]:
 def catch_sdk_exceptions(func_to_decorate: F) -> F:
     """
     The Python SDK methods convert Python types to ctypes and utilize helper functions. If incorrect types/values are
@@ -214,38 +183,9 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
         raise SzSdkError("failed to load the Senzing library") from err
 
 
-# TODO -
 # -----------------------------------------------------------------------------
-# Helpers for
+# Helpers for checking if the Senzing SDK binary version is supported
 # -----------------------------------------------------------------------------
-
-
-# TODO -
-# def get_senzingsdk_version() -> str:
-#     """
-#     Use szproduct to return the Senzing SDK binary version.
-
-#     Raises:
-
-#     Returns:
-#         str: Returns the Senzing SDK binary version.
-
-#     :meta private:
-#     """
-
-#     sz_product = SzProductCore()
-#     sz_product.initialize("_version", "{}")
-#     version: str = json.loads(sz_product.get_version()).get("VERSION", "0.0.0")
-
-#     return version
-
-
-# TODO - Is this being used still?
-def get_version_from_json_string(json_str: str) -> str:
-    """#TODO"""
-    # TODO - try
-    version: str = _json_loads(json_str).get("VERSION", "0.0.0")
-    return version
 
 
 def normalize_semantic_version(semantic_version: str) -> int:
@@ -279,11 +219,7 @@ def normalize_semantic_version(semantic_version: str) -> int:
     return result
 
 
-# TODO -
-# def supports_senzingsdk_version(
 def is_senzing_binary_version_supported(
-    # TODO -
-    # min_semantic_version: str, max_semantic_version: str, current_semantic_version: str
     current_semantic_version: str,
     min_semantic_version: str = SENZING_VERSION_MINIMUM,
     max_semantic_version: str = SENZING_VERSION_MAXIMUM,
@@ -313,73 +249,6 @@ def is_senzing_binary_version_supported(
         raise SzSdkError(message)
 
     return True
-
-
-# def is_supported_senzingsdk_version() -> bool:
-#     """
-#     Determine if the Senzing SDK binary is supported by this version of the Senzing Python SDK.
-
-#     Raises:
-#         SzSdkError: Current Senzing SDK is not supported.
-
-#     Returns:
-#         bool: Returns True if current Senzing SDK binary version is supported.
-
-#     :meta private:
-#     """
-#     sz_product = SzProductCore()
-#     sz_product.initialize("_version", "{}")  # pylint: disable=W0212
-#     version_dict = json.loads(sz_product.get_version())
-#     senzing_version_current = version_dict.get("VERSION", "0.0.0")
-#     result = supports_senzingsdk_version(SENZING_VERSION_MINIMUM, SENZING_VERSION_MAXIMUM, senzing_version_current)
-
-#     return result
-
-
-def is_python_version_supported(min_version: str = PYTHON_VERSION_MINIMUM) -> bool:
-    """
-    Determine if the minimum Python version is supported.
-
-    Raises:
-        SzSdkError: Current Python version is not supported.
-
-    Returns:
-        bool: Returns True if current Python version is supported.
-
-    :meta private:
-    """
-    min_version_normalized = normalize_semantic_version(min_version)
-    runtime_version = f"{version_info.major}.{version_info.minor}"
-    runtime_version_normalized = normalize_semantic_version(runtime_version)
-
-    if runtime_version_normalized < min_version_normalized:
-        message = f"Current Python version of {runtime_version} doesn't meet minimum requirement of {min_version}"
-        raise SzSdkError(message)
-
-    return True
-
-
-# TODO -
-def check_requirements(senzingsdk_current_version: str, min_python_version: str = PYTHON_VERSION_MINIMUM) -> bool:
-    """
-    Determine if the minimum Python and Senzing SDK binary versions are supported.
-
-    Raises:
-        SzSdkError: One or both versions are not supported.
-
-    Returns:
-        bool: Returns True if Python and Senzing SDK binary versions are supported.
-
-    :meta private:
-    """
-    # TODO - and change python function name
-    # return all((is_supported_python_version(min_python_version), is_supported_senzingsdk_version()))
-    return all(
-        (
-            is_python_version_supported(min_python_version),
-            is_senzing_binary_version_supported(current_semantic_version=senzingsdk_current_version),
-        )
-    )
 
 
 # -----------------------------------------------------------------------------

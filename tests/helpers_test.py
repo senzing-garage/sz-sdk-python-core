@@ -2,7 +2,7 @@ import json
 
 import pytest
 from pytest_schema import schema
-from senzing import SzError
+from senzing import SzError, SzSdkError
 
 from senzing_core._helpers import (
     as_c_char_p,
@@ -12,7 +12,9 @@ from senzing_core._helpers import (
     build_entities_json,
     build_records_json,
     escape_json_str,
+    is_senzing_binary_version_supported,
     load_sz_library,
+    normalize_semantic_version,
 )
 
 # -----------------------------------------------------------------------------
@@ -217,6 +219,37 @@ def test_load_sz_library_incorrect_os() -> None:
     with pytest.raises(SzError):
         actual = load_sz_library(os=os)
         assert isinstance(actual, SzError)
+
+
+def test_normalize_semantic_version() -> None:
+    """Test whether semantic version strings are transformed to integer correctly."""
+    tests = {
+        "0.0.0": 0,
+        "1.2.3": 10203,
+        "11.1.13": 110113,
+        "11.12.13": 111213,
+        "99.99.99": 999999,
+    }
+    for sem_ver, number in tests.items():
+        actual = normalize_semantic_version(sem_ver)
+        assert actual == number
+
+
+def test_is_senzing_binary_version_supported() -> None:
+    """Test whether current versions are within min/max range."""
+    tests = ["4.0.0", "4.1.1", "4.9.0", "4.10.10", "4.99.99"]
+    for test in tests:
+        actual = is_senzing_binary_version_supported(test)
+        assert actual
+
+
+def test_is_senzing_binary_version_supported_exceptions() -> None:
+    """Test whether exceptions are thrown when current version is outside min/max range."""
+    tests = ["1.0.0", "3.99.99", "5.0.0", "5.1.1", "6.0.0", "10.10.10"]
+
+    for test in tests:
+        with pytest.raises(SzSdkError):
+            is_senzing_binary_version_supported(test)
 
 
 # -----------------------------------------------------------------------------

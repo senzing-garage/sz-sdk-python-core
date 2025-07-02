@@ -28,7 +28,6 @@ from ._helpers import (
     as_str,
     catch_sdk_exceptions,
     check_result_rc,
-    is_python_version_supported,
     load_sz_library,
 )
 
@@ -70,18 +69,13 @@ class SzProductCore(SzProduct):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        is_python_version_supported()
         self._library_handle = load_sz_library()
 
-        # Partial function to use this modules self.library_handle for exception handling
+        # Partial function to use this modules self._library_handle for exception handling
         self._check_result = partial(
             check_result_rc,
             self._library_handle.SzProduct_getLastException,
@@ -91,7 +85,6 @@ class SzProductCore(SzProduct):
 
         # Initialize C function input parameters and results
         # Must be synchronized with /opt/senzing/er/sdk/c/libSzProduct.h
-
         self._library_handle.SzProduct_destroy.argtypes = []
         self._library_handle.SzProduct_destroy.restype = c_longlong
         self._library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
@@ -101,9 +94,6 @@ class SzProductCore(SzProduct):
         self._library_handle.SzProduct_version.argtypes = []
         self._library_handle.SzProduct_version.restype = c_char_p
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
-
-    def __del__(self) -> None:
-        """Destructor"""
 
     # -------------------------------------------------------------------------
     # SzProduct methods

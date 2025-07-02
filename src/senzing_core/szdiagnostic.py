@@ -28,11 +28,9 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
-    check_requirements,
     check_result_rc,
     load_sz_library,
 )
-from ._version import get_senzingsdk_version
 
 # Metadata
 
@@ -98,18 +96,13 @@ class SzDiagnosticCore(SzDiagnostic):
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        Constructor
-
-        For return value of -> None, see https://peps.python.org/pep-0484/#the-meaning-of-annotations
-        """
+        """Initializer"""
 
         _ = kwargs
 
-        check_requirements(get_senzingsdk_version())
         self._library_handle = load_sz_library()
 
-        # Partial function to use this modules self.library_handle for exception handling
+        # Partial function to use this modules self._library_handle for exception handling
         self._check_result = partial(
             check_result_rc,
             self._library_handle.SzDiagnostic_getLastException,
@@ -119,7 +112,6 @@ class SzDiagnosticCore(SzDiagnostic):
 
         # Initialize C function input parameters and results.
         # Must be synchronized with er/sdk/c/libSzDiagnostic.h
-
         self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
         self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
             SzDiagnosticCheckDatastorePerformanceResult
@@ -142,9 +134,6 @@ class SzDiagnosticCore(SzDiagnostic):
         self._library_handle.SzDiagnostic_reinit.argtypes = [c_longlong]
         self._library_handle.SzDiagnostic_reinit.restype = c_longlong
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
-
-    def __del__(self) -> None:
-        """Destructor"""
 
     # -------------------------------------------------------------------------
     # SzDiagnostic methods

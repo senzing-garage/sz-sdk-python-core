@@ -23,25 +23,6 @@ from .szdiagnostic import SzDiagnosticCore
 from .szengine import SzEngineCore
 from .szproduct import SzProductCore
 
-# # TODO -
-# try:
-#     # from ._helpers import get_senzingsdk_version, is_senzing_binary_version_supported
-#     # is_senzing_binary_version_supported(get_senzingsdk_version())
-#     from typing import Any, Dict, Type, TypedDict, Union
-
-#     from ._version import is_supported_senzingsdk_version
-
-# except (ImportError, SyntaxError) as err:
-#     import sys
-
-#     from senzing import SzSdkError
-
-#     if sys.version_info < (3, 9):
-#         SYS_VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
-#         raise SzSdkError(f"Current Python version {SYS_VERSION} doesn't meet the minimum requirement of 3.9") from err
-#     raise err
-
-
 # Metadata
 
 __all__ = ["SzAbstractFactoryCore", "SzAbstractFactoryParametersCore"]
@@ -112,10 +93,9 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         """Context Manager method."""
         return self
 
-    # TODO -
-    # def __del__(self) -> None:
-    #     """Destructor"""
-    #     self._destroy()
+    def __del__(self) -> None:
+        """Destructor"""
+        self._destroy()
 
     def __exit__(
         self,
@@ -154,7 +134,6 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def create_configmanager(self) -> SzConfigManager:
         result = SzConfigManagerCore()
         if not self._is_szconfigmanager_initialized:
-            # TODO - disable needed?
             result.initialize(  # pylint: disable=W0212
                 instance_name=self._instance_name,
                 settings=self._settings,
