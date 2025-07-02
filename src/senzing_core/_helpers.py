@@ -33,12 +33,12 @@ from typing import cast as typing_cast
 from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 
 try:
-    import orjson  # type: ignore
+    import orjson  # type: ignore[import-not-found, unused-ignore]
 
     JSON_LIB = orjson.__name__
 
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
-        return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")  # type: ignore
+        return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
 
 except ImportError:
     import json
