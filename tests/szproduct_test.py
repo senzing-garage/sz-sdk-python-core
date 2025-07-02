@@ -48,7 +48,7 @@ def test_help_2(sz_product: SzProduct) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -81,7 +81,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -91,7 +91,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzProductCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual.initialize(
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -101,7 +101,7 @@ def test_destroy(engine_vars: Dict[Any, Any]) -> None:
 def test_exception(sz_product: SzProductCore) -> None:
     """Test exceptions."""
     with pytest.raises(Exception):
-        sz_product._check_result(-1)
+        sz_product._check_result(-1)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
