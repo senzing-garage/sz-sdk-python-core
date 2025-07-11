@@ -26,6 +26,7 @@ from senzing import (
     SzDiagnostic,
     SzEngine,
     SzProduct,
+    SzSdkError,
 )
 
 from .szconfigmanager import SzConfigManagerCore
@@ -47,28 +48,6 @@ __updated__ = "2025-01-28"
 # # # NOTE - SelfFreeCResources can be changed to use Self at v3.11.
 # F = TypeVar("F", bound=Callable[..., Any])
 _T = TypeVar("_T")
-
-
-# TODO -
-# TODO - Move into helpers?
-class SingletonMeta(type, Generic[_T]):
-    """#TODO"""
-
-    # _instance: None | F = None
-    _lock = Lock()
-
-    def __call__(cls, *args: Any, **kwargs: Any) -> _T:
-        # if not hasattr(cls, "_instance"):
-        #     with SingletonMeta._instance_lock:
-        #         if not hasattr(cls, "_instance"):
-        #             cls._instance = super(SingletonMeta, cls).__call__(*args, **kwargs)
-        # return cls._instance
-        # if cls._instance is None:
-        # if not hasattr(cls, "_instance"):
-        with cls._lock:
-            if not hasattr(cls, "_instance"):
-                cls._instance: _T = super().__call__(*args, **kwargs)
-        return cls._instance
 
 
 # -----------------------------------------------------------------------------
@@ -103,13 +82,39 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     # -------------------------------------------------------------------------
 
     # TODO -
+    _instances = {}
     _lock = Lock()
 
-    def __new__(cls):
+    # TODO -
+    def __new__(
+        cls,
+        instance_name: str = "",
+        # TODO - This is different to __init__
+        settings: str | dict[Any, Any] = "",
+        config_id: int = 0,
+        verbose_logging: int = 0,
+    ):
+        print(f"\n{cls._lock = }", flush=True)
         with cls._lock:
-            if not hasattr(cls, "_instance"):
-                cls._instance = super().__new__(cls)
-        return cls._instance
+            print("\nIn SzAbstractFactoryCore __new__ and locked...", flush=True)
+            _hash = _create_hash((instance_name, settings, config_id, verbose_logging))
+            instance = super().__new__(cls)
+            instance._hash = _hash
+
+            if cls not in cls._instances:
+                cls._instances[cls] = instance
+                print(f"\tReturning from __new__ - created first cls - {_hash = }", flush=True)
+            else:
+                if _hash == cls._instances[cls]._hash:
+                    instance = cls._instances[cls]
+                    print(f"\tReturning from __new__ - hashes are the same - {_hash = }", flush=True)
+
+                if _hash != cls._instances[cls]._hash:
+                    # TODO - Text
+                    raise SzSdkError("Can't have >1 factory at a time with different arguments")
+
+        print(f"\t{id(instance) = }", flush=True)
+        return instance
 
     def __init__(
         self,
@@ -262,3 +267,22 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         if self._is_szdiagnostic_initialized:
             sz_diagnostic = SzDiagnosticCore()
             sz_diagnostic.reinitialize(config_id=config_id)  # pylint: disable=W0212
+
+
+# TODO -
+# -------------------------------------------------------------------------
+# Utility methods
+# -------------------------------------------------------------------------
+
+
+def _create_hash(items_to_hash):
+    # TODO - More logic for creating the hash? Can this handle engine settings?
+    # TODO - Raise an exception if types not correct
+    # TODO - Handle dict too
+    normalized = []
+    for t in items_to_hash:
+        if isinstance(t, (dict, int)):
+            t = str(t)
+        normalized.append(t.strip().replace(" ", ""))
+
+    return hash("".join(normalized))
