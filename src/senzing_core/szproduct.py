@@ -87,12 +87,12 @@ class SzProductCore(SzProduct):
         # Must be synchronized with /opt/senzing/er/sdk/c/libSzProduct.h
         self._library_handle.SzProduct_destroy.argtypes = []
         self._library_handle.SzProduct_destroy.restype = c_longlong
+        self._library_handle.SzProduct_getLicense.argtypes = []
+        self._library_handle.SzProduct_getLicense.restype = c_char_p
+        self._library_handle.SzProduct_getVersion.argtypes = []
+        self._library_handle.SzProduct_getVersion.restype = c_char_p
         self._library_handle.SzProduct_init.argtypes = [c_char_p, c_char_p, c_int]
         self._library_handle.SzProduct_init.restype = c_longlong
-        self._library_handle.SzProduct_license.argtypes = []
-        self._library_handle.SzProduct_license.restype = c_char_p
-        self._library_handle.SzProduct_version.argtypes = []
-        self._library_handle.SzProduct_version.restype = c_char_p
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
     # -------------------------------------------------------------------------
@@ -125,9 +125,9 @@ class SzProductCore(SzProduct):
         self._check_result(result)
 
     def get_license(self) -> str:
-        return as_python_str(self._library_handle.SzProduct_license())
+        return as_python_str(self._library_handle.SzProduct_getLicense())
 
     def get_version(
         self,
     ) -> str:
-        return as_python_str(self._library_handle.SzProduct_version())
+        return as_python_str(self._library_handle.SzProduct_getVersion())

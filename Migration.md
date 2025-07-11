@@ -432,7 +432,7 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | V3  | V4 |
 | --- | --- |
 | addDataSource | register_data_source |
-| deleteDataSource |  |
+| deleteDataSource | unregister_data_source |
 | listDataSources | get_data_source_registry |
 
 #### G2ConfigMgr&period;py -> szconfigmanager

@@ -63,12 +63,8 @@ class SzResponseLonglongReturnCodeResult(Structure):
     ]
 
 
-class SzConfigMgrAddConfigResult(SzResponseLonglongReturnCodeResult):
-    """In SzLang_helpers.h SzConfigMgr_addConfig_result"""
-
-
-class SzConfigMgrGetConfigListResult(SzResponseReturnCodeResult):
-    """In SzLang_helpers.h SzConfigMgr_getConfigList_result"""
+class SzConfigMgrGetConfigRegistryResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_getConfigRegistry_result"""
 
 
 class SzConfigMgrGetConfigResult(SzResponseReturnCodeResult):
@@ -77,6 +73,10 @@ class SzConfigMgrGetConfigResult(SzResponseReturnCodeResult):
 
 class SzConfigMgrGetDefaultConfigIDResult(SzResponseLonglongReturnCodeResult):
     """In SzLang_helpers.h SzConfigMgr_getDefaultConfigID_result"""
+
+
+class SzConfigMgrRegisterConfigResult(SzResponseLonglongReturnCodeResult):
+    """In SzLang_helpers.h SzConfigMgr_registerConfig_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -125,17 +125,17 @@ class SzConfigManagerCore(SzConfigManager):
 
         # Initialize C function input parameters and results.
         # Synchronized with er/sdk/c/libSzConfigMgr.h
-        self._library_handle.SzConfigMgr_addConfig_helper.argtypes = [c_char_p, c_char_p]
-        self._library_handle.SzConfigMgr_addConfig_helper.restype = SzConfigMgrAddConfigResult
         self._library_handle.SzConfigMgr_destroy.argtypes = []
         self._library_handle.SzConfigMgr_destroy.restype = c_longlong
         self._library_handle.SzConfigMgr_getConfig_helper.argtypes = [c_longlong]
         self._library_handle.SzConfigMgr_getConfig_helper.restype = SzConfigMgrGetConfigResult
-        self._library_handle.SzConfigMgr_getConfigList_helper.argtypes = []
-        self._library_handle.SzConfigMgr_getConfigList_helper.restype = SzConfigMgrGetConfigListResult
+        self._library_handle.SzConfigMgr_getConfigRegistry_helper.argtypes = []
+        self._library_handle.SzConfigMgr_getConfigRegistry_helper.restype = SzConfigMgrGetConfigRegistryResult
         self._library_handle.SzConfigMgr_getDefaultConfigID_helper.restype = SzConfigMgrGetDefaultConfigIDResult
         self._library_handle.SzConfigMgr_init.argtypes = [c_char_p, c_char_p, c_longlong]
         self._library_handle.SzConfigMgr_init.restype = c_longlong
+        self._library_handle.SzConfigMgr_registerConfig_helper.argtypes = [c_char_p, c_char_p]
+        self._library_handle.SzConfigMgr_registerConfig_helper.restype = SzConfigMgrRegisterConfigResult
         self._library_handle.SzConfigMgr_replaceDefaultConfigID.argtypes = [
             c_longlong,
             c_longlong,
@@ -181,7 +181,7 @@ class SzConfigManagerCore(SzConfigManager):
         return result
 
     def get_config_registry(self) -> str:
-        result = self._library_handle.SzConfigMgr_getConfigList_helper()
+        result = self._library_handle.SzConfigMgr_getConfigRegistry_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
@@ -197,7 +197,7 @@ class SzConfigManagerCore(SzConfigManager):
         config_definition: str,
         config_comment: str,
     ) -> int:
-        result = self._library_handle.SzConfigMgr_addConfig_helper(
+        result = self._library_handle.SzConfigMgr_registerConfig_helper(
             as_c_char_p(config_definition),
             as_c_char_p(config_comment),
         )

@@ -164,6 +164,10 @@ class SzGetRecordV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getRecord_V2_result"""
 
 
+class SzGetRecordPreviewResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h Sz_getRecordPreview_result"""
+
+
 class SzGetRedoRecordResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_getRedoRecord_result"""
 
@@ -174,10 +178,6 @@ class SzGetVirtualEntityByRecordIDV2Result(SzResponseReturnCodeResult):
 
 class SzHowEntityByEntityIDV2Result(SzResponseReturnCodeResult):
     """In SzLang_helpers.h Sz_howEntityByEntityID_V2_result"""
-
-
-class SzPreprocessRecordResult(SzResponseReturnCodeResult):
-    """In SzLang_helpers.h Sz_preprocessRecord_result"""
 
 
 class SzProcessRedoRecordWithInfoResult(SzResponseReturnCodeResult):
@@ -284,10 +284,10 @@ class SzEngineCore(SzEngine):
             c_longlong,
         ]
         self._library_handle.Sz_addRecordWithInfo_helper.restype = SzAddRecordWithInfoResult
-        self._library_handle.Sz_closeExport_helper.argtypes = [
+        self._library_handle.Sz_closeExportReport_helper.argtypes = [
             POINTER(c_uint),
         ]
-        self._library_handle.Sz_closeExport_helper.restype = c_longlong
+        self._library_handle.Sz_closeExportReport_helper.restype = c_longlong
         self._library_handle.Sz_countRedoRecords.argtypes = []
         self._library_handle.Sz_countRedoRecords.restype = c_longlong
         self._library_handle.Sz_deleteRecord.argtypes = [
@@ -422,6 +422,11 @@ class SzEngineCore(SzEngine):
             c_longlong,
         ]
         self._library_handle.Sz_getRecord_V2_helper.restype = SzGetRecordV2Result
+        self._library_handle.Sz_getRecordPreview_helper.argtypes = [
+            c_char_p,
+            c_longlong,
+        ]
+        self._library_handle.Sz_getRecordPreview_helper.restype = SzGetRecordPreviewResult
         self._library_handle.Sz_getRedoRecord_helper.argtypes = []
         self._library_handle.Sz_getRedoRecord_helper.restype = SzGetRedoRecordResult
         self._library_handle.Sz_getVirtualEntityByRecordID_V2_helper.argtypes = [
@@ -442,11 +447,6 @@ class SzEngineCore(SzEngine):
             c_longlong,
             c_longlong,
         ]
-        self._library_handle.Sz_preprocessRecord_helper.argtypes = [
-            c_char_p,
-            c_longlong,
-        ]
-        self._library_handle.Sz_preprocessRecord_helper.restype = SzPreprocessRecordResult
         self._library_handle.Sz_processRedoRecord.argtypes = [
             c_char_p,
         ]
@@ -571,7 +571,7 @@ class SzEngineCore(SzEngine):
 
     @catch_sdk_exceptions
     def close_export_report(self, export_handle: int) -> None:
-        result = self._library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
+        result = self._library_handle.Sz_closeExportReport_helper(as_c_uintptr_t(export_handle))
         self._check_result(result)
 
     def count_redo_records(self) -> int:
@@ -834,7 +834,7 @@ class SzEngineCore(SzEngine):
         record_definition: str,
         flags: int = SzEngineFlags.SZ_RECORD_PREVIEW_DEFAULT_FLAGS,
     ) -> str:
-        result = self._library_handle.Sz_preprocessRecord_helper(
+        result = self._library_handle.Sz_getRecordPreview_helper(
             as_c_char_p(record_definition),
             flags,
         )
