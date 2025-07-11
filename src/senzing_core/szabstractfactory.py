@@ -5,10 +5,20 @@ of the `senzing.szabstractfactory.SzAbstractFactory`_ interface that communicate
 .. _senzing.szabstractfactory.SzAbstractFactory: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szabstractfactory
 """
 
+# TODO - Rename to sz_environment?
+# TODO - Factory vs abstract factory with singleton: https://codesarray.com/view/Factory-Method-Pattern-in-Python
+
 # pylint: disable=E1101
 
+# TODO -
+from __future__ import annotations
+
+# TODO -
+from threading import Lock
 from types import TracebackType
-from typing import Any, Dict, Type, TypedDict, Union
+
+# TODO - Union can go? Dict and others?
+from typing import Any, Callable, Dict, Generic, Type, TypedDict, TypeVar, Union
 
 from senzing import (
     SzAbstractFactory,
@@ -29,6 +39,36 @@ __all__ = ["SzAbstractFactoryCore", "SzAbstractFactoryParametersCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2024-10-21"
 __updated__ = "2025-01-28"
+
+# TODO -
+# # T = TypeVar("T", bound="SingletonMeta")
+# # # NOTE - Using earlier Python version typing to support v3.9 still and not rely on typing_extensions.
+# # # NOTE - F can be changed to use ParamSpec when no longer need to support v3.9.
+# # # NOTE - SelfFreeCResources can be changed to use Self at v3.11.
+# F = TypeVar("F", bound=Callable[..., Any])
+_T = TypeVar("_T")
+
+
+# TODO -
+# TODO - Move into helpers?
+class SingletonMeta(type, Generic[_T]):
+    """#TODO"""
+
+    # _instance: None | F = None
+    _lock = Lock()
+
+    def __call__(cls, *args: Any, **kwargs: Any) -> _T:
+        # if not hasattr(cls, "_instance"):
+        #     with SingletonMeta._instance_lock:
+        #         if not hasattr(cls, "_instance"):
+        #             cls._instance = super(SingletonMeta, cls).__call__(*args, **kwargs)
+        # return cls._instance
+        # if cls._instance is None:
+        # if not hasattr(cls, "_instance"):
+        with cls._lock:
+            if not hasattr(cls, "_instance"):
+                cls._instance: _T = super().__call__(*args, **kwargs)
+        return cls._instance
 
 
 # -----------------------------------------------------------------------------
@@ -61,6 +101,15 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     # -------------------------------------------------------------------------
     # Python dunder/magic methods
     # -------------------------------------------------------------------------
+
+    # TODO -
+    _lock = Lock()
+
+    def __new__(cls):
+        with cls._lock:
+            if not hasattr(cls, "_instance"):
+                cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(
         self,
@@ -154,6 +203,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
             self._is_szdiagnostic_initialized = True
         return result
 
+    # TODO - Should be able to call destroy on and "engine" object
     def create_engine(self) -> SzEngine:
         result = SzEngineCore()
         if not self._is_szengine_initialized:
@@ -177,6 +227,10 @@ class SzAbstractFactoryCore(SzAbstractFactory):
             self._is_szproduct_initialized = True
         return result
 
+    # TODO - This wouldn't work either as the C ref count would only go down once
+    # TODO - Do we have to count number of inits so we can do correct number of destroys? Or can __del__ handle this on the engineCore etc?
+    # TODO - TEST init x 10, destroy x 20, what happens? init again
+    # TODO - weakref help?
     def _destroy(self) -> None:
         if self._is_szconfigmanager_initialized:
             self._is_szconfigmanager_initialized = False
