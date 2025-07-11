@@ -3,7 +3,6 @@ from senzing import SzError
 from senzing_core import SzAbstractFactoryCore
 
 instance_name = "Example"
-seconds_to_run = 3
 settings = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
@@ -15,8 +14,9 @@ settings = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
-    sz_diagnostic = sz_abstract_factory.create_diagnostic()
-    result = sz_diagnostic.check_datastore_performance(seconds_to_run)
+    sz_configmanager = sz_abstract_factory.create_configmanager()
+    sz_config = sz_configmanager.create_config_from_template()
+    result = sz_config.get_data_source_registry()
     print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

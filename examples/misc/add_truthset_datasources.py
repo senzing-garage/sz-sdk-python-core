@@ -23,7 +23,7 @@ try:
     current_default_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(current_default_config_id)
     for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(data_source_code)
+        sz_config.register_data_source(data_source_code)
 
     # Persist new Senzing configuration.
 

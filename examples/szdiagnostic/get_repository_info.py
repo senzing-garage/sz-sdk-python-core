@@ -2,7 +2,6 @@ from senzing import SzError
 
 from senzing_core import SzAbstractFactoryCore
 
-data_source_code = "NAME_OF_DATASOURCE"
 instance_name = "Example"
 settings = {
     "PIPELINE": {
@@ -15,9 +14,8 @@ settings = {
 
 try:
     sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
-    sz_configmanager = sz_abstract_factory.create_configmanager()
-    sz_config = sz_configmanager.create_config_from_template()
-    result = sz_config.add_data_source(data_source_code)
+    sz_diagnostic = sz_abstract_factory.create_diagnostic()
+    result = sz_diagnostic.get_repository_info()
     print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

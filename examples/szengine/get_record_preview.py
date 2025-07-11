@@ -5,7 +5,7 @@ from senzing import SzEngineFlags, SzError
 from senzing_core import SzAbstractFactoryCore
 
 instance_name = "Example"
-flags = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS
+flags = SzEngineFlags.SZ_RECORD_PREVIEW_DEFAULT_FLAGS
 record_definition = json.dumps(
     {
         "RECORD_TYPE": "PERSON",
@@ -34,7 +34,7 @@ settings = {
 try:
     sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)
     sz_engine = sz_abstract_factory.create_engine()
-    result = sz_engine.preprocess_record(record_definition, flags)
+    result = sz_engine.get_record_preview(record_definition, flags)
     print(f"\n{result}\n")
 except SzError as err:
     print(f"\nERROR: {err}\n")

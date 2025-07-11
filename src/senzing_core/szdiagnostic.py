@@ -54,16 +54,16 @@ class SzResponseReturnCodeResult(Structure):
     ]
 
 
-class SzDiagnosticCheckDatastorePerformanceResult(SzResponseReturnCodeResult):
-    """In SzLang_helpers.h SzDiagnostic_checkDatastorePerformance_result"""
-
-
-class SzDiagnosticGetDatastoreInfoResult(SzResponseReturnCodeResult):
-    """In SzLang_helpers.h SzDiagnostic_getDatastoreInfo_result"""
+class SzDiagnosticCheckRepositoryPerformanceResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzDiagnostic_checkRepositoryPerformance_result"""
 
 
 class SzDiagnosticGetFeatureResult(SzResponseReturnCodeResult):
     """In SzLang_helpers.h SzDiagnostic_getFeature_result"""
+
+
+class SzDiagnosticGetRepositoryInfoResult(SzResponseReturnCodeResult):
+    """In SzLang_helpers.h SzDiagnostic_getRepositoryInfo_result"""
 
 
 # -----------------------------------------------------------------------------
@@ -112,16 +112,16 @@ class SzDiagnosticCore(SzDiagnostic):
 
         # Initialize C function input parameters and results.
         # Must be synchronized with er/sdk/c/libSzDiagnostic.h
-        self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.argtypes = [c_longlong]
-        self._library_handle.SzDiagnostic_checkDatastorePerformance_helper.restype = (
-            SzDiagnosticCheckDatastorePerformanceResult
+        self._library_handle.SzDiagnostic_checkRepositoryPerformance_helper.argtypes = [c_longlong]
+        self._library_handle.SzDiagnostic_checkRepositoryPerformance_helper.restype = (
+            SzDiagnosticCheckRepositoryPerformanceResult
         )
         self._library_handle.SzDiagnostic_destroy.argtypes = []
         self._library_handle.SzDiagnostic_destroy.restype = c_longlong
-        self._library_handle.SzDiagnostic_getDatastoreInfo_helper.argtypes = []
-        self._library_handle.SzDiagnostic_getDatastoreInfo_helper.restype = SzDiagnosticGetDatastoreInfoResult
-        self._library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
+        self._library_handle.SzDiagnostic_getRepositoryInfo_helper.argtypes = []
         self._library_handle.SzDiagnostic_getFeature_helper.restype = SzDiagnosticGetFeatureResult
+        self._library_handle.SzDiagnostic_getRepositoryInfo_helper.restype = SzDiagnosticGetRepositoryInfoResult
+        self._library_handle.SzDiagnostic_getFeature_helper.argtypes = [c_longlong]
         self._library_handle.SzDiagnostic_init.argtypes = [c_char_p, c_char_p, c_int]
         self._library_handle.SzDiagnostic_init.restype = c_longlong
         self._library_handle.SzDiagnostic_initWithConfigID.argtypes = [
@@ -140,8 +140,8 @@ class SzDiagnosticCore(SzDiagnostic):
     # -------------------------------------------------------------------------
 
     @catch_sdk_exceptions
-    def check_datastore_performance(self, seconds_to_run: int) -> str:
-        result = self._library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
+    def check_repository_performance(self, seconds_to_run: int) -> str:
+        result = self._library_handle.SzDiagnostic_checkRepositoryPerformance_helper(seconds_to_run)
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
@@ -149,15 +149,15 @@ class SzDiagnosticCore(SzDiagnostic):
     def _destroy(self) -> None:
         _ = self._library_handle.SzDiagnostic_destroy()
 
-    def get_datastore_info(self) -> str:
-        result = self._library_handle.SzDiagnostic_getDatastoreInfo_helper()
+    @catch_sdk_exceptions
+    def get_feature(self, feature_id: int) -> str:
+        result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_sdk_exceptions
-    def get_feature(self, feature_id: int) -> str:
-        result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
+    def get_repository_info(self) -> str:
+        result = self._library_handle.SzDiagnostic_getRepositoryInfo_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)

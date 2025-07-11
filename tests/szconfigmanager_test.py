@@ -138,9 +138,9 @@ def test_replace_default_config_id(sz_configmanager: SzConfigManager) -> None:
     current_default_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(current_default_config_id)
     for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(data_source_code)
+        sz_config.register_data_source(data_source_code)
     data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
     new_default_config_id = sz_configmanager.register_config(config_definition, config_comment)
@@ -173,7 +173,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(sz_configm
     bad_current_default_config_id = "string"
     sz_config = sz_configmanager.create_config_from_template()
     data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
     new_default_config_id = sz_configmanager.register_config(config_definition, config_comment)
@@ -188,7 +188,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(sz_config
     bad_current_default_config_id = 1234
     sz_config = sz_configmanager.create_config_from_template()
     data_source_code = "CUSTOMERS"
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
     new_default_config_id = sz_configmanager.register_config(config_definition, config_comment)
@@ -201,7 +201,7 @@ def test_set_default_config(sz_configmanager: SzConfigManager) -> None:
     old_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(old_config_id)
     data_source_code = "TEST_DATASOURCE_" + datetime.datetime.now(datetime.timezone.utc).isoformat()
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
     actual = sz_configmanager.set_default_config(config_definition, config_comment)
@@ -221,7 +221,7 @@ def test_set_default_config_id(sz_configmanager: SzConfigManager) -> None:
     old_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_template()
     data_source_code = "CUSTOMERS"
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
     config_id = sz_configmanager.register_config(config_definition, config_comment)

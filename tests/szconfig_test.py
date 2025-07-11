@@ -15,63 +15,6 @@ from senzing_core import SzConfigCore
 # -----------------------------------------------------------------------------
 
 
-def test_add_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source()."""
-    data_source_code = "NAME_OF_DATASOURCE"
-    actual = sz_config.add_data_source(data_source_code)
-    assert isinstance(actual, str)
-    actual_as_dict = json.loads(actual)
-    assert schema(add_data_source_schema) == actual_as_dict
-
-
-def test_add_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source()."""
-    bad_data_source_code = 0
-    with pytest.raises(SzSdkError):
-        sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
-
-
-def test_add_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source()."""
-    bad_data_source_code = {"XXXX": "YYYY"}
-    with pytest.raises(SzSdkError):
-        sz_config.add_data_source(bad_data_source_code)  # type: ignore[arg-type]
-
-
-def test_add_data_source_empty_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.add_data_source()."""
-    bad_data_source_code = ""
-    with pytest.raises(SzError):
-        sz_config.add_data_source(bad_data_source_code)
-
-
-def test_delete_data_source(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source()."""
-    data_source_code = "TEST"
-    sz_config.delete_data_source(data_source_code)
-
-
-def test_delete_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source()."""
-    bad_data_source_code = 0
-    with pytest.raises(SzSdkError):
-        sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
-
-
-def test_delete_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source()."""
-    bad_data_source_code = {"XXXX": "YYYY"}
-    with pytest.raises(SzSdkError):
-        sz_config.delete_data_source(bad_data_source_code)  # type: ignore[arg-type]
-
-
-def test_delete_data_source_empty_data_source_code_value(sz_config: SzConfig) -> None:
-    """Test SzConfig.delete_data_source()."""
-    bad_data_source_code = ""
-    with pytest.raises(SzError):
-        sz_config.delete_data_source(bad_data_source_code)
-
-
 def test_export(sz_config: SzConfig) -> None:
     """Test SzConfig.export()."""
     actual = sz_config.export()
@@ -80,12 +23,12 @@ def test_export(sz_config: SzConfig) -> None:
     assert schema(export_config_schema) == actual_as_dict
 
 
-def test_get_data_sources(sz_config: SzConfig) -> None:
-    """Test SzConfig.get_data_sources()."""
-    actual = sz_config.get_data_sources()
+def test_get_data_source_registry(sz_config: SzConfig) -> None:
+    """Test SzConfig.get_data_source_registry()."""
+    actual = sz_config.get_data_source_registry()
     assert isinstance(actual, str)
     actual_as_dict = json.loads(actual)
-    assert schema(get_data_sources_schema) == actual_as_dict
+    assert schema(get_data_source_registry_schema) == actual_as_dict
 
 
 def test_help_1(sz_config: SzConfig) -> None:
@@ -95,7 +38,64 @@ def test_help_1(sz_config: SzConfig) -> None:
 
 def test_help_2(sz_config: SzConfig) -> None:
     """Test SzConfig.help(...)."""
-    sz_config.help("add_data_source")
+    sz_config.help("register_data_source")
+
+
+def test_register_data_source(sz_config: SzConfig) -> None:
+    """Test SzConfig.register_data_source()."""
+    data_source_code = "NAME_OF_DATASOURCE"
+    actual = sz_config.register_data_source(data_source_code)
+    assert isinstance(actual, str)
+    actual_as_dict = json.loads(actual)
+    assert schema(register_data_source_schema) == actual_as_dict
+
+
+def test_register_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
+    """Test SzConfig.register_data_source()."""
+    bad_data_source_code = 0
+    with pytest.raises(SzSdkError):
+        sz_config.register_data_source(bad_data_source_code)  # type: ignore[arg-type]
+
+
+def test_register_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
+    """Test SzConfig.register_data_source()."""
+    bad_data_source_code = {"XXXX": "YYYY"}
+    with pytest.raises(SzSdkError):
+        sz_config.register_data_source(bad_data_source_code)  # type: ignore[arg-type]
+
+
+def test_register_data_source_empty_data_source_code_value(sz_config: SzConfig) -> None:
+    """Test SzConfig.register_data_source()."""
+    bad_data_source_code = ""
+    with pytest.raises(SzError):
+        sz_config.register_data_source(bad_data_source_code)
+
+
+def test_unregister_data_source(sz_config: SzConfig) -> None:
+    """Test SzConfig.unregister_data_source()."""
+    data_source_code = "TEST"
+    sz_config.unregister_data_source(data_source_code)
+
+
+def test_unregister_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
+    """Test SzConfig.unregister_data_source()."""
+    bad_data_source_code = 0
+    with pytest.raises(SzSdkError):
+        sz_config.unregister_data_source(bad_data_source_code)  # type: ignore[arg-type]
+
+
+def test_unregister_data_source_bad_data_source_code_value(sz_config: SzConfig) -> None:
+    """Test SzConfig.unregister_data_source()."""
+    bad_data_source_code = {"XXXX": "YYYY"}
+    with pytest.raises(SzSdkError):
+        sz_config.unregister_data_source(bad_data_source_code)  # type: ignore[arg-type]
+
+
+def test_unregister_data_source_empty_data_source_code_value(sz_config: SzConfig) -> None:
+    """Test SzConfig.unregister_data_source()."""
+    bad_data_source_code = ""
+    with pytest.raises(SzError):
+        sz_config.unregister_data_source(bad_data_source_code)
 
 
 # -----------------------------------------------------------------------------
@@ -163,7 +163,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
 # Schemas
 # -----------------------------------------------------------------------------
 
-add_data_source_schema = {
+register_data_source_schema = {
     "DSRC_ID": int,
 }
 
@@ -477,7 +477,7 @@ export_config_schema = {
     },
 }
 
-get_data_sources_schema = {
+get_data_source_registry_schema = {
     "DATA_SOURCES": [
         {
             "DSRC_ID": int,

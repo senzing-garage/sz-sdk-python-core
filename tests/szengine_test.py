@@ -77,7 +77,7 @@ def test_add_truthset_datasources(
 ) -> None:
     """Add needed datasources for tests."""
     for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.add_data_source(data_source_code)
+        sz_config.register_data_source(data_source_code)
 
     config_definition = sz_config.export()
     config_id = sz_configmanager.register_config(config_definition, "Test")
@@ -243,8 +243,8 @@ def test_add_record_with_info_record_str_empty(sz_engine: SzEngine) -> None:
 
 
 # NOTE - Implemented in test_export_csv_entity_report()
-# def test_close_export() -> None:
-#     """Test SzEngine.close_export()."""
+# def test_close_export_report() -> None:
+#     """Test SzEngine.close_export_report()."""
 
 
 def test_count_redo_records(sz_engine: SzEngine) -> None:
@@ -328,7 +328,7 @@ def test_export_csv_entity_report(sz_engine: SzEngine) -> None:
         if len(fragment) == 0:
             break
         actual += fragment
-    sz_engine.close_export(export_handle)
+    sz_engine.close_export_report(export_handle)
     assert len(actual) > 0
 
 
@@ -341,7 +341,7 @@ def test_export_json_entity_report(sz_engine: SzEngine) -> None:
         if len(fragment) == 0:
             break
         actual += fragment
-    sz_engine.close_export(handle)
+    sz_engine.close_export_report(handle)
     for line in actual.splitlines():
         if len(line) > 0:
             actual_as_dict = json.loads(line)
@@ -707,6 +707,24 @@ def test_get_record_bad_record_id(sz_engine: SzEngine) -> None:
         _ = sz_engine.get_record(data_source_code, bad_record_id, flags)
 
 
+def test_get_record_preview(sz_engine: SzEngine) -> None:
+    """Test SzEngine.get_record_preview()."""
+    record_definition: str = DATA_SOURCES.get("CUSTOMERS", {}).get("1001", {}).get("Json", {})
+    flags = SzEngineFlags.SZ_RECORD_PREVIEW_DEFAULT_FLAGS
+    actual = sz_engine.get_record_preview(record_definition, flags)
+    actual_as_dict = json.loads(actual)
+    assert schema(get_record_preview_schema) == actual_as_dict
+
+
+def test_get_record_preview_bad_record(sz_engine: SzEngine) -> None:
+    """Test SzEngine.get_record_preview()."""
+    record_definition: str = (
+        '"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert", "DATE_OF_BIRTH": "12/11/1978"}'
+    )
+    with pytest.raises(SzBadInputError):
+        sz_engine.get_record_preview(record_definition)
+
+
 def test_get_redo_record(sz_engine: SzEngine) -> None:
     """Test SzEngine.get_redo_record()."""
     test_records: List[Tuple[str, str]] = [
@@ -798,24 +816,6 @@ def test_how_entity_by_entity_id_bad_entity_id(sz_engine: SzEngine) -> None:
     flags = SzEngineFlags.SZ_HOW_ENTITY_DEFAULT_FLAGS
     with pytest.raises(SzNotFoundError):
         _ = sz_engine.how_entity_by_entity_id(bad_entity_id, flags)
-
-
-def test_preprocess_record(sz_engine: SzEngine) -> None:
-    """Test SzEngine.preprocess_record()."""
-    record_definition: str = DATA_SOURCES.get("CUSTOMERS", {}).get("1001", {}).get("Json", {})
-    flags = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS
-    actual = sz_engine.preprocess_record(record_definition, flags)
-    actual_as_dict = json.loads(actual)
-    assert schema(preprocess_record_schema) == actual_as_dict
-
-
-def test_preprocess_record_bad_record(sz_engine: SzEngine) -> None:
-    """Test SzEngine.preprocess_record()."""
-    record_definition: str = (
-        '"RECORD_TYPE": "PERSON", "PRIMARY_NAME_LAST": "Smith", "PRIMARY_NAME_FIRST": "Robert", "DATE_OF_BIRTH": "12/11/1978"}'
-    )
-    with pytest.raises(SzBadInputError):
-        sz_engine.preprocess_record(record_definition)
 
 
 def test_prime_engine(sz_engine: SzEngine) -> None:
@@ -1643,6 +1643,10 @@ g2_config_schema = {
     },
 }
 
+get_record_preview_schema = {
+    "FEATURES": {str: [{"ATTRIBUTES": {str: str}, "FEAT_DESC": str, "LIB_FEAT_ID": int, Optional("USAGE_TYPE"): str}]}
+}
+
 how_results_schema = {
     "HOW_RESULTS": {
         "RESOLUTION_STEPS": [{}],
@@ -1731,10 +1735,6 @@ path_schema = {
             ],
         }
     ],
-}
-
-preprocess_record_schema = {
-    "FEATURES": {str: [{"ATTRIBUTES": {str: str}, "FEAT_DESC": str, "LIB_FEAT_ID": int, Optional("USAGE_TYPE"): str}]}
 }
 
 
