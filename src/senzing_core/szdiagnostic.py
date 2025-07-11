@@ -140,7 +140,7 @@ class SzDiagnosticCore(SzDiagnostic):
     # -------------------------------------------------------------------------
 
     @catch_sdk_exceptions
-    def check_datastore_performance(self, seconds_to_run: int) -> str:
+    def check_repository_performance(self, seconds_to_run: int) -> str:
         result = self._library_handle.SzDiagnostic_checkDatastorePerformance_helper(seconds_to_run)
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
@@ -149,15 +149,15 @@ class SzDiagnosticCore(SzDiagnostic):
     def _destroy(self) -> None:
         _ = self._library_handle.SzDiagnostic_destroy()
 
-    def get_datastore_info(self) -> str:
-        result = self._library_handle.SzDiagnostic_getDatastoreInfo_helper()
+    @catch_sdk_exceptions
+    def get_feature(self, feature_id: int) -> str:
+        result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    @catch_sdk_exceptions
-    def get_feature(self, feature_id: int) -> str:
-        result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
+    def get_repository_info(self) -> str:
+        result = self._library_handle.SzDiagnostic_getDatastoreInfo_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)

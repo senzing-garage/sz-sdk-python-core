@@ -570,7 +570,7 @@ class SzEngineCore(SzEngine):
         return SZ_NO_INFO
 
     @catch_sdk_exceptions
-    def close_export(self, export_handle: int) -> None:
+    def close_export_report(self, export_handle: int) -> None:
         result = self._library_handle.Sz_closeExport_helper(as_c_uintptr_t(export_handle))
         self._check_result(result)
 
@@ -828,6 +828,20 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @catch_sdk_exceptions
+    def get_record_preview(
+        self,
+        record_definition: str,
+        flags: int = SzEngineFlags.SZ_RECORD_PREVIEW_DEFAULT_FLAGS,
+    ) -> str:
+        result = self._library_handle.Sz_preprocessRecord_helper(
+            as_c_char_p(record_definition),
+            flags,
+        )
+        with FreeCResources(self._library_handle, result.response):
+            self._check_result(result.return_code)
+            return as_python_str(result.response)
+
     def get_redo_record(self) -> str:
         result = self._library_handle.Sz_getRedoRecord_helper()
         with FreeCResources(self._library_handle, result.response):
@@ -898,20 +912,6 @@ class SzEngineCore(SzEngine):
             verbose_logging,
         )
         self._check_result(result)
-
-    @catch_sdk_exceptions
-    def preprocess_record(
-        self,
-        record_definition: str,
-        flags: int = SzEngineFlags.SZ_PREPROCESS_RECORD_DEFAULT_FLAGS,
-    ) -> str:
-        result = self._library_handle.Sz_preprocessRecord_helper(
-            as_c_char_p(record_definition),
-            flags,
-        )
-        with FreeCResources(self._library_handle, result.response):
-            self._check_result(result.return_code)
-            return as_python_str(result.response)
 
     def prime_engine(self) -> None:
         result = self._library_handle.Sz_primeEngine()

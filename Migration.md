@@ -270,8 +270,8 @@ These are the methods in the version 4.0 SDK with arguments no longer requiring 
 
 | Module | Method | Argument | Type | Values |
 | ------ | ------ | -------- | ---- | ------ |
-| szconfig | add_data_source | data_source_code | str | Data Source |
-|  | delete_data_source | data_source_code | str | Data Source |
+| szconfig | register_data_source | data_source_code | str | Data Source |
+|  | unregister_data_source | data_source_code | str | Data Source |
 | szengine | find_network_by_entity_id | entity_ids | [int, ...] | Entity ID(s) |
 |  | find_network_by_record_id | record_keys | [(str, str), ...] | Data Source, Record ID |
 |  | find_path_by_entity_id | avoid_entity_ids | [int, ...] | Entity ID(s) |
@@ -394,11 +394,11 @@ try:
     # Create a new config
     sz_config = sz_configmanager.create_config_from_template()
 
-    # Add the data source to the new config (no need to JSON encode anymore)
-    sz_config.add_data_source("CUSTOMERS")
+    # Register the data source with the new config (no need to JSON encode anymore)
+    sz_config.register_data_source("CUSTOMERS")
 
     # Register and set the default config in one shot
-    new_config_id = sz_configmanager.set_default_config(sz_config.export(), "Add data source CUSTOMERS")
+    new_config_id = sz_configmanager.set_default_config(sz_config.export(), "Register data source CUSTOMERS")
 except SzError as err:
     raise err
 ```
@@ -431,9 +431,9 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 
 | V3  | V4 |
 | --- | --- |
-| addDataSource | add_data_source |
-| deleteDataSource | delete_data_source |
-| listDataSources | get_data_sources |
+| addDataSource | register_data_source |
+| deleteDataSource |  |
+| listDataSources | get_data_source_registry |
 
 #### G2ConfigMgr&period;py -> szconfigmanager
 
@@ -453,8 +453,8 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 
 | V3  | V4 |
 | --- | --- |
-| checkDBPerf | check_datastore_performance |
-| getDBInfo | get_datastore_info |
+| checkDBPerf | check_repository_performance |
+| getDBInfo | get_repository_info |
 | | purge_repository |
 
 #### G2Engine&period;py -> szengine
@@ -462,7 +462,7 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | V3  | V4 |
 | --- | --- |
 | addRecord | add_record |
-| closeExport | close_export |
+| closeExport | close_export_report |
 | countRedoRecords | count_redo_records |
 | deleteRecord | delete_record |
 | exportCSVEntityReport | export_csv_entity_report |
@@ -482,7 +482,7 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | getVirtualEntityByRecordID | get_virtual_entity_by_record_id |
 | howEntityByEntityID | how_entity_by_entity_id |
 | primeEngine | prime_engine |
-| | preprocess_record |
+| | get_record_preview |
 | processRedoRecord | process_redo_record |
 | reevaluateEntity | reevaluate_entity |
 | reevaluateRecord | reevaluate_record |

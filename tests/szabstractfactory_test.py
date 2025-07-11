@@ -70,7 +70,7 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     # Add DataSources to Senzing configuration.
 
     for datasource in datasources:
-        sz_config.add_data_source(datasource)
+        sz_config.register_data_source(datasource)
 
     # Persist new Senzing configuration.
 
