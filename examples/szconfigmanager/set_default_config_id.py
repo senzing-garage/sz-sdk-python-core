@@ -23,7 +23,7 @@ try:
     # Create a new config.
 
     sz_config = sz_configmanager.create_config_from_template()
-    sz_config.add_data_source(data_source_code)
+    sz_config.register_data_source(data_source_code)
 
     # Persist the new config.
 

@@ -25,6 +25,6 @@ try:
         if not fragment:
             break
         print(fragment, end="")
-    sz_engine.close_export(export_handle)
+    sz_engine.close_export_report(export_handle)
 except SzError as err:
     print(f"\nERROR: {err}\n")
