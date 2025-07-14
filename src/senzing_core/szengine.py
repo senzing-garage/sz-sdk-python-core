@@ -605,7 +605,11 @@ class SzEngineCore(SzEngine):
         return SZ_NO_INFO
 
     def _destroy(self) -> None:
-        _ = self._library_handle.Sz_destroy()
+        # TODO - Any other places in any engines we don't check_result?
+        # _ = self._library_handle.Sz_destroy()
+        print("HERE", flush=True)
+        result = self._library_handle.Sz_destroy()
+        self._check_result(result)
 
     @catch_sdk_exceptions
     def export_csv_entity_report(
