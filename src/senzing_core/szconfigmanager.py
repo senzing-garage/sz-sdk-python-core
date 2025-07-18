@@ -231,8 +231,13 @@ class SzConfigManagerCore(SzConfigManager):
     @catch_sdk_exceptions
     def set_default_config(self, config_definition: str, config_comment: str) -> int:
         config_id = self.register_config(config_definition, config_comment)
+        # TODO -
+        print(f"\n{config_id = }", flush=True)
+        print(f"\n{type(config_id) = }", flush=True)
         self.set_default_config_id(config_id)
+        # self.set_default_config_id(2770602807)
         return config_id
+        # return 2770602807
 
     @check_is_destroyed
     @catch_sdk_exceptions
@@ -249,6 +254,12 @@ class SzConfigManagerCore(SzConfigManager):
         if not self._is_destroyed:
             _ = self._library_handle.SzConfigMgr_destroy()
             self._is_destroyed = True
+
+    # TODO -
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.SzConfigMgr_destroy()
+        self._check_result(result)
 
     @check_is_destroyed
     @catch_sdk_exceptions

@@ -20,7 +20,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_vo
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnostic
+from senzing import SzBadInputError, SzDiagnostic, SzNotInitializedError
 
 from ._helpers import (
     FreeCResources,
@@ -198,6 +198,17 @@ class SzDiagnosticCore(SzDiagnostic):
             verbose_logging,
         )
         self._check_result(result)
+
+    # TODO -
+    # NOTE - Internal use only!
+    def _internal_is_initialized(self) -> bool:
+        try:
+            _ = self.get_repository_info()
+        # NOTE - SzBadInputError is raised on 18th July 2025, can be removed once raises SzNotInitializedError
+        except (SzBadInputError, SzNotInitializedError):
+            return False
+
+        return True
 
     @check_is_destroyed
     def purge_repository(self) -> None:

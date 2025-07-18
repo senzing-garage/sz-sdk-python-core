@@ -31,7 +31,7 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags
+from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags, SzNotInitializedError
 
 from ._helpers import (
     FreeCResources,
@@ -620,6 +620,22 @@ class SzEngineCore(SzEngine):
             _ = self._library_handle.Sz_destroy()
             self._is_destroyed = True
 
+    # TODO -
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.Sz_destroy()
+        self._check_result(result)
+
+    # TODO -
+    # NOTE - Internal use only!
+    def _internal_is_initialized(self) -> bool:
+        try:
+            _ = self.get_active_config_id()
+        except SzNotInitializedError:
+            return False
+
+        return True
+
     @check_is_destroyed
     @catch_sdk_exceptions
     def export_csv_entity_report(
@@ -807,7 +823,9 @@ class SzEngineCore(SzEngine):
 
     @check_is_destroyed
     def get_active_config_id(self) -> int:
+        # TODO - Check others!!!!
         result = self._library_handle.Sz_getActiveConfigID_helper()
+        # with FreeCResources(self._library_handle, result.response):
         self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 

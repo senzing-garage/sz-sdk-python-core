@@ -10,17 +10,19 @@ of the `senzing.szabstractfactory.SzAbstractFactory`_ interface that communicate
 from __future__ import annotations
 
 import functools
+import json
 import weakref
-from collections.abc import Iterable
 from contextlib import suppress
 from threading import Lock
-from typing import Any, Callable, TypedDict, TypeVar, cast
+from typing import Any, Callable, Dict, TypedDict, TypeVar, Union, cast
 
 from senzing import (
     SzAbstractFactory,
+    SzBadInputError,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
+    SzNotInitializedError,
     SzProduct,
     SzSdkError,
 )
@@ -52,7 +54,9 @@ def _check_is_destroyed(func: _WrappedFunc) -> _WrappedFunc:
     @functools.wraps(func)
     def wrapped_check_destroyed(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         if self._is_destroyed:  # pylint: disable=protected-access
-            raise SzSdkError("factory has been destroyed and can no longer be used, create a new one")
+            raise SzSdkError(
+                "this abstract factory instance has been destroyed and can no longer be used, create a new abstract factory instance"
+            )
         return func(self, *args, **kwargs)
 
     return cast(_WrappedFunc, wrapped_check_destroyed)
@@ -98,13 +102,13 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def __new__(
         cls,
         instance_name: str = "",
-        settings: str | dict[Any, Any] = "",
+        settings: Union[str, Dict[Any, Any]] = "",
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> SzAbstractFactoryCore:
 
         with cls._constructor_lock:
-            args_hash = cls._create_args_hash((instance_name, settings, config_id, verbose_logging))
+            args_hash = cls._create_args_hash(instance_name, settings, config_id, verbose_logging)
             instance = super().__new__(cls)
             instance._args_hash = args_hash  # type: ignore[attr-defined]
 
@@ -116,7 +120,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
                 if args_hash != cls._factory_instances[cls]._args_hash:
                     raise SzSdkError(
-                        "an instance currently exists with different arguments, to use new arguments destroy or delete the existing instance first (NOTE: This will destroy Senzing objects created by the current instance!)"
+                        "an abstract factory instance exists with different arguments, to use new arguments destroy the active instance first (NOTE: This will destroy Senzing objects created by the active instance!)"
                     )
 
         return instance
@@ -124,7 +128,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def __init__(
         self,
         instance_name: str = "",
-        settings: str | dict[Any, Any] = "",
+        settings: Union[str, Dict[Any, Any]] = "",
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
@@ -228,10 +232,23 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
     @staticmethod
     def _do_destroy() -> None:
-        with suppress(KeyError, SzSdkError):
-            for engine_object in SzAbstractFactoryCore._engine_instances.values():
-                engine_object._destroy()  # pylint: disable=protected-access
-                engine_object._is_destroyed = True  # pylint: disable=protected-access
+        # TODO -
+        print("\nIn _do_destroy...", flush=True)
+        # TODO -
+        # with suppress(KeyError, SzSdkError):
+        print(f"\n{list(SzAbstractFactoryCore._engine_instances.items()) = }", flush=True)
+        for engine_object in SzAbstractFactoryCore._engine_instances.values():
+            engine_object._destroy()  # pylint: disable=protected-access
+            engine_object._is_destroyed = True  # pylint: disable=protected-access
+
+        # TODO -
+        sz_destroy_configmanager = SzConfigManagerCore()
+        while True:
+            try:
+                sz_destroy_configmanager._internal_only_destroy()  # pylint: disable=protected-access
+            except SzNotInitializedError:
+                print("***** BREAKING *****", flush=True)
+                break
 
         SzAbstractFactoryCore._engine_instances.clear()
 
@@ -247,28 +264,50 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def reinitialize(self, config_id: int) -> None:
         self._config_id = config_id
 
-        sz_engine = SzEngineCore()
-        sz_engine._reinitialize(config_id=config_id)  # pylint: disable=protected-access
+        print("\nIn reinit...", flush=True)
+        # # TODO -
+        sz_engine_is_init = SzEngineCore()
+        if sz_engine_is_init._internal_is_initialized():  # pylint: disable=protected-access
+            print("\tinitialized!", flush=True)
+            sz_engine_is_init._reinitialize(config_id=config_id)  # pylint: disable=protected-access
+        print("\tnot initialized!", flush=True)
 
-        sz_diagnostic = SzDiagnosticCore()
-        sz_diagnostic._reinitialize(config_id=config_id)  # pylint: disable=protected-access
+        # # TODO -
+        sz_diagnostic_is_init = SzDiagnosticCore()
+        if sz_diagnostic_is_init._internal_is_initialized():  # pylint: disable=protected-access
+            print("\tinitialized!", flush=True)
+            sz_diagnostic_is_init._reinitialize(config_id=config_id)  # pylint: disable=protected-access
 
     # -------------------------------------------------------------------------
     # Utility methods
     # -------------------------------------------------------------------------
 
     @staticmethod
-    def _create_args_hash(items_to_hash: Iterable[dict[str, str] | int | str]) -> str:
+    def _create_args_hash(
+        instance_name: str, settings: Union[str, Dict[Any, Any]], config_id: int, verbose_logging: int
+    ) -> str:
         """Create a hash of the factory initialization arguments"""
-        item_strs = []
+        for arg in [instance_name, settings, config_id, verbose_logging]:
+            if not isinstance(arg, (dict, int, str)):
+                raise SzSdkError("couldn't create a hash from the factory arguments, wrong type for an argument")
 
         try:
-            for item in items_to_hash:
-                if isinstance(item, (dict, int)):
-                    item = str(item)
-                item_strs.append(item.strip().replace(" ", ""))
-            hash_ = str(hash("".join(item_strs)))
-        except AttributeError as err:
+            args_strs = []
+            args_strs.append(instance_name.strip().replace(" ", ""))
+
+            if isinstance(settings, str):
+                settings_ordered = json.dumps(json.loads(settings), sort_keys=True)
+                args_strs.append(settings_ordered.strip().replace(" ", ""))
+
+            if isinstance(settings, dict):
+                settings_ordered = json.dumps(settings, sort_keys=True)
+                args_strs.append(settings_ordered.strip().replace(" ", ""))
+
+            args_strs.append(str(config_id))
+            args_strs.append(str(verbose_logging))
+
+            hash_ = str(hash("".join(args_strs)))
+        except (AttributeError, TypeError, json.JSONDecodeError) as err:
             raise SzSdkError(f"couldn't create a hash from the factory arguments: {err}") from err
 
         return hash_
