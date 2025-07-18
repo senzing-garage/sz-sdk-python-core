@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """
-TODO: szabstractfactory_test.py
+szabstractfactory_test.py
 """
 
 

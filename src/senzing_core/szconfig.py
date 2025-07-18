@@ -111,12 +111,10 @@ class SzConfigCore(SzConfig):
     """
 
     # -------------------------------------------------------------------------
-    # Python dunder/magic methods
+    # Dunder/magic methods
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initializer"""
-
         _ = kwargs
         self._library_handle = load_sz_library()
 
@@ -286,20 +284,12 @@ class SzConfigCore(SzConfig):
         self._check_result(close_result)
 
     @catch_sdk_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
-        """
-        Initialize the C-based Senzing SzConfig.
-
-        Args:
-            instance_name (str): A name to distinguish this instance of the SzConfig.
-            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
-        """
         result = self._library_handle.SzConfig_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),

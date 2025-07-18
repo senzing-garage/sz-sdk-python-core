@@ -27,6 +27,7 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
+    check_is_destroyed,
     check_result_rc,
     load_sz_library,
 )
@@ -65,14 +66,13 @@ class SzProductCore(SzProduct):
     """
 
     # -------------------------------------------------------------------------
-    # Python dunder/magic methods
+    # Dunder/magic methods
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initializer"""
-
         _ = kwargs
 
+        self._is_destroyed = False
         self._library_handle = load_sz_library()
 
         # Partial function to use this modules self._library_handle for exception handling
@@ -95,28 +95,29 @@ class SzProductCore(SzProduct):
         self._library_handle.SzProduct_init.restype = c_longlong
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
+    @property
+    def is_destroyed(self) -> bool:
+        """Return if the instance has been destroyed."""
+        return self._is_destroyed
+
     # -------------------------------------------------------------------------
     # SzProduct methods
     # -------------------------------------------------------------------------
 
+    # NOTE - Not to use check_is_destroyed decorator
     def _destroy(self) -> None:
-        _ = self._library_handle.SzProduct_destroy()
+        if not self._is_destroyed:
+            _ = self._library_handle.SzProduct_destroy()
+            self._is_destroyed = True
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
-        """
-        Initialize the C-based Senzing SzProduct.
-
-        Args:
-            instance_name (str): A name to distinguish this instance of the SzProduct.
-            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
-        """
         result = self._library_handle.SzProduct_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
@@ -124,10 +125,10 @@ class SzProductCore(SzProduct):
         )
         self._check_result(result)
 
+    @check_is_destroyed
     def get_license(self) -> str:
         return as_python_str(self._library_handle.SzProduct_getLicense())
 
-    def get_version(
-        self,
-    ) -> str:
+    @check_is_destroyed
+    def get_version(self) -> str:
         return as_python_str(self._library_handle.SzProduct_getVersion())

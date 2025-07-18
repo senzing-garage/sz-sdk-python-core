@@ -86,7 +86,7 @@ def test_help_2(sz_diagnostic: SzDiagnostic) -> None:
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -96,7 +96,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -106,7 +106,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzDiagnosticCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -123,7 +123,7 @@ def test_reinitialize(sz_diagnostic: SzDiagnosticCore, sz_configmanager: SzConfi
     """Test SzDiagnosticCore.reinit() with current config ID."""
     default_config_id = sz_configmanager.get_default_config_id()
     try:
-        sz_diagnostic.reinitialize(default_config_id)  # pylint: disable=W0212
+        sz_diagnostic._reinitialize(default_config_id)  # pylint: disable=W0212
     except SzError:
         assert False
 
@@ -133,13 +133,13 @@ def test_reinitialize_bad_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     bad_default_config_id = "string"
     # pylint: disable=W0212
     with pytest.raises(SzSdkError):
-        sz_diagnostic.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_diagnostic._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_diagnostic: SzDiagnosticCore) -> None:
     """Test SzDiagnosticCore.reinit() raising error."""
     with pytest.raises(SzError):
-        sz_diagnostic.reinitialize(999)  # pylint: disable=W0212
+        sz_diagnostic._reinitialize(999)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -152,7 +152,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """SzConfigManager object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzConfigManagerCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         verbose_logging=0,
@@ -165,7 +165,7 @@ def szdiagnostic_fixture(engine_vars: Dict[Any, Any]) -> SzDiagnostic:
     """SzDiagnostic object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzDiagnosticCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,
@@ -179,7 +179,7 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """SzEngine object to use for all tests.
     engine_vars is returned from conftest.pys"""
     result = SzEngineCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         instance_name=engine_vars["INSTANCE_NAME"],
         settings=engine_vars["SETTINGS"],
         config_id=0,
