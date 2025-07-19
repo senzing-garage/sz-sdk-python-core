@@ -219,7 +219,9 @@ def test_set_default_config_bad_config_definition(sz_configmanager: SzConfigMana
 def test_set_default_config_id(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.set_default_config_id()."""
     old_config_id = sz_configmanager.get_default_config_id()
-    sz_config = sz_configmanager.create_config_from_template()
+    # TODO -
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(old_config_id)
     data_source_code = "CUSTOMERS"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
