@@ -99,7 +99,7 @@ def test_help_2(sz_abstractfactory: SzAbstractFactory) -> None:
 
 #     # Persist new Senzing configuration.
 #     config_definition = sz_config.export()
-#     config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
+#     config_id = sz_configmanager.set_default_config(config_definition, "Add test datasources")
 
 #     # Update other Senzing objects.
 #     sz_abstractfactory.reinitialize(config_id)
@@ -127,7 +127,7 @@ def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
 
     # Persist new Senzing configuration.
     config_definition = sz_config.export()
-    config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
+    config_id = sz_configmanager.set_default_config(config_definition, "Add test datasources")
 
     # Update other Senzing objects.
     sz_abstractfactory.reinitialize(config_id)
