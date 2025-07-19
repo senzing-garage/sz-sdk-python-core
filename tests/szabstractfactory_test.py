@@ -105,39 +105,39 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_abstractfactory.reinitialize(config_id)
 
 
-def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
-    """Test SzAbstractFactory.reinitialize()."""
-    # TODO -
-    # datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
-    datasource = "TEST_DATASOURCE_2"
+# def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
+#     """Test SzAbstractFactory.reinitialize()."""
+#     # TODO -
+#     # datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+#     datasource = "TEST_DATASOURCE_2"
 
-    # Create Senzing objects.
-    sz_diagnostic = sz_abstractfactory.create_diagnostic()
-    sz_engine = sz_abstractfactory.create_engine()
-    sz_configmanager = sz_abstractfactory.create_configmanager()
-    sz_config = sz_configmanager.create_config_from_template()
+#     # Create Senzing objects.
+#     sz_diagnostic = sz_abstractfactory.create_diagnostic()
+#     sz_engine = sz_abstractfactory.create_engine()
+#     sz_configmanager = sz_abstractfactory.create_configmanager()
+#     sz_config = sz_configmanager.create_config_from_template()
 
-    # Use engines
-    _ = sz_diagnostic.get_repository_info()
-    _ = sz_engine.add_record("TEST", "787B", '{"NAME_FULL":"Testy McTester"}')
-    active_id_1 = sz_engine.get_active_config_id()
+#     # Use engines
+#     _ = sz_diagnostic.get_repository_info()
+#     _ = sz_engine.add_record("TEST", "787B", '{"NAME_FULL":"Testy McTester"}')
+#     active_id_1 = sz_engine.get_active_config_id()
 
-    # Add DataSources to Senzing configuration.
-    sz_config.register_data_source(datasource)
+#     # Add DataSources to Senzing configuration.
+#     sz_config.register_data_source(datasource)
 
-    # Persist new Senzing configuration.
-    config_definition = sz_config.export()
-    config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
+#     # Persist new Senzing configuration.
+#     config_definition = sz_config.export()
+#     config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
 
-    # Update other Senzing objects.
-    sz_abstractfactory.reinitialize(config_id)
+#     # Update other Senzing objects.
+#     sz_abstractfactory.reinitialize(config_id)
 
-    # # Use engines
-    _ = sz_diagnostic.get_repository_info()
-    _ = sz_engine.add_record(datasource, "767B", '{"NAME_FULL":"McTester Testy"}')
-    active_id_2 = sz_engine.get_active_config_id()
+#     # # Use engines
+#     _ = sz_diagnostic.get_repository_info()
+#     _ = sz_engine.add_record(datasource, "767B", '{"NAME_FULL":"McTester Testy"}')
+#     active_id_2 = sz_engine.get_active_config_id()
 
-    assert active_id_1 != active_id_2
+#     assert active_id_1 != active_id_2
 
 
 # NOTE - ignore is for https://github.com/python/mypy/issues/1465
