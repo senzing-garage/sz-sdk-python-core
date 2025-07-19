@@ -86,7 +86,9 @@ def test_help_2(sz_abstractfactory: SzAbstractFactory) -> None:
 
 def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.reinitialize()."""
-    datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+    # TODO -
+    # datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+    datasource = "TEST_DATASOURCE_1"
 
     # Create Senzing objects.
     sz_configmanager = sz_abstractfactory.create_configmanager()
@@ -105,7 +107,9 @@ def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
 
 def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.reinitialize()."""
-    datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+    # TODO -
+    # datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+    datasource = "TEST_DATASOURCE_2"
 
     # Create Senzing objects.
     sz_diagnostic = sz_abstractfactory.create_diagnostic()
