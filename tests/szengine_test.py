@@ -100,7 +100,9 @@ def test_add_truthset_datasources(
 
 def test_add_record(sz_engine: SzEngine) -> None:
     """Test SzEngine.add_record()."""
-    data_source_code = "TEST"
+    # TODO -
+    # data_source_code = "TEST"
+    data_source_code = "CUSTOMERS"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SZ_WITHOUT_INFO
