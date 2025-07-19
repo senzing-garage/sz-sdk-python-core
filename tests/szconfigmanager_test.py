@@ -14,7 +14,6 @@ from senzing import (
     SzReplaceConflictError,
     SzSdkError,
 )
-from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing_core import SzConfigManagerCore
 
@@ -99,7 +98,10 @@ def test_help_2(sz_configmanager: SzConfigManager) -> None:
 
 def test_register_config(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.register_config()."""
-    sz_config = sz_configmanager.create_config_from_template()
+    # TODO -
+    config_id = sz_configmanager.get_default_config_id()
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(config_id)
     config_definition = sz_config.export()
     config_comment = "Test"
     actual = sz_configmanager.register_config(config_definition, config_comment)
@@ -126,7 +128,10 @@ def test_register_config_bad_config_definition_value(sz_configmanager: SzConfigM
 
 def test_register_config_bad_config_comment_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.register_config()."""
-    sz_config = sz_configmanager.create_config_from_template()
+    # TODO -
+    config_id = sz_configmanager.get_default_config_id()
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(config_id)
     config_definition = sz_config.export()
     bad_config_comment = 0
     with pytest.raises(SzSdkError):
@@ -169,8 +174,11 @@ def test_replace_default_config_id_bad_new_default_config_id_value(sz_configmana
 def test_replace_default_config_id_bad_current_default_config_id_type(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.replace_default_config_id()."""
     bad_current_default_config_id = "string"
-    sz_config = sz_configmanager.create_config_from_template()
-    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
+    # TODO -
+    config_id = sz_configmanager.get_default_config_id()
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(config_id)
+    data_source_code = "REPLACE_DEFAULT_CONFIG_ID_BAD"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
@@ -184,7 +192,10 @@ def test_replace_default_config_id_bad_current_default_config_id_type(sz_configm
 def test_replace_default_config_id_bad_current_default_config_id_value(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.replace_default_config_id()."""
     bad_current_default_config_id = 1234
-    sz_config = sz_configmanager.create_config_from_template()
+    # TODO -
+    config_id = sz_configmanager.get_default_config_id()
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(config_id)
     data_source_code = "CONFIGMANAGER_REPLACE_BAD"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
@@ -194,6 +205,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(sz_config
         sz_configmanager.replace_default_config_id(bad_current_default_config_id, new_default_config_id)
 
 
+# TODO - s
 def test_set_default_config(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.set_default_config()."""
     old_config_id = sz_configmanager.get_default_config_id()
