@@ -20,7 +20,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_vo
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzBadInputError, SzDiagnostic, SzNotInitializedError
+from senzing import SzDiagnostic, SzNotInitializedError
 
 from ._helpers import (
     FreeCResources,

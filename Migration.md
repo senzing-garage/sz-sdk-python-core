@@ -121,7 +121,6 @@ print(response)
 The separate `WithInfo` methods have been removed in the version 4.0 SDK. The capability is now included in the `add_record`, `delete_record`, `process_redo_record`,`reevaluate_entity`, and `reevaluate_record` methods. Requesting the with info response is achieved with the use of the optional `flags` argument and specifying the `SZ_WITH_INFO` engine flag. The default is not to return the with info response, in which case an empty string is returned:
 
 ```python
-from senzing import SzError
 ...
 try:
    _ = sz_engine.add_record("TEST", "78720B", record_json_str)
@@ -135,6 +134,7 @@ Return the with info response using the `flags` argument:
 ```python
 from senzing import SzEngineFlags, SzError
 ...
+
 try:
    response = sz_engine.add_record("TEST", "78720B", record_json_str, flags=SzEngineFlags.SZ_WITH_INFO)
 except SzError as err:
@@ -385,7 +385,7 @@ finally:
 In version 4.0, the `SzConfig` module is subordinate to the `SzConfigManager` and literally represents a Senzing configuration as an object. It removes the hassle of dealing with "config handles" that have to be closed as well:
 
 ```python
-sz_factory = SzAbstractFactoryCore(MODULE_NAME, SETTINGS, verbose_logging=False)
+sz_factory = SzAbstractFactoryCore(MODULE_NAME, SETTINGS)
 
 try:
     # Get the config manager from the abstract factory
@@ -398,7 +398,8 @@ try:
     sz_config.register_data_source("CUSTOMERS")
 
     # Register and set the default config in one shot
-    new_config_id = sz_configmanager.set_default_config(sz_config.export(), "Register data source CUSTOMERS")
+    new_config = sz_config.export()
+    new_config_id = sz_configmanager.set_default_config(new_config), "Register data source CUSTOMERS")
 except SzError as err:
     raise err
 ```

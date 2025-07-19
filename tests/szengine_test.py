@@ -10,7 +10,6 @@ from pytest_schema import Optional, Or, schema
 from senzing import (
     SZ_WITHOUT_INFO,
     SzBadInputError,
-    SzConfig,
     SzConfigManager,
     SzEngine,
     SzEngineFlags,
@@ -26,7 +25,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing_core import SzConfigCore, SzConfigManagerCore, SzEngineCore
+from senzing_core import SzConfigManagerCore, SzEngineCore
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
