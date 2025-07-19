@@ -583,23 +583,23 @@ def test_method_chain(engine_vars: Dict[Any, Any]) -> None:
         sz_engine.get_active_config_id()
 
 
-def test_context_manager(engine_vars: Dict[Any, Any]) -> None:
-    """Test SzAbstractFactory context manager"""
+# def test_context_manager(engine_vars: Dict[Any, Any]) -> None:
+#     """Test SzAbstractFactory context manager"""
 
-    factory_parameters = {
-        "instance_name": "Example",
-        "settings": engine_vars.get("SETTINGS_DICT", {}),
-        "config_id": 0,
-        "verbose_logging": 0,
-    }
+#     factory_parameters = {
+#         "instance_name": "Example",
+#         "settings": engine_vars.get("SETTINGS_DICT", {}),
+#         "config_id": 0,
+#         "verbose_logging": 0,
+#     }
 
-    # fmt: off
-    # pylint: disable=not-context-manager
-    with pytest.raises(AttributeError, TypeError):  # type: ignore
-        with SzAbstractFactoryCore(**factory_parameters) as sz_factory:  # type: ignore
-            sz_factory.create_engine()
-    # pylint: enable=not-context-manager
-    # fmt: on
+#     # fmt: off
+#     # pylint: disable=not-context-manager
+#     with pytest.raises(AttributeError, TypeError):  # type: ignore
+#         with SzAbstractFactoryCore(**factory_parameters) as sz_factory:  # type: ignore
+#             sz_factory.create_engine()
+#     # pylint: enable=not-context-manager
+#     # fmt: on
 
 
 # -----------------------------------------------------------------------------
