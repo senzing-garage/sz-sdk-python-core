@@ -73,27 +73,18 @@ RECORD_STR_BAD = (
 def test_add_truthset_datasources(
     sz_engine: SzEngineCore,
     sz_configmanager: SzConfigManager,
-    sz_config: SzConfig,
 ) -> None:
     """Add needed datasources for tests."""
-    # TODO -
-    # TODO -
     current_config_id = sz_configmanager.get_default_config_id()
     config = sz_configmanager.create_config_from_config_id(current_config_id)
-    print(f"\n{config.get_data_source_registry() = }", flush=True)
 
     for data_source_code in TRUTHSET_DATASOURCES:
-        # sz_config.register_data_source(data_source_code)
         config.register_data_source(data_source_code)
 
-    # config_definition = sz_config.export()
-    new_config = sz_config.export()
+    new_config = config.export()
     new_config_id = sz_configmanager.register_config(new_config, "Test")
-    # TODO -
-    # sz_configmanager.set_default_config_id(new_config_id)
     sz_configmanager.replace_default_config_id(current_config_id, new_config_id)
-    # TODO -
-    # sz_engine._reinitialize(new_config_id)  # pylint: disable=W0212
+    sz_engine._reinitialize(new_config_id)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -103,9 +94,7 @@ def test_add_truthset_datasources(
 
 def test_add_record(sz_engine: SzEngine) -> None:
     """Test SzEngine.add_record()."""
-    # TODO -
-    # data_source_code = "TEST"
-    data_source_code = "CUSTOMERS"
+    data_source_code = "TEST"
     record_id = "1"
     record_definition: Dict[Any, Any] = {}
     flags = SZ_WITHOUT_INFO
@@ -1283,9 +1272,7 @@ def get_entity_id_from_record_id(sz_engine: SzEngine, data_source_code: str, rec
 # -----------------------------------------------------------------------------
 
 
-# TODO -
 @pytest.fixture(name="sz_configmanager", scope="function")
-# @pytest.fixture(name="sz_configmanager", scope="module")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """
     SzConfigManager object to use for all tests.
@@ -1299,26 +1286,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     return result
 
 
-# TODO -
-@pytest.fixture(name="sz_config", scope="function")
-# @pytest.fixture(name="sz_config", scope="module")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
-    """
-    SzConfig object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigCore()
-    result._initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    result.import_template()
-    return result
-
-
-# TODO -
 @pytest.fixture(name="sz_engine", scope="function")
-# @pytest.fixture(name="sz_engine", scope="module")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
     SzEngine object to use for all tests.

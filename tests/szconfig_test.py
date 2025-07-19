@@ -41,14 +41,13 @@ def test_help_2(sz_config: SzConfig) -> None:
     sz_config.help("register_data_source")
 
 
-# TODO -
-# def test_register_data_source(sz_config: SzConfig) -> None:
-#     """Test SzConfig.register_data_source()."""
-#     data_source_code = "NAME_OF_DATASOURCE"
-#     actual = sz_config.register_data_source(data_source_code)
-#     assert isinstance(actual, str)
-#     actual_as_dict = json.loads(actual)
-#     assert schema(register_data_source_schema) == actual_as_dict
+def test_register_data_source(sz_config: SzConfig) -> None:
+    """Test SzConfig.register_data_source()."""
+    data_source_code = "NAME_OF_DATASOURCE"
+    actual = sz_config.register_data_source(data_source_code)
+    assert isinstance(actual, str)
+    actual_as_dict = json.loads(actual)
+    assert schema(register_data_source_schema) == actual_as_dict
 
 
 def test_register_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:
@@ -72,11 +71,10 @@ def test_register_data_source_empty_data_source_code_value(sz_config: SzConfig) 
         sz_config.register_data_source(bad_data_source_code)
 
 
-# TODO -
-# def test_unregister_data_source(sz_config: SzConfig) -> None:
-#     """Test SzConfig.unregister_data_source()."""
-#     data_source_code = "TEST"
-#     sz_config.unregister_data_source(data_source_code)
+def test_unregister_data_source(sz_config: SzConfig) -> None:
+    """Test SzConfig.unregister_data_source()."""
+    data_source_code = "TEST"
+    sz_config.unregister_data_source(data_source_code)
 
 
 def test_unregister_data_source_bad_data_source_code_type(sz_config: SzConfig) -> None:

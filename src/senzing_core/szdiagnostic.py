@@ -38,7 +38,7 @@ from ._helpers import (
 __all__ = ["SzDiagnosticCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2025-01-28"
+__updated__ = "2025-07-19"
 
 
 # -----------------------------------------------------------------------------
@@ -208,8 +208,7 @@ class SzDiagnosticCore(SzDiagnostic):
     def _internal_is_initialized(self) -> bool:
         try:
             _ = self.get_repository_info()
-        # NOTE - SzBadInputError is raised on 18th July 2025, can be removed once raises SzNotInitializedError
-        except (SzBadInputError, SzNotInitializedError):
+        except SzNotInitializedError:
             return False
 
         return True
