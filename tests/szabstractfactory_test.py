@@ -115,7 +115,9 @@ def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_diagnostic = sz_abstractfactory.create_diagnostic()
     sz_engine = sz_abstractfactory.create_engine()
     sz_configmanager = sz_abstractfactory.create_configmanager()
-    sz_config = sz_configmanager.create_config_from_template()
+    current_config_id = sz_configmanager.get_default_config_id()
+    # sz_config = sz_configmanager.create_config_from_template()
+    sz_config = sz_configmanager.create_config_from_config_id(current_config_id)
 
     # Use engines
     _ = sz_diagnostic.get_repository_info()
@@ -127,7 +129,10 @@ def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
 
     # Persist new Senzing configuration.
     config_definition = sz_config.export()
+    # TODO -
     config_id = sz_configmanager.set_default_config(config_definition, "Add test datasources")
+    # new_config_id = sz_configmanager.register_config(config_definition, "Test")
+    # sz_configmanager.replace_default_config_id()
 
     # Update other Senzing objects.
     sz_abstractfactory.reinitialize(config_id)
