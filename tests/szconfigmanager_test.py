@@ -222,7 +222,7 @@ def test_set_default_config_id(sz_configmanager: SzConfigManager) -> None:
     # TODO -
     # sz_config = sz_configmanager.create_config_from_template()
     sz_config = sz_configmanager.create_config_from_config_id(old_config_id)
-    data_source_code = "CUSTOMERS"
+    data_source_code = "CONFIGMANAGER_TEST"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
