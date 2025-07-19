@@ -84,23 +84,23 @@ def test_help_2(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_abstractfactory.help("create_configmanager")
 
 
-# def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
-#     """Test SzAbstractFactory.reinitialize()."""
-#     datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
+def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.reinitialize()."""
+    datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
 
-#     # Create Senzing objects.
-#     sz_configmanager = sz_abstractfactory.create_configmanager()
-#     sz_config = sz_configmanager.create_config_from_template()
+    # Create Senzing objects.
+    sz_configmanager = sz_abstractfactory.create_configmanager()
+    sz_config = sz_configmanager.create_config_from_template()
 
-#     # Add DataSources to Senzing configuration.
-#     sz_config.register_data_source(datasource)
+    # Add DataSources to Senzing configuration.
+    sz_config.register_data_source(datasource)
 
-#     # Persist new Senzing configuration.
-#     config_definition = sz_config.export()
-#     config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
+    # Persist new Senzing configuration.
+    config_definition = sz_config.export()
+    config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
 
-#     # Update other Senzing objects.
-#     sz_abstractfactory.reinitialize(config_id)
+    # Update other Senzing objects.
+    sz_abstractfactory.reinitialize(config_id)
 
 
 # def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
