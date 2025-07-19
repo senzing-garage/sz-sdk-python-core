@@ -137,8 +137,6 @@ def test_replace_default_config_id(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.replace_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(current_default_config_id)
-    for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.register_data_source(data_source_code)
     data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
@@ -187,7 +185,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(sz_config
     """Test SzConfigManager.replace_default_config_id()."""
     bad_current_default_config_id = 1234
     sz_config = sz_configmanager.create_config_from_template()
-    data_source_code = "CUSTOMERS"
+    data_source_code = "CONFIGMANAGER_REPLACE_BAD"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"

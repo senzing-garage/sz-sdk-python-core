@@ -77,8 +77,10 @@ def test_add_truthset_datasources(
 ) -> None:
     """Add needed datasources for tests."""
     # TODO -
+    # TODO -
     current_config_id = sz_configmanager.get_default_config_id()
     config = sz_configmanager.create_config_from_config_id(current_config_id)
+    print(f"\n{config.get_data_source_registry() = }", flush=True)
 
     for data_source_code in TRUTHSET_DATASOURCES:
         # sz_config.register_data_source(data_source_code)
