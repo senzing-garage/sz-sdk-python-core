@@ -18,7 +18,6 @@ from typing import Any, Callable, Dict, TypedDict, TypeVar, Union, cast
 
 from senzing import (
     SzAbstractFactory,
-    SzBadInputError,
     SzConfigManager,
     SzDiagnostic,
     SzEngine,
@@ -232,25 +231,40 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
     @staticmethod
     def _do_destroy() -> None:
-        # TODO -
-        print("\nIn _do_destroy...", flush=True)
-        # TODO -
-        # with suppress(KeyError, SzSdkError):
-        print(f"\n{list(SzAbstractFactoryCore._engine_instances.items()) = }", flush=True)
-        for engine_object in SzAbstractFactoryCore._engine_instances.values():
-            engine_object._destroy()  # pylint: disable=protected-access
-            engine_object._is_destroyed = True  # pylint: disable=protected-access
+        with suppress(KeyError, SzSdkError):
+            for engine_object in SzAbstractFactoryCore._engine_instances.values():
+                engine_object._destroy()  # pylint: disable=protected-access
+                engine_object._is_destroyed = True  # pylint: disable=protected-access
 
-        # TODO -
+        SzAbstractFactoryCore._engine_instances.clear()
+
         sz_destroy_configmanager = SzConfigManagerCore()
         while True:
             try:
                 sz_destroy_configmanager._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
-                print("***** BREAKING *****", flush=True)
                 break
 
-        SzAbstractFactoryCore._engine_instances.clear()
+        sz_destroy_diagnostic = SzDiagnosticCore()
+        while True:
+            try:
+                sz_destroy_diagnostic._internal_only_destroy()  # pylint: disable=protected-access
+            except SzNotInitializedError:
+                break
+
+        sz_destroy_engine = SzEngineCore()
+        while True:
+            try:
+                sz_destroy_engine._internal_only_destroy()  # pylint: disable=protected-access
+            except SzNotInitializedError:
+                break
+
+        sz_destroy_product = SzProductCore()
+        while True:
+            try:
+                sz_destroy_product._internal_only_destroy()  # pylint: disable=protected-access
+            except SzNotInitializedError:
+                break
 
         # fmt: off
         with suppress(IndexError):
@@ -264,18 +278,12 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     def reinitialize(self, config_id: int) -> None:
         self._config_id = config_id
 
-        print("\nIn reinit...", flush=True)
-        # # TODO -
         sz_engine_is_init = SzEngineCore()
         if sz_engine_is_init._internal_is_initialized():  # pylint: disable=protected-access
-            print("\tinitialized!", flush=True)
             sz_engine_is_init._reinitialize(config_id=config_id)  # pylint: disable=protected-access
-        print("\tnot initialized!", flush=True)
 
-        # # TODO -
         sz_diagnostic_is_init = SzDiagnosticCore()
         if sz_diagnostic_is_init._internal_is_initialized():  # pylint: disable=protected-access
-            print("\tinitialized!", flush=True)
             sz_diagnostic_is_init._reinitialize(config_id=config_id)  # pylint: disable=protected-access
 
     # -------------------------------------------------------------------------

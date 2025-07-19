@@ -158,6 +158,11 @@ class SzDiagnosticCore(SzDiagnostic):
             _ = self._library_handle.SzDiagnostic_destroy()
             self._is_destroyed = True
 
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.SzDiagnostic_destroy()
+        self._check_result(result)
+
     @check_is_destroyed
     @catch_sdk_exceptions
     def get_feature(self, feature_id: int) -> str:
@@ -199,7 +204,6 @@ class SzDiagnosticCore(SzDiagnostic):
         )
         self._check_result(result)
 
-    # TODO -
     # NOTE - Internal use only!
     def _internal_is_initialized(self) -> bool:
         try:

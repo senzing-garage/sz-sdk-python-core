@@ -110,6 +110,11 @@ class SzProductCore(SzProduct):
             _ = self._library_handle.SzProduct_destroy()
             self._is_destroyed = True
 
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.SzProduct_destroy()
+        self._check_result(result)
+
     @check_is_destroyed
     @catch_sdk_exceptions
     def _initialize(

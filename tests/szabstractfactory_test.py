@@ -20,7 +20,6 @@ from senzing import (
 
 from senzing_core import (
     SzAbstractFactoryCore,
-    SzConfigCore,
     SzConfigManagerCore,
     SzDiagnosticCore,
     SzEngineCore,
@@ -87,15 +86,14 @@ def test_help_2(sz_abstractfactory: SzAbstractFactory) -> None:
 
 def test_reinitialize(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.reinitialize()."""
-    datasources = [f"TEST_DATASOURCE_{datetime.now().timestamp()}"]
+    datasource = f"TEST_DATASOURCE_{datetime.now().timestamp()}"
 
     # Create Senzing objects.
     sz_configmanager = sz_abstractfactory.create_configmanager()
     sz_config = sz_configmanager.create_config_from_template()
 
     # Add DataSources to Senzing configuration.
-    for datasource in datasources:
-        sz_config.register_data_source(datasource)
+    sz_config.register_data_source(datasource)
 
     # Persist new Senzing configuration.
     config_definition = sz_config.export()
@@ -116,7 +114,7 @@ def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
     sz_config = sz_configmanager.create_config_from_template()
 
     # Use engines
-    # _ = sz_diagnostic.get_repository_info()
+    _ = sz_diagnostic.get_repository_info()
     _ = sz_engine.add_record("TEST", "787B", '{"NAME_FULL":"Testy McTester"}')
     active_id_1 = sz_engine.get_active_config_id()
 
@@ -128,9 +126,7 @@ def test_reinitialize_with_work(sz_abstractfactory: SzAbstractFactory) -> None:
     config_id = sz_configmanager.set_default_config(config_definition, "Add My datasources")
 
     # Update other Senzing objects.
-    print("Calling reinit...", flush=True)
     sz_abstractfactory.reinitialize(config_id)
-    print("Returned reinit...", flush=True)
 
     # # Use engines
     _ = sz_diagnostic.get_repository_info()
@@ -517,16 +513,12 @@ def test_is_destroyed_szconfigmanager_all_methods(sz_abstractfactory: SzAbstract
         m
         for m in dir(SzConfigManagerCore)
         if callable(getattr(SzConfigManagerCore, m))
-        # TODO -
         and not (m.startswith("__") or m in ("_destroy", "help", "_internal_only_destroy"))
     ]
     sz_configmanager = sz_abstractfactory.create_configmanager()
-    # TODO -
-    # sz_abstractfactory.destroy()
-    sz_configmanager._is_destroyed = True
+    sz_configmanager._is_destroyed = True  # type: ignore
 
     for method in methods:
-        print(f"{method = }", flush=True)
         with pytest.raises(SzSdkError):
             getattr(SzConfigManagerCore, method)(sz_configmanager)
 
@@ -540,9 +532,7 @@ def test_is_destroyed_szdiagnostic_all_methods(sz_abstractfactory: SzAbstractFac
         and not (m.startswith("__") or m in ("_destroy", "help", "_internal_only_destroy"))
     ]
     sz_diagnostic = sz_abstractfactory.create_diagnostic()
-    # TODO -
-    # sz_abstractfactory.destroy()
-    sz_diagnostic._is_destroyed = True
+    sz_diagnostic._is_destroyed = True  # type: ignore
 
     for method in methods:
         with pytest.raises(SzSdkError):
@@ -558,13 +548,9 @@ def test_is_destroyed_szengine_all_methods(sz_abstractfactory: SzAbstractFactory
         and not (m.startswith("__") or m in ("_destroy", "help", "_internal_only_destroy"))
     ]
     sz_engine = sz_abstractfactory.create_engine()
-    # TODO -
-    # sz_abstractfactory.destroy()
-    sz_engine._is_destroyed = True
+    sz_engine._is_destroyed = True  # type: ignore
 
     for method in methods:
-        # TODO -
-        print(f"\n{method = }", flush=True)
         with pytest.raises(SzSdkError):
             getattr(SzEngineCore, method)(sz_engine)
 
@@ -574,12 +560,11 @@ def test_is_destroyed_szproduct_all_methods(sz_abstractfactory: SzAbstractFactor
     methods = [
         m
         for m in dir(SzProductCore)
-        if callable(getattr(SzProductCore, m)) and not (m.startswith("__") or m in ("_destroy", "help"))
+        if callable(getattr(SzProductCore, m))
+        and not (m.startswith("__") or m in ("_destroy", "help", "_internal_only_destroy"))
     ]
-    sz_product = sz_abstractfactory.create_configmanager()
-    # TODO -
-    # sz_abstractfactory.destroy()
-    sz_product._is_destroyed = True
+    sz_product = sz_abstractfactory.create_product()
+    sz_product._is_destroyed = True  # type: ignore
 
     for method in methods:
         with pytest.raises(SzSdkError):
@@ -662,26 +647,3 @@ def szabstractfactory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
 # -----------------------------------------------------------------------------
 # Schemas
 # -----------------------------------------------------------------------------
-
-
-# def test_final_destroy():
-# for _ in range(0, 100):
-#     sze = SzConfigCore()
-#     sze._destroy()
-
-# for _ in range(0, 100):
-#     sze = SzConfigManagerCore()
-#     sze._destroy()
-
-
-#     for _ in range(0, 100):
-#         sze = SzDiagnosticCore()
-#         sze._destroy()
-
-#     for _ in range(0, 100):
-#         sze = SzEngineCore()
-#         sze._destroy()
-
-#     for _ in range(0, 100):
-#         sze = SzProductCore()
-#         sze._destroy()
