@@ -10,7 +10,6 @@ from pytest_schema import Optional, Or, schema
 from senzing import (
     SZ_WITHOUT_INFO,
     SzBadInputError,
-    SzConfig,
     SzConfigManager,
     SzEngine,
     SzEngineFlags,
@@ -26,7 +25,7 @@ from senzing_truthset import (
     TRUTHSET_WATCHLIST_RECORDS,
 )
 
-from senzing_core import SzConfigCore, SzConfigManagerCore, SzEngineCore
+from senzing_core import SzConfigManagerCore, SzEngineCore
 
 DATA_SOURCES = {
     "CUSTOMERS": TRUTHSET_CUSTOMER_RECORDS,
@@ -73,16 +72,18 @@ RECORD_STR_BAD = (
 def test_add_truthset_datasources(
     sz_engine: SzEngineCore,
     sz_configmanager: SzConfigManager,
-    sz_config: SzConfig,
 ) -> None:
     """Add needed datasources for tests."""
-    for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.register_data_source(data_source_code)
+    current_config_id = sz_configmanager.get_default_config_id()
+    config = sz_configmanager.create_config_from_config_id(current_config_id)
 
-    config_definition = sz_config.export()
-    config_id = sz_configmanager.register_config(config_definition, "Test")
-    sz_configmanager.set_default_config_id(config_id)
-    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
+    for data_source_code in TRUTHSET_DATASOURCES:
+        config.register_data_source(data_source_code)
+
+    new_config = config.export()
+    new_config_id = sz_configmanager.register_config(new_config, "Test")
+    sz_configmanager.replace_default_config_id(current_config_id, new_config_id)
+    sz_engine._reinitialize(new_config_id)  # pylint: disable=W0212
 
 
 # -----------------------------------------------------------------------------
@@ -1156,7 +1157,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzEngineCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -1166,7 +1167,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzEngineCore()
-    actual.initialize(  # pylint: disable=W0212
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -1182,20 +1183,20 @@ def test_exception(sz_engine: SzEngineCore) -> None:
 def test_reinitialize(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     config_id = sz_engine.get_active_config_id()
-    sz_engine.reinitialize(config_id)  # pylint: disable=W0212
+    sz_engine._reinitialize(config_id)  # pylint: disable=W0212
 
 
 def test_reinitialize_bad_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzEngine.reinitialize()."""
     bad_default_config_id = "string"
     with pytest.raises(SzSdkError):
-        sz_engine.reinitialize(bad_default_config_id)  # type: ignore[arg-type]
+        sz_engine._reinitialize(bad_default_config_id)  # type: ignore[arg-type]
 
 
 def test_reinitialize_missing_config_id(sz_engine: SzEngineCore) -> None:
     """Test SzDiagnostic().reinit() raising error."""
     with pytest.raises(SzError):
-        sz_engine.reinitialize(999)
+        sz_engine._reinitialize(999)
 
 
 # -----------------------------------------------------------------------------
@@ -1277,25 +1278,10 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     engine_vars is returned from conftest.py.
     """
     result = SzConfigManagerCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
-    return result
-
-
-@pytest.fixture(name="sz_config", scope="function")
-def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
-    """
-    SzConfig object to use for all tests.
-    engine_vars is returned from conftest.py.
-    """
-    result = SzConfigCore()
-    result.initialize(  # pylint: disable=W0212
-        engine_vars["INSTANCE_NAME"],
-        engine_vars["SETTINGS"],
-    )
-    result.import_template()
     return result
 
 
@@ -1306,7 +1292,7 @@ def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     engine_vars is returned from conftest.py.
     """
     result = SzEngineCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

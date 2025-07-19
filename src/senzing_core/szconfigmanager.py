@@ -27,6 +27,7 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
+    check_is_destroyed,
     check_result_rc,
     load_sz_library,
 )
@@ -37,7 +38,7 @@ from .szconfig import SzConfigCore
 __all__ = ["SzConfigManagerCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2025-01-28"
+__updated__ = "2025-07-19"
 
 
 # -----------------------------------------------------------------------------
@@ -105,14 +106,13 @@ class SzConfigManagerCore(SzConfigManager):
     """
 
     # -------------------------------------------------------------------------
-    # Python dunder/magic methods
+    # Dunder/magic methods
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initializer"""
-
         _ = kwargs
 
+        self._is_destroyed = False
         self._library_handle = load_sz_library()
 
         # Partial function to use this modules self._library_handle for exception handling
@@ -150,10 +150,16 @@ class SzConfigManagerCore(SzConfigManager):
         self.config_id = 0
         self.verbose_logging = 0
 
+    @property
+    def is_destroyed(self) -> bool:
+        """Return if the instance has been destroyed."""
+        return self._is_destroyed
+
     # -------------------------------------------------------------------------
-    # SzConfigManager interface methods
+    # SzConfigManager methods
     # -------------------------------------------------------------------------
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def create_config_from_config_id(self, config_id: int) -> SzConfig:
         get_config_result = self._library_handle.SzConfigMgr_getConfig_helper(config_id)
@@ -162,35 +168,40 @@ class SzConfigManagerCore(SzConfigManager):
             config_definition = as_python_str(get_config_result.response)
         result = SzConfigCore()
         result.import_config_definition(config_definition)
-        result.initialize(self.instance_name, self.settings, self.verbose_logging)
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)  # pylint: disable=protected-access
         return result
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def create_config_from_string(self, config_definition: str) -> SzConfig:
         result = SzConfigCore()
         result.verify_config_definition(config_definition)
         result.import_config_definition(config_definition)
-        result.initialize(self.instance_name, self.settings, self.verbose_logging)
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)  # pylint: disable=protected-access
         return result
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def create_config_from_template(self) -> SzConfig:
         result = SzConfigCore()
-        result.initialize(self.instance_name, self.settings, self.verbose_logging)
+        result._initialize(self.instance_name, self.settings, self.verbose_logging)  # pylint: disable=protected-access
         result.import_template()
         return result
 
+    @check_is_destroyed
     def get_config_registry(self) -> str:
         result = self._library_handle.SzConfigMgr_getConfigRegistry_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     def get_default_config_id(self) -> int:
         result = self._library_handle.SzConfigMgr_getDefaultConfigID_helper()
         self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def register_config(
         self,
@@ -204,6 +215,7 @@ class SzConfigManagerCore(SzConfigManager):
         self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def replace_default_config_id(
         self,
@@ -215,12 +227,14 @@ class SzConfigManagerCore(SzConfigManager):
         )
         self._check_result(result)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def set_default_config(self, config_definition: str, config_comment: str) -> int:
         config_id = self.register_config(config_definition, config_comment)
         self.set_default_config_id(config_id)
         return config_id
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def set_default_config_id(self, config_id: int) -> None:
         result = self._library_handle.SzConfigMgr_setDefaultConfigID(config_id)
@@ -230,26 +244,25 @@ class SzConfigManagerCore(SzConfigManager):
     # Public non-interface methods
     # -------------------------------------------------------------------------
 
-    def _destroy(
-        self,
-    ) -> None:
-        _ = self._library_handle.SzConfigMgr_destroy()
+    # NOTE - Not to use check_is_destroyed decorator
+    def _destroy(self) -> None:
+        if not self._is_destroyed:
+            _ = self._library_handle.SzConfigMgr_destroy()
+            self._is_destroyed = True
 
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.SzConfigMgr_destroy()
+        self._check_result(result)
+
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         verbose_logging: int = 0,
     ) -> None:
-        """
-        Initialize the C-based Senzing SzConfigManager.
-
-        Args:
-            instance_name (str): A name to distinguish this instance of the SzConfigManager.
-            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
-        """
         self.instance_name = instance_name
         self.settings = as_str(settings)
         self.verbose_logging = verbose_logging

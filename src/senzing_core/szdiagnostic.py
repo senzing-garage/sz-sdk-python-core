@@ -20,7 +20,7 @@ from ctypes import POINTER, Structure, c_char, c_char_p, c_int, c_longlong, c_vo
 from functools import partial
 from typing import Any, Dict, Union
 
-from senzing import SzDiagnostic
+from senzing import SzDiagnostic, SzNotInitializedError
 
 from ._helpers import (
     FreeCResources,
@@ -28,6 +28,7 @@ from ._helpers import (
     as_python_str,
     as_str,
     catch_sdk_exceptions,
+    check_is_destroyed,
     check_result_rc,
     load_sz_library,
 )
@@ -37,7 +38,7 @@ from ._helpers import (
 __all__ = ["SzDiagnosticCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2025-01-28"
+__updated__ = "2025-07-19"
 
 
 # -----------------------------------------------------------------------------
@@ -92,14 +93,13 @@ class SzDiagnosticCore(SzDiagnostic):
     """
 
     # -------------------------------------------------------------------------
-    # Python dunder/magic methods
+    # Dunder/magic methods
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initializer"""
-
         _ = kwargs
 
+        self._is_destroyed = False
         self._library_handle = load_sz_library()
 
         # Partial function to use this modules self._library_handle for exception handling
@@ -135,10 +135,16 @@ class SzDiagnosticCore(SzDiagnostic):
         self._library_handle.SzDiagnostic_reinit.restype = c_longlong
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
+    @property
+    def is_destroyed(self) -> bool:
+        """Return if the instance has been destroyed."""
+        return self._is_destroyed
+
     # -------------------------------------------------------------------------
     # SzDiagnostic methods
     # -------------------------------------------------------------------------
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def check_repository_performance(self, seconds_to_run: int) -> str:
         result = self._library_handle.SzDiagnostic_checkRepositoryPerformance_helper(seconds_to_run)
@@ -146,9 +152,18 @@ class SzDiagnosticCore(SzDiagnostic):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    # NOTE - Not to use check_is_destroyed decorator
     def _destroy(self) -> None:
-        _ = self._library_handle.SzDiagnostic_destroy()
+        if not self._is_destroyed:
+            _ = self._library_handle.SzDiagnostic_destroy()
+            self._is_destroyed = True
 
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.SzDiagnostic_destroy()
+        self._check_result(result)
+
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_feature(self, feature_id: int) -> str:
         result = self._library_handle.SzDiagnostic_getFeature_helper(feature_id)
@@ -156,29 +171,22 @@ class SzDiagnosticCore(SzDiagnostic):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     def get_repository_info(self) -> str:
         result = self._library_handle.SzDiagnostic_getRepositoryInfo_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
-        """
-        Initialize the C-based Senzing SzDiagnostic.
-
-        Args:
-            instance_name (str): A name to distinguish this instance of the SzDiagnostic.
-            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
-            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
-        """
         if config_id == 0:
             result = self._library_handle.SzDiagnostic_init(
                 as_c_char_p(instance_name),
@@ -196,16 +204,22 @@ class SzDiagnosticCore(SzDiagnostic):
         )
         self._check_result(result)
 
+    # NOTE - Internal use only!
+    def _internal_is_initialized(self) -> bool:
+        try:
+            _ = self.get_repository_info()
+        except SzNotInitializedError:
+            return False
+
+        return True
+
+    @check_is_destroyed
     def purge_repository(self) -> None:
         result = self._library_handle.SzDiagnostic_purgeRepository()
         self._check_result(result)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def reinitialize(self, config_id: int) -> None:
-        """
-        The `reinitialize` method reinitializes the Senzing object using a specific configuration
-        identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmanager.get_config_registry`.
-        """
+    def _reinitialize(self, config_id: int) -> None:
         result = self._library_handle.SzDiagnostic_reinit(config_id)
         self._check_result(result)

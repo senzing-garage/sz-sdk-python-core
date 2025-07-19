@@ -15,7 +15,7 @@ Example:
 """
 
 # pylint: disable=R0903,C0302,R0915
-# NOTE Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
+# NOTE - Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting
 from __future__ import annotations
 
 from ctypes import (
@@ -31,7 +31,7 @@ from ctypes import (
 from functools import partial
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags
+from senzing import SZ_NO_INFO, SzEngine, SzEngineFlags, SzNotInitializedError
 
 from ._helpers import (
     FreeCResources,
@@ -43,6 +43,7 @@ from ._helpers import (
     build_entities_json,
     build_records_json,
     catch_sdk_exceptions,
+    check_is_destroyed,
     check_result_rc,
     load_sz_library,
 )
@@ -52,7 +53,7 @@ from ._helpers import (
 __all__ = ["SzEngineCore"]
 __version__ = "0.0.1"  # See https://www.python.org/dev/peps/pep-0396/
 __date__ = "2023-10-30"
-__updated__ = "2025-01-28"
+__updated__ = "2025-07-19"
 
 
 # -----------------------------------------------------------------------------
@@ -246,14 +247,13 @@ class SzEngineCore(SzEngine):
     """
 
     # -------------------------------------------------------------------------
-    # Python dunder/magic methods
+    # Dunder/magic methods
     # -------------------------------------------------------------------------
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initializer"""
-
         _ = kwargs
 
+        self._is_destroyed = False
         self._library_handle = load_sz_library()
 
         # Mask for removing SDK specific flags not supplied to method call
@@ -519,10 +519,16 @@ class SzEngineCore(SzEngine):
         ]
         self._library_handle.SzHelper_free.argtypes = [c_void_p]
 
+    @property
+    def is_destroyed(self) -> bool:
+        """Return if the instance has been destroyed."""
+        return self._is_destroyed
+
     # -------------------------------------------------------------------------
     # SzEngine methods
     # -------------------------------------------------------------------------
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def _test_load(
         self,
@@ -542,6 +548,7 @@ class SzEngineCore(SzEngine):
             raise
         return SZ_NO_INFO
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def add_record(
         self,
@@ -569,17 +576,20 @@ class SzEngineCore(SzEngine):
         self._check_result(result)
         return SZ_NO_INFO
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def close_export_report(self, export_handle: int) -> None:
         result = self._library_handle.Sz_closeExportReport_helper(as_c_uintptr_t(export_handle))
         self._check_result(result)
 
+    @check_is_destroyed
     def count_redo_records(self) -> int:
         result: int = self._library_handle.Sz_countRedoRecords()
         if result < 0:
             self._check_result(result)
         return result
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def delete_record(
         self,
@@ -604,9 +614,27 @@ class SzEngineCore(SzEngine):
         self._check_result(result)
         return SZ_NO_INFO
 
+    # NOTE - Not to use check_is_destroyed decorator
     def _destroy(self) -> None:
-        _ = self._library_handle.Sz_destroy()
+        if not self._is_destroyed:
+            _ = self._library_handle.Sz_destroy()
+            self._is_destroyed = True
 
+    # NOTE - Internal use only!
+    def _internal_only_destroy(self) -> None:
+        result = self._library_handle.Sz_destroy()
+        self._check_result(result)
+
+    # NOTE - Internal use only!
+    def _internal_is_initialized(self) -> bool:
+        try:
+            _ = self.get_active_config_id()
+        except SzNotInitializedError:
+            return False
+
+        return True
+
+    @check_is_destroyed
     @catch_sdk_exceptions
     def export_csv_entity_report(
         self,
@@ -617,6 +645,8 @@ class SzEngineCore(SzEngine):
         self._check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
+    @check_is_destroyed
+    @catch_sdk_exceptions
     def export_json_entity_report(
         self,
         flags: int = SzEngineFlags.SZ_EXPORT_DEFAULT_FLAGS,
@@ -625,6 +655,7 @@ class SzEngineCore(SzEngine):
         self._check_result(result.return_code)
         return result.export_handle  # type: ignore[no-any-return]
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def fetch_next(self, export_handle: int) -> str:
         result = self._library_handle.Sz_fetchNext_helper(as_c_uintptr_t(export_handle))
@@ -632,7 +663,8 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE - Included but not documented or examples, early adaptor feature, needs manual additions to config
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_interesting_entities_by_entity_id(
         self, entity_id: int, flags: int = SzEngineFlags.SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS
@@ -642,7 +674,8 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    # NOTE Included but not documented or examples, early adaptor feature, needs manual additions to config
+    # NOTE - Included but not documented or examples, early adaptor feature, needs manual additions to config
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_interesting_entities_by_record_id(
         self,
@@ -657,6 +690,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_network_by_entity_id(
         self,
@@ -678,6 +712,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_network_by_record_id(
         self,
@@ -698,6 +733,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_path_by_entity_id(
         self,
@@ -736,6 +772,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def find_path_by_record_id(
         self,
@@ -782,11 +819,13 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     def get_active_config_id(self) -> int:
         result = self._library_handle.Sz_getActiveConfigID_helper()
         self._check_result(result.return_code)
         return result.response  # type: ignore[no-any-return]
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_entity_by_entity_id(
         self,
@@ -798,6 +837,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_entity_by_record_id(
         self,
@@ -812,6 +852,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_record(
         self,
@@ -828,6 +869,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_record_preview(
         self,
@@ -842,18 +884,21 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     def get_redo_record(self) -> str:
         result = self._library_handle.Sz_getRedoRecord_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     def get_stats(self) -> str:
         result = self._library_handle.Sz_stats_helper()
         with FreeCResources(self._library_handle, result.response):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def get_virtual_entity_by_record_id(
         self,
@@ -868,6 +913,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def how_entity_by_entity_id(
         self,
@@ -879,23 +925,16 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def initialize(
+    def _initialize(
         self,
         instance_name: str,
         settings: Union[str, Dict[Any, Any]],
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
-        """
-        Initialize the C-based Senzing SzEngine.
 
-        Args:
-            instance_name (str): A name to distinguish this instance of the SzEngine.
-            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.
-            config_id (int, optional): Initialize with a specific configuration ID. Defaults to current system DEFAULTCONFIGID.
-            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
-        """
         if config_id == 0:
             result = self._library_handle.Sz_init(
                 as_c_char_p(instance_name),
@@ -913,12 +952,14 @@ class SzEngineCore(SzEngine):
         )
         self._check_result(result)
 
+    @check_is_destroyed
     def prime_engine(self) -> None:
         result = self._library_handle.Sz_primeEngine()
         self._check_result(result)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def process_redo_record(self, redo_record: str, flags: int = 0) -> str:
+    def process_redo_record(self, redo_record: str, flags: int = SzEngineFlags.SZ_REDO_DEFAULT_FLAGS) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
             result = self._library_handle.Sz_processRedoRecordWithInfo_helper(
                 as_c_char_p(redo_record), flags & self._sdk_flags_mask
@@ -933,6 +974,7 @@ class SzEngineCore(SzEngine):
         self._check_result(result)
         return SZ_NO_INFO
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def reevaluate_entity(self, entity_id: int, flags: int = SzEngineFlags.SZ_REEVALUATE_RECORD_DEFAULT_FLAGS) -> str:
         if (flags & SzEngineFlags.SZ_WITH_INFO) != 0:
@@ -949,6 +991,7 @@ class SzEngineCore(SzEngine):
         self._check_result(result)
         return SZ_NO_INFO
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def reevaluate_record(
         self,
@@ -971,16 +1014,13 @@ class SzEngineCore(SzEngine):
         self._check_result(result)
         return SZ_NO_INFO
 
+    @check_is_destroyed
     @catch_sdk_exceptions
-    def reinitialize(self, config_id: int) -> None:
-        """
-        The `reinitialize` method reinitializes the Senzing object using a specific configuration
-        identifier. A list of available configuration identifiers can be retrieved using
-        `szconfigmanager.get_config_registry`.
-        """
+    def _reinitialize(self, config_id: int) -> None:
         result = self._library_handle.Sz_reinit(config_id)
         self._check_result(result)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def search_by_attributes(
         self,
@@ -997,6 +1037,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def why_entities(
         self,
@@ -1013,6 +1054,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def why_records(
         self,
@@ -1033,6 +1075,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def why_record_in_entity(
         self,
@@ -1049,6 +1092,7 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
+    @check_is_destroyed
     @catch_sdk_exceptions
     def why_search(
         self,

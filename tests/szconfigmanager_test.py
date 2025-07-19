@@ -14,7 +14,6 @@ from senzing import (
     SzReplaceConflictError,
     SzSdkError,
 )
-from senzing_truthset import TRUTHSET_DATASOURCES
 
 from senzing_core import SzConfigManagerCore
 
@@ -102,9 +101,9 @@ def test_register_config(sz_configmanager: SzConfigManager) -> None:
     sz_config = sz_configmanager.create_config_from_template()
     config_definition = sz_config.export()
     config_comment = "Test"
-    actual = sz_configmanager.register_config(config_definition, config_comment)
-    assert isinstance(actual, int)
-    assert actual > 0
+    new_config_id = sz_configmanager.register_config(config_definition, config_comment)
+    assert isinstance(new_config_id, int)
+    assert new_config_id > 0
 
 
 def test_register_config_bad_config_definition_type(sz_configmanager: SzConfigManager) -> None:
@@ -137,8 +136,6 @@ def test_replace_default_config_id(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.replace_default_config_id()."""
     current_default_config_id = sz_configmanager.get_default_config_id()
     sz_config = sz_configmanager.create_config_from_config_id(current_default_config_id)
-    for data_source_code in TRUTHSET_DATASOURCES:
-        sz_config.register_data_source(data_source_code)
     data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
@@ -172,7 +169,7 @@ def test_replace_default_config_id_bad_current_default_config_id_type(sz_configm
     """Test SzConfigManager.replace_default_config_id()."""
     bad_current_default_config_id = "string"
     sz_config = sz_configmanager.create_config_from_template()
-    data_source_code = "REPLACE_DEFAULT_CONFIG_ID"
+    data_source_code = "REPLACE_DEFAULT_CONFIG_ID_BAD"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
@@ -187,7 +184,7 @@ def test_replace_default_config_id_bad_current_default_config_id_value(sz_config
     """Test SzConfigManager.replace_default_config_id()."""
     bad_current_default_config_id = 1234
     sz_config = sz_configmanager.create_config_from_template()
-    data_source_code = "CUSTOMERS"
+    data_source_code = "CONFIGMANAGER_REPLACE_BAD"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
@@ -219,8 +216,8 @@ def test_set_default_config_bad_config_definition(sz_configmanager: SzConfigMana
 def test_set_default_config_id(sz_configmanager: SzConfigManager) -> None:
     """Test SzConfigManager.set_default_config_id()."""
     old_config_id = sz_configmanager.get_default_config_id()
-    sz_config = sz_configmanager.create_config_from_template()
-    data_source_code = "CUSTOMERS"
+    sz_config = sz_configmanager.create_config_from_config_id(old_config_id)
+    data_source_code = "CONFIGMANAGER_TEST"
     sz_config.register_data_source(data_source_code)
     config_definition = sz_config.export()
     config_comment = "Test"
@@ -255,7 +252,7 @@ def test_set_default_config_id_bad_config_id_value(
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -265,7 +262,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -275,7 +272,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigManagerCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -299,7 +296,7 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     engine_vars is returned from conftest.pys"""
 
     result = SzConfigManagerCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )

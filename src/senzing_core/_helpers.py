@@ -58,8 +58,9 @@ finally:
 # NOTE - Using earlier Python version typing to support v3.9 still and not rely on typing_extensions.
 # NOTE - F can be changed to use ParamSpec when no longer need to support v3.9.
 # NOTE - SelfFreeCResources can be changed to use Self at v3.11.
-F = TypeVar("F", bound=Callable[..., Any])
-SelfFreeCResources = TypeVar("SelfFreeCResources", bound="FreeCResources")
+_F = TypeVar("_F", bound=Callable[..., Any])
+_SelfFreeCResources = TypeVar("_SelfFreeCResources", bound="FreeCResources")
+_WrappedFunc = TypeVar("_WrappedFunc", bound=Callable[..., Any])
 
 PYTHON_VERSION_MINIMUM = "3.9"
 SENZING_VERSION_MINIMUM = "4.0.0"
@@ -85,7 +86,7 @@ class FreeCResources:
         self.handle = handle
         self.resource = resource
 
-    def __enter__(self: SelfFreeCResources) -> SelfFreeCResources:
+    def __enter__(self: _SelfFreeCResources) -> _SelfFreeCResources:
         return self
 
     def __exit__(
@@ -102,7 +103,7 @@ class FreeCResources:
 # -----------------------------------------------------------------------------
 
 
-def catch_sdk_exceptions(func_to_decorate: F) -> F:
+def catch_sdk_exceptions(func_to_decorate: _F) -> _F:
     """
     The Python SDK methods convert Python types to ctypes and utilize helper functions. If incorrect types/values are
     used standard library exceptions are raised not SzError exceptions as the Senzing library hasn't been called
@@ -114,9 +115,9 @@ def catch_sdk_exceptions(func_to_decorate: F) -> F:
     """
 
     @wraps(func_to_decorate)
-    def wrapped_func(*args: Any, **kwargs: Any) -> F:
+    def wrapped_func(*args: Any, **kwargs: Any) -> _F:
         try:
-            return typing_cast(F, func_to_decorate(*args, **kwargs))
+            return typing_cast(_F, func_to_decorate(*args, **kwargs))
         except (ArgumentError, TypeError, ValueError) as err:
             # Get wrapped function annotation, remove unwanted keys
             annotations_dict = func_to_decorate.__annotations__
@@ -143,7 +144,24 @@ def catch_sdk_exceptions(func_to_decorate: F) -> F:
 
             raise SzSdkError(err) from err
 
-    return typing_cast(F, wrapped_func)
+    return typing_cast(_F, wrapped_func)
+
+
+# -----------------------------------------------------------------------------
+# Decorators
+# -----------------------------------------------------------------------------
+
+
+def check_is_destroyed(func: _WrappedFunc) -> _WrappedFunc:
+    """Check if an engine instance has been destroyed"""
+
+    @wraps(func)
+    def wrapped_check_destroyed(self, *args, **kwargs):  # type: ignore
+        if self._is_destroyed:  # pylint: disable=protected-access
+            raise SzSdkError("engine object has been destroyed and can no longer be used, create a new one")
+        return func(self, *args, **kwargs)
+
+    return typing_cast(_WrappedFunc, wrapped_check_destroyed)
 
 
 # -----------------------------------------------------------------------------

@@ -13,7 +13,7 @@ try:
     from .szproduct import SzProductCore
 
     sz_product = SzProductCore()
-    sz_product.initialize("sdk_init_check", "{}")
+    sz_product._initialize("sdk_init_check", "{}")
     version: str = json.loads(sz_product.get_version()).get("VERSION", "0.0.0")
     is_senzing_binary_version_supported(version)
 except (ImportError, SyntaxError) as err:

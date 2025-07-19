@@ -106,7 +106,7 @@ def test_unregister_data_source_empty_data_source_code_value(sz_config: SzConfig
 def test_constructor(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=protected-access
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -116,7 +116,7 @@ def test_constructor(engine_vars: Dict[Any, Any]) -> None:
 def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=protected-access
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS_DICT"],
     )
@@ -126,7 +126,7 @@ def test_constructor_dict(engine_vars: Dict[Any, Any]) -> None:
 def test_destroy(engine_vars: Dict[Any, Any]) -> None:
     """Test constructor."""
     actual = SzConfigCore()
-    actual.initialize(
+    actual._initialize(  # pylint: disable=protected-access
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
@@ -151,7 +151,7 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     engine_vars is returned from conftest.py.
     """
     result = SzConfigCore()
-    result.initialize(  # pylint: disable=W0212
+    result._initialize(  # pylint: disable=W0212
         engine_vars["INSTANCE_NAME"],
         engine_vars["SETTINGS"],
     )
