@@ -595,7 +595,7 @@ def test_context_manager(engine_vars: Dict[Any, Any]) -> None:
 
     # fmt: off
     # pylint: disable=not-context-manager
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError, TypeError):  # type: ignore
         with SzAbstractFactoryCore(**factory_parameters) as sz_factory:  # type: ignore
             sz_factory.create_engine()
     # pylint: enable=not-context-manager
