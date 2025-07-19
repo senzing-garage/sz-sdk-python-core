@@ -1278,7 +1278,9 @@ def get_entity_id_from_record_id(sz_engine: SzEngine, data_source_code: str, rec
 # -----------------------------------------------------------------------------
 
 
-@pytest.fixture(name="sz_configmanager", scope="function")
+# TODO -
+# @pytest.fixture(name="sz_configmanager", scope="function")
+@pytest.fixture(name="sz_configmanager", scope="module")
 def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     """
     SzConfigManager object to use for all tests.
@@ -1292,7 +1294,9 @@ def szconfigmanager_fixture(engine_vars: Dict[Any, Any]) -> SzConfigManager:
     return result
 
 
-@pytest.fixture(name="sz_config", scope="function")
+# TODO -
+# @pytest.fixture(name="sz_config", scope="function")
+@pytest.fixture(name="sz_config", scope="module")
 def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     """
     SzConfig object to use for all tests.
@@ -1307,7 +1311,9 @@ def szconfig_fixture(engine_vars: Dict[Any, Any]) -> SzConfig:
     return result
 
 
-@pytest.fixture(name="sz_engine", scope="function")
+# TODO -
+# @pytest.fixture(name="sz_engine", scope="function")
+@pytest.fixture(name="sz_engine", scope="module")
 def szengine_fixture(engine_vars: Dict[Any, Any]) -> SzEngine:
     """
     SzEngine object to use for all tests.
