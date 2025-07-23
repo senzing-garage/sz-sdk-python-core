@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-07-23
+
+### Fixed in 0.4.1
+
+- szconfig unregister_data_source.py example was calling register_data_source()
+
 ## [0.4.0] - 2025-07-19
 
 ### Changed in 0.4.0
