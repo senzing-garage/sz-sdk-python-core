@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing_core Python package documentation &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="senzing_core" href="senzing_core.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><cite>senzing_core</cite> Python package documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="senzing-core-python-package-documentation">
+<h1><cite>senzing_core</cite> Python package documentation<a class="headerlink" href="#senzing-core-python-package-documentation" title="Link to this heading"></a></h1>
+<p>The <a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python-core">senzing-core</a> Python package is an implementation of the
+<a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> interface definition that communicates with the Senzing binaries.
+If an implementation is needed to communicate over <a class="reference external" href="https://grpc.io">gRPC</a>,
+use the <a class="reference external" href="https://garage.senzing.com/sz-sdk-python-grpc">senzing-grpc</a> Python package.</p>
+<p>Often, the <a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python-core">senzing-core</a> Python package is used in conjunction with the <a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> Python package.
+The <a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> Python package has Abstract Base Classes (<a class="reference external" href="https://docs.python.org/library/abc.html">abc</a>) which define the interfaces used
+by implementation classes like <a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python-core">senzing-core</a>.
+The <a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> Python package also has constants and errors used by implementation classes.</p>
+<p>The recommendation is to use implementation classes, like <a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python-core">senzing-core</a>, to construct
+Senzing objects and use classes from <a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> to define method and function parameter types.
+This allows the implementation to change without the need to change method or function signatures.
+The following is an example that shows an <cite>SzAbstractFactoryCore</cite> being created and being passed to
+functions using the classes from the <a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a> Python package.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">senzing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzAbstractFactory</span><span class="p">,</span> <span class="n">SzEngineFlags</span><span class="p">,</span> <span class="n">SzError</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">senzing_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzAbstractFactoryCore</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">def</span><span class="w"> </span><span class="nf">perform_senzing_search</span><span class="p">(</span><span class="n">search_abstract_factory</span><span class="p">:</span> <span class="n">SzAbstractFactory</span><span class="p">,</span> <span class="n">search_attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="linenos"> 9</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Example Senzing search using Abstract Base Class SzAbstractFactory.&quot;&quot;&quot;</span>
+<span class="linenos">10</span>    <span class="n">sz_engine</span> <span class="o">=</span> <span class="n">search_abstract_factory</span><span class="o">.</span><span class="n">create_engine</span><span class="p">()</span>
+<span class="linenos">11</span>    <span class="n">flags</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS</span>
+<span class="linenos">12</span>    <span class="n">search_profile</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="linenos">13</span>    <span class="k">return</span> <span class="n">sz_engine</span><span class="o">.</span><span class="n">search_by_attributes</span><span class="p">(</span><span class="n">search_attributes</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">search_profile</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="c1"># Example using SzAbstractFactoryCore implementation class.</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="k">try</span><span class="p">:</span>
+<span class="linenos">19</span>    <span class="n">instance_name</span> <span class="o">=</span> <span class="s2">&quot;Example&quot;</span>
+<span class="linenos">20</span>    <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">21</span>        <span class="s2">&quot;PIPELINE&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos">22</span>            <span class="s2">&quot;CONFIGPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;/etc/opt/senzing&quot;</span><span class="p">,</span>
+<span class="linenos">23</span>            <span class="s2">&quot;RESOURCEPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;/opt/senzing/er/resources&quot;</span><span class="p">,</span>
+<span class="linenos">24</span>            <span class="s2">&quot;SUPPORTPATH&quot;</span><span class="p">:</span> <span class="s2">&quot;/opt/senzing/data&quot;</span><span class="p">,</span>
+<span class="linenos">25</span>        <span class="p">},</span>
+<span class="linenos">26</span>        <span class="s2">&quot;SQL&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;CONNECTION&quot;</span><span class="p">:</span> <span class="s2">&quot;sqlite3://na:na@/tmp/sqlite/G2C.db&quot;</span><span class="p">},</span>
+<span class="linenos">27</span>    <span class="p">}</span>
+<span class="linenos">28</span>    <span class="n">sz_abstract_factory</span> <span class="o">=</span> <span class="n">SzAbstractFactoryCore</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+<span class="linenos">29</span>    <span class="n">attributes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;NAME_FULL&quot;</span><span class="p">:</span> <span class="s2">&quot;Bob Smith&quot;</span><span class="p">,</span> <span class="s2">&quot;EMAIL_ADDRESS&quot;</span><span class="p">:</span> <span class="s2">&quot;bsmith@work.com&quot;</span><span class="p">})</span>
+<span class="linenos">30</span>    <span class="n">search_results</span> <span class="o">=</span> <span class="n">perform_senzing_search</span><span class="p">(</span><span class="n">sz_abstract_factory</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+<span class="linenos">31</span>    <span class="nb">print</span><span class="p">(</span><span class="n">search_results</span><span class="p">)</span>
+<span class="linenos">32</span><span class="k">except</span> <span class="n">SzError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="linenos">33</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ERROR: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Senzing has additional Software Development Kits (SDKs)
+for Java, Go, and C#.
+Information for these SDKs can be found at <a class="reference external" href="https://www.senzing.com/docs">docs.senzing.com</a>.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="senzing_core.html">senzing_core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szabstractfactory">szabstractfactory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szconfig">szconfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szconfigmanager">szconfigmanager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szdiagnostic">szdiagnostic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szengine">szengine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senzing_core.html#module-senzing_core.szproduct">szproduct</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="references">
+<h1>References<a class="headerlink" href="#references" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><p><a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python/tree/main/examples">GitHub</a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/senzing/">Pypi</a></p></li>
+<li><p><a class="reference external" href="https://github.com/senzing-garage/sz-sdk-python-core">senzing-core</a></p></li>
+<li><p><a class="reference external" href="https://garage.senzing.com/sz-sdk-python">senzing</a></p></li>
+</ol>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="senzing_core.html" class="btn btn-neutral float-right" title="senzing_core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
