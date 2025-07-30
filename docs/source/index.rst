@@ -11,6 +11,21 @@ The `senzing-core`_ Python package is an implementation of the
 If an implementation is needed to communicate over `gRPC`_,
 use the `senzing-grpc`_ Python package.
 
+Often, the `senzing-core`_ Python package is used in conjunction with the `senzing`_ Python package.
+The `senzing`_ Python package has Abstract Base Classes (`abc`_) which define the interfaces used
+by implementation classes like `senzing-core`_.
+The `senzing`_ Python package also has constants and errors used by implementation classes.
+
+The recommendation is to use implementation classes, like `senzing-core`_, to construct
+Senzing objects and use classes from `senzing`_ to define method and function parameter types.
+This allows the implementation to change without the need to change method or function signatures.
+The following is an example that shows an `SzAbstractFactoryCore` being created and being passed to
+functions using the classes from the `senzing`_ Python package.
+
+.. literalinclude:: ../../examples/docs/using_abstract_factory_implementations.py
+      :linenos:
+      :language: python
+
 Senzing has additional Software Development Kits (SDKs)
 for Java, Go, and C#.
 Information for these SDKs can be found at `docs.senzing.com`_.
@@ -32,6 +47,7 @@ References
 #. `senzing-core`_
 #. `senzing`_
 
+.. _abc: https://docs.python.org/library/abc.html
 .. _docs.senzing.com: https://www.senzing.com/docs
 .. _GitHub: https://github.com/senzing-garage/sz-sdk-python/tree/main/examples
 .. _gRPC: https://grpc.io
