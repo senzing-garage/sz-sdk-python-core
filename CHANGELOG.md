@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-08-06
+
+### Changed in 1.0.0
+
+- Migration guide and metadata updates
+
 ## [0.4.1] - 2025-07-23
 
 ### Fixed in 0.4.1

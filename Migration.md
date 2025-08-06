@@ -104,7 +104,7 @@ print(response)
 
 ## "With Info" Moves From Method to Flag {#with-info}
 
-The SDK provides "with info" methods to request a response for methods that perform entity resolution actions, such as adding, deleting, processing, and reevaluating. In the version 3.x SDK, for example, `addRecord` is used to add a record:
+The version 3.x SDK provides "with info" methods to request a response for methods that perform entity resolution actions, such as adding, deleting, processing, and reevaluating. In the version 3.x SDK, for example, `addRecord` is used to add a record:
 
 ```python
 g2_engine.addRecord("TEST", "78720B", record_json_str)
@@ -268,17 +268,17 @@ response = sz_engine.find_path_by_entity_id(787, 100180, 4 required_data_sources
 
 These are the methods in the version 4.0 SDK with arguments no longer requiring a JSON string.
 
-| Module | Method | Argument | Type | Values |
-| ------ | ------ | -------- | ---- | ------ |
-| szconfig | register_data_source | data_source_code | str | Data Source |
-|  | unregister_data_source | data_source_code | str | Data Source |
-| szengine | find_network_by_entity_id | entity_ids | [int, ...] | Entity ID(s) |
-|  | find_network_by_record_id | record_keys | [(str, str), ...] | Data Source, Record ID |
-|  | find_path_by_entity_id | avoid_entity_ids | [int, ...] | Entity ID(s) |
-|  |  | required_data_sources | [str, ...] | Data Source(s) |
-|  | find_path_by_record_id | avoid_record_keys | [(str, str), ...] | Data Source, Record ID |
-|  |  | required_data_sources | [str, ...] | Data Source(s) |
-| | get_virtual_entity_by_record_id | record_keys | [(str, str), ...] | Data Source, Record ID |
+| Module   | Method                          | Argument              | Type              | Values                 |
+| -------- | ------------------------------- | --------------------- | ----------------- | ---------------------- |
+| szconfig | register_data_source            | data_source_code      | str               | Data Source            |
+|          | unregister_data_source          | data_source_code      | str               | Data Source            |
+| szengine | find_network_by_entity_id       | entity_ids            | [int, ...]        | Entity ID(s)           |
+|          | find_network_by_record_id       | record_keys           | [(str, str), ...] | Data Source, Record ID |
+|          | find_path_by_entity_id          | avoid_entity_ids      | [int, ...]        | Entity ID(s)           |
+|          |                                 | required_data_sources | [str, ...]        | Data Source(s)         |
+|          | find_path_by_record_id          | avoid_record_keys     | [(str, str), ...] | Data Source, Record ID |
+|          |                                 | required_data_sources | [str, ...]        | Data Source(s)         |
+|          | get_virtual_entity_by_record_id | record_keys           | [(str, str), ...] | Data Source, Record ID |
 
 ## Less is more
 
@@ -414,15 +414,15 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 
 ### Modules
 
-| V3 | V4 |
-| --- | --- |
-| G2Config&period;py | szconfig&period;py |
-| G2ConfigMgr&period;py | szconfigmanager&period;py |
-| G2Diagnostic&period;py | szdiagnostic&period;py |
-| G2Engine&period;py | szengine&period;py |
-| G2EngineFlags&period;py | szengineflags&period;py *|
-| G2Exception&period;py | szerror&period;py * |
-| G2Product&period;py | szproduct&period;py |
+| V3                      | V4                        |
+| ----------------------- | ------------------------- |
+| G2Config&period;py      | szconfig&period;py        |
+| G2ConfigMgr&period;py   | szconfigmanager&period;py |
+| G2Diagnostic&period;py  | szdiagnostic&period;py    |
+| G2Engine&period;py      | szengine&period;py        |
+| G2EngineFlags&period;py | szengineflags&period;py * |
+| G2Exception&period;py   | szerror&period;py *       |
+| G2Product&period;py     | szproduct&period;py       |
 
 \* These modules are abstract base classes located in sdk/python/senzing/
 
@@ -430,96 +430,96 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 
 #### G2Config&period;py -> szconfig
 
-| V3  | V4 |
-| --- | --- |
-| addDataSource | register_data_source |
-| deleteDataSource | unregister_data_source |
-| listDataSources | get_data_source_registry |
+| V3               | V4                       |
+| ---------------- | ------------------------ |
+| addDataSource    | register_data_source     |
+| deleteDataSource | unregister_data_source   |
+| listDataSources  | get_data_source_registry |
 
 #### G2ConfigMgr&period;py -> szconfigmanager
 
-| V3  | V4 |
-| --- | --- |
-| getConfig | create_config_from_config_id |
-|  | create_config_from_string |
-|  | create_config_from_template |
-| getConfigList | get_config_registry |
-| getDefaultConfigID | get_default_config_id |
-|  | register_config |
-| replaceDefaultConfigID | replace_default_config_id |
-|  | set_default_config |
-| setDefaultConfigID | set_default_config_id |
+| V3                     | V4                           |
+| ---------------------- | ---------------------------- |
+| getConfig              | create_config_from_config_id |
+|                        | create_config_from_string    |
+|                        | create_config_from_template  |
+| getConfigList          | get_config_registry          |
+| getDefaultConfigID     | get_default_config_id        |
+|                        | register_config              |
+| replaceDefaultConfigID | replace_default_config_id    |
+|                        | set_default_config           |
+| setDefaultConfigID     | set_default_config_id        |
 
 #### G2Diagnostic&period;py -> szdiagnostic
 
-| V3  | V4 |
-| --- | --- |
+| V3          | V4                           |
+| ----------- | ---------------------------- |
 | checkDBPerf | check_repository_performance |
-| getDBInfo | get_repository_info |
-| | purge_repository |
+| getDBInfo   | get_repository_info          |
+|             | purge_repository             |
 
 #### G2Engine&period;py -> szengine
 
-| V3  | V4 |
-| --- | --- |
-| addRecord | add_record |
-| closeExport | close_export_report |
-| countRedoRecords | count_redo_records |
-| deleteRecord | delete_record |
-| exportCSVEntityReport | export_csv_entity_report |
-| exportJSONEntityReport | export_json_entity_report |
-| fetchNext | fetch_next |
+| V3                                | V4                                     |
+| --------------------------------- | -------------------------------------- |
+| addRecord                         | add_record                             |
+| closeExport                       | close_export_report                    |
+| countRedoRecords                  | count_redo_records                     |
+| deleteRecord                      | delete_record                          |
+| exportCSVEntityReport             | export_csv_entity_report               |
+| exportJSONEntityReport            | export_json_entity_report              |
+| fetchNext                         | fetch_next                             |
 | findInterestingEntitiesByEntityID | find_interesting_entities_by_entity_id |
 | findInterestingEntitiesByRecordID | find_interesting_entities_by_record_id |
-| findNetworkByEntityID | find_network_by_entity_id |
-| findNetworkByRecordID | find_network_by_record_id |
-| findPathByEntityID | find_path_by_entity_id |
-| findPathByRecordID | find_path_by_record_id |
-| getActiveConfigID | get_active_config_id |
-| getEntityByEntityID | get_entity_by_entity_id |
-| getEntityByRecordID | get_entity_by_record_id |
-| getRecord | get_record |
-| getRedoRecord | get_redo_record |
-| getVirtualEntityByRecordID | get_virtual_entity_by_record_id |
-| howEntityByEntityID | how_entity_by_entity_id |
-| primeEngine | prime_engine |
-| | get_record_preview |
-| processRedoRecord | process_redo_record |
-| reevaluateEntity | reevaluate_entity |
-| reevaluateRecord | reevaluate_record |
-| searchByAttributes | search_by_attributes |
-| stats | get_stats |
-| whyEntities | why_entities |
-| whyRecords | why_records |
-| | why_record_in_entity |
+| findNetworkByEntityID             | find_network_by_entity_id              |
+| findNetworkByRecordID             | find_network_by_record_id              |
+| findPathByEntityID                | find_path_by_entity_id                 |
+| findPathByRecordID                | find_path_by_record_id                 |
+| getActiveConfigID                 | get_active_config_id                   |
+| getEntityByEntityID               | get_entity_by_entity_id                |
+| getEntityByRecordID               | get_entity_by_record_id                |
+| getRecord                         | get_record                             |
+| getRedoRecord                     | get_redo_record                        |
+| getVirtualEntityByRecordID        | get_virtual_entity_by_record_id        |
+| howEntityByEntityID               | how_entity_by_entity_id                |
+| primeEngine                       | prime_engine                           |
+|                                   | get_record_preview                     |
+| processRedoRecord                 | process_redo_record                    |
+| reevaluateEntity                  | reevaluate_entity                      |
+| reevaluateRecord                  | reevaluate_record                      |
+| searchByAttributes                | search_by_attributes                   |
+| stats                             | get_stats                              |
+| whyEntities                       | why_entities                           |
+| whyRecords                        | why_records                            |
+|                                   | why_record_in_entity                   |
 
 #### G2Product&period;py -> szproduct
 
-| V3  | V4 |
-| --- | --- |
+| V3      | V4          |
+| ------- | ----------- |
 | license | get_license |
 | version | get_version |
 
 ### Exceptions
 
-| V3 | V4 |
-| --- | --- |
-| G2BadInputException | SzBadInputError |
-| G2ConfigurationException | SzConfigurationError |
+| V3                                | V4                            |
+| --------------------------------- | ----------------------------- |
+| G2BadInputException               | SzBadInputError               |
+| G2ConfigurationException          | SzConfigurationError          |
 | G2DatabaseConnectionLostException | SzDatabaseConnectionLostError |
-| G2DatabaseException | SzDatabaseError |
-|  | SzDatabaseTransientError |
-| G2Exception | SzError |
-|  | SzGeneralError |
-| G2LicenseException | SzLicenseError |
-| G2NotInitializedException | SzNotInitializedError |
-| G2NotFoundException | SzNotFoundError |
-|  | SzReplaceConflictError |
-| G2RetryableException | SzRetryableError |
-|  | SzSdkError |
-| G2RetryTimeoutExceededException | SzRetryTimeoutExceededError |
-| G2UnhandledException | SzUnhandledError |
-| G2UnknownDatasourceException | SzUnknownDataSourceError |
-| G2UnrecoverableException | SzUnrecoverableError |
+| G2DatabaseException               | SzDatabaseError               |
+|                                   | SzDatabaseTransientError      |
+| G2Exception                       | SzError                       |
+|                                   | SzGeneralError                |
+| G2LicenseException                | SzLicenseError                |
+| G2NotInitializedException         | SzNotInitializedError         |
+| G2NotFoundException               | SzNotFoundError               |
+|                                   | SzReplaceConflictError        |
+| G2RetryableException              | SzRetryableError              |
+|                                   | SzSdkError                    |
+| G2RetryTimeoutExceededException   | SzRetryTimeoutExceededError   |
+| G2UnhandledException              | SzUnhandledError              |
+| G2UnknownDatasourceException      | SzUnknownDataSourceError      |
+| G2UnrecoverableException          | SzUnrecoverableError          |
 
 [breaking-changes]: https://senzing.com/docs/4_beta/4_0_breaking_changes/index.html
