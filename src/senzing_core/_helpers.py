@@ -191,12 +191,10 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
 
         raise SzSdkError(f"{system_name} is an unsupported operating system")
     except OSError as err:
-        # TODO - Wording & links for V4
         print(
             f"ERROR: Unable to load the Senzing library: {err}\n"
-            "        Did you remember to setup your environment by sourcing the setupEnv file?\n"
-            "        For more information: https://senzing.zendesk.com/hc/en-us/articles/115002408867-Introduction-G2-Quickstart\n"
-            "        If you are running Ubuntu or Debian also review the ssl and crypto information at https://senzing.zendesk.com/hc/en-us/articles/115010259947-System-Requirements\n",
+            "        Did you remember to setup your environment?\n"
+            "        For more information: https://senzing.com/v4-linux-quickstart-guide/\n"
         )
         raise SzSdkError("failed to load the Senzing library") from err
 
