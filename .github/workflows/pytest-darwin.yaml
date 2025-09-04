@@ -82,7 +82,7 @@ jobs:
 
       - name: Rename coverage file
         env:
-          COVERAGE_FILE: "coverage.${{ matrix.python-version }}"
+          COVERAGE_FILE: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
         run: |
           mv .coverage "$COVERAGE_FILE"
 
