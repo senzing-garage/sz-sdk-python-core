@@ -743,10 +743,12 @@ def test_get_redo_record(sz_engine: SzEngine) -> None:
 def test_get_stats(sz_engine: SzEngine) -> None:
     """Test SzEngine.get_stats()."""
     actual = sz_engine.get_stats()
-    print(actual)
-
     actual_as_dict = json.loads(actual)
-    assert schema(stats_schema) == actual_as_dict
+
+    schema_new = schema(stats_schema)
+    schema_old = schema(stats_schema_old)
+
+    assert (schema_new == actual_as_dict) or (schema_old == actual_as_dict)
 
 
 def test_get_virtual_entity_by_record_id(sz_engine: SzEngine) -> None:
@@ -1939,6 +1941,66 @@ stats_schema = {
             "initResources": [{}],
             "currResources": [{}],
         },
+    }
+}
+
+stats_schema_old = {
+    "workload": {
+        "apiVersion": str,
+        "loadedRecords": int,
+        "addedRecords": int,
+        "bulkAddedRecords": int,
+        "optimizedOut": int,
+        "optimizedOutSkipped": int,
+        "newObsEnt": int,
+        "obsEntHashSame": int,
+        "obsEntHashDiff": int,
+        "partiallyResolved": int,
+        "deletedRecords": int,
+        "changeDeletes": int,
+        "reevaluations": int,
+        "repairedEntities": int,
+        "duration": int,
+        "retries": int,
+        "candidates": int,
+        "actualAmbiguousTest": int,
+        "cachedAmbiguousTest": int,
+        "libFeatCacheHit": int,
+        "libFeatCacheMiss": int,
+        "resFeatStatCacheHit": int,
+        "resFeatStatCacheMiss": int,
+        "libFeatInsert": int,
+        "resFeatStatInsert": int,
+        "resFeatStatUpdateAttempt": int,
+        "resFeatStatUpdateFail": int,
+        Optional("resFeatStatUpdate"): int,
+        "unresolveTest": int,
+        "abortedUnresolve": int,
+        "lockWaits": {},
+        "unresolveTriggers": {},
+        "reresolveTriggers": {},
+        "reresolveSkipped": int,
+        "filteredObsFeat": int,
+        "expressedFeatureCalls": [{}],
+        "expressedFeaturesCreated": [{}],
+        "scoredPairs": [{}],
+        "cacheHit": [{}],
+        "cacheMiss": [{}],
+        "redoTriggers": [{}],
+        "latchContention": [],
+        "highContentionFeat": [],
+        "highContentionResEnt": [{}],
+        "genericDetect": [],
+        "candidateBuilders": [{}],
+        "suppressedCandidateBuilders": [],
+        "suppressedScoredFeatureType": [],
+        Optional("reducedScoredFeatureType"): [],
+        "suppressedCandidateBuildersForReresolve": [],
+        "suppressedScoredFeatureTypeForReresolve": [],
+        "suppressedDisclosedRelationshipDomainCount": int,
+        "corruptEntityTestDiagnosis": {},
+        "threadState": {},
+        "systemResources": {},
     }
 }
 
