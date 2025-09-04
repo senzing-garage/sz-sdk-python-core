@@ -6,7 +6,7 @@ import json
 from typing import Any, Dict, List, Tuple
 
 import pytest
-from pytest_schema import Optional, Or, schema
+from pytest_schema import Optional, Or, SchemaError, schema
 from senzing import (
     SZ_WITHOUT_INFO,
     SzBadInputError,
@@ -748,7 +748,23 @@ def test_get_stats(sz_engine: SzEngine) -> None:
     schema_new = schema(stats_schema)
     schema_old = schema(stats_schema_old)
 
-    assert (schema_new == actual_as_dict) or (schema_old == actual_as_dict)
+    # Tricky code:  Need to verify against 2 versions of output.
+
+    passes = False
+
+    try:
+        assert schema_old == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    try:
+        assert schema_new == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    assert passes
 
 
 def test_get_virtual_entity_by_record_id(sz_engine: SzEngine) -> None:
