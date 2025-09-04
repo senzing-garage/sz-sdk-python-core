@@ -6,7 +6,7 @@ import json
 from typing import Any, Dict, List, Tuple
 
 import pytest
-from pytest_schema import Optional, Or, schema
+from pytest_schema import Optional, Or, SchemaError, schema
 from senzing import (
     SZ_WITHOUT_INFO,
     SzBadInputError,
@@ -744,7 +744,27 @@ def test_get_stats(sz_engine: SzEngine) -> None:
     """Test SzEngine.get_stats()."""
     actual = sz_engine.get_stats()
     actual_as_dict = json.loads(actual)
-    assert schema(stats_schema) == actual_as_dict
+
+    schema_new = schema(stats_schema)
+    schema_old = schema(stats_schema_old)
+
+    # Tricky code:  Need to verify against 2 versions of output.
+
+    passes = False
+
+    try:
+        assert schema_old == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    try:
+        assert schema_new == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    assert passes
 
 
 def test_get_virtual_entity_by_record_id(sz_engine: SzEngine) -> None:
@@ -1816,6 +1836,131 @@ search_schema = {
 }
 
 stats_schema = {
+    "workload": {
+        "apiVersion": str,
+        "datetimestamp": str,
+        "license": {
+            "status": str,
+            "type": str,
+            "dsrLimit": str,
+        },
+        "loadedRecords": int,
+        "processing": {
+            "addedRecords": int,
+            "batchAddedRecords": int,
+            "reevaluations": int,
+            "repairedEntities": int,
+            "deletedRecords": int,
+            "details": {
+                "optimizedOut": int,
+                "optimizedOutSkipped": int,
+                "newObsEnt": int,
+                "obsEntHashSame": int,
+                "obsEntHashDiff": int,
+                "filteredObsFeat": int,
+                "partiallyResolved": int,
+                "changeDeletes": int,
+                "retries": int,
+                "candidates": int,
+                "duration": int,
+            },
+            "ambiguous": {
+                "actualTest": int,
+                "cachedTest": int,
+            },
+        },
+        "caches": {
+            "libFeatCacheHit": int,
+            "libFeatCacheMiss": int,
+            "resFeatStatCacheHit": int,
+            "resFeatStatCacheMiss": int,
+            "libFeatInsert": int,
+            "resFeatStatInsert": int,
+            "resFeatStatUpdateAttempt": int,
+            "resFeatStatUpdateFail": int,
+        },
+        "lockWaits": {
+            "refreshLocks": {
+                "maxMS": int,
+                "totalMS": int,
+                "count": int,
+            },
+        },
+        "unresolve": {
+            "triggers": {
+                "normalResolve": int,
+                "update": int,
+                "relLink": int,
+                "extensiveResolve": int,
+                "ambiguousNoResolve": int,
+                "ambiguousMultiResolve": int,
+            },
+            "unresolveTest": int,
+            "abortedUnresolve": int,
+        },
+        "reresolve": {
+            "triggers": {
+                "skipped": int,
+                "abortRetry": int,
+                "unresolveMovement": int,
+                "multipleResolvableCandidates": int,
+                "resolveNewFeatures": int,
+                "newFeatureFTypes": [{}],
+            },
+            "suppressedCandidateBuildersForReresolve": [],
+            "suppressedScoredFeatureTypeForReresolve": [],
+        },
+        "expressedFeatures": {
+            "calls": [
+                {
+                    "EFCALL_ID": int,
+                    "EFUNC_CODE": str,
+                    "numCalls": int,
+                },
+            ],
+            "created": [{}],
+        },
+        "scoring": {
+            "scoredPairs": [{}],
+            "cacheHit": [{}],
+            "cacheMiss": [{}],
+            "suppressedScoredFeatureType": [{}],
+            "suppressedDisclosedRelationshipDomainCount": int,
+        },
+        "redoTriggers": [{}],
+        "contention": {
+            "valuelatch": [],
+            "feature": [],
+            "resent": [],
+        },
+        "genericDetect": [],
+        "candidates": {
+            "candidateBuilders": [{}],
+            "suppressedCandidateBuilders": [],
+        },
+        "repairDiagnosis": {
+            "types": int,
+        },
+        "threadState": {
+            "active": int,
+            "idle": int,
+            "governorContention": int,
+            "sqlExecuting": int,
+            "loader": int,
+            "resolver": int,
+            "scoring": int,
+            "dataLatchContention": int,
+            "obsEntContention": int,
+            "resEntContention": int,
+        },
+        "systemResources": {
+            "initResources": [{}],
+            "currResources": [{}],
+        },
+    }
+}
+
+stats_schema_old = {
     "workload": {
         "apiVersion": str,
         "loadedRecords": int,
