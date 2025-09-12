@@ -36,8 +36,6 @@ from .szconfig import SzConfigCore
 # Metadata
 
 __all__ = ["SzConfigManagerCore"]
-__version__ = "1.0.0"
-__date__ = "2025-08-06"
 __updated__ = "2025-08-06"
 
 

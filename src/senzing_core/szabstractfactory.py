@@ -37,8 +37,6 @@ _WrappedFunc = TypeVar("_WrappedFunc", bound=Callable[..., Any])
 # Metadata
 
 __all__ = ["SzAbstractFactoryCore", "SzAbstractFactoryParametersCore"]
-__version__ = "1.0.0"
-__date__ = "2025-08-06"
 __updated__ = "2025-08-06"
 
 
