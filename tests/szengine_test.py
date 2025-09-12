@@ -1753,7 +1753,7 @@ process_withinfo_schema = {
 
 record_schema = {"DATA_SOURCE": str, "RECORD_ID": str, "JSON_DATA": {}}
 
-redo_record_schema = {"UMF_PROC": {"NAME": str, "PARAMS": [{"PARAM": {"NAME": str, "VALUE": Or(str, int)}}]}}
+redo_record_schema = {Optional("UMF_PROC"): {"NAME": str, "PARAMS": [{"PARAM": {"NAME": str, "VALUE": Or(str, int)}}]}}
 
 resolved_entity_schema = {
     "RESOLVED_ENTITY": {
