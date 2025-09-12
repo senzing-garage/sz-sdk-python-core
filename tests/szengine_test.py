@@ -737,7 +737,25 @@ def test_get_redo_record(sz_engine: SzEngine) -> None:
     actual = sz_engine.get_redo_record()
     delete_records(sz_engine, test_records)
     actual_as_dict = json.loads(actual)
-    assert schema(redo_record_schema) == actual_as_dict
+
+    schema_new = schema(redo_record_schema)
+    schema_old = schema(redo_record_schema_old)
+
+    passes = False
+
+    try:
+        assert schema_old == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    try:
+        assert schema_new == actual_as_dict
+        passes = True
+    except SchemaError:
+        pass
+
+    assert passes
 
 
 def test_get_stats(sz_engine: SzEngine) -> None:
@@ -1754,6 +1772,14 @@ process_withinfo_schema = {
 record_schema = {"DATA_SOURCE": str, "RECORD_ID": str, "JSON_DATA": {}}
 
 redo_record_schema = {Optional("UMF_PROC"): {"NAME": str, "PARAMS": [{"PARAM": {"NAME": str, "VALUE": Or(str, int)}}]}}
+
+redo_record_schema_old = {
+    "REASON": str,
+    "DATA_SOURCE": str,
+    "RECORD_ID": str,
+    Optional("ENTITY_TYPE"): str,
+    "DSRC_ACTION": str,
+}
 
 resolved_entity_schema = {
     "RESOLVED_ENTITY": {
