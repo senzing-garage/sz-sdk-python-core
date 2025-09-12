@@ -51,8 +51,6 @@ from ._helpers import (
 # Metadata
 
 __all__ = ["SzEngineCore"]
-__version__ = "1.0.0"
-__date__ = "2025-08-06"
 __updated__ = "2025-08-06"
 
 

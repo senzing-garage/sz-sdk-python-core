@@ -1,8 +1,5 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [dependency-groups]
@@ -32,9 +29,7 @@ module = "pytest_schema.*"
 ignore_missing_imports = "true"
 
 [tool.pylint]
-load-plugins = [
-    "pylint_per_file_ignores",
-]
+load-plugins = ["pylint_per_file_ignores"]
 disable = [
     "duplicate-code",
     "line-too-long",
@@ -43,19 +38,12 @@ disable = [
     "too-many-function-args",
     "too-many-instance-attributes",
     "too-many-positional-arguments",
-    "too-many-public-methods"
+    "too-many-public-methods",
 ]
-ignore = [
-    "__init__.py",
-    "docs/source/conf.py"
-]
-notes = [
-    "FIXME"
-]
+ignore = ["__init__.py", "docs/source/conf.py"]
+notes = ["FIXME"]
 extension-pkg-whitelist = ["orjson"]
 # NOTE - Ignore invalid-name only in examples for simplified code without pylint complaining variables in global scope
 #        aren't uppercase. 
-# NOTE - Paths are regular expressions
-per-file-ignores = """
-    /examples/:invalid-name
-""" 
+# NOTE - Uses globs since version 2.0.0, previously was regular expressions
+per-file-ignores = ["examples/**:invalid-name"]
