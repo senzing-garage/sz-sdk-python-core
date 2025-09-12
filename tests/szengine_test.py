@@ -1753,13 +1753,7 @@ process_withinfo_schema = {
 
 record_schema = {"DATA_SOURCE": str, "RECORD_ID": str, "JSON_DATA": {}}
 
-redo_record_schema = {
-    "REASON": str,
-    "DATA_SOURCE": str,
-    "RECORD_ID": str,
-    Optional("ENTITY_TYPE"): str,
-    "DSRC_ACTION": str,
-}
+redo_record_schema = {"UMF_PROC": {"NAME": str, "PARAMS": [{"PARAM": {"NAME": str, "VALUE": Or(str, int)}}]}}
 
 resolved_entity_schema = {
     "RESOLVED_ENTITY": {
@@ -1863,6 +1857,7 @@ stats_schema = {
                 "retries": int,
                 "candidates": int,
                 "duration": int,
+                "addedRecords": int,
             },
             "ambiguous": {
                 "actualTest": int,
@@ -1905,10 +1900,10 @@ stats_schema = {
                 "unresolveMovement": int,
                 "multipleResolvableCandidates": int,
                 "resolveNewFeatures": int,
-                "newFeatureFTypes": [{}],
             },
-            "suppressedCandidateBuildersForReresolve": [],
-            "suppressedScoredFeatureTypeForReresolve": [],
+            "newFeatureFTypes": {},
+            "suppressedCandidateBuildersForReresolve": {},
+            "suppressedScoredFeatureTypeForReresolve": {},
         },
         "expressedFeatures": {
             "calls": [
@@ -1918,25 +1913,25 @@ stats_schema = {
                     "numCalls": int,
                 },
             ],
-            "created": [{}],
+            "created": {},
         },
         "scoring": {
-            "scoredPairs": [{}],
-            "cacheHit": [{}],
-            "cacheMiss": [{}],
-            "suppressedScoredFeatureType": [{}],
+            "scoredPairs": {},
+            "cacheHit": {},
+            "cacheMiss": {},
+            "suppressedScoredFeatureType": {},
             "suppressedDisclosedRelationshipDomainCount": int,
         },
-        "redoTriggers": [{}],
+        "redoTriggers": {},
         "contention": {
-            "valuelatch": [],
-            "feature": [],
-            "resent": [],
+            "valuelatch": {},
+            "feature": {},
+            "resEnt": {},
         },
-        "genericDetect": [],
+        "genericDetect": {},
         "candidates": {
-            "candidateBuilders": [{}],
-            "suppressedCandidateBuilders": [],
+            "candidateBuilders": {},
+            "suppressedCandidateBuilders": {},
         },
         "repairDiagnosis": {
             "types": int,
@@ -1954,8 +1949,9 @@ stats_schema = {
             "resEntContention": int,
         },
         "systemResources": {
-            "initResources": [{}],
-            "currResources": [{}],
+            "initResources": {},
+            "currResources": {},
+            "systemLoad": {},
         },
     }
 }
