@@ -748,11 +748,15 @@ def test_get_redo_record(sz_engine: SzEngine) -> None:
         passes = True
     except SchemaError:
         pass
+    except AssertionError:
+        pass
 
     try:
         assert schema_new == actual_as_dict
         passes = True
     except SchemaError:
+        pass
+    except AssertionError:
         pass
 
     assert passes
