@@ -5,7 +5,7 @@
 | Name                                   |    Stmts |     Miss |   Cover |   Missing |
 |--------------------------------------- | -------: | -------: | ------: | --------: |
 | src/senzing\_core/\_\_init\_\_.py      |       21 |        7 |     67% |     19-27 |
-| src/senzing\_core/\_helpers.py         |      181 |       14 |     92% |43-50, 56, 141, 186, 189-190, 229-233 |
+| src/senzing\_core/\_helpers.py         |      181 |       14 |     92% |43-50, 56, 141, 183, 189-190, 229-233 |
 | src/senzing\_core/szabstractfactory.py |      168 |        2 |     99% |   316-317 |
 | src/senzing\_core/szconfig.py          |      115 |        0 |    100% |           |
 | src/senzing\_core/szconfigmanager.py   |      119 |        0 |    100% |           |
