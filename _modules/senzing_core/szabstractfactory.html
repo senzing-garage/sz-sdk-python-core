@@ -1,0 +1,444 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing_core.szabstractfactory &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">senzing_core.szabstractfactory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for senzing_core.szabstractfactory</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">``senzing_core.szabstractfactory.SzAbstractFactoryCore`` is an implementation</span>
+<span class="sd">of the `senzing.szabstractfactory.SzAbstractFactory`_ interface that communicates with the Senzing binaries.</span>
+
+<span class="sd">.. _senzing.szabstractfactory.SzAbstractFactory: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szabstractfactory</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=E1101</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">senzing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SzAbstractFactory</span><span class="p">,</span>
+    <span class="n">SzConfigManager</span><span class="p">,</span>
+    <span class="n">SzDiagnostic</span><span class="p">,</span>
+    <span class="n">SzEngine</span><span class="p">,</span>
+    <span class="n">SzNotInitializedError</span><span class="p">,</span>
+    <span class="n">SzProduct</span><span class="p">,</span>
+    <span class="n">SzSdkError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szconfigmanager</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzConfigManagerCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szdiagnostic</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzDiagnosticCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szengine</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzEngineCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szproduct</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzProductCore</span>
+
+<span class="n">_WrappedFunc</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_WrappedFunc&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span>
+
+
+<span class="c1"># Metadata</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SzAbstractFactoryCore&quot;</span><span class="p">,</span> <span class="s2">&quot;SzAbstractFactoryParametersCore&quot;</span><span class="p">]</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s2">&quot;2025-08-06&quot;</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Decorators</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_is_destroyed</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">_WrappedFunc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_WrappedFunc</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the instance has been destroyed&quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_check_destroyed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore[no-untyped-def]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span><span class="p">:</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">raise</span> <span class="n">SzSdkError</span><span class="p">(</span>
+                <span class="s2">&quot;this abstract factory instance has been destroyed and can no longer be used, create a new abstract factory instance&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">_WrappedFunc</span><span class="p">,</span> <span class="n">wrapped_check_destroyed</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_method_lock</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">_WrappedFunc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_WrappedFunc</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lock methods&quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapped_method_lock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore[no-untyped-def]</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_lock</span><span class="p">:</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">_WrappedFunc</span><span class="p">,</span> <span class="n">wrapped_method_lock</span><span class="p">)</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># SzAbstractFactoryParametersCore class</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryParametersCore">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryParametersCore">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SzAbstractFactoryParametersCore</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to create a dictionary that can be unpacked when creating an SzAbstractFactory.&quot;&quot;&quot;</span>
+
+    <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">settings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># SzAbstractFactoryCore class</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryCore">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SzAbstractFactoryCore</span><span class="p">(</span><span class="n">SzAbstractFactory</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SzAbstractFactoryCore is a factory pattern for accessing Senzing.&quot;&quot;&quot;</span>
+
+    <span class="n">_constructor_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+    <span class="n">_engine_instances</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakValueDictionary</span><span class="p">()</span>  <span class="c1"># type: ignore[var-annotated]</span>
+    <span class="n">_factory_instances</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakValueDictionary</span><span class="p">()</span>  <span class="c1"># type: ignore[var-annotated]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzAbstractFactoryCore</span><span class="p">:</span>
+
+        <span class="k">with</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_constructor_lock</span><span class="p">:</span>
+            <span class="n">args_hash</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_create_args_hash</span><span class="p">(</span><span class="n">instance_name</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">config_id</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="p">)</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">_args_hash</span> <span class="o">=</span> <span class="n">args_hash</span>  <span class="c1"># type: ignore[attr-defined]</span>
+
+            <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_factory_instances</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_factory_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">args_hash</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_factory_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_args_hash</span><span class="p">:</span>
+                    <span class="n">instance</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_factory_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">args_hash</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_factory_instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_args_hash</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">SzSdkError</span><span class="p">(</span>
+                        <span class="s2">&quot;an abstract factory instance exists with different arguments, to use new arguments destroy the active instance first (NOTE: This will destroy Senzing objects created by the active instance!)&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">instance</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            instance_name (str): A name to distinguish the instances of engine objects.</span>
+<span class="sd">            settings (Union[str, Dict[Any, Any]]): A JSON document defining runtime configuration.</span>
+<span class="sd">            config_id (int, optional): Initialize with a specific configuration ID. Defaults to 0 which uses the current system DEFAULTCONFIGID.</span>
+<span class="sd">            verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_id</span> <span class="o">=</span> <span class="n">config_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finalizer</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_destroy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span> <span class="o">=</span> <span class="n">instance_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span> <span class="o">=</span> <span class="n">verbose_logging</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instance_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance name the abstract factory was instantiated with.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_destroyed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return if the instance has been destroyed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the settings the abstract factory was instantiated with.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the config ID the abstract factory was instantiated with. If this is 0 no config ID was specified and</span>
+<span class="sd">        the current system DEFAULTCONFIGID was used.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config_id</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verbose_logging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the verbose logging setting the abstract factory was instantiated with.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># SzAbstractFactory methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.create_configmanager">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.create_configmanager">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_configmanager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfigManager</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzConfigManagerCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span>
+        <span class="p">)</span>
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">result</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.create_diagnostic">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.create_diagnostic">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_diagnostic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzDiagnostic</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzDiagnosticCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span><span class="p">,</span>
+            <span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span>
+            <span class="n">config_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_id</span><span class="p">,</span>
+            <span class="n">verbose_logging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">result</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.create_engine">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.create_engine">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzEngine</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzEngineCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span><span class="p">,</span>
+            <span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span>
+            <span class="n">config_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config_id</span><span class="p">,</span>
+            <span class="n">verbose_logging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">result</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.create_product">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.create_product">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzProduct</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzProductCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">instance_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_name</span><span class="p">,</span>
+            <span class="n">settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">,</span>
+            <span class="n">verbose_logging</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose_logging</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">result</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.destroy">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.destroy">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finalizer</span><span class="p">()</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_destroy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">SzSdkError</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">engine_object</span> <span class="ow">in</span> <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">engine_object</span><span class="o">.</span><span class="n">_destroy</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+                <span class="n">engine_object</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># pylint: disable=protected-access</span>
+
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_engine_instances</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="n">sz_destroy_configmanager</span> <span class="o">=</span> <span class="n">SzConfigManagerCore</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sz_destroy_configmanager</span><span class="o">.</span><span class="n">_internal_only_destroy</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">except</span> <span class="n">SzNotInitializedError</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">sz_destroy_diagnostic</span> <span class="o">=</span> <span class="n">SzDiagnosticCore</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sz_destroy_diagnostic</span><span class="o">.</span><span class="n">_internal_only_destroy</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">except</span> <span class="n">SzNotInitializedError</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">sz_destroy_engine</span> <span class="o">=</span> <span class="n">SzEngineCore</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sz_destroy_engine</span><span class="o">.</span><span class="n">_internal_only_destroy</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">except</span> <span class="n">SzNotInitializedError</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="n">sz_destroy_product</span> <span class="o">=</span> <span class="n">SzProductCore</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sz_destroy_product</span><span class="o">.</span><span class="n">_internal_only_destroy</span><span class="p">()</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="k">except</span> <span class="n">SzNotInitializedError</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="c1"># fmt: off</span>
+        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">):</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_factory_instances</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="c1"># fmt: on</span>
+
+        <span class="n">SzAbstractFactoryCore</span><span class="o">.</span><span class="n">_factory_instances</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SzAbstractFactoryCore.reinitialize">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szabstractfactory.SzAbstractFactoryCore.reinitialize">[docs]</a>
+    <span class="nd">@_check_is_destroyed</span>
+    <span class="nd">@_method_lock</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reinitialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config_id</span> <span class="o">=</span> <span class="n">config_id</span>
+
+        <span class="n">sz_engine_is_init</span> <span class="o">=</span> <span class="n">SzEngineCore</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sz_engine_is_init</span><span class="o">.</span><span class="n">_internal_is_initialized</span><span class="p">():</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">sz_engine_is_init</span><span class="o">.</span><span class="n">_reinitialize</span><span class="p">(</span><span class="n">config_id</span><span class="o">=</span><span class="n">config_id</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span>
+
+        <span class="n">sz_diagnostic_is_init</span> <span class="o">=</span> <span class="n">SzDiagnosticCore</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">sz_diagnostic_is_init</span><span class="o">.</span><span class="n">_internal_is_initialized</span><span class="p">():</span>  <span class="c1"># pylint: disable=protected-access</span>
+            <span class="n">sz_diagnostic_is_init</span><span class="o">.</span><span class="n">_reinitialize</span><span class="p">(</span><span class="n">config_id</span><span class="o">=</span><span class="n">config_id</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span></div>
+
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Utility methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_args_hash</span><span class="p">(</span>
+        <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a hash of the factory initialization arguments&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">[</span><span class="n">instance_name</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">config_id</span><span class="p">,</span> <span class="n">verbose_logging</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">SzSdkError</span><span class="p">(</span><span class="s2">&quot;couldn&#39;t create a hash from the factory arguments, wrong type for an argument&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">args_strs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">args_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instance_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">settings_ordered</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">settings</span><span class="p">),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">args_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">settings_ordered</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">settings_ordered</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">args_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">settings_ordered</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+            <span class="n">args_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">config_id</span><span class="p">))</span>
+            <span class="n">args_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">verbose_logging</span><span class="p">))</span>
+
+            <span class="n">hash_</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args_strs</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SzSdkError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;couldn&#39;t create a hash from the factory arguments: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+
+        <span class="k">return</span> <span class="n">hash_</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

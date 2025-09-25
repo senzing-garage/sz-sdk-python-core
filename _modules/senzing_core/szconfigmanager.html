@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing_core.szconfigmanager &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">senzing_core.szconfigmanager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for senzing_core.szconfigmanager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">``senzing_core.szconfigmanager.SzConfigManagerCore`` is an implementation</span>
+<span class="sd">of the `senzing.szconfigmanager.SzConfigManager`_ interface that communicates with the Senzing binaries.</span>
+
+<span class="sd">To use szconfigmanager,</span>
+<span class="sd">the **LD_LIBRARY_PATH** environment variable must include a path to Senzing&#39;s libraries.</span>
+
+<span class="sd">Example:</span>
+
+<span class="sd">.. code-block:: bash</span>
+
+<span class="sd">    export LD_LIBRARY_PATH=/opt/senzing/er/lib</span>
+
+<span class="sd">.. _senzing.szconfigmanager.SzConfigManager: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szconfigmanager</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=R0903</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ctypes</span><span class="w"> </span><span class="kn">import</span> <span class="n">POINTER</span><span class="p">,</span> <span class="n">Structure</span><span class="p">,</span> <span class="n">c_char</span><span class="p">,</span> <span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">,</span> <span class="n">c_void_p</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">senzing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzConfig</span><span class="p">,</span> <span class="n">SzConfigManager</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FreeCResources</span><span class="p">,</span>
+    <span class="n">as_c_char_p</span><span class="p">,</span>
+    <span class="n">as_python_str</span><span class="p">,</span>
+    <span class="n">as_str</span><span class="p">,</span>
+    <span class="n">catch_sdk_exceptions</span><span class="p">,</span>
+    <span class="n">check_is_destroyed</span><span class="p">,</span>
+    <span class="n">check_result_rc</span><span class="p">,</span>
+    <span class="n">load_sz_library</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szconfig</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzConfigCore</span>
+
+<span class="c1"># Metadata</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SzConfigManagerCore&quot;</span><span class="p">]</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s2">&quot;2025-08-06&quot;</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Classes that are result structures from calls to Senzing</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzResponseReturnCodeResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple response, return_code structure&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_char</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzResponseLonglongReturnCodeResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple response, return_code structure&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigMgrGetConfigRegistryResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h SzConfigMgr_getConfigRegistry_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigMgrGetConfigResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h SzConfigMgr_getConfig_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigMgrGetDefaultConfigIDResult</span><span class="p">(</span><span class="n">SzResponseLonglongReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h SzConfigMgr_getDefaultConfigID_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigMgrRegisterConfigResult</span><span class="p">(</span><span class="n">SzResponseLonglongReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h SzConfigMgr_registerConfig_result&quot;&quot;&quot;</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># SzConfigManagerCore class</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigManagerCore</span><span class="p">(</span><span class="n">SzConfigManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use SzAbstractFactoryCore.create_configmanager() to create an SzConfigManager object.</span>
+<span class="sd">    The SzConfigManager object uses the arguments provided to SzAbstractFactoryCore().</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from senzing_core import SzAbstractFactoryCore</span>
+
+<span class="sd">        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)</span>
+<span class="sd">        sz_config_manager = sz_abstract_factory.create_configmanager()</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    Raises:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Dunder/magic methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span> <span class="o">=</span> <span class="n">load_sz_library</span><span class="p">()</span>
+
+        <span class="c1"># Partial function to use this modules self._library_handle for exception handling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+            <span class="n">check_result_rc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getLastException</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_clearLastException</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getLastExceptionCode</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Initialize C function input parameters and results.</span>
+        <span class="c1"># Synchronized with er/sdk/c/libSzConfigMgr.h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_destroy</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_destroy</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfig_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfig_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzConfigMgrGetConfigResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfigRegistry_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfigRegistry_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzConfigMgrGetConfigRegistryResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getDefaultConfigID_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzConfigMgrGetDefaultConfigIDResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_init</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_init</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_registerConfig_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_char_p</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_registerConfig_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzConfigMgrRegisterConfigResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_replaceDefaultConfigID</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_replaceDefaultConfigID</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_setDefaultConfigID</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_setDefaultConfigID</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzHelper_free</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_void_p</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_destroyed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return if the instance has been destroyed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># SzConfigManager methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="SzConfigManagerCore.create_config_from_config_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.create_config_from_config_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+        <span class="n">get_config_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfig_helper</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">get_config_result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">get_config_result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="n">config_definition</span> <span class="o">=</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">get_config_result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzConfigCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">import_config_definition</span><span class="p">(</span><span class="n">config_definition</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.create_config_from_string">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.create_config_from_string">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzConfigCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">verify_config_definition</span><span class="p">(</span><span class="n">config_definition</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">import_config_definition</span><span class="p">(</span><span class="n">config_definition</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.create_config_from_template">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.create_config_from_template">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">SzConfigCore</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">import_template</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.get_config_registry">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.get_config_registry">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_config_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getConfigRegistry_helper</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.get_default_config_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.get_default_config_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_default_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_getDefaultConfigID_helper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.register_config">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.register_config">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">config_comment</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_registerConfig_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">config_definition</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">config_comment</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.replace_default_config_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.replace_default_config_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_default_config_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">current_default_config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">new_default_config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_replaceDefaultConfigID</span><span class="p">(</span>
+            <span class="n">current_default_config_id</span><span class="p">,</span> <span class="n">new_default_config_id</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.set_default_config">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.set_default_config">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config_comment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">config_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">register_config</span><span class="p">(</span><span class="n">config_definition</span><span class="p">,</span> <span class="n">config_comment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_config_id</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config_id</span></div>
+
+
+<div class="viewcode-block" id="SzConfigManagerCore.set_default_config_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szconfigmanager.SzConfigManagerCore.set_default_config_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_default_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_setDefaultConfigID</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Public non-interface methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="c1"># NOTE - Not to use check_is_destroyed decorator</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_destroy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># NOTE - Internal use only!</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_internal_only_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">instance_name</span> <span class="o">=</span> <span class="n">instance_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">as_str</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_logging</span> <span class="o">=</span> <span class="n">verbose_logging</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzConfigMgr_init</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">instance_name</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">as_str</span><span class="p">(</span><span class="n">settings</span><span class="p">)),</span>
+            <span class="n">verbose_logging</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
