@@ -25,6 +25,9 @@ except (ImportError, SyntaxError) as err:
         SYS_VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
         raise SzSdkError(f"Current Python version {SYS_VERSION} doesn't meet the minimum requirement of 3.9") from err
     raise err
+finally:
+    if "sz_product" in locals():
+        sz_product._destroy()
 
 __all__ = [
     "SzAbstractFactoryCore",

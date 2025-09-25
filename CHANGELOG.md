@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [1.0.2] - 2025-09-25
+
+### Fixed in 1.0.2
+
+- Destroy SzProductCore instance after use in \_\_init\_\_.py 
+
 ## [1.0.1] - 2025-09-12
 
 ### Fixed in 1.0.1
