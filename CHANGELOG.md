@@ -7,18 +7,24 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-10-02
+
+### Changed in 1.0.3
+
+- Updated dependencies
+
 ## [1.0.2] - 2025-09-25
 
 ### Fixed in 1.0.2
 
-- Destroy SzProductCore instance after use in \_\_init\_\_.py 
+- Destroy SzProductCore instance after use in \_\_init\_\_.py
 
 ## [1.0.1] - 2025-09-12
 
 ### Fixed in 1.0.1
 
 - Pylint failure with updated pylint-per-file-ignores
-  
+
 ## [1.0.0] - 2025-08-06
 
 ### Changed in 1.0.0
@@ -62,7 +68,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Removed in 0.3.16
 
-- _version.py, merged into _helpers.py 
+- _version.py, merged into_helpers.py
 
 ## [0.3.15] - 2025-06-18
 
