@@ -1,0 +1,1307 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing_core.szengine &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">senzing_core.szengine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for senzing_core.szengine</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">``senzing_core.szengine.SzEngineCore`` is an implementation</span>
+<span class="sd">of the `senzing.szengine.SzEngine`_ interface that communicates with the Senzing binaries.</span>
+
+<span class="sd">To use szengine,</span>
+<span class="sd">the **LD_LIBRARY_PATH** environment variable must include a path to Senzing&#39;s libraries.</span>
+
+<span class="sd">Example:</span>
+
+<span class="sd">.. code-block:: bash</span>
+
+<span class="sd">    export LD_LIBRARY_PATH=/opt/senzing/er/lib</span>
+
+<span class="sd">.. _senzing.szengine.SzEngine: https://garage.senzing.com/sz-sdk-python/senzing.html#module-senzing.szengine</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># pylint: disable=R0903,C0302,R0915</span>
+<span class="c1"># NOTE - Used for ctypes type hinting - https://stackoverflow.com/questions/77619149/python-ctypes-pointer-type-hinting</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ctypes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">POINTER</span><span class="p">,</span>
+    <span class="n">Structure</span><span class="p">,</span>
+    <span class="n">c_char</span><span class="p">,</span>
+    <span class="n">c_char_p</span><span class="p">,</span>
+    <span class="n">c_longlong</span><span class="p">,</span>
+    <span class="n">c_uint</span><span class="p">,</span>
+    <span class="n">c_void_p</span><span class="p">,</span>
+    <span class="n">create_string_buffer</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">senzing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SZ_NO_INFO</span><span class="p">,</span> <span class="n">SzEngine</span><span class="p">,</span> <span class="n">SzEngineFlags</span><span class="p">,</span> <span class="n">SzNotInitializedError</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FreeCResources</span><span class="p">,</span>
+    <span class="n">as_c_char_p</span><span class="p">,</span>
+    <span class="n">as_c_uintptr_t</span><span class="p">,</span>
+    <span class="n">as_python_str</span><span class="p">,</span>
+    <span class="n">as_str</span><span class="p">,</span>
+    <span class="n">build_data_sources_json</span><span class="p">,</span>
+    <span class="n">build_entities_json</span><span class="p">,</span>
+    <span class="n">build_records_json</span><span class="p">,</span>
+    <span class="n">catch_sdk_exceptions</span><span class="p">,</span>
+    <span class="n">check_is_destroyed</span><span class="p">,</span>
+    <span class="n">check_result_rc</span><span class="p">,</span>
+    <span class="n">load_sz_library</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Metadata</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SzEngineCore&quot;</span><span class="p">]</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s2">&quot;2025-08-06&quot;</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># Classes that are result structures from calls to Senzing</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzResponseReturnCodeResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple response, return_code structure&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_char</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzResponseLonglongReturnCodeResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple response, return_code structure&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzAddRecordWithInfoResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_addRecordWithInfo_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzDeleteRecordWithInfoResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_deleteRecordWithInfo_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzExportCSVEntityReportResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_exportCSVEntityReport_result&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;export_handle&quot;</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzExportJSONEntityReportResult</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_exportJSONEntityReport_result&quot;&quot;&quot;</span>
+
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;export_handle&quot;</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;return_code&quot;</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">),</span>
+    <span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFetchNextResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_fetchNext_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindInterestingEntitiesByEntityIDResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findInterestingEntitiesByEntityID_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindInterestingEntitiesByRecordIDResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findInterestingEntitiesByRecordID_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindNetworkByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findNetworkByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindNetworkByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findNetworkByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathExcludingByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathExcludingByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathExcludingByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathExcludingByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathIncludingSourceByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathIncludingSourceByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzFindPathIncludingSourceByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_findPathIncludingSourceByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetActiveConfigIDResult</span><span class="p">(</span><span class="n">SzResponseLonglongReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getActiveConfigID_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetEntityByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getEntityByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetEntityByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getEntityByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetRecordV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getRecord_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetRecordPreviewResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getRecordPreview_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetRedoRecordResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getRedoRecord_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzGetVirtualEntityByRecordIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_getVirtualEntityByRecordID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzHowEntityByEntityIDV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_howEntityByEntityID_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzProcessRedoRecordWithInfoResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_processRedoRecordWithInfo_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzReevaluateEntityWithInfoResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_reevaluateEntityWithInfo_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzReevaluateRecordWithInfoResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_reevaluateRecordWithInfo_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzSearchByAttributesV3Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_searchByAttributes_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzStatsResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_stats_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzWhyEntitiesV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_whyEntities_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzWhyRecordInEntityV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_whyRecordInEntity_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzWhyRecordsV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_whyRecords_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzWhySearchResult</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_whyEntities_result&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzWhySearchV2Result</span><span class="p">(</span><span class="n">SzResponseReturnCodeResult</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;In SzLang_helpers.h Sz_whyEntities_V2_result&quot;&quot;&quot;</span>
+
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># SzEngineCore class</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="SzEngineCore">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SzEngineCore</span><span class="p">(</span><span class="n">SzEngine</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use SzAbstractFactoryCore.create_engine() to create an SzEngine object.</span>
+<span class="sd">    The SzEngine object uses the arguments provided to SzAbstractFactoryCore().</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from senzing_core import SzAbstractFactoryCore</span>
+
+<span class="sd">        sz_abstract_factory = SzAbstractFactoryCore(instance_name, settings)</span>
+<span class="sd">        sz_engine = sz_abstract_factory.create_engine()</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    Raises:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Dunder/magic methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span> <span class="o">=</span> <span class="n">load_sz_library</span><span class="p">()</span>
+
+        <span class="c1"># Mask for removing SDK specific flags not supplied to method call</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span>
+
+        <span class="c1"># Partial function to use this modules self._library_handle for exception handling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+            <span class="n">check_result_rc</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getLastException</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_clearLastException</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getLastExceptionCode</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Initialize C function input parameters and results.</span>
+        <span class="c1"># Must be synchronized with /opt/senzing/er/sdk/c/libSz.h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Szinternal_bulkLoad</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">POINTER</span><span class="p">(</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_char</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Szinternal_bulkLoad</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecord</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecord</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecordWithInfo_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecordWithInfo_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzAddRecordWithInfoResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_closeExportReport_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">POINTER</span><span class="p">(</span><span class="n">c_uint</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_closeExportReport_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_countRedoRecords</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_countRedoRecords</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecord</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecord</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecordWithInfo_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecordWithInfo_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzDeleteRecordWithInfoResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_destroy</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_destroy</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportCSVEntityReport_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportCSVEntityReport_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzExportCSVEntityReportResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportJSONEntityReport_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportJSONEntityReport_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzExportJSONEntityReportResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_fetchNext_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">POINTER</span><span class="p">(</span><span class="n">c_uint</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_fetchNext_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFetchNextResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByEntityID_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByEntityID_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SzFindInterestingEntitiesByEntityIDResult</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByRecordID_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByRecordID_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SzFindInterestingEntitiesByRecordIDResult</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByEntityID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByEntityID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindNetworkByEntityIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByRecordID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByRecordID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindNetworkByRecordIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindPathByEntityIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDIncludingSource_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDIncludingSource_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SzFindPathIncludingSourceByEntityIDV2Result</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDWithAvoids_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDWithAvoids_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindPathExcludingByEntityIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindPathByRecordIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDIncludingSource_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDIncludingSource_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SzFindPathIncludingSourceByRecordIDV2Result</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDWithAvoids_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDWithAvoids_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzFindPathExcludingByRecordIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getActiveConfigID_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getActiveConfigID_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetActiveConfigIDResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByEntityID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByEntityID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetEntityByEntityIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByRecordID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByRecordID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetEntityByRecordIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecord_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecord_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetRecordV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecordPreview_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecordPreview_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetRecordPreviewResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRedoRecord_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRedoRecord_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetRedoRecordResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getVirtualEntityByRecordID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getVirtualEntityByRecordID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzGetVirtualEntityByRecordIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_howEntityByEntityID_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_howEntityByEntityID_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzHowEntityByEntityIDV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_init</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_init</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_initWithConfigID</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecord</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecord</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecordWithInfo_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecordWithInfo_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzProcessRedoRecordWithInfoResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntity</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_longlong</span><span class="p">,</span> <span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntity</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntityWithInfo_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntityWithInfo_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzReevaluateEntityWithInfoResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecord</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecord</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecordWithInfo_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecordWithInfo_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzReevaluateRecordWithInfoResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reinit</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_longlong</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reinit</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_longlong</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_searchByAttributes_V3_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_searchByAttributes_V3_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzSearchByAttributesV3Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_stats_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_stats_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzStatsResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyEntities_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyEntities_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzWhyEntitiesV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecordInEntity_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecords_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzWhyRecordsV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecordInEntity_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzWhyRecordInEntityV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecords_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whySearch_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzWhySearchResult</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whySearch_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whySearch_V2_helper</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">SzWhySearchV2Result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whySearch_V2_helper</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+            <span class="n">c_char_p</span><span class="p">,</span>
+            <span class="n">c_longlong</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">SzHelper_free</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_void_p</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_destroyed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return if the instance has been destroyed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># SzEngine methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_test_load</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method for Senzing support&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">c_records</span> <span class="o">=</span> <span class="p">(</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_char</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))()</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">rec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">records</span><span class="p">):</span>
+                <span class="n">c_records</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_string_buffer</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>  <span class="c1"># type: ignore[call-overload]</span>
+            <span class="n">c_records</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[call-overload]</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Szinternal_bulkLoad</span><span class="p">(</span><span class="n">c_records</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span>
+
+<div class="viewcode-block" id="SzEngineCore.add_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.add_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ADD_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecordWithInfo_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_definition</span><span class="p">),</span>
+                <span class="n">flags</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_addRecord</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_definition</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.close_export_report">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.close_export_report">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_export_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_handle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_closeExportReport_helper</span><span class="p">(</span><span class="n">as_c_uintptr_t</span><span class="p">(</span><span class="n">export_handle</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.count_redo_records">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.count_redo_records">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_redo_records</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_countRedoRecords</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.delete_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.delete_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_DELETE_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecordWithInfo_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+                <span class="n">flags</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_deleteRecord</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span></div>
+
+
+    <span class="c1"># NOTE - Not to use check_is_destroyed decorator</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_destroy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_destroyed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># NOTE - Internal use only!</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_internal_only_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="c1"># NOTE - Internal use only!</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_internal_is_initialized</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_config_id</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">SzNotInitializedError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SzEngineCore.export_csv_entity_report">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.export_csv_entity_report">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_csv_entity_report</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">csv_column_list</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_EXPORT_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportCSVEntityReport_helper</span><span class="p">(</span><span class="n">as_c_char_p</span><span class="p">(</span><span class="n">csv_column_list</span><span class="p">),</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">export_handle</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.export_json_entity_report">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.export_json_entity_report">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_json_entity_report</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_EXPORT_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_exportJSONEntityReport_helper</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">export_handle</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.fetch_next">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.fetch_next">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_handle</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_fetchNext_helper</span><span class="p">(</span><span class="n">as_c_uintptr_t</span><span class="p">(</span><span class="n">export_handle</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+    <span class="c1"># NOTE - Included but not documented or examples, early adaptor feature, needs manual additions to config</span>
+<div class="viewcode-block" id="SzEngineCore.find_interesting_entities_by_entity_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_interesting_entities_by_entity_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_interesting_entities_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByEntityID_helper</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+    <span class="c1"># NOTE - Included but not documented or examples, early adaptor feature, needs manual additions to config</span>
+<div class="viewcode-block" id="SzEngineCore.find_interesting_entities_by_record_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_interesting_entities_by_record_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_interesting_entities_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_INTERESTING_ENTITIES_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findInterestingEntitiesByRecordID_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span> <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="n">flags</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.find_network_by_entity_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_network_by_entity_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_network_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_max_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_NETWORK_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByEntityID_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_entities_json</span><span class="p">(</span><span class="n">entity_ids</span><span class="p">)),</span>
+            <span class="n">max_degrees</span><span class="p">,</span>
+            <span class="n">build_out_degrees</span><span class="p">,</span>
+            <span class="n">build_out_max_entities</span><span class="p">,</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.find_network_by_record_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_network_by_record_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_network_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">build_out_max_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_NETWORK_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findNetworkByRecordID_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_records_json</span><span class="p">(</span><span class="n">record_keys</span><span class="p">)),</span>
+            <span class="n">max_degrees</span><span class="p">,</span>
+            <span class="n">build_out_degrees</span><span class="p">,</span>
+            <span class="n">build_out_max_entities</span><span class="p">,</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.find_path_by_entity_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_path_by_entity_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_path_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">end_entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">avoid_entity_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_data_sources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_PATH_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">avoid_entity_ids</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">required_data_sources</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDWithAvoids_V2_helper</span><span class="p">(</span>
+                <span class="n">start_entity_id</span><span class="p">,</span>
+                <span class="n">end_entity_id</span><span class="p">,</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_entities_json</span><span class="p">(</span><span class="n">avoid_entity_ids</span><span class="p">)),</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">required_data_sources</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityIDIncludingSource_V2_helper</span><span class="p">(</span>
+                <span class="n">start_entity_id</span><span class="p">,</span>
+                <span class="n">end_entity_id</span><span class="p">,</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_entities_json</span><span class="p">(</span><span class="n">avoid_entity_ids</span><span class="p">)),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_data_sources_json</span><span class="p">(</span><span class="n">required_data_sources</span><span class="p">)),</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByEntityID_V2_helper</span><span class="p">(</span>
+                <span class="n">start_entity_id</span><span class="p">,</span>
+                <span class="n">end_entity_id</span><span class="p">,</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.find_path_by_record_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.find_path_by_record_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_path_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">start_data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">start_record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">end_data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">end_record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">max_degrees</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">avoid_record_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_data_sources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_FIND_PATH_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">avoid_record_keys</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">required_data_sources</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDWithAvoids_V2_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_record_id</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_record_id</span><span class="p">),</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_records_json</span><span class="p">(</span><span class="n">avoid_record_keys</span><span class="p">)),</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">required_data_sources</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordIDIncludingSource_V2_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_record_id</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_record_id</span><span class="p">),</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_records_json</span><span class="p">(</span><span class="n">avoid_record_keys</span><span class="p">)),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_data_sources_json</span><span class="p">(</span><span class="n">required_data_sources</span><span class="p">)),</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_findPathByRecordID_V2_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">start_record_id</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">end_record_id</span><span class="p">),</span>
+                <span class="n">max_degrees</span><span class="p">,</span>
+                <span class="n">flags</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_active_config_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_active_config_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_active_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getActiveConfigID_helper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span>  <span class="c1"># type: ignore[no-any-return]</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_entity_by_entity_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_entity_by_entity_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_entity_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByEntityID_V2_helper</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_entity_by_record_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_entity_by_record_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_entity_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getEntityByRecordID_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span> <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="n">flags</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecord_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_record_preview">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_record_preview">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_record_preview</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_RECORD_PREVIEW_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRecordPreview_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_definition</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_redo_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_redo_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_redo_record</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getRedoRecord_helper</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_stats">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_stats">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_stats_helper</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.get_virtual_entity_by_record_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.get_virtual_entity_by_record_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_virtual_entity_by_record_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">record_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_VIRTUAL_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_getVirtualEntityByRecordID_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">build_records_json</span><span class="p">(</span><span class="n">record_keys</span><span class="p">)),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.how_entity_by_entity_id">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.how_entity_by_entity_id">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">how_entity_by_entity_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_HOW_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_howEntityByEntityID_V2_helper</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">instance_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">config_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_init</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">instance_name</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">as_str</span><span class="p">(</span><span class="n">settings</span><span class="p">)),</span>
+                <span class="n">verbose_logging</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_initWithConfigID</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">instance_name</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">as_str</span><span class="p">(</span><span class="n">settings</span><span class="p">)),</span>
+            <span class="n">config_id</span><span class="p">,</span>
+            <span class="n">verbose_logging</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SzEngineCore.prime_engine">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.prime_engine">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prime_engine</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_primeEngine</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.process_redo_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.process_redo_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_redo_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redo_record</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_REDO_DEFAULT_FLAGS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecordWithInfo_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">redo_record</span><span class="p">),</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_processRedoRecord</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">redo_record</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.reevaluate_entity">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.reevaluate_entity">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reevaluate_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_REEVALUATE_RECORD_DEFAULT_FLAGS</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntityWithInfo_helper</span><span class="p">(</span>
+                <span class="n">entity_id</span><span class="p">,</span>
+                <span class="n">flags</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+                <span class="n">response_str</span> <span class="o">=</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response_str</span> <span class="k">if</span> <span class="n">response_str</span> <span class="k">else</span> <span class="n">SZ_NO_INFO</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateEntity</span><span class="p">(</span><span class="n">entity_id</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.reevaluate_record">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.reevaluate_record">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reevaluate_record</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_REEVALUATE_RECORD_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WITH_INFO</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecordWithInfo_helper</span><span class="p">(</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+                <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+                <span class="n">flags</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdk_flags_mask</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+                <span class="n">response_str</span> <span class="o">=</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response_str</span> <span class="k">if</span> <span class="n">response_str</span> <span class="k">else</span> <span class="n">SZ_NO_INFO</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reevaluateRecord</span><span class="p">(</span><span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span> <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span> <span class="n">flags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SZ_NO_INFO</span></div>
+
+
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reinitialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_reinit</span><span class="p">(</span><span class="n">config_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SzEngineCore.search_by_attributes">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.search_by_attributes">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_by_attributes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_SEARCH_BY_ATTRIBUTES_DEFAULT_FLAGS</span><span class="p">,</span>
+        <span class="n">search_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_searchByAttributes_V3_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">attributes</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">search_profile</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.why_entities">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.why_entities">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity_id_1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">entity_id_2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_ENTITIES_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyEntities_V2_helper</span><span class="p">(</span>
+            <span class="n">entity_id_1</span><span class="p">,</span>
+            <span class="n">entity_id_2</span><span class="p">,</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.why_records">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.why_records">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_records</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_source_code_2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id_2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_RECORDS_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecords_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code_1</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id_1</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code_2</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id_2</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.why_record_in_entity">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.why_record_in_entity">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_record_in_entity</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data_source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_RECORD_IN_ENTITY_DEFAULT_FLAGS</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whyRecordInEntity_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">data_source_code</span><span class="p">),</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">record_id</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SzEngineCore.why_search">
+<a class="viewcode-back" href="../../senzing_core.html#senzing_core.szengine.SzEngineCore.why_search">[docs]</a>
+    <span class="nd">@check_is_destroyed</span>
+    <span class="nd">@catch_sdk_exceptions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">why_search</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributes</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">entity_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">SzEngineFlags</span><span class="o">.</span><span class="n">SZ_WHY_SEARCH_DEFAULT_FLAGS</span><span class="p">,</span>
+        <span class="n">search_profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="o">.</span><span class="n">Sz_whySearch_V2_helper</span><span class="p">(</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">attributes</span><span class="p">),</span>
+            <span class="n">entity_id</span><span class="p">,</span>
+            <span class="n">as_c_char_p</span><span class="p">(</span><span class="n">search_profile</span><span class="p">),</span>
+            <span class="n">flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">FreeCResources</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_library_handle</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_result</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">return_code</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">as_python_str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">response</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

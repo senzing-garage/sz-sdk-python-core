@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>senzing.szconfigmanager &mdash; sz-sdk-python-core  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sz-sdk-python-core
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../senzing_core.html">senzing_core</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sz-sdk-python-core</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">senzing.szconfigmanager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for senzing.szconfigmanager</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">szconfigmanager.py is the abstract class for all implementations of SzConfigManager.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szconfig</span><span class="w"> </span><span class="kn">import</span> <span class="n">SzConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.szhelpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_help</span>
+
+<span class="c1"># Metadata</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SzConfigManager&quot;</span><span class="p">]</span>
+<span class="n">__updated__</span> <span class="o">=</span> <span class="s2">&quot;2025-08-11&quot;</span>
+
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># SzConfigManager</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SzConfigManager</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SzConfigManager is the definition of the Senzing Python SDK that is</span>
+<span class="sd">    implemented by packages such as szconfigmanager.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Interface definition</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `create_config_from_config_id` method creates a new SzConfig instance for a configuration ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_id (int): The configuration identifier of the desired Senzing configuration to retrieve.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SzConfig: Represents an in-memory Senzing configuration that can be modified.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_config_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_config_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `create_config_from_string` method creates a new SzConfig instance from a configuration definition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_definition (str): The Senzing configuration JSON document.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SzConfig: Represents an in-memory Senzing configuration that can be modified.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_string.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_string.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_config_from_template</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SzConfig</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `create_config_from_template` method creates a new SzConfig instance from the template</span>
+<span class="sd">        configuration definition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_definition (str): The Senzing configuration JSON document.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SzConfig: Represents an in-memory Senzing configuration that can be modified.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_template.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/create_config_from_template.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_config_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_config_registry` method gets the configuration registry.</span>
+
+<span class="sd">        The registry contains the original timestamp, original comment, and configuration ID</span>
+<span class="sd">        of all configurations ever registered with the repository.</span>
+
+<span class="sd">        Registered configurations cannot be unregistered.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A JSON document containing Senzing configurations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/get_config_registry.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/get_config_registry.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_default_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `get_default_config_id` method gets the default configuration ID for the repository.</span>
+
+<span class="sd">        Unless an explicit configuration ID is specified at initialization, the default configuration ID is used.</span>
+
+<span class="sd">        This may not be the same as the active configuration ID.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int:  The current default configuration ID or zero if the default configuration has not been set.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/get_default_config_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/get_default_config_id.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config_comment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `register_config` method registers a configuration definition in the repository.</span>
+
+<span class="sd">        Registered configurations do not become immediately active nor do they become the default.</span>
+
+<span class="sd">        Registered configurations cannot be unregistered.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_definition (str): The Senzing configuration JSON document.</span>
+<span class="sd">            config_comment (str):  free-form string of comments describing the configuration document.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: A configuration identifier.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/register_config.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/register_config.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_default_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_default_config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">new_default_config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `replace_default_config_id` method replaces the existing default configuration ID with</span>
+<span class="sd">        a new configuration ID.</span>
+
+<span class="sd">        The change is prevented if the current default configuration ID value is not as expected.</span>
+
+<span class="sd">        Use this in place of set_default_config_id() to handle race conditions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            current_default_config_id (int): The configuration identifier to replace.</span>
+<span class="sd">            new_default_config_id (int): The configuration identifier to use as the default.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/replace_default_config_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_definition</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config_comment</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `set_default_config` method registers a configuration in the repository and sets its ID as the default</span>
+<span class="sd">        for the repository.</span>
+
+<span class="sd">        Convenience method for register_config() followed by set_default_config_id().</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_definition (str): The Senzing configuration JSON document.</span>
+<span class="sd">            config_comment (str):  free-form string of comments describing the configuration document.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/set_default_config.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+
+<span class="sd">            **Output:**</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/set_default_config.txt</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_default_config_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `set_default_config_id` method sets the default configuration ID.</span>
+
+<span class="sd">        Usually this method is sufficient for setting the default configuration ID.</span>
+<span class="sd">        However in concurrent environments that could encounter race conditions,</span>
+<span class="sd">        consider using replace_default_config_id() instead.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            config_id (int): The configuration identifier of the Senzing Engine configuration to use as the default.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            SzError</span>
+
+<span class="sd">        .. collapse:: Example:</span>
+
+<span class="sd">            .. literalinclude:: ../../examples/szconfigmanager/set_default_config_id.py</span>
+<span class="sd">                :linenos:</span>
+<span class="sd">                :language: python</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="c1"># -------------------------------------------------------------------------</span>
+    <span class="c1"># Convenience methods</span>
+    <span class="c1"># -------------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `help` method returns help for a particular message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method_name (str): The name of the method. (e.g. &quot;init&quot;). If empty, a list of methods and descriptions is returned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The Help information about the requested method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">construct_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Senzing.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
