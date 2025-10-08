@@ -5,14 +5,15 @@ on:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   build-distribution:
     name: Build distribution
     outputs:
       status: ${{ job.status }}
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
@@ -98,13 +101,13 @@ jobs:
         # Upload to GitHub Release using the `gh` CLI.
         # `dist/` contains the built packages, and the
         # sigstore-produced signatures and certificates.
-        run: gh release upload '${{ github.ref_name }}' dist/** --repo '${{ github.repository }}'
+        run: gh release upload "${GITHUB_REF_NAME}" dist/** --repo "${{ github.repository }}"
 
   slack-notification:
     needs: [build-distribution, publish-to-pypi, github-release]
     if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.build-distribution.outputs.status ) && contains(fromJSON('["failure", "cancelled"]'), needs.publish-to-pypi.outputs.status ) && contains(fromJSON('["failure", "cancelled"]'), needs.github-release.outputs.status ) && github.ref_name == github.event.repository.default_branch }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-    uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v2
+    uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v3
     with:
       job-status: ${{ needs.build-distribution.outputs.status && needs.publish-to-pypi.outputs.status && needs.github-release.outputs.status }}
