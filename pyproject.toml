@@ -97,12 +97,12 @@ src_paths = ["examples", "src", "tests"]
 
 [[tool.mypy.overrides]]
 module = "senzing_abstract.szengineflags.*"
-ignore_missing_imports = "true"
-warn_unused_ignores = "false"
+ignore_missing_imports = true
+warn_unused_ignores = false
 
 [[tool.mypy.overrides]]
 module = "pytest_schema.*"
-ignore_missing_imports = "true"
+ignore_missing_imports = true
 
 [tool.pylint]
 load-plugins = ["pylint_per_file_ignores"]
