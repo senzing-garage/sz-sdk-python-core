@@ -35,7 +35,7 @@ from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 try:
     import orjson  # type: ignore[import-not-found, unused-ignore]
 
-    JSON_LIB = orjson.__name__
+    json_lib = orjson.__name__
 
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
         return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
@@ -43,14 +43,14 @@ try:
 except ImportError:
     import json
 
-    JSON_LIB = json.__name__
+    json_lib = json.__name__
 
     # NOTE - separators= is used to be consistent with Sz engine and orjson output
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
         return json.dumps(_obj, ensure_ascii=False, separators=(",", ":"), *args, **kwargs)
 
 finally:
-    if JSON_LIB == "orjson":
+    if json_lib == "orjson":
         JSON_INDENT = {"option": orjson.OPT_INDENT_2}
     else:
         JSON_INDENT = {"indent": 2}

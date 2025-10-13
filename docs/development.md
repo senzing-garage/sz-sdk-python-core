@@ -63,15 +63,6 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
    ```
 
-1. Install dependencies needed for documentation.
-   Example:
-
-   ```console
-   cd ${GIT_REPOSITORY_DIR}
-   make dependencies-for-documentation
-
-   ```
-
 ## Lint
 
 1. Run linting.
