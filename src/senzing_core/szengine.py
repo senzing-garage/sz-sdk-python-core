@@ -923,8 +923,8 @@ class SzEngineCore(SzEngine):
             self._check_result(result.return_code)
             return as_python_str(result.response)
 
-    @check_is_destroyed
-    @catch_sdk_exceptions
+    # @check_is_destroyed
+    # @catch_sdk_exceptions
     def _initialize(
         self,
         instance_name: str,
@@ -932,6 +932,8 @@ class SzEngineCore(SzEngine):
         config_id: int = 0,
         verbose_logging: int = 0,
     ) -> None:
+
+        verbose_logging = 1
 
         if config_id == 0:
             result = self._library_handle.Sz_init(

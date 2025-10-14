@@ -177,13 +177,24 @@ def load_sz_library(lib: str = "", os: str = "") -> CDLL:
     """
 
     system_name = os if os else platform.uname().system
+    print(f"{system_name = }")
+
+    # print("\t«{}»\tLine number in which the function is defined.".format(inspect.getsourcelines(load_sz_library)[1]))
+    # print("\t«{}»\tLine from which the function has been called.".format(inspect.stack()[1][2]))
+    # print("\t«{}»\tInvoking/calling function.".format(inspect.stack()[1][3]))
+    # print("\t«{}»\tModule in which it is contained.\n".format(load_sz_library.__module__))
 
     try:
         if system_name == "Linux":
             return cdll.LoadLibrary(lib if lib else "libSz.so")
 
         if system_name == "Darwin":
-            return cdll.LoadLibrary(lib if lib else "libSz.dylib")
+            print("\nIn load_sz_library -> Darwin...")
+            # return cdll.LoadLibrary(lib if lib else "libSz.dylib")
+            d_lib = cdll.LoadLibrary(lib if lib else "libSz.dylib")
+            print(f"{d_lib = } - {type(d_lib) = } - {d_lib.__dict__}")
+            print("\nReturning load_sz_library -> Darwin...")
+            return d_lib
 
         if system_name == "Windows":
             win_path = find_library(lib if lib else "Sz")
