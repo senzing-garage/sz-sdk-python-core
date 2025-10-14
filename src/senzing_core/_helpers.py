@@ -462,11 +462,17 @@ def as_c_char_p(candidate_value: str) -> Any:
 
     :meta private:
     """
+
+    print(">>>>>>> in as_c_char_p")
     if candidate_value is None:
+        print(">>>>>>>>> candidate_value is None")
+
         return b""
 
     if isinstance(candidate_value, str):
+        print(f">>>>>>>>> candidate_value is {type(candidate_value)}")
         return candidate_value.encode()
+    print("<<<<<< out as_c_char_p")
 
     return candidate_value
 
