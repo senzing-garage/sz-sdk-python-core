@@ -49,6 +49,12 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
         SzAbstractFactoryCore(**factory_parameters_2)
 
 
+def test_create_engine(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_engine()."""
+    actual = sz_abstractfactory.create_engine()
+    assert isinstance(actual, SzEngine)
+
+
 def test_create_configmanager(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.create_configmanager()."""
     actual = sz_abstractfactory.create_configmanager()
@@ -59,12 +65,6 @@ def test_create_diagnostic(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.create_diagnostic()."""
     actual = sz_abstractfactory.create_diagnostic()
     assert isinstance(actual, SzDiagnostic)
-
-
-def test_create_engine(sz_abstractfactory: SzAbstractFactory) -> None:
-    """Test SzAbstractFactory.create_engine()."""
-    actual = sz_abstractfactory.create_engine()
-    assert isinstance(actual, SzEngine)
 
 
 def test_create_product(sz_abstractfactory: SzAbstractFactory) -> None:

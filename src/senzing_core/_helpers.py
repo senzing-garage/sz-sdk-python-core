@@ -428,8 +428,11 @@ def as_str(candidate_value: Union[str, Dict[Any, Any]]) -> str:
 
     :meta private:
     """
+
+    print(">>>>>> in as_str")
     if isinstance(candidate_value, dict):
         return _json_dumps(candidate_value)
+    print("<<<<<< out as_str")
 
     return candidate_value
 

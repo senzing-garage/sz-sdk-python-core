@@ -136,6 +136,9 @@ class SzAbstractFactoryCore(SzAbstractFactory):
             config_id (int, optional): Initialize with a specific configuration ID. Defaults to 0 which uses the current system DEFAULTCONFIGID.
             verbose_logging (int, optional): Send debug statements to STDOUT. Defaults to 0.
         """
+
+        print(f">>>>>>> Settings: {settings}")
+
         self._config_id = config_id
         self._finalizer = weakref.finalize(self, self._do_destroy)
         self._instance_name = instance_name
