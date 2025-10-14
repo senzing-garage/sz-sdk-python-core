@@ -42,8 +42,7 @@ disable = [
 ]
 ignore = ["__init__.py", "docs/source/conf.py"]
 notes = ["FIXME"]
-extension-pkg-whitelist = ["orjson"]
 # NOTE - Ignore invalid-name only in examples for simplified code without pylint complaining variables in global scope
-#        aren't uppercase. 
+#        aren't uppercase.
 # NOTE - Uses globs since version 2.0.0, previously was regular expressions
 per-file-ignores = ["examples/**:invalid-name"]
