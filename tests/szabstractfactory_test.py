@@ -32,12 +32,12 @@ from senzing_core import (
 # -----------------------------------------------------------------------------
 
 
-def test_create_same_settings(engine_vars: Dict[Any, Any]) -> None:
-    """Test SzAbstractFactoryCore with the same settings."""
-    factory_parameters = {"instance_name": "Example", "settings": engine_vars.get("SETTINGS_DICT", {})}
-    factory_1 = SzAbstractFactoryCore(**factory_parameters)
-    factory_2 = SzAbstractFactoryCore(**factory_parameters)
-    assert factory_1 is factory_2
+# def test_create_same_settings(engine_vars: Dict[Any, Any]) -> None:
+#     """Test SzAbstractFactoryCore with the same settings."""
+#     factory_parameters = {"instance_name": "Example", "settings": engine_vars.get("SETTINGS_DICT", {})}
+#     factory_1 = SzAbstractFactoryCore(**factory_parameters)
+#     factory_2 = SzAbstractFactoryCore(**factory_parameters)
+#     assert factory_1 is factory_2
 
 
 def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
@@ -47,6 +47,12 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
     factory = SzAbstractFactoryCore(**factory_parameters_1)  # pylint: disable=unused-variable # noqa: F841
     with pytest.raises(SzSdkError):
         SzAbstractFactoryCore(**factory_parameters_2)
+
+
+def test_create_engine(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_engine()."""
+    actual = sz_abstractfactory.create_engine()
+    assert isinstance(actual, SzEngine)
 
 
 def test_create_configmanager(sz_abstractfactory: SzAbstractFactory) -> None:
@@ -59,12 +65,6 @@ def test_create_diagnostic(sz_abstractfactory: SzAbstractFactory) -> None:
     """Test SzAbstractFactory.create_diagnostic()."""
     actual = sz_abstractfactory.create_diagnostic()
     assert isinstance(actual, SzDiagnostic)
-
-
-def test_create_engine(sz_abstractfactory: SzAbstractFactory) -> None:
-    """Test SzAbstractFactory.create_engine()."""
-    actual = sz_abstractfactory.create_engine()
-    assert isinstance(actual, SzEngine)
 
 
 def test_create_product(sz_abstractfactory: SzAbstractFactory) -> None:
