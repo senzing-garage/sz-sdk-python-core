@@ -92,7 +92,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          sudo source ./venv/bin/activate
+          source ./venv/bin/activate
           sudo ulimit -c unlimited
           sudo ulimit -c 
           sudo -E bash -c 'pytest tests/ --verbose --capture=no --cov=src'
