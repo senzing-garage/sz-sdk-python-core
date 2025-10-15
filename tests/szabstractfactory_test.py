@@ -55,11 +55,22 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
 #     actual = sz_abstractfactory.create_configmanager()
 #     assert isinstance(actual, SzConfigManager)
 
+# TODO -
+# def test_create_configmanager(engine_vars: Dict[Any, Any]) -> None:
+#     """Test SzAbstractFactory.create_configmanager()."""
+#     factory_parameters_1 = {"instance_name": "Example_1", "settings": engine_vars.get("SETTINGS_DICT", {})}
+#     sz_abstractfactory = SzAbstractFactoryCore(**factory_parameters_1)  # pylint: disable=unused-variable # noqa: F841
+#     actual = sz_abstractfactory.create_configmanager()
+#     assert isinstance(actual, SzConfigManager)
+
 
 def test_create_configmanager(engine_vars: Dict[Any, Any]) -> None:
     """Test SzAbstractFactory.create_configmanager()."""
-    factory_parameters_1 = {"instance_name": "Example_1", "settings": engine_vars.get("SETTINGS_DICT", {})}
-    sz_abstractfactory = SzAbstractFactoryCore(**factory_parameters_1)  # pylint: disable=unused-variable # noqa: F841
+    instance_name = "AntTest"
+    settings = "{'PIPELINE': {'CONFIGPATH': '/Users/runner/senzing/er/etc', 'RESOURCEPATH': '/Users/runner/senzing/er/resources', 'SUPPORTPATH': '/Users/runner/senzing/data'}, 'SQL': {'CONNECTION': 'sqlite3://na:na@/tmp/sqlite/G2C.db'}}"
+    sz_abstractfactory = SzAbstractFactoryCore(
+        instance_name=instance_name, settings=settings
+    )  # pylint: disable=unused-variable # noqa: F841
     actual = sz_abstractfactory.create_configmanager()
     assert isinstance(actual, SzConfigManager)
 
