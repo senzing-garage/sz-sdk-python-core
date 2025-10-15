@@ -32,12 +32,12 @@ from senzing_core import (
 # -----------------------------------------------------------------------------
 
 
-# def test_create_same_settings(engine_vars: Dict[Any, Any]) -> None:
-#     """Test SzAbstractFactoryCore with the same settings."""
-#     factory_parameters = {"instance_name": "Example", "settings": engine_vars.get("SETTINGS_DICT", {})}
-#     factory_1 = SzAbstractFactoryCore(**factory_parameters)
-#     factory_2 = SzAbstractFactoryCore(**factory_parameters)
-#     assert factory_1 is factory_2
+def test_create_same_settings(engine_vars: Dict[Any, Any]) -> None:
+    """Test SzAbstractFactoryCore with the same settings."""
+    factory_parameters = {"instance_name": "Example", "settings": engine_vars.get("SETTINGS_DICT", {})}
+    factory_1 = SzAbstractFactoryCore(**factory_parameters)
+    factory_2 = SzAbstractFactoryCore(**factory_parameters)
+    assert factory_1 is factory_2
 
 
 # def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
