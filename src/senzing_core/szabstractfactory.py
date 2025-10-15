@@ -133,6 +133,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         with cls._constructor_lock:
             # TODO -
             print("\nIn factory __new__...", flush=True)
+            print(f"\t{settings}", flush=True)
             args_hash = cls._create_args_hash(instance_name, settings, config_id, verbose_logging)
             # instance = super().__new__(cls)
             # instance._args_hash = args_hash  # type: ignore[attr-defined]
