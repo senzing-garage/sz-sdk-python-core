@@ -50,10 +50,11 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
 
 
 # TODO -
-# def test_create_configmanager(sz_abstractfactory: SzAbstractFactory) -> None:
-#     """Test SzAbstractFactory.create_configmanager()."""
-#     actual = sz_abstractfactory.create_configmanager()
-#     assert isinstance(actual, SzConfigManager)
+def test_create_configmanager(sz_abstractfactory: SzAbstractFactory) -> None:
+    """Test SzAbstractFactory.create_configmanager()."""
+    actual = sz_abstractfactory.create_configmanager()
+    assert isinstance(actual, SzConfigManager)
+
 
 # TODO -
 # def test_create_configmanager(engine_vars: Dict[Any, Any]) -> None:
@@ -63,16 +64,16 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
 #     actual = sz_abstractfactory.create_configmanager()
 #     assert isinstance(actual, SzConfigManager)
 
-
-def test_create_configmanager() -> None:
-    """Test SzAbstractFactory.create_configmanager()."""
-    instance_name = "AntTest"
-    settings = '{"PIPELINE": {"CONFIGPATH": "/Users/runner/senzing/er/etc", "RESOURCEPATH": "/Users/runner/senzing/er/resources", "SUPPORTPATH": "/Users/runner/senzing/data"}, "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
-    sz_abstractfactory = SzAbstractFactoryCore(
-        instance_name=instance_name, settings=settings
-    )  # pylint: disable=unused-variable # noqa: F841
-    actual = sz_abstractfactory.create_configmanager()
-    assert isinstance(actual, SzConfigManager)
+# TODO -
+# def test_create_configmanager() -> None:
+#     """Test SzAbstractFactory.create_configmanager()."""
+#     instance_name = "AntTest"
+#     settings = '{"PIPELINE": {"CONFIGPATH": "/Users/runner/senzing/er/etc", "RESOURCEPATH": "/Users/runner/senzing/er/resources", "SUPPORTPATH": "/Users/runner/senzing/data"}, "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
+#     sz_abstractfactory = SzAbstractFactoryCore(
+#         instance_name=instance_name, settings=settings
+#     )  # pylint: disable=unused-variable # noqa: F841
+#     actual = sz_abstractfactory.create_configmanager()
+#     assert isinstance(actual, SzConfigManager)
 
 
 # def test_create_diagnostic(sz_abstractfactory: SzAbstractFactory) -> None:
@@ -631,19 +632,20 @@ def test_create_configmanager() -> None:
 # Fixtures
 # -----------------------------------------------------------------------------
 
-# TODO -
-# @pytest.fixture(name="sz_abstractfactory", scope="function")
-# def szabstractfactory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
-#     """
-#     SzAbstractFactory object to use for all tests.
-#     """
 
-#     factory_parameters = {
-#         "instance_name": "Example",
-#         "settings": engine_vars.get("SETTINGS_DICT", {}),
-#     }
-#     result = SzAbstractFactoryCore(**factory_parameters)
-#     return result
+# TODO -
+@pytest.fixture(name="sz_abstractfactory", scope="function")
+def szabstractfactory_fixture(engine_vars: Dict[Any, Any]) -> SzAbstractFactory:
+    """
+    SzAbstractFactory object to use for all tests.
+    """
+
+    factory_parameters = {
+        "instance_name": "Example",
+        "settings": engine_vars.get("SETTINGS_DICT", {}),
+    }
+    result = SzAbstractFactoryCore(**factory_parameters)
+    return result
 
 
 # -----------------------------------------------------------------------------

@@ -264,6 +264,16 @@ class SzConfigManagerCore(SzConfigManager):
         self.instance_name = instance_name
         self.settings = as_str(settings)
         self.verbose_logging = verbose_logging
+        # TODO -
+        print("\nSzConfigManager -> _initialize...", flush=True)
+        print(f"{self.instance_name = }", flush=True)
+        print(f"{self.settings = }", flush=True)
+        print(f"{self.verbose_logging = }", flush=True)
+        instance_name_c_char_p = as_c_char_p(instance_name)
+        settings_c_char_p = as_c_char_p(as_str(settings))
+        print(f"{instance_name_c_char_p = }", flush=True)
+        print(f"{settings_c_char_p = }", flush=True)
+
         result = self._library_handle.SzConfigMgr_init(
             as_c_char_p(instance_name),
             as_c_char_p(as_str(settings)),
