@@ -94,7 +94,10 @@ jobs:
         run: |
           source ./venv/bin/activate
           sudo ulimit -c unlimited
+          echo "sudo ulimit -c"
           sudo ulimit -c 
+          echo "sudo env:"
+          sudo -E bash -c 'env'
           sudo -E bash -c 'pytest tests/ --verbose --capture=no --cov=src'
           sudo chmod -R +rwx /cores/*
       - uses: actions/upload-artifact@v4
