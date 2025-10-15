@@ -106,21 +106,27 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
         with cls._constructor_lock:
             args_hash = cls._create_args_hash(instance_name, settings, config_id, verbose_logging)
-            instance = super().__new__(cls)
-            instance._args_hash = args_hash  # type: ignore[attr-defined]
+            # instance = super().__new__(cls)
+            # instance._args_hash = args_hash  # type: ignore[attr-defined]
 
             if cls not in cls._factory_instances.keys():
+                # cls._factory_instances[cls] = instance
+                instance = super().__new__(cls)
+                instance._args_hash = args_hash  # type: ignore[attr-defined]
                 cls._factory_instances[cls] = instance
+                return instance
+
+            # else:
+            if args_hash == cls._factory_instances[cls]._args_hash:
+                # instance = cls._factory_instances[cls]
+                return cls._factory_instances[cls]
             else:
-                if args_hash == cls._factory_instances[cls]._args_hash:
-                    instance = cls._factory_instances[cls]
+                # if args_hash != cls._factory_instances[cls]._args_hash:
+                raise SzSdkError(
+                    "an abstract factory instance exists with different arguments, to use new arguments destroy the active instance first (NOTE: This will destroy Senzing objects created by the active instance!)"
+                )
 
-                if args_hash != cls._factory_instances[cls]._args_hash:
-                    raise SzSdkError(
-                        "an abstract factory instance exists with different arguments, to use new arguments destroy the active instance first (NOTE: This will destroy Senzing objects created by the active instance!)"
-                    )
-
-        return instance
+        # return instance
 
     def __init__(
         self,
