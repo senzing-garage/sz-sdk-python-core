@@ -98,7 +98,7 @@ jobs:
           sudo ulimit -c 
           echo "sudo env:"
           sudo -E bash -c 'env'
-          sudo -E bash -c 'export PYTHONPATH="/Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src"; export LD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; export DYLD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; sudo ulimit -c unlimited; sudo pytest tests/ --verbose --capture=no --cov=src'
+          sudo -E bash -c 'export PYTHONPATH="/Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src"; export LD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; export DYLD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; ulimit -c unlimited; ulimit -c; pytest tests/ --verbose --capture=no --cov=src; env'
           sudo chmod -R +rwx /cores/*
       - uses: actions/upload-artifact@v4
         with:
