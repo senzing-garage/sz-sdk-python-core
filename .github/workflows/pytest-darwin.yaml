@@ -94,7 +94,7 @@ jobs:
         run: |
           source ./venv/bin/activate
           sudo ulimit -c unlimited
-          sudo -E pytest tests/ --verbose --capture=no --cov=src
+          sudo -E -c bash 'pytest tests/ --verbose --capture=no --cov=src'
           sudo chmod -R +rwx /cores/*
       - uses: actions/upload-artifact@v4
         with:
