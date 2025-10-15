@@ -64,10 +64,10 @@ def test_create_with_different_settings(engine_vars: Dict[Any, Any]) -> None:
 #     assert isinstance(actual, SzConfigManager)
 
 
-def test_create_configmanager(engine_vars: Dict[Any, Any]) -> None:
+def test_create_configmanager() -> None:
     """Test SzAbstractFactory.create_configmanager()."""
     instance_name = "AntTest"
-    settings = "{'PIPELINE': {'CONFIGPATH': '/Users/runner/senzing/er/etc', 'RESOURCEPATH': '/Users/runner/senzing/er/resources', 'SUPPORTPATH': '/Users/runner/senzing/data'}, 'SQL': {'CONNECTION': 'sqlite3://na:na@/tmp/sqlite/G2C.db'}}"
+    settings = '{"PIPELINE": {"CONFIGPATH": "/Users/runner/senzing/er/etc", "RESOURCEPATH": "/Users/runner/senzing/er/resources", "SUPPORTPATH": "/Users/runner/senzing/data"}, "SQL": {"CONNECTION": "sqlite3://na:na@/tmp/sqlite/G2C.db"}}'
     sz_abstractfactory = SzAbstractFactoryCore(
         instance_name=instance_name, settings=settings
     )  # pylint: disable=unused-variable # noqa: F841
