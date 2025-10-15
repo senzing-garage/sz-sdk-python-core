@@ -298,7 +298,7 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         while True:
             try:
                 # TODO -
-                print("\rSzDiagnosticCore", flush=True)
+                print("\tSzDiagnosticCore", flush=True)
                 sz_destroy_diagnostic._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
                 break
