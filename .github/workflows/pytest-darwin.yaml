@@ -93,7 +93,7 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          sudo ulimit -c unlimited 
+          sudo ulimit -c unlimited
           sudo -E pytest tests/ --verbose --capture=no --cov=src
           sudo chmod -R +rwx /cores/*
       - uses: actions/upload-artifact@v4
