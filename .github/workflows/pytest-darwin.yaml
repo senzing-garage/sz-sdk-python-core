@@ -94,7 +94,7 @@ jobs:
         run: |
           source ./venv/bin/activate
           ulimit -c unlimited 
-          sudo pytest tests/ --verbose --capture=no --cov=src
+          sudo --preserve-env=GITHUB_ENV pytest tests/ --verbose --capture=no --cov=src
           sudo chmod -R +rwx /cores/*
       - uses: actions/upload-artifact@v4
         with:
