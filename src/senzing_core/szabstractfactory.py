@@ -131,11 +131,15 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     ) -> SzAbstractFactoryCore:
 
         with cls._constructor_lock:
+            # TODO -
+            print("\nIn factory __new__...", flush=True)
             args_hash = cls._create_args_hash(instance_name, settings, config_id, verbose_logging)
             # instance = super().__new__(cls)
             # instance._args_hash = args_hash  # type: ignore[attr-defined]
 
             if cls not in cls._factory_instances.keys():
+                # TODO -
+                print("\tCreating new factory", flush=True)
                 # cls._factory_instances[cls] = instance
                 new_instance = super().__new__(cls)
                 new_instance._args_hash = args_hash  # type: ignore[attr-defined]
@@ -144,12 +148,16 @@ class SzAbstractFactoryCore(SzAbstractFactory):
 
             # else:
             if args_hash == cls._factory_instances[cls]._args_hash:
+                # TODO -
+                print("\tReturning current factory", flush=True)
                 current_instance: SzAbstractFactoryCore = cls._factory_instances[cls]
                 # return cls._factory_instances[cls]
                 return current_instance
             # else:
             # if args_hash != cls._factory_instances[cls]._args_hash:
 
+            # TODO -
+            print("\tRaising SzSdkError", flush=True)
             raise SzSdkError(
                 "an abstract factory instance exists with different arguments, to use new arguments destroy the active instance first (NOTE: This will destroy Senzing objects created by the active instance!)"
             )
@@ -257,20 +265,31 @@ class SzAbstractFactoryCore(SzAbstractFactory):
     @_check_is_destroyed
     @_method_lock
     def destroy(self) -> None:
+        # TODO -
+        print("\nIn destroy() calling finalizer", flush=True)
         self._finalizer()
 
     @staticmethod
     def _do_destroy() -> None:
+        # TODO -
+        print("\nIn _do_destroy()", flush=True)
+
         with suppress(KeyError, SzSdkError):
             for engine_object in SzAbstractFactoryCore._engine_instances.values():
+                # TODO -
+                print(f"\tDestroying engine instance in _engine_instances: {engine_object}", flush=True)
                 engine_object._destroy()  # pylint: disable=protected-access
                 engine_object._is_destroyed = True  # pylint: disable=protected-access
 
         SzAbstractFactoryCore._engine_instances.clear()
 
+        # TODO -
+        print("\nStarting to destroy real engine objects...", flush=True)
         sz_destroy_configmanager = SzConfigManagerCore()
         while True:
             try:
+                # TODO -
+                print("\tSzConfigManagerCore", flush=True)
                 sz_destroy_configmanager._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
                 break
@@ -278,6 +297,8 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         sz_destroy_diagnostic = SzDiagnosticCore()
         while True:
             try:
+                # TODO -
+                print("\rSzDiagnosticCore", flush=True)
                 sz_destroy_diagnostic._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
                 break
@@ -285,6 +306,8 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         sz_destroy_engine = SzEngineCore()
         while True:
             try:
+                # TODO -
+                print("\tSzEngineCore", flush=True)
                 sz_destroy_engine._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
                 break
@@ -292,6 +315,8 @@ class SzAbstractFactoryCore(SzAbstractFactory):
         sz_destroy_product = SzProductCore()
         while True:
             try:
+                # TODO -
+                print("\tSzProductCore", flush=True)
                 sz_destroy_product._internal_only_destroy()  # pylint: disable=protected-access
             except SzNotInitializedError:
                 break
