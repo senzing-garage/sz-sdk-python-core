@@ -26,7 +26,7 @@ jobs:
       matrix:
         os: [macos-latest]
         python-version: ["3.10", "3.11", "3.12"]
-        senzingsdk-version: [production-v4, staging-v4]
+        senzingsdk-version: [production-v4, "4.1.1.25282", staging-v4]
 
     steps:
       - name: Checkout repository
