@@ -34,7 +34,7 @@ jobs:
           source ./venv/bin/activate
           echo "PATH=${PATH}" >> "${GITHUB_ENV}"
           python -m pip install --upgrade pip
-          python -m pip install --requirement requirements.txt
+          python -m pip install .
           python -m pip install build
 
       - name: Build a binary wheel and a source tarball
