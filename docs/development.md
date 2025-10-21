@@ -11,9 +11,9 @@ It has not been tested on Windows.
 These are "one-time tasks" which may already have been completed.
 
 1. The following software programs need to be installed:
-   1. [git]
+   1. [Git]
    1. [make]
-   1. [docker]
+   1. [Docker]
    1. [sphinx]
 
 ## Install Senzing C library
@@ -21,7 +21,6 @@ These are "one-time tasks" which may already have been completed.
 Since the Senzing library is a prerequisite, it must be installed first.
 
 1. Verify Senzing C shared objects, configuration, and SDK header files are installed.
-
    1. `/opt/senzing/er/lib`
    1. `/opt/senzing/er/sdk/c`
    1. `/etc/opt/senzing`
@@ -30,7 +29,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
 ## Install Git repository
 
-1. Identify git repository.
+1. Identify Git repository.
 
    ```console
    export GIT_ACCOUNT=senzing-garage
@@ -60,15 +59,6 @@ Since the Senzing library is a prerequisite, it must be installed first.
    ```console
    cd ${GIT_REPOSITORY_DIR}
    make dependencies
-
-   ```
-
-1. Install dependencies needed for documentation.
-   Example:
-
-   ```console
-   cd ${GIT_REPOSITORY_DIR}
-   make dependencies-for-documentation
 
    ```
 
@@ -230,9 +220,9 @@ Create a code coverage map.
 [black]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/black.md
 [clone-repository]: https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md
 [coverage]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/coverage.md
-[docker]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md
+[Docker]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/docker.md
 [flake8]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/flake8.md
-[git]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md
+[Git]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/git.md
 [How to Install Senzing for Python Development]: https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/install-senzing-for-python-development.md
 [isort]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/isort.md
 [make]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md
