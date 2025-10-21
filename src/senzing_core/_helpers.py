@@ -35,7 +35,7 @@ from senzing import ENGINE_EXCEPTION_MAP, SzError, SzSdkError
 try:
     import orjson  # type: ignore[import-not-found, unused-ignore]
 
-    JSON_LIB = orjson.__name__
+    JSON_LIB = orjson.__name__  # pylint: disable=C0103
 
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
         return orjson.dumps(_obj, *args, **kwargs).decode("utf-8")  # type: ignore[no-any-return, unused-ignore]
@@ -43,7 +43,7 @@ try:
 except ImportError:
     import json
 
-    JSON_LIB = json.__name__
+    JSON_LIB = json.__name__  # pylint: disable=C0103
 
     # NOTE - separators= is used to be consistent with Sz engine and orjson output
     def _json_dumps(_obj: Any, *args: Any, **kwargs: Any) -> str:
