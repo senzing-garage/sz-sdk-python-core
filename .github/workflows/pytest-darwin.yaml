@@ -29,6 +29,18 @@ jobs:
         senzingsdk-version: [production-v4, staging-v4]
 
     steps:
+      - name: Test enabling cores
+        run: |
+          ulimit -c
+          ulimit -c unlimited
+          ulimit -c
+
+      - name: Test access to core dump directory
+        run: |
+          sudo touch /cores/test
+          ls /cores
+          sudo rm /cores/test
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
@@ -80,7 +92,17 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          pytest tests/ --verbose --capture=no --cov=src
+          sudo ulimit -c unlimited
+          echo "sudo ulimit -c"
+          sudo ulimit -c 
+          echo "sudo env:"
+          sudo -E bash -c 'env'
+          sudo -E bash -c 'export PYTHONPATH="/Users/runner/work/sz-sdk-python-core/sz-sdk-python-core/src"; export LD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; export DYLD_LIBRARY_PATH="/Users/runner/senzing/er/lib:/Users/runner/senzing/er/lib/macos"; ulimit -c unlimited; ulimit -c; pytest tests/ --verbose --capture=no --cov=src; env'
+          sudo chmod -R +rwx /cores/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crashes
+          path: /cores
 
       - name: Rename coverage file
         env:
