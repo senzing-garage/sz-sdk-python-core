@@ -38,8 +38,8 @@ all = [
 ]
 development = [
   "build==1.3.0",
-  "coverage==7.10.7",
-  "psutil==7.1.0",
+  "coverage==7.11.0",
+  "psutil==7.1.1",
   "pytest-cov==7.0.0",
   "pytest-schema==0.1.2",
   "pytest==8.4.2",
@@ -120,6 +120,6 @@ ignore = ["__init__.py", "docs/source/conf.py"]
 notes = ["FIXME"]
 extension-pkg-whitelist = ["orjson"]
 # NOTE - Ignore invalid-name only in examples for simplified code without pylint complaining variables in global scope
-#        aren't uppercase. 
+#        aren't uppercase.
 # NOTE - Uses globs since version 2.0.0, previously was regular expressions
 per-file-ignores = ["examples/**:invalid-name"]
