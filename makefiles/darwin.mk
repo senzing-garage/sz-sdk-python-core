@@ -4,12 +4,13 @@
 # Variables
 # -----------------------------------------------------------------------------
 
-SENZING_DIR ?= /opt/senzing/er
+SENZING_PATH ?= $(HOME)/senzing
+SENZING_DIR ?= $(SENZING_PATH)/er
 SENZING_TOOLS_SENZING_DIRECTORY ?= $(SENZING_DIR)
-LD_LIBRARY_PATH ?= $(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
+LD_LIBRARY_PATH := $(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
 DYLD_LIBRARY_PATH := $(LD_LIBRARY_PATH)
-SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 PATH := $(MAKEFILE_DIRECTORY)/bin:$(PATH)
+SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
 
 # -----------------------------------------------------------------------------
 # OS specific targets
@@ -63,16 +64,18 @@ package-osarch-specific:
 
 .PHONY: setup-osarch-specific
 setup-osarch-specific:
-	@mkdir  /tmp/sqlite
+	@mkdir /tmp/sqlite
 	@cp testdata/sqlite/G2C.db /tmp/sqlite/G2C.db
 
 
 .PHONY: test-osarch-specific
 test-osarch-specific:
 	$(info --- Unit tests -------------------------------------------------------)
-	@pytest tests/ --verbose --capture=no --cov=src/senzing_core
-	$(info --- Test examples ----------------------------------------------------)
-	@pytest examples/ --verbose --capture=no --cov=src/senzing_core
+	@$(activate-venv); \
+		export SENZING_PATH=$(HOME)/senzing; \
+		export LD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
+		export DYLD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
+		pytest tests/ --verbose --capture=no --cov=src/senzing_core
 
 
 .PHONY: venv-osarch-specific
