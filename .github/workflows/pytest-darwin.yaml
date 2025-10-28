@@ -29,6 +29,11 @@ jobs:
         senzingsdk-version: [production-v4, staging-v4]
 
     steps:
+      - name: Environment
+        run: |
+          sw_vers
+          env
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
@@ -52,10 +57,6 @@ jobs:
         run: |
           source ./venv/bin/activate
           python -m pip install typing_extensions
-
-      - name: Darwin version
-        run: |
-          sw_vers
 
       - name: Install Senzing SDK
         uses: senzing-factory/github-action-install-senzing-sdk@v3
