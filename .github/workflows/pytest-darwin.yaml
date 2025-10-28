@@ -53,6 +53,10 @@ jobs:
           source ./venv/bin/activate
           python -m pip install typing_extensions
 
+      - name: Darwin version
+        run: |
+          sw_vers
+
       - name: Install Senzing SDK
         uses: senzing-factory/github-action-install-senzing-sdk@v3
         with:
