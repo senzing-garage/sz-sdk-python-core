@@ -72,7 +72,7 @@ setup-osarch-specific:
 test-osarch-specific:
 	$(info --- Unit tests -------------------------------------------------------)
 	@$(activate-venv); \
-		export SENZING_PATH=$(HOME)/senzing
+		export SENZING_PATH=$(HOME)/senzing; \
 		export LD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
 		export DYLD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
 		pytest tests/ --verbose --capture=no --cov=src/senzing_core
