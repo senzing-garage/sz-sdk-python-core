@@ -68,11 +68,15 @@ setup-osarch-specific:
 
 
 .PHONY: test-osarch-specific
+# test-osarch-specific: export LD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
+# test-osarch-specific: export DYLD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
 test-osarch-specific:
+	env
 	$(info --- Unit tests -------------------------------------------------------)
-	@$(activate-venv); pytest tests/ --verbose --capture=no --cov=src/senzing_core
-	$(info --- Test examples ----------------------------------------------------)
-	@$(activate-venv); pytest examples/ --verbose --capture=no --cov=src/senzing_core
+	@$(activate-venv); \
+		export LD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos; \
+		export DYLD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos; \
+		pytest tests/ --verbose --capture=no --cov=src/senzing_core
 
 
 .PHONY: venv-osarch-specific
