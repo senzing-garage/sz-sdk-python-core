@@ -4,7 +4,8 @@
 # Variables
 # -----------------------------------------------------------------------------
 
-SENZING_DIR ?= $(HOME)/senzing/er
+SENZING_PATH ?= $(HOME)/senzing
+SENZING_DIR ?= $(SENZING_PATH)/er
 SENZING_TOOLS_SENZING_DIRECTORY ?= $(SENZING_DIR)
 LD_LIBRARY_PATH := $(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
 DYLD_LIBRARY_PATH := $(LD_LIBRARY_PATH)
@@ -68,14 +69,12 @@ setup-osarch-specific:
 
 
 .PHONY: test-osarch-specific
-# test-osarch-specific: export LD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
-# test-osarch-specific: export DYLD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos
 test-osarch-specific:
-	env
 	$(info --- Unit tests -------------------------------------------------------)
 	@$(activate-venv); \
-		export LD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos; \
-		export DYLD_LIBRARY_PATH=$(SENZING_TOOLS_SENZING_DIRECTORY)/lib:$(SENZING_TOOLS_SENZING_DIRECTORY)/lib/macos; \
+		export SENZING_PATH=$(HOME)/senzing
+		export LD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
+		export DYLD_LIBRARY_PATH=$(SENZING_PATH)/er/lib:$(SENZING_PATH)/er/lib/macos; \
 		pytest tests/ --verbose --capture=no --cov=src/senzing_core
 
 
