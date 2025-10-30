@@ -127,8 +127,15 @@ jobs:
         run: |
           sudo apt-get install -y gdb
 
-          # Find core dump
-          CORE_FILE=$(find . -name "core.*" -type f | head -1)
+          # Find core dump, excluding Python files
+          CORE_FILE=$(find . -name "core.*" -type f \
+            ! -name "*.py" \
+            ! -name "*.pyc" \
+            ! -name "*.pyi" \
+            ! -path "*/venv/*" \
+            ! -path "*/__pycache__/*" \
+            -size +1M \
+            | head -1)
 
           if [ -n "$CORE_FILE" ]; then
             echo "Found core dump: $CORE_FILE"
