@@ -81,7 +81,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          source ./venv/bin/activate
+          #source ./venv/bin/activate
           pytest tests/ -vvv --capture=no --cov=src --cov-append || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
