@@ -39,7 +39,8 @@ jobs:
             echo "PATH=${PATH}:${OPENSSL_PATH}"
           } >> "$GITHUB_ENV"
           echo "[INFO] openssl path is: $OPENSSL_PATH"
-          openssl --version
+          ls -tls $OPENSSL_PATH
+          openssl version
 
       - name: Checkout repository
         uses: actions/checkout@v5
