@@ -36,15 +36,6 @@ jobs:
       - name: Environment
         run: |
           sw_vers
-          OPENSSL_PATH=$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')
-          export PATH=${OPENSSL_PATH}/bin:${PATH}
-          {
-            echo "PATH=${OPENSSL_PATH}/bin:${PATH}"
-          } >> "$GITHUB_ENV"
-          echo "[INFO] openssl path is: $OPENSSL_PATH/bin"
-          ls -tls $OPENSSL_PATH/bin
-          which openssl
-          openssl version
           env
 
       - name: Checkout repository
@@ -79,12 +70,14 @@ jobs:
       - name: Set environment variables
         run: |
           env
-          openssl version
           SENZING_PATH="${HOME}/senzing"
+          OPENSSL_PATH="$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')/bin"
+          echo "$OPENSSL_PATH" >> $GITHUB_PATH
           {
-            echo "SENZING_PATH=${SENZING_PATH}"
-            echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "PATH=${OPENSSL_PATH}/bin:${PATH}"
+            echo "SENZING_PATH=${SENZING_PATH}"
           } >> "$GITHUB_ENV"
 
       - name: Copy /etc files
@@ -100,7 +93,8 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          pytest tests/ --verbose --capture=no --cov=src
+          openssl version
+          pytest tests/ -vvv --capture=no --cov=src  || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       - name: Rename coverage file
         env:
@@ -115,6 +109,7 @@ jobs:
           path: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
 
   coverage:
+    if: github.event_name == 'pull_request'
     name: Coverage
     needs: pytest-darwin
     permissions:

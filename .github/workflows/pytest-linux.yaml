@@ -82,7 +82,7 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          pytest tests/ --verbose --capture=no --cov=src --cov-append
+          pytest tests/ -vvv --capture=no --cov=src --cov-append || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1
@@ -127,6 +127,7 @@ jobs:
           path: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
 
   coverage:
+    if: github.event_name == 'pull_request'
     name: Coverage
     needs: pytest-linux
     permissions:

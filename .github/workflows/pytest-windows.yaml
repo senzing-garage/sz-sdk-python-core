@@ -77,7 +77,7 @@ jobs:
         run: |
           .\\venv\\Scripts\\activate
           $Env:SENZING_PATH = "$Env:USERPROFILE\Senzing"
-          pytest tests/ --verbose --capture=no --cov=src
+          pytest tests/ -vvv --capture=no --cov=src || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       - name: Rename coverage file
         env:
@@ -92,6 +92,7 @@ jobs:
           path: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
 
   coverage:
+    if: github.event_name == 'pull_request'
     name: Coverage
     needs: pytest-windows
     permissions:
