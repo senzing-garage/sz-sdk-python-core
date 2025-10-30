@@ -90,6 +90,11 @@ jobs:
         run: |
           source ./venv/bin/activate
           set +e
+          # Enable core dumps (THIS IS THE KEY PART)
+          ulimit -c unlimited
+
+          # Verify it's set
+          ulimit -c
           pytest tests/ -vvv --capture=no
           EXIT_CODE=$?
           set -e
