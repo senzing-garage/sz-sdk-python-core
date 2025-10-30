@@ -104,8 +104,17 @@ jobs:
             esac
           fi
 
-          # Look for core dumps
-          find . -name "core.*" -type f
+          # Check the core pattern
+          cat /proc/sys/kernel/core_pattern
+
+          # Check if core dumps are disabled
+          ulimit -a | grep core
+
+          # Look in other common locations
+          find /tmp -name "core*" -type f 2>/dev/null
+          find /cores -name "core*" -type f 2>/dev/null
+          ls -la core 2>/dev/null
+          ls -la /var/crash/ 2>/dev/null
 
           exit $EXIT_CODE
 
