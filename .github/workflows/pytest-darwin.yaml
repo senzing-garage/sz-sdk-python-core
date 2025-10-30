@@ -7,6 +7,10 @@ on:
     - cron: "15 7 * * *"
   workflow_dispatch:
 
+concurrency:
+  group: pytest-darwin
+  cancel-in-progress: true
+
 env:
   PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
@@ -32,15 +36,15 @@ jobs:
       - name: Environment
         run: |
           sw_vers
-          env
           OPENSSL_PATH=$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')
-          export PATH=${PATH}:${OPENSSL_PATH}
+          export PATH=${PATH}:${OPENSSL_PATH}\bin
           {
-            echo "PATH=${PATH}:${OPENSSL_PATH}"
+            echo "PATH=${PATH}:${OPENSSL_PATH}\bin"
           } >> "$GITHUB_ENV"
-          echo "[INFO] openssl path is: $OPENSSL_PATH"
-          ls -tls $OPENSSL_PATH
+          echo "[INFO] openssl path is: $OPENSSL_PATH\bin"
+          ls -tls $OPENSSL_PATH\bin
           openssl version
+          env
 
       - name: Checkout repository
         uses: actions/checkout@v5

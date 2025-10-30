@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: "15 7 * * *"
 
+concurrency:
+  group: pytest-linux
+  cancel-in-progress: true
+
 env:
   PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
