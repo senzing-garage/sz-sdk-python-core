@@ -57,7 +57,7 @@ jobs:
           python -m pip install typing_extensions
 
       - name: Install Senzing SDK
-        uses: senzing-factory/github-action-install-senzing-sdk@18-skern
+        uses: senzing-factory/github-action-install-senzing-sdk@v3
         with:
           senzingsdk-version: ${{ matrix.senzingsdk-version }}
 
@@ -82,7 +82,7 @@ jobs:
       - name: Run pytest
         run: |
           #source ./venv/bin/activate
-          pytest tests/ -vvv --capture=no --cov=src --cov-append || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
+          pytest tests/ -vvv --capture=no --cov=src --cov-append || { EXIT_CODE=$?; echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1

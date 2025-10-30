@@ -77,7 +77,7 @@ jobs:
         run: |
           .\\venv\\Scripts\\activate
           $Env:SENZING_PATH = "$Env:USERPROFILE\Senzing"
-          pytest tests/ -vvv --capture=no --cov=src || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
+          pytest tests/ -vvv --capture=no --cov=src || { EXIT_CODE=$?; echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       - name: Rename coverage file
         env:

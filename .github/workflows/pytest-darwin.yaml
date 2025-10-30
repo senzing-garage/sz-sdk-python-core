@@ -94,8 +94,8 @@ jobs:
         run: |
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
-          openssl version
-          pytest tests/ -vvv --capture=no --cov=src  || { echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
+          #openssl version
+          pytest tests/ -vvv --capture=no --cov=src  || { EXIT_CODE=$?; echo "Pytest failed with exit code: $EXIT_CODE"; exit $EXIT_CODE }
 
       - name: Rename coverage file
         env:
