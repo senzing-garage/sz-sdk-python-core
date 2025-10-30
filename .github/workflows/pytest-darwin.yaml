@@ -37,12 +37,13 @@ jobs:
         run: |
           sw_vers
           OPENSSL_PATH=$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')
-          export PATH=${PATH}:${OPENSSL_PATH}/bin
+          export PATH=${OPENSSL_PATH}/bin:${PATH}
           {
-            echo "PATH=${PATH}:${OPENSSL_PATH}/bin"
+            echo "PATH=${OPENSSL_PATH}/bin:${PATH}"
           } >> "$GITHUB_ENV"
           echo "[INFO] openssl path is: $OPENSSL_PATH/bin"
           ls -tls $OPENSSL_PATH/bin
+          which openssl
           openssl version
           env
 
