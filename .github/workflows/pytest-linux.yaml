@@ -79,6 +79,13 @@ jobs:
           mkdir -p /tmp/sqlite
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
+      - name: Enable core dumps
+        run: |
+          ulimit -c unlimited
+          echo "core.%e.%p.%t" | sudo tee /proc/sys/kernel/core_pattern
+          echo "Core dump settings:"
+          ulimit -a | grep core
+
       - name: Run pytest
         run: |
           source ./venv/bin/activate
@@ -97,7 +104,44 @@ jobs:
             esac
           fi
 
+          # Look for core dumps
+          find . -name "core.*" -type f
+
           exit $EXIT_CODE
+
+      - name: Analyze core dump
+        if: always()
+        run: |
+          sudo apt-get install -y gdb
+
+          # Find core dump
+          CORE_FILE=$(find . -name "core.*" -type f | head -1)
+
+          if [ -n "$CORE_FILE" ]; then
+            echo "Found core dump: $CORE_FILE"
+
+            # Get backtrace
+            gdb -batch \
+              -ex "thread apply all bt full" \
+              -ex "quit" \
+              ./venv/bin/python "$CORE_FILE" > backtrace.txt 2>&1
+
+            cat backtrace.txt
+          else
+            echo "No core dump found"
+            echo "Checking system limits:"
+            ulimit -a
+          fi
+
+      - name: Upload core dump and backtrace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-dump-analysis
+          path: |
+            core.*
+            backtrace.txt
+          if-no-files-found: warn
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1
