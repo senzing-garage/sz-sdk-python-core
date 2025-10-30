@@ -81,9 +81,9 @@ jobs:
 
       - name: Run pytest
         run: |
-          #source ./venv/bin/activate
+          source ./venv/bin/activate
           set +e
-          pytest tests/ -vvv --capture=no --cov=src
+          pytest tests/ -vvv --capture=no
           EXIT_CODE=$?
           set -e
 
