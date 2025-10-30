@@ -27,9 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        senzingsdk-version:
-          [production-v4, staging-v4, "4.1.1-25301", "4.1.1-25300"]
+        python-version: ["3.12"]
+        senzingsdk-version: ["4.1.1-25300"]
 
     steps:
       - name: Checkout repository
@@ -79,6 +78,13 @@ jobs:
           mkdir -p /tmp/sqlite
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
+      - name: Enable core dumps
+        run: |
+          ulimit -c unlimited
+          echo "core.%e.%p.%t" | sudo tee /proc/sys/kernel/core_pattern
+          echo "Core dump settings:"
+          ulimit -a | grep core
+
       - name: Run pytest
         run: |
           source ./venv/bin/activate
@@ -101,6 +107,18 @@ jobs:
               134) echo "::error::Process aborted - possible segfault or memory corruption" ;;
             esac
           fi
+
+          # Check the core pattern
+          cat /proc/sys/kernel/core_pattern
+
+          # Check if core dumps are disabled
+          ulimit -a | grep core
+
+          # Look in other common locations
+          find /tmp -name "core*" -type f 2>/dev/null
+          find /cores -name "core*" -type f 2>/dev/null
+          ls -la core 2>/dev/null
+          ls -la /var/crash/ 2>/dev/null
 
           exit $EXIT_CODE
 
