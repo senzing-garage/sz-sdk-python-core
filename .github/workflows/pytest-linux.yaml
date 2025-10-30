@@ -83,7 +83,7 @@ jobs:
         run: |
           #source ./venv/bin/activate
           set +e
-          pytest tests/ -vvv --capture=no --cov=src --cov-append
+          pytest tests/ -vvv --capture=no --cov=src
           EXIT_CODE=$?
           set -e
 

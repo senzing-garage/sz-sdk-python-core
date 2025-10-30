@@ -20,8 +20,6 @@ permissions: {}
 jobs:
   pytest-darwin:
     name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
-    outputs:
-      status: ${{ job.status }}
     permissions:
       contents: read
     runs-on: ${{ matrix.os }}
@@ -96,7 +94,7 @@ jobs:
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
           #openssl version
           set +e
-          pytest tests/ -vvv --capture=no --cov=src --cov-append
+          pytest tests/ -vvv --capture=no --cov=src
           EXIT_CODE=$?
           set -e
 
@@ -135,9 +133,9 @@ jobs:
 
   slack-notification:
     needs: [pytest-darwin]
-    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-darwin.outputs.status ) && github.event_name == 'schedule' }}
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-darwin.result ) && github.event_name == 'schedule' }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
     uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v3
     with:
-      job-status: ${{ needs.pytest-darwin.outputs.status }}
+      job-status: ${{ needs.pytest-darwin.result }}
