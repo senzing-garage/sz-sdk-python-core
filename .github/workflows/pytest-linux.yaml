@@ -79,13 +79,6 @@ jobs:
           mkdir -p /tmp/sqlite
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
-      - name: Enable core dumps
-        run: |
-          ulimit -c unlimited
-          echo "core.%e.%p.%t" | sudo tee /proc/sys/kernel/core_pattern
-          echo "Core dump settings:"
-          ulimit -a | grep core
-
       - name: Run pytest
         run: |
           source ./venv/bin/activate
