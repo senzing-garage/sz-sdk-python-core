@@ -38,6 +38,7 @@ jobs:
           {
             echo "PATH=${PATH}:${OPENSSL_PATH}"
           } >> "$GITHUB_ENV"
+          echo "[INFO] openssl path is: $OPENSSL_PATH"
           openssl --version
 
       - name: Checkout repository
