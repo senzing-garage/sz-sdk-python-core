@@ -79,6 +79,7 @@ jobs:
       - name: Set environment variables
         run: |
           env
+          openssl version
           SENZING_PATH="${HOME}/senzing"
           {
             echo "SENZING_PATH=${SENZING_PATH}"
