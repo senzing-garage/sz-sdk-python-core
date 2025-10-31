@@ -92,23 +92,8 @@ jobs:
         run: |
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
-          #openssl version
-          set +e
-          pytest tests/ -vvv --capture=no --cov=src
-          EXIT_CODE=$?
-          set -e
-
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::error::Pytest failed with exit code: $EXIT_CODE"
-
-            case $EXIT_CODE in
-              1) echo "::error::Test failures detected" ;;
-              5) echo "::error::No tests were collected" ;;
-              134) echo "::error::Process aborted - possible segfault or memory corruption" ;;
-            esac
-          fi
-
-          exit $EXIT_CODE
+          openssl version
+          pytest tests/ --verbose --capture=no --cov=src
 
       - name: Rename coverage file
         env:
