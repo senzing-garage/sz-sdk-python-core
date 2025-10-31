@@ -27,8 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.12"]
-        senzingsdk-version: ["4.1.1-25300", "4.1.1-25295"]
+        python-version: ["3.11", "3.12"]
+        senzingsdk-version: ["4.1.1-25300", "4.1.1-25295", "staging-v4"]
 
     steps:
       - name: Checkout repository
@@ -157,7 +157,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: core-dump-analysis
+          name: core-dump-analysis-${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}
           path: |
             core.*
             backtrace.txt
