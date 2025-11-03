@@ -129,16 +129,27 @@ jobs:
           sudo apt-get install -y gdb
 
           # Find core dump
-          CORE_FILE=$(find . -name "core.*" -type f ! -name "*.pyc" ! -name "*.py" ! -name "*.pyo" ! -name "*.pyd" ! -name "*cpython*" | head -1)
+          CORE_FILE=$(find . -name "core.*" -type f \
+            ! -path "*/venv/*" \
+            ! -path "*/.venv/*" \
+            ! -path "*/site-packages/*" \
+            ! -path "*/__pycache__/*" \
+            ! -name "*.py" \
+            ! -name "*.pyc" \
+            ! -name "*.pyi" \
+            | head -1)
 
           if [ -n "$CORE_FILE" ]; then
             echo "Found core dump: $CORE_FILE"
 
+            echo "[INFO] run gdb"
             # Get backtrace
             gdb -batch \
-              -ex "thread apply all bt" -ex "thread apply all py-bt" \
+              -ex "set pagination off" \
+              -ex "thread apply all bt full" -ex "thread apply all py-bt" \
               ./venv/bin/python "$CORE_FILE" > backtrace.txt 2>&1
 
+            echo "[INFO] cat backtrace.txt"
             cat backtrace.txt
           else
             echo "No core dump found"
