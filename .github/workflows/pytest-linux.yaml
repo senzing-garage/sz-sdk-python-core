@@ -126,7 +126,9 @@ jobs:
       - name: Analyze core dump
         if: always()
         run: |
-          sudo apt-get install -y gdb
+          # Install Python debug symbols and GDB
+          sudo apt-get update
+          sudo apt-get install -y python3-dbg gdb
 
           # Find core dump
           CORE_FILE=$(find . -name "core.*" -type f \
