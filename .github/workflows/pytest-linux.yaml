@@ -147,7 +147,7 @@ jobs:
             gdb -batch \
               -ex "set pagination off" \
               -ex "thread apply all bt full" -ex "thread apply all py-bt" \
-              ./venv/bin/python "$CORE_FILE" > backtrace.txt 2>&1
+              ./venv/bin/python "$CORE_FILE" #> backtrace.txt 2>&1
 
             echo "[INFO] cat backtrace.txt"
             cat backtrace.txt
