@@ -136,8 +136,7 @@ jobs:
 
             # Get backtrace
             gdb -batch \
-              -ex "thread apply all bt full" \
-              -ex "quit" \
+              -ex "thread apply all bt" -ex "thread apply all py-bt" \
               ./venv/bin/python "$CORE_FILE" > backtrace.txt 2>&1
 
             cat backtrace.txt
