@@ -87,7 +87,7 @@ jobs:
         run: |
           source ./venv/bin/activate
           ulimit -c unlimited
-          pytest tests/ -vvv --capture=no
+          pytest tests/ --verbose --capture=no --cov=src --cov-append
 
       - if: always()
         name: Analyze core dumps
