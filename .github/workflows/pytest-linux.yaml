@@ -28,8 +28,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-        senzingsdk-version:
-          [production-v4, staging-v4]
+        senzingsdk-version: [production-v4, staging-v4]
 
     steps:
       - name: Checkout repository
@@ -80,94 +79,22 @@ jobs:
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
       - name: Enable core dumps
-        run: |
-          ulimit -c unlimited
-          echo "core.%e.%p.%t" | sudo tee /proc/sys/kernel/core_pattern
-          echo "Core dump settings:"
-          ulimit -a | grep core
+        uses: senzing-factory/github-action-core-dumps@2-skern
+        with:
+          enable-core-dumps: "true"
 
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          set +e
-          # Enable core dumps (THIS IS THE KEY PART)
           ulimit -c unlimited
-
-          # Verify it's set
-          ulimit -c
           pytest tests/ -vvv --capture=no
-          EXIT_CODE=$?
-          set -e
 
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "::error::Pytest failed with exit code: $EXIT_CODE"
-
-            case $EXIT_CODE in
-              1) echo "::error::Test failures detected" ;;
-              5) echo "::error::No tests were collected" ;;
-              134) echo "::error::Process aborted - possible segfault or memory corruption" ;;
-            esac
-          fi
-
-          # Check the core pattern
-          cat /proc/sys/kernel/core_pattern
-
-          # Check if core dumps are disabled
-          ulimit -a | grep core
-
-          # Look in other common locations
-          find /tmp -name "core*" -type f 2>/dev/null
-          find /cores -name "core*" -type f 2>/dev/null
-          ls -la core 2>/dev/null
-          ls -la /var/crash/ 2>/dev/null
-
-          exit $EXIT_CODE
-
-      - name: Analyze core dump
-        if: always()
-        run: |
-          # Install Python debug symbols and GDB
-          sudo apt-get update
-          sudo apt-get install -y python3-dbg gdb
-
-          # Find core dump
-          CORE_FILE=$(find . -name "core.*" -type f \
-            ! -path "*/venv/*" \
-            ! -path "*/.venv/*" \
-            ! -path "*/site-packages/*" \
-            ! -path "*/__pycache__/*" \
-            ! -name "*.py" \
-            ! -name "*.pyc" \
-            ! -name "*.pyi" \
-            | head -1)
-
-          if [ -n "$CORE_FILE" ]; then
-            echo "Found core dump: $CORE_FILE"
-
-            echo "[INFO] run gdb"
-            # Get backtrace
-            gdb -batch \
-              -ex "set pagination off" \
-              -ex "thread apply all bt full" -ex "thread apply all py-bt" \
-              ./venv/bin/python "$CORE_FILE" #> backtrace.txt 2>&1
-
-            echo "[INFO] cat backtrace.txt"
-            cat backtrace.txt
-          else
-            echo "No core dump found"
-            echo "Checking system limits:"
-            ulimit -a
-          fi
-
-      - name: Upload core dump and backtrace
-        if: always()
-        uses: actions/upload-artifact@v4
+      - if: always()
+        name: Analyze core dumps
+        uses: senzing-factory/github-action-core-dumps@2-skern
         with:
-          name: core-dump-analysis-${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}
-          path: |
-            core.*
-            backtrace.txt
-          if-no-files-found: warn
+          analyze-core-dumps: "true"
+          core-file-suffix: ${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1
