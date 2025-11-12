@@ -88,12 +88,25 @@ jobs:
           mkdir -p /tmp/sqlite
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
+      - name: Enable core dumps
+        uses: senzing-factory/github-action-core-dumps@v1
+        with:
+          enable-core-dumps: "true"
+
       - name: Run pytest
         run: |
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
           openssl version
+          ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
+
+      - if: always()
+        name: Analyze core dumps
+        uses: senzing-factory/github-action-core-dumps@v1
+        with:
+          analyze-core-dumps: "true"
+          core-file-suffix: ${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}
 
       - name: Rename coverage file
         env:
