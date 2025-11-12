@@ -26,7 +26,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-        senzingsdk-version: [production-v4, staging-v4]
+        senzingsdk-version: [production-v4, staging-v4, "4.1.1.25302"]
 
     steps:
       - name: Checkout repository
