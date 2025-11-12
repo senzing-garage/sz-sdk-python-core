@@ -76,10 +76,23 @@ jobs:
           mkdir -p /tmp/sqlite
           cp testdata/sqlite/G2C.db /tmp/sqlite/
 
+      - name: Enable core dumps
+        uses: senzing-factory/github-action-core-dumps@v1
+        with:
+          enable-core-dumps: "true"
+
       - name: Run pytest
         run: |
           source ./venv/bin/activate
+          ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src --cov-append
+
+      - if: always()
+        name: Analyze core dumps
+        uses: senzing-factory/github-action-core-dumps@v1
+        with:
+          analyze-core-dumps: "true"
+          core-file-suffix: ${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}
 
       # Use pytest to check examples, there are no "test" classes/functions, pytest imports
       # the .py files. If there is a Python error in the examples, an exit code of 1
