@@ -70,7 +70,7 @@ jobs:
           env
           SENZING_PATH="${HOME}/senzing"
           OPENSSL_PATH="$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')/bin"
-          echo "$OPENSSL_PATH" >> $GITHUB_PATH
+          echo "$OPENSSL_PATH" >> "$GITHUB_PATH"
           {
             echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
