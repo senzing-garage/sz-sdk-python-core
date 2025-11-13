@@ -7,10 +7,6 @@ on:
     - cron: "15 7 * * *"
   workflow_dispatch:
 
-concurrency:
-  group: pytest-darwin
-  cancel-in-progress: true
-
 env:
   PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
@@ -19,6 +15,9 @@ permissions: {}
 
 jobs:
   pytest-darwin:
+    concurrency:
+      group: pytest-darwin-${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}
+      cancel-in-progress: true
     name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     permissions:
       contents: read
