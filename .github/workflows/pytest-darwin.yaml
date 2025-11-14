@@ -15,9 +15,10 @@ permissions: {}
 
 jobs:
   pytest-darwin:
+    concurrency:
+      group: pytest-darwin-${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}-${{ github.head_ref || github.ref_name }}
+      cancel-in-progress: true
     name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
-    outputs:
-      status: ${{ job.status }}
     permissions:
       contents: read
     runs-on: ${{ matrix.os }}
@@ -65,17 +66,21 @@ jobs:
 
       - name: Set environment variables
         run: |
+          env
           SENZING_PATH="${HOME}/senzing"
+          OPENSSL_PATH="$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')/bin"
+          echo "$OPENSSL_PATH" >> "$GITHUB_PATH"
           {
-            echo "SENZING_PATH=${SENZING_PATH}"
-            echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "PATH=${OPENSSL_PATH}/bin:${PATH}"
+            echo "SENZING_PATH=${SENZING_PATH}"
           } >> "$GITHUB_ENV"
 
-      # - name: Copy /etc files
-      #   run: |
-      #     sudo mkdir -p "${SENZING_PATH}/etc"
-      #     sudo cp testdata/senzing-license/g2.lic "${SENZING_PATH}/er/etc/g2.lic"
+      - name: Copy /etc files
+        run: |
+          sudo mkdir -p "${SENZING_PATH}/etc"
+          sudo cp testdata/senzing-license/g2.lic "${SENZING_PATH}/er/etc/g2.lic"
 
       - name: Copy test database files
         run: |
@@ -90,6 +95,8 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
+          export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
+          openssl version
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
@@ -113,6 +120,7 @@ jobs:
           path: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
 
   coverage:
+    if: github.event_name == 'pull_request'
     name: Coverage
     needs: pytest-darwin
     permissions:
@@ -122,9 +130,9 @@ jobs:
 
   slack-notification:
     needs: [pytest-darwin]
-    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-darwin.outputs.status ) && github.event_name == 'schedule' }}
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-darwin.result ) && github.event_name == 'schedule' }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
     uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v3
     with:
-      job-status: ${{ needs.pytest-darwin.outputs.status }}
+      job-status: ${{ needs.pytest-darwin.result }}
