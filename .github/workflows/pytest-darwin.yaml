@@ -77,10 +77,10 @@ jobs:
             echo "SENZING_PATH=${SENZING_PATH}"
           } >> "$GITHUB_ENV"
 
-      # - name: Copy /etc files
-      #   run: |
-      #     sudo mkdir -p "${SENZING_PATH}/etc"
-      #     sudo cp testdata/senzing-license/g2.lic "${SENZING_PATH}/er/etc/g2.lic"
+      - name: Copy /etc files
+        run: |
+          sudo mkdir -p "${SENZING_PATH}/etc"
+          sudo cp testdata/senzing-license/g2.lic "${SENZING_PATH}/er/etc/g2.lic"
 
       - name: Copy test database files
         run: |
