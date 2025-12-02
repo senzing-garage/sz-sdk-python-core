@@ -34,22 +34,30 @@ jobs:
         run: |
           sw_vers
           env
-          brew info openssl
 
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           persist-credentials: false
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
+      # - name: Set up Python ${{ matrix.python-version }}
+      #  uses: actions/setup-python@v6
+      #  with:
+      #    python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          python -m venv ./venv
-          source ./venv/bin/activate
+          # Install Homebrew Python (built against OpenSSL 3)
+          brew install python@${{ matrix.python-version }}
+
+          # Use it explicitly
+          /opt/homebrew/opt/python@${{ matrix.python-version }}/bin/python3 -m venv venv
+          source venv/bin/activate
+
+          # Verify
+          python -c "import ssl; print(ssl.OPENSSL_VERSION)"
+          #python -m venv ./venv
+          #source ./venv/bin/activate
           echo "PATH=${PATH}" >> "${GITHUB_ENV}"
           python -m pip install --upgrade pip
           python -m pip install --group all .
