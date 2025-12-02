@@ -30,11 +30,6 @@ jobs:
         senzingsdk-version: [production-v4, staging-v4]
 
     steps:
-      - name: Environment
-        run: |
-          sw_vers
-          env
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
@@ -42,22 +37,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Install Homebrew Python (built against OpenSSL 3)
           brew install python@${{ matrix.python-version }}
-
-          # Create venv with Homebrew Python
           /opt/homebrew/bin/python${{ matrix.python-version }} -m venv venv
-
-          # Activate and install packages
           source venv/bin/activate
-
-          # Verify correct OpenSSL version
-          echo "Python version:"
-          python --version
-          echo "OpenSSL version:"
-          python -c "import ssl; print(ssl.OPENSSL_VERSION)"
-
-          # Upgrade pip and install package
           python -m pip install --upgrade pip
           python -m pip install --group all .
 
@@ -74,7 +56,6 @@ jobs:
 
       - name: Set environment variables
         run: |
-          env
           SENZING_PATH="${HOME}/senzing"
           OPENSSL_PATH="/opt/homebrew/opt/openssl@3"
           {
@@ -102,35 +83,8 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-
-          # Check Senzing libraries (ignore errors for missing libs)
-          echo "=== Checking Senzing library dependencies ==="
-          for lib in libSz.dylib libszstatic.dylib libszpostal.dylib libscoring.so libanalytics.so libNameDataObject.dylib libsztranslator.dylib; do
-              echo "--- $lib ---"
-              otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto || echo "  (not found or no crypto dependency)"
-          done
-
-          # Verify we're using the right Python and OpenSSL
-          echo ""
-          echo "=== Environment Check ==="
-          echo "Python executable: $(which python)"
-          echo "Python version: $(python --version)"
-          echo "OpenSSL command line version:"
-          openssl version
-          echo "Python SSL module version:"
-          python -c "import ssl; print('Python SSL:', ssl.OPENSSL_VERSION)"
-
-          # FORCE preload OpenSSL 3 before anything else
-          echo ""
-          echo "=== Setting preload variables ==="
           export DYLD_INSERT_LIBRARIES="/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib:/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib"
           export DYLD_FORCE_FLAT_NAMESPACE=1
-          echo "DYLD_INSERT_LIBRARIES=${DYLD_INSERT_LIBRARIES}"
-          echo "DYLD_FORCE_FLAT_NAMESPACE=${DYLD_FORCE_FLAT_NAMESPACE}"
-
-          # Run tests
-          echo ""
-          echo "=== Running pytest ==="
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
