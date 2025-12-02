@@ -40,25 +40,24 @@ jobs:
         with:
           persist-credentials: false
 
-      # - name: Set up Python ${{ matrix.python-version }}
-      #  uses: actions/setup-python@v6
-      #  with:
-      #    python-version: ${{ matrix.python-version }}
-
       - name: Install dependencies
         run: |
           # Install Homebrew Python (built against OpenSSL 3)
           brew install python@${{ matrix.python-version }}
 
-          # Use it explicitly
+          # Create venv with Homebrew Python
           /opt/homebrew/bin/python${{ matrix.python-version }} -m venv venv
+
+          # Activate and install packages
           source venv/bin/activate
 
-          # Verify
+          # Verify correct OpenSSL version
+          echo "Python version:"
+          python --version
+          echo "OpenSSL version:"
           python -c "import ssl; print(ssl.OPENSSL_VERSION)"
-          #python -m venv ./venv
-          #source ./venv/bin/activate
-          echo "PATH=${PATH}" >> "${GITHUB_ENV}"
+
+          # Upgrade pip and install package
           python -m pip install --upgrade pip
           python -m pip install --group all .
 
@@ -77,10 +76,9 @@ jobs:
         run: |
           env
           SENZING_PATH="${HOME}/senzing"
-          OPENSSL_PATH="$(brew info openssl | grep "/openssl@3/" | awk 'NR==1{print $1}')/bin"
-          echo "$OPENSSL_PATH" >> "$GITHUB_PATH"
+          OPENSSL_PATH="/opt/homebrew/opt/openssl@3"
           {
-            echo "DYLD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
+            echo "DYLD_LIBRARY_PATH=${OPENSSL_PATH}/lib:${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "LD_LIBRARY_PATH=${SENZING_PATH}/er/lib:${SENZING_PATH}/er/lib/macos"
             echo "PATH=${OPENSSL_PATH}/bin:${PATH}"
             echo "SENZING_PATH=${SENZING_PATH}"
@@ -104,8 +102,15 @@ jobs:
       - name: Run pytest
         run: |
           source ./venv/bin/activate
-          export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
+
+          # Verify we're using the right Python and OpenSSL
+          echo "Python executable: $(which python)"
+          echo "Python version: $(python --version)"
+          echo "OpenSSL version:"
           openssl version
+          python -c "import ssl; print('Python SSL:', ssl.OPENSSL_VERSION)"
+
+          # Run tests
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
