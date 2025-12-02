@@ -103,24 +103,34 @@ jobs:
         run: |
           source ./venv/bin/activate
 
-          # Check all the Senzing libraries for OpenSSL dependencies
+          # Check Senzing libraries (ignore errors for missing libs)
+          echo "=== Checking Senzing library dependencies ==="
           for lib in libSz.dylib libszstatic.dylib libszpostal.dylib libscoring.so libanalytics.so libNameDataObject.dylib libsztranslator.dylib; do
-            echo "=== $lib ==="
-            otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto
+              echo "--- $lib ---"
+              otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto || echo "  (not found or no crypto dependency)"
           done
 
           # Verify we're using the right Python and OpenSSL
+          echo ""
+          echo "=== Environment Check ==="
           echo "Python executable: $(which python)"
           echo "Python version: $(python --version)"
-          echo "OpenSSL version:"
+          echo "OpenSSL command line version:"
           openssl version
+          echo "Python SSL module version:"
           python -c "import ssl; print('Python SSL:', ssl.OPENSSL_VERSION)"
 
           # FORCE preload OpenSSL 3 before anything else
+          echo ""
+          echo "=== Setting preload variables ==="
           export DYLD_INSERT_LIBRARIES="/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib:/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib"
           export DYLD_FORCE_FLAT_NAMESPACE=1
+          echo "DYLD_INSERT_LIBRARIES=${DYLD_INSERT_LIBRARIES}"
+          echo "DYLD_FORCE_FLAT_NAMESPACE=${DYLD_FORCE_FLAT_NAMESPACE}"
 
           # Run tests
+          echo ""
+          echo "=== Running pytest ==="
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
