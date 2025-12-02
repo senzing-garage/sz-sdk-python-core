@@ -106,30 +106,6 @@ jobs:
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
           openssl version
-
-          python << 'EOF'
-          import ssl
-          print("Python's OpenSSL:", ssl.OPENSSL_VERSION)
-          import ctypes
-          import ctypes.util
-          crypto_path = ctypes.util.find_library('crypto')
-          print("libcrypto found at:", crypto_path)
-          EOF
-
-          # Check what Python's _hashlib is linked against
-          otool -L $(python -c "import _hashlib; print(_hashlib.__file__)") | grep crypto
-
-          # Check what OpenSSL Python is using
-          python -c "import ssl; print(ssl.OPENSSL_VERSION)"
-
-          # Check all dependencies recursively
-          otool -L ${HOME}/senzing/er/lib/libSz.dylib
-
-          # Check each of those dependencies
-          for lib in libszstatic.dylib libszpostal.dylib libscoring.so libanalytics.so libNameDataObject.dylib libsztranslator.dylib; do
-            echo "=== $lib ==="
-            otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto
-          done
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
