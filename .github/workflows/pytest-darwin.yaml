@@ -103,12 +103,22 @@ jobs:
         run: |
           source ./venv/bin/activate
 
+          # Check all the Senzing libraries for OpenSSL dependencies
+          for lib in libSz.dylib libszstatic.dylib libszpostal.dylib libscoring.so libanalytics.so libNameDataObject.dylib libsztranslator.dylib; do
+            echo "=== $lib ==="
+            otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto
+          done
+
           # Verify we're using the right Python and OpenSSL
           echo "Python executable: $(which python)"
           echo "Python version: $(python --version)"
           echo "OpenSSL version:"
           openssl version
           python -c "import ssl; print('Python SSL:', ssl.OPENSSL_VERSION)"
+
+          # FORCE preload OpenSSL 3 before anything else
+          export DYLD_INSERT_LIBRARIES="/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib:/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib"
+          export DYLD_FORCE_FLAT_NAMESPACE=1
 
           # Run tests
           ulimit -c unlimited
