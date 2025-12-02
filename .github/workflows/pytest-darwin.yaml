@@ -97,6 +97,7 @@ jobs:
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
           openssl version
+          otool -L ${HOME}/senzing/er/lib/libSz.dylib
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
