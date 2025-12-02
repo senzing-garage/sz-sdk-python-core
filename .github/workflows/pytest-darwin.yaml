@@ -34,6 +34,7 @@ jobs:
         run: |
           sw_vers
           env
+          brew info openssl
 
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -97,7 +98,14 @@ jobs:
           source ./venv/bin/activate
           export DYLD_LIBRARY_PATH=/opt/homebrew/opt/openssl@3/lib:$DYLD_LIBRARY_PATH
           openssl version
+          # Check all dependencies recursively
           otool -L ${HOME}/senzing/er/lib/libSz.dylib
+
+          # Check each of those dependencies
+          for lib in libszstatic.dylib libszpostal.dylib libscoring.so libanalytics.so libNameDataObject.dylib libsztranslator.dylib; do
+            echo "=== $lib ==="
+            otool -L ${HOME}/senzing/er/lib/$lib 2>/dev/null | grep -i crypto
+          done
           ulimit -c unlimited
           pytest tests/ --verbose --capture=no --cov=src
 
