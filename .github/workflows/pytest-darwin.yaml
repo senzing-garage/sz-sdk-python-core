@@ -51,7 +51,7 @@ jobs:
           brew install python@${{ matrix.python-version }}
 
           # Use it explicitly
-          /opt/homebrew/opt/python@${{ matrix.python-version }}/bin/python3 -m venv venv
+          /opt/homebrew/bin/python${{ matrix.python-version }} -m venv venv
           source venv/bin/activate
 
           # Verify
