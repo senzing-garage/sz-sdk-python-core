@@ -522,4 +522,4 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | G2UnknownDatasourceException      | SzUnknownDataSourceError      |
 | G2UnrecoverableException          | SzUnrecoverableError          |
 
-[breaking-changes]: https://senzing.com/docs/4_beta/4_0_breaking_changes/index.html
+[breaking-changes]: https://www.senzing.com/docs/release/4/4_0_breaking_changes/
