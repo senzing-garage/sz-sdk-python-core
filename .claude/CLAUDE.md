@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is `sz-sdk-python-core`, a Python SDK that wraps the Senzing C libraries for entity resolution. It implements the abstract interfaces defined in the `senzing` package (`sz-sdk-python`) using ctypes to call the native Senzing C binaries.
 
 The SDK provides five main components:
+
 - **SzConfig** - Configuration management for the Senzing engine
 - **SzConfigManager** - Manages configuration storage and retrieval
 - **SzDiagnostic** - Diagnostics and repository maintenance
@@ -16,6 +17,7 @@ The SDK provides five main components:
 ## Prerequisites
 
 The Senzing C library must be installed before using this SDK:
+
 - Linux: `/opt/senzing/er/lib` (set `LD_LIBRARY_PATH`)
 - macOS: `$SENZING_PATH/er`
 - Requires Senzing version >= 4.0.0 and < 5.0.0
@@ -23,6 +25,7 @@ The Senzing C library must be installed before using this SDK:
 ## Common Commands
 
 ### Setup
+
 ```bash
 make dependencies-for-development  # Install all dev dependencies
 make dependencies                  # Install runtime dependencies only
@@ -30,6 +33,7 @@ make setup                         # Set up test database (copies SQLite to /tmp
 ```
 
 ### Testing
+
 ```bash
 make clean setup test              # Full test run (unit tests + examples)
 pytest tests/                      # Run unit tests only
@@ -39,6 +43,7 @@ make coverage                      # Run tests with coverage report
 ```
 
 ### Linting
+
 ```bash
 make lint                          # Run all linters (pylint, mypy, bandit, black, flake8, isort)
 make black                         # Format code
@@ -48,6 +53,7 @@ make isort                         # Sort imports
 ```
 
 ### Building
+
 ```bash
 make package                       # Build wheel distribution
 make publish-test                  # Publish to test PyPI
@@ -56,7 +62,9 @@ make publish-test                  # Publish to test PyPI
 ## Architecture
 
 ### Source Structure
+
 All SDK code is in `src/senzing_core/`:
+
 - `szabstractfactory.py` - Factory pattern entry point (recommended usage)
 - `szengine.py`, `szconfig.py`, etc. - Individual SDK component implementations
 - `_helpers.py` - Shared utilities for C library interaction
@@ -64,6 +72,7 @@ All SDK code is in `src/senzing_core/`:
 ### C Library Binding Pattern
 
 Each SDK class follows this pattern:
+
 1. Load the Senzing shared library via `load_sz_library()` in `_helpers.py`
 2. Define C function signatures using ctypes (argtypes/restype)
 3. Create ctypes Structure classes for complex return types (e.g., `SzResponseReturnCodeResult`)
@@ -73,6 +82,7 @@ Each SDK class follows this pattern:
 ### Factory Pattern Usage
 
 The recommended way to use the SDK:
+
 ```python
 from senzing_core import SzAbstractFactoryCore
 
@@ -85,6 +95,7 @@ sz_factory.destroy()  # Clean up all created objects
 The factory manages initialization/destruction of all Senzing components and prevents conflicting configurations.
 
 ### Settings Dictionary Structure
+
 ```python
 settings = {
     "PIPELINE": {
