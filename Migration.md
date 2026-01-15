@@ -19,14 +19,14 @@ Artifacts such as modules, classes, exceptions and tools previously used the ter
 
 ## Modules Structure
 
- The version 3.x Python SDK modules are located in a single path for the product at `/opt/senzing/g2/sdk/python/senzing/` (or a project `<project_path>/sdk/python/senzing/`). These modules contain concrete classes and methods for working with the Python SDK.
+The version 3.x Python SDK modules are located in a single path for the product at `/opt/senzing/g2/sdk/python/senzing/` (or a project `<project_path>/sdk/python/senzing/`). These modules contain concrete classes and methods for working with the Python SDK.
 
 There are 2 paths for the version 4.0 modules, considering the product install path:
 
 1. `/opt/senzing/er/sdk/python/senzing/`
-    - Non-instantiable abstract base classes and constants for unifying the method signatures of concrete implementations, such as `senzing_core` below
+   - Non-instantiable abstract base classes and constants for unifying the method signatures of concrete implementations, such as `senzing_core` below
 2. `/opt/senzing/er/sdk/python/senzing_core/`
-    - Instantiable concrete classes for working with the Python SDK
+   - Instantiable concrete classes for working with the Python SDK
 
 Python doesn't have interfaces similar to other languages, using abstract base classes in this manner achieves similar functionality. The module classes in `senzing_core` inherit from the `senzing` module classes, ensuring the required methods and signatures are implemented. [sz-sdk-python-grpc](https://github.com/senzing-garage/sz-sdk-python-grpc) is an example of another implementation using the `senzing` abstract base classes.
 
@@ -240,7 +240,7 @@ g2_engine.findNetworkByRecordID(
 )
 ```
 
-The equivalent method in version 4.0 -  `find_network_by_record_id` - accepts a list of tuples, each consisting of 2 strings. The first string represents the data source, the second the record ID.
+The equivalent method in version 4.0 - `find_network_by_record_id` - accepts a list of tuples, each consisting of 2 strings. The first string represents the data source, the second the record ID.
 
 ```python
 response = sz_engine.find_network_by_record_id([("CUSTOMERS", "1001"), ("WATCHLIST", "1007"), ("WATCHLIST", "1010")], 6, 4, 5) # No need to JSON-encode the argument anymore
@@ -322,7 +322,7 @@ response = bytearray()
 g2_engine.findPathExcludingByEntityID(787, 201123, 3, '{\"ENTITIES\": [{\"ENTITY_ID\": 1}, {\"ENTITY_ID\": 100002}]}', response)
 ```
 
-#### V4 find_path_by_entity_id
+#### V4 find_path_by_entity_id - excluding
 
 ```python
 response = sz_engine.find_path_by_entity_id(787, 201123, 3, [1, 100002])
@@ -337,7 +337,7 @@ response = bytearray()
 g2_engine.findPathIncludingSourceByEntityID(787, 201123, 3, '', '{\"DATA_SOURCES\": [\"REFERENCE\", \"CUSTOMERS\"]}', response)
 ```
 
-#### V4 find_path_by_entity_id
+#### V4 find_path_by_entity_id - including
 
 ```python
 response = sz_engine.find_path_by_entity_id(787, 201123, 3, required_data_sources = ["REFERENCE", "CUSTOMERS"])
@@ -414,15 +414,15 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 
 ### Modules
 
-| V3                      | V4                        |
-| ----------------------- | ------------------------- |
-| G2Config&period;py      | szconfig&period;py        |
-| G2ConfigMgr&period;py   | szconfigmanager&period;py |
-| G2Diagnostic&period;py  | szdiagnostic&period;py    |
-| G2Engine&period;py      | szengine&period;py        |
-| G2EngineFlags&period;py | szengineflags&period;py * |
-| G2Exception&period;py   | szerror&period;py *       |
-| G2Product&period;py     | szproduct&period;py       |
+| V3                      | V4                         |
+| ----------------------- | -------------------------- |
+| G2Config&period;py      | szconfig&period;py         |
+| G2ConfigMgr&period;py   | szconfigmanager&period;py  |
+| G2Diagnostic&period;py  | szdiagnostic&period;py     |
+| G2Engine&period;py      | szengine&period;py         |
+| G2EngineFlags&period;py | szengineflags&period;py \* |
+| G2Exception&period;py   | szerror&period;py \*       |
+| G2Product&period;py     | szproduct&period;py        |
 
 \* These modules are abstract base classes located in sdk/python/senzing/
 
