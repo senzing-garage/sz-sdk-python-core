@@ -592,7 +592,6 @@ def test_method_chain(engine_vars: Dict[Any, Any]) -> None:
 #         "config_id": 0,
 #         "verbose_logging": 0,
 #     }
-
 #     # fmt: off
 #     # pylint: disable=not-context-manager
 #     with pytest.raises(AttributeError, TypeError):  # type: ignore
