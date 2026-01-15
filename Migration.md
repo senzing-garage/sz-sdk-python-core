@@ -16,11 +16,9 @@ You may still notice G2 used in some of the overall product files, but the versi
 A few examples of such changes:
 
 - Python SDK module naming, G2 is replaced with sz
-
   - G2Engine&period;py -> szengine&period;py
 
 - Exceptions, G2 is replaced with Sz (and Error)
-
   - G2Exception -> SzError
 
 - Engine flags, G2 is replaced with SZ
