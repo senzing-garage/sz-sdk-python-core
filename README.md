@@ -8,7 +8,7 @@ Although this GitHub repository may help you understand an approach to using Sen
 it's not considered to be "production ready" and is not considered to be part of the Senzing product.
 Heck, it may not even be appropriate for your application of Senzing!
 
-## :warning: WARNING: sz-sdk-python-core is still in development :warning: _
+## :warning: WARNING: sz-sdk-python-core is still in development :warning: \_
 
 At the moment, this is "work-in-progress" with Semantic Versions of `0.n.x`.
 Although it can be reviewed and commented on,
@@ -54,7 +54,7 @@ Other implementations of the [sz-sdk-python] interface include:
 1. [Errors]
 1. [Examples]
 1. Related artifacts:
-    1. [DockerHub]
+   1. [DockerHub]
 1. [sz-sdk-python package reference]
 
 [Coverage badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=coverage&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsenzing-garage%2Fsz-sdk-python-core%2Fpython-coverage-comment-action-data%2Fendpoint.json
