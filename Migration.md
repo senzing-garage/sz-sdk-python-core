@@ -1,12 +1,19 @@
 # Migrating from Version 3 to Version 4 Senzing Python SDK
 
-This document outlines fundamental changes and differences to the version 4.0 Python SDK from the version v3.x Python SDK. Although there are numerous changes to the version 4.0 SDK, migrating your Python applications and services is straight forward. The changes should make development more straightforward and natural for Python developers.
+This document outlines fundamental changes and differences to the version 4.0 Python SDK from the version v3.x Python SDK.
+Although there are numerous changes to the version 4.0 SDK, migrating your Python applications and services is straight forward.
+The changes should make development more straightforward and natural for Python developers.
 
-If you haven't already, also check [breaking changes][breaking-changes]. This covers additional details not specifically related to Python such as hardware, software, overall SDK changes, and database schema changes.
+If you haven't already, also check [breaking changes][breaking-changes].
+This covers additional details not specifically related to Python such as hardware, software, overall SDK changes, and database schema changes.
 
 ## The G2 Naming and Prefix Retired
 
-Artifacts such as modules, classes, exceptions and tools previously used the term "G2", this is typically observed as a prefix to the aforementioned artifacts. Senzing version 4.0 has, for the most part, replaced G2 with the term SZ, Sz, or sz depending on the context. You may still notice G2 used in some of the overall product files, but the version 4.0 SDK Python artifacts now use a variant of SZ. A few examples of such changes:
+Artifacts such as modules, classes, exceptions and tools previously used the term "G2",
+this is typically observed as a prefix to the aforementioned artifacts.
+Senzing version 4.0 has, for the most part, replaced G2 with the term SZ, Sz, or sz depending on the context.
+You may still notice G2 used in some of the overall product files, but the version 4.0 SDK Python artifacts now use a variant of SZ.
+A few examples of such changes:
 
 - Python SDK module naming, G2 is replaced with sz
   - G2Engine&period;py -> szengine&period;py
@@ -19,20 +26,24 @@ Artifacts such as modules, classes, exceptions and tools previously used the ter
 
 ## Modules Structure
 
- The version 3.x Python SDK modules are located in a single path for the product at `/opt/senzing/g2/sdk/python/senzing/` (or a project `<project_path>/sdk/python/senzing/`). These modules contain concrete classes and methods for working with the Python SDK.
+The version 3.x Python SDK modules are located in a single path for the product at `/opt/senzing/g2/sdk/python/senzing/` (or a project `<project_path>/sdk/python/senzing/`).
+These modules contain concrete classes and methods for working with the Python SDK.
 
 There are 2 paths for the version 4.0 modules, considering the product install path:
 
 1. `/opt/senzing/er/sdk/python/senzing/`
-    - Non-instantiable abstract base classes and constants for unifying the method signatures of concrete implementations, such as `senzing_core` below
+   - Non-instantiable abstract base classes and constants for unifying the method signatures of concrete implementations, such as `senzing_core` below
 2. `/opt/senzing/er/sdk/python/senzing_core/`
-    - Instantiable concrete classes for working with the Python SDK
+   - Instantiable concrete classes for working with the Python SDK
 
-Python doesn't have interfaces similar to other languages, using abstract base classes in this manner achieves similar functionality. The module classes in `senzing_core` inherit from the `senzing` module classes, ensuring the required methods and signatures are implemented. [sz-sdk-python-grpc](https://github.com/senzing-garage/sz-sdk-python-grpc) is an example of another implementation using the `senzing` abstract base classes.
+Python doesn't have interfaces similar to other languages, using abstract base classes in this manner achieves similar functionality.
+The module classes in `senzing_core` inherit from the `senzing` module classes, ensuring the required methods and signatures are implemented.
+[sz-sdk-python-grpc](https://github.com/senzing-garage/sz-sdk-python-grpc) is an example of another implementation using the `senzing` abstract base classes.
 
 ## Unified Initialization and Destruction
 
-Previously, Senzing engine objects were individually instantiated and then initialized with `init`, passing in arguments to identify the instance, engine configuration settings, and whether to use debug tracing. G2Diagnostic, G2Engine, and G2Product example initialization code might look like:
+Previously, Senzing engine objects were individually instantiated and then initialized with `init`, passing in arguments to identify the instance, engine configuration settings,
+and whether to use debug tracing. G2Diagnostic, G2Engine, and G2Product example initialization code might look like:
 
 ```python
 from senzing import G2Diagnostic, G2Engine, G2Exception, G2Product
@@ -54,7 +65,11 @@ except G2Exception as err:
     raise err
 ```
 
-The version 4.0 SDK uses an abstract factory pattern for the creation and initialization of engine objects. The abstract factory is instantiated with the required configuration settings. Subsequent engine objects requested from the abstract factory use the same single set of configuration settings. This simplifies instantiation of engines and removes the possibility of inadvertently introducing configuration errors. The same code for version 4.0:
+The version 4.0 SDK uses an abstract factory pattern for the creation and initialization of engine objects.
+The abstract factory is instantiated with the required configuration settings.
+Subsequent engine objects requested from the abstract factory use the same single set of configuration settings.
+This simplifies instantiation of engines and removes the possibility of inadvertently introducing configuration errors.
+The same code for version 4.0:
 
 ```python
 from senzing import SzError
@@ -77,7 +92,10 @@ except SZError as err:
 
 ## Method Response Assignment
 
-Gone is allocating a bytearray to return method responses to. Prior to version 4.0, the Senzing engine returned a return code to the Python SDK method. If the return code was non-zero the error details were requested from the engine, converted to a Python exception with the error details and raised. As the SDK method was collecting the return code, bytearrays were used in the version 3.x SDK to assign successful responses to.
+Gone is allocating a bytearray to return method responses to.
+Prior to version 4.0, the Senzing engine returned a return code to the Python SDK method.
+If the return code was non-zero the error details were requested from the engine, converted to a Python exception with the error details and raised.
+As the SDK method was collecting the return code, bytearrays were used in the version 3.x SDK to assign successful responses to.
 
 ```python
 try:
@@ -92,7 +110,8 @@ except G2Exception as err:
 print(response.decode())
 ```
 
-This has been improved in version 4.0, allowing the SDK to access the return code separately from responses. Responses are now returned directly as types such as `str` and `int`.
+This has been improved in version 4.0, allowing the SDK to access the return code separately from responses.
+Responses are now returned directly as types such as `str` and `int`.
 
 ```python
 try:
@@ -104,7 +123,8 @@ print(response)
 
 ## "With Info" Moves From Method to Flag {#with-info}
 
-The version 3.x SDK provides "with info" methods to request a response for methods that perform entity resolution actions, such as adding, deleting, processing, and reevaluating. In the version 3.x SDK, for example, `addRecord` is used to add a record:
+The version 3.x SDK provides "with info" methods to request a response for methods that perform entity resolution actions, such as adding, deleting, processing, and reevaluating.
+In the version 3.x SDK, for example, `addRecord` is used to add a record:
 
 ```python
 g2_engine.addRecord("TEST", "78720B", record_json_str)
@@ -118,7 +138,10 @@ g2_engine.addRecordWithInfo("TEST", "78720B", record_json_str, response)
 print(response)
 ```
 
-The separate `WithInfo` methods have been removed in the version 4.0 SDK. The capability is now included in the `add_record`, `delete_record`, `process_redo_record`,`reevaluate_entity`, and `reevaluate_record` methods. Requesting the with info response is achieved with the use of the optional `flags` argument and specifying the `SZ_WITH_INFO` engine flag. The default is not to return the with info response, in which case an empty string is returned:
+The separate `WithInfo` methods have been removed in the version 4.0 SDK.
+The capability is now included in the `add_record`, `delete_record`, `process_redo_record`,`reevaluate_entity`, and `reevaluate_record` methods.
+Requesting the with info response is achieved with the use of the optional `flags` argument and specifying the `SZ_WITH_INFO` engine flag.
+The default is not to return the with info response, in which case an empty string is returned:
 
 ```python
 ...
@@ -146,7 +169,10 @@ else:
 
 ## Redo Processing
 
-Methods for fetching and processing redo records have changed. In the version 3.x SDK, `getRedoRecord` is used to fetch a redo record (if any are available) and `process` to request the processing of the redo record. `process` is really an internal method, it could handle redo and other record types the Senzing engine understands. The `process` method is no longer available in version 4.0. A simple example to process redo records, in version 3.x:
+Methods for fetching and processing redo records have changed.
+In the version 3.x SDK, `getRedoRecord` is used to fetch a redo record (if any are available) and `process` to request the processing of the redo record.
+`process` is really an internal method, it could handle redo and other record types the Senzing engine understands.
+The `process` method is no longer available in version 4.0. A simple example to process redo records, in version 3.x:
 
 ```python
 redo_record = bytearray()
@@ -171,7 +197,8 @@ white True:
 
 ## Say Goodbye to JSON-formatted Input Arguments
 
-A number of methods take a JSON string argument in the version 3.x SDK. These are used to describe entities, records, or data sources and JSON strings to describe these would need to be built.
+A number of methods take a JSON string argument in the version 3.x SDK.
+These are used to describe entities, records, or data sources and JSON strings to describe these would need to be built.
 
 A single data source code:
 
@@ -197,7 +224,8 @@ One or more record identifiers:
 records = '{\"RECORDS\": [{\"DATA_SOURCE\": \"CUSTOMERS\", \"RECORD_ID\": \"1001\"}, {\"DATA_SOURCE\": \"WATCHLIST\", \"RECORD_ID\": \"1007\"}]}'
 ```
 
-You no longer need to construct the JSON string for such arguments in version 4.0, methods accept these arguments as normal Python types. The JSON strings from above are represented in version 4.0 as:
+You no longer need to construct the JSON string for such arguments in version 4.0, methods accept these arguments as normal Python types.
+The JSON strings from above are represented in version 4.0 as:
 
 A single data source code:
 
@@ -240,7 +268,8 @@ g2_engine.findNetworkByRecordID(
 )
 ```
 
-The equivalent method in version 4.0 -  `find_network_by_record_id` - accepts a list of tuples, each consisting of 2 strings. The first string represents the data source, the second the record ID.
+The equivalent method in version 4.0 - `find_network_by_record_id` - accepts a list of tuples, each consisting of 2 strings.
+The first string represents the data source, the second the record ID.
 
 ```python
 response = sz_engine.find_network_by_record_id([("CUSTOMERS", "1001"), ("WATCHLIST", "1007"), ("WATCHLIST", "1010")], 6, 4, 5) # No need to JSON-encode the argument anymore
@@ -282,7 +311,9 @@ These are the methods in the version 4.0 SDK with arguments no longer requiring 
 
 ## Less is more
 
-In addition to the `with info` methods [being removed in version 4.0](#with-info), other methods have been collapsed into fewer methods; such as for find path. There are six methods in the version 3.x SDK for find path; three for finding paths by entity IDs and three for finding paths by record IDs. You would choose one depending on if you were interested in excluding by entities or records in the path or, finding paths that contain specific data sources.
+In addition to the `with info` methods [being removed in version 4.0](#with-info), other methods have been collapsed into fewer methods; such as for find path.
+There are six methods in the version 3.x SDK for find path; three for finding paths by entity IDs and three for finding paths by record IDs.
+You would choose one depending on if you were interested in excluding by entities or records in the path or, finding paths that contain specific data sources.
 
 - `findPathByEntityID`
 - `findPathByRecordID`
@@ -322,7 +353,7 @@ response = bytearray()
 g2_engine.findPathExcludingByEntityID(787, 201123, 3, '{\"ENTITIES\": [{\"ENTITY_ID\": 1}, {\"ENTITY_ID\": 100002}]}', response)
 ```
 
-#### V4 find_path_by_entity_id
+#### V4 find_path_by_entity_id - excluding
 
 ```python
 response = sz_engine.find_path_by_entity_id(787, 201123, 3, [1, 100002])
@@ -337,17 +368,20 @@ response = bytearray()
 g2_engine.findPathIncludingSourceByEntityID(787, 201123, 3, '', '{\"DATA_SOURCES\": [\"REFERENCE\", \"CUSTOMERS\"]}', response)
 ```
 
-#### V4 find_path_by_entity_id
+#### V4 find_path_by_entity_id - including
 
 ```python
 response = sz_engine.find_path_by_entity_id(787, 201123, 3, required_data_sources = ["REFERENCE", "CUSTOMERS"])
 ```
 
-Note, in these examples a blank is used for `findPathIncludingSourceByEntityID` and a named argument for `find_path_by_entity_id`. When requesting specific data sources, entity IDs to avoid can optionally be specified.
+Note, in these examples a blank is used for `findPathIncludingSourceByEntityID` and a named argument for `find_path_by_entity_id`.
+When requesting specific data sources, entity IDs to avoid can optionally be specified.
 
 ## Working with Configuration
 
-A fairly significant change in the version 4.0 SDK compared to version 3.x pertains to working with configuration. With version 3.x, the `G2Config` and `G2ConfigMgr` modules were independently initialized and managed. The `G2Config` module was a functional interface used to work with in-memory configuration instances which were accessed via a numeric handle and required the closing of that handle when complete.
+A fairly significant change in the version 4.0 SDK compared to version 3.x pertains to working with configuration.
+With version 3.x, the `G2Config` and `G2ConfigMgr` modules were independently initialized and managed.
+The `G2Config` module was a functional interface used to work with in-memory configuration instances which were accessed via a numeric handle and required the closing of that handle when complete.
 
 To create a new configuration, add a data source, and set it as the default config in the version 3.x SDK you might do the following:
 
@@ -382,7 +416,8 @@ finally:
     g2_config.destroy()
 ```
 
-In version 4.0, the `SzConfig` module is subordinate to the `SzConfigManager` and literally represents a Senzing configuration as an object. It removes the hassle of dealing with "config handles" that have to be closed as well:
+In version 4.0, the `SzConfig` module is subordinate to the `SzConfigManager` and literally represents a Senzing configuration as an object.
+It removes the hassle of dealing with "config handles" that have to be closed as well:
 
 ```python
 sz_factory = SzAbstractFactoryCore(MODULE_NAME, SETTINGS)
@@ -410,19 +445,21 @@ except SzError as err:
 
 ## Additional Differences
 
-These are Python specific not covered in [breaking changes][breaking-changes]. The tables don't outline every change, only those that are new or continue to exist in the version 4.0 SDK. For a full list of changes see [breaking changes][breaking-changes]. A blank entry in the V3 column and a value in the V4 column denotes added in V4.
+These are Python specific not covered in [breaking changes][breaking-changes].
+The tables don't outline every change, only those that are new or continue to exist in the version 4.0 SDK.
+For a full list of changes see [breaking changes][breaking-changes]. A blank entry in the V3 column and a value in the V4 column denotes added in V4.
 
 ### Modules
 
-| V3                      | V4                        |
-| ----------------------- | ------------------------- |
-| G2Config&period;py      | szconfig&period;py        |
-| G2ConfigMgr&period;py   | szconfigmanager&period;py |
-| G2Diagnostic&period;py  | szdiagnostic&period;py    |
-| G2Engine&period;py      | szengine&period;py        |
-| G2EngineFlags&period;py | szengineflags&period;py * |
-| G2Exception&period;py   | szerror&period;py *       |
-| G2Product&period;py     | szproduct&period;py       |
+| V3                      | V4                         |
+| ----------------------- | -------------------------- |
+| G2Config&period;py      | szconfig&period;py         |
+| G2ConfigMgr&period;py   | szconfigmanager&period;py  |
+| G2Diagnostic&period;py  | szdiagnostic&period;py     |
+| G2Engine&period;py      | szengine&period;py         |
+| G2EngineFlags&period;py | szengineflags&period;py \* |
+| G2Exception&period;py   | szerror&period;py \*       |
+| G2Product&period;py     | szproduct&period;py        |
 
 \* These modules are abstract base classes located in sdk/python/senzing/
 
@@ -522,4 +559,4 @@ These are Python specific not covered in [breaking changes][breaking-changes]. T
 | G2UnknownDatasourceException      | SzUnknownDataSourceError      |
 | G2UnrecoverableException          | SzUnrecoverableError          |
 
-[breaking-changes]: https://senzing.com/docs/4_beta/4_0_breaking_changes/index.html
+[breaking-changes]: https://www.senzing.com/docs/release/4/4_0_breaking_changes/
