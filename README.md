@@ -8,7 +8,7 @@ Although this GitHub repository may help you understand an approach to using Sen
 it's not considered to be "production ready" and is not considered to be part of the Senzing product.
 Heck, it may not even be appropriate for your application of Senzing!
 
-## :warning: WARNING: sz-sdk-python-core is still in development :warning: _
+## :warning: WARNING: sz-sdk-python-core is still in development :warning: \_
 
 At the moment, this is "work-in-progress" with Semantic Versions of `0.n.x`.
 Although it can be reviewed and commented on,
@@ -20,7 +20,7 @@ The Senzing `sz-sdk-python-core` package provides a [Python] Software Developmen
 adhering to the abstract classes of [sz-sdk-python]
 that wraps the Senzing C SDK APIs.
 
-[![Python 3.11 Badge]][Python 3.11]
+[![Python 3.13 Badge]][Python 3.13]
 [![PEP8 Badge]][PEP8]
 [![PyPI version Badge]][PyPi version]
 [![Downloads Badge]][Downloads]
@@ -54,7 +54,7 @@ Other implementations of the [sz-sdk-python] interface include:
 1. [Errors]
 1. [Examples]
 1. Related artifacts:
-    1. [DockerHub]
+   1. [DockerHub]
 1. [sz-sdk-python package reference]
 
 [Coverage badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=coverage&query=%24.message&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsenzing-garage%2Fsz-sdk-python-core%2Fpython-coverage-comment-action-data%2Fendpoint.json
@@ -71,8 +71,8 @@ Other implementations of the [sz-sdk-python] interface include:
 [PEP8]: https://www.python.org/dev/peps/pep-0008/
 [PyPI version Badge]: https://badge.fury.io/py/senzing-core.svg
 [PyPi version]: https://badge.fury.io/py/senzing-core
-[Python 3.11 Badge]: https://img.shields.io/badge/python-3.11-blue.svg
-[Python 3.11]: https://www.python.org/downloads/release/python-3110/
+[Python 3.13 Badge]: https://img.shields.io/badge/python-3.13-blue.svg
+[Python 3.13]: https://www.python.org/downloads/release/python-3130/
 [Python]: https://www.python.org/
 [Senzing Garage]: https://github.com/senzing-garage
 [Senzing Quick Start guides]: https://docs.senzing.com/quickstart/

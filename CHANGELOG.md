@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog], [markdownlint],
-and this project adheres to [Semantic Versioning].
+The changelog format is based on [Keep a Changelog] and [CommonMark].
+This project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
@@ -68,7 +68,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Removed in 0.3.16
 
-- _version.py, merged into_helpers.py
+- \_version.py, merged into_helpers.py
 
 ## [0.3.15] - 2025-06-18
 
@@ -96,11 +96,11 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed in 0.3.13
 
-- To be consistent with Sz engine and orjson, if json.dumps() is used (orjson not available) in _helpers.py don't add spaces after : and , separators
+- To be consistent with Sz engine and orjson, if json.dumps() is used (orjson not available) in \_helpers.py don't add spaces after : and , separators
 
 ### Removed in 0.3.13
 
-- `from typing_extensions import ...` in _helpers.py is removed to simplify product requirements
+- `from typing_extensions import ...` in \_helpers.py is removed to simplify product requirements
 
 ## [0.3.12] - 2025-05-21
 
@@ -161,11 +161,11 @@ and this project adheres to [Semantic Versioning].
 ### Added in 0.3.6
 
 - Expanded test coverage
-- Check and raise SzSdkError for wrong types in _helpers.py build functions
+- Check and raise SzSdkError for wrong types in \_helpers.py build functions
 
 ### Changed in 0.3.6
 
-- Simplified escaping JSON strings in _helpers.py
+- Simplified escaping JSON strings in \_helpers.py
 - Changed exception capturing, raising, and messages for errors occurring within the SDK
 - Tests previously catching TypeError now catch SzSdkError
 
@@ -308,6 +308,6 @@ and this project adheres to [Semantic Versioning].
 
 - Initial work
 
-[Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
-[markdownlint]: https://dlaa.me/markdownlint/
-[Semantic Versioning]: https://semver.org/spec/v2.0.0.html
+[CommonMark]: https://commonmark.org/
+[Keep a Changelog]: https://keepachangelog.com/
+[Semantic Versioning]: https://semver.org/

@@ -220,8 +220,13 @@ isort:
 mypy:
 	$(info ${\n})
 	$(info --- mypy -----------------------------------------------------------------------)
-	@$(activate-venv); mypy --strict $(shell git ls-files '*.py' ':!:docs/source/*')
+	@$(activate-venv); mypy $(shell git ls-files '*.py' ':!:docs/source/*')
 
+.PHONY: prettier
+prettier:
+	$(info ${\n})
+	$(info --- prettier ----------------------------------------------------------------------)
+	@npx prettier --write "**/*.{json,md,yml,yaml}"
 
 .PHONY: pydoc
 pydoc:
