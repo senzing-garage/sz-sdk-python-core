@@ -1,4 +1,4 @@
-name: pytest linux
+name: Pytest linux
 
 on:
   push:
@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: "15 7 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 env:
   PYTHONPATH: ${{ github.workspace }}/src
   SENZING_TOOLS_DATABASE_URL: sqlite3://na:na@nowhere/tmp/sqlite/G2C.db
@@ -16,10 +20,7 @@ permissions: {}
 
 jobs:
   pytest-linux:
-    concurrency:
-      group: pytest-linux-${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
-    name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    name: "Pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     permissions:
       contents: read
     runs-on: ${{ matrix.os }}
@@ -27,8 +28,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         senzingsdk-version: [production-v4, staging-v4]
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -49,8 +51,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --group all .
 
-      - if: matrix.python-version == '3.9' || matrix.python-version == '3.10'
-        name: Install python libraries for python 3.9 and 3.10
+      - if: matrix.python-version == '3.10'
+        name: Install python libraries for python 3.10
         run: |
           source ./venv/bin/activate
           python -m pip install typing_extensions
@@ -149,7 +151,7 @@ jobs:
 
   slack-notification:
     needs: [pytest-linux]
-    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-linux.result) && (github.ref_name == github.event.repository.default_branch || github.event_name == 'schedule') }}
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.pytest-linux.result ) && (github.ref_name == github.event.repository.default_branch || github.event_name == 'schedule') }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
     uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v3

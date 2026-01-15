@@ -1,4 +1,4 @@
-name: pytest darwin
+name: Pytest darwin
 
 on:
   pull_request:
@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: "15 7 * * *"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 env:
   PYTHONPATH: ${{ github.workspace }}/src
@@ -15,10 +19,7 @@ permissions: {}
 
 jobs:
   pytest-darwin:
-    concurrency:
-      group: pytest-darwin-${{ matrix.senzingsdk-version }}-${{ matrix.python-version }}-${{ github.head_ref || github.ref_name }}
-      cancel-in-progress: true
-    name: "pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
+    name: "Pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: ${{ matrix.os }}; Python ${{ matrix.python-version }}"
     permissions:
       contents: read
     runs-on: ${{ matrix.os }}
@@ -26,8 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         senzingsdk-version: [production-v4, staging-v4]
+    timeout-minutes: 30
 
     steps:
       - name: Environment
