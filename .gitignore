@@ -168,6 +168,7 @@ cython_debug/
 # Visual Studio code
 .vscode/*
 !.vscode/cspell.json
+!.vscode/settings.json
 *.code-workspace
 .history
 
@@ -178,3 +179,5 @@ cython_debug/
 # Test export files from export methods
 exportCSVEntityReport.csv
 exportJSONEntityReport.json
+
+.claude/settings.local.json
