@@ -70,7 +70,7 @@ venv: venv-osarch-specific
 dependencies-for-development: venv dependencies-for-development-osarch-specific
 	$(activate-venv); \
 		python3 -m pip install --upgrade pip; \
-		python3 -m pip install --group all
+		python3 -m pip install --group all .
 
 
 .PHONY: dependencies
@@ -78,6 +78,12 @@ dependencies: venv
 	$(activate-venv); \
 		python3 -m pip install --upgrade pip; \
 		python3 -m pip install -e .
+
+
+.PHONY: install-prettier
+install-prettier:
+	@command -v npx >/dev/null 2>&1 || { echo "npm is required but not installed. Aborting." >&2; exit 1; }
+	@npx prettier --version >/dev/null 2>&1 || npm install --save-dev --save-exact prettier
 
 # -----------------------------------------------------------------------------
 # Setup
@@ -92,6 +98,13 @@ setup: setup-osarch-specific
 
 .PHONY: lint
 lint: pylint mypy bandit black flake8 isort
+
+# -----------------------------------------------------------------------------
+# Format
+# -----------------------------------------------------------------------------
+
+.PHONY: format
+format: install-prettier prettier
 
 # -----------------------------------------------------------------------------
 # Build
