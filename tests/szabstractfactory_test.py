@@ -4,7 +4,6 @@
 szabstractfactory_test.py
 """
 
-
 from typing import Any, Dict
 
 import pytest
