@@ -88,6 +88,7 @@
     "isort",
     "jquery",
     "jsmath",
+    "kernelsam",
     "Kusha",
     "kwargs",
     "LENSRL",
