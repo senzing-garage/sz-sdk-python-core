@@ -10,8 +10,6 @@ permissions: {}
 jobs:
   build-distribution:
     name: Build distribution
-    outputs:
-      status: ${{ job.status }}
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -54,8 +52,6 @@ jobs:
     name: Publish Python distribution to PyPI
     needs:
       - build-distribution
-    outputs:
-      status: ${{ job.status }}
     permissions:
       id-token: write
     runs-on: ubuntu-latest
@@ -74,8 +70,6 @@ jobs:
     name: Sign the Python distribution with Sigstore and upload them to GitHub Release
     needs:
       - publish-to-pypi
-    outputs:
-      status: ${{ job.status }}
     permissions:
       contents: write # IMPORTANT: mandatory for making GitHub Releases
       id-token: write # IMPORTANT: mandatory for sigstore
@@ -105,10 +99,10 @@ jobs:
 
   slack-notification:
     needs: [build-distribution, publish-to-pypi, github-release]
-    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.build-distribution.outputs.status ) && contains(fromJSON('["failure", "cancelled"]'), needs.publish-to-pypi.outputs.status ) && contains(fromJSON('["failure", "cancelled"]'), needs.github-release.outputs.status ) && github.ref_name == github.event.repository.default_branch }}
+    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.build-distribution.result ) && contains(fromJSON('["failure", "cancelled"]'), needs.publish-to-pypi.result ) && contains(fromJSON('["failure", "cancelled"]'), needs.github-release.result ) && github.ref_name == github.event.repository.default_branch }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
     uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v4
     with:
-      job-status: ${{ needs.build-distribution.outputs.status && needs.publish-to-pypi.outputs.status && needs.github-release.outputs.status }}
+      job-status: ${{ needs.build-distribution.result && needs.publish-to-pypi.result && needs.github-release.result }}
