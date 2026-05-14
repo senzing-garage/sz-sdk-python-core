@@ -44,6 +44,14 @@ jobs:
           name: python-package-distributions
           path: dist/
 
+      - name: Notify Slack on failure
+        if: failure() || cancelled()
+        uses: senzing-factory/build-resources/slack-failure-notification@v4
+        with:
+          job-status: ${{ job.status }}
+          slack-channel: ${{ secrets.SLACK_CHANNEL }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+
   publish-to-pypi:
     environment:
       name: pypi
@@ -97,12 +105,3 @@ jobs:
         # sigstore-produced signatures and certificates.
         run: gh release upload "${GITHUB_REF_NAME}" dist/** --repo "${{ github.repository }}"
 
-  slack-notification:
-    needs: [build-distribution, publish-to-pypi, github-release]
-    if: ${{ always() && contains(fromJSON('["failure", "cancelled"]'), needs.build-distribution.result ) && contains(fromJSON('["failure", "cancelled"]'), needs.publish-to-pypi.result ) && contains(fromJSON('["failure", "cancelled"]'), needs.github-release.result ) && github.ref_name == github.event.repository.default_branch }}
-    secrets:
-      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-    uses: senzing-factory/build-resources/.github/workflows/build-failure-slack-notification.yaml@v4
-    with:
-      job-status: ${{ needs.build-distribution.result && needs.publish-to-pypi.result && needs.github-release.result }}
