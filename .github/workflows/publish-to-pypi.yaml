@@ -104,4 +104,3 @@ jobs:
         # `dist/` contains the built packages, and the
         # sigstore-produced signatures and certificates.
         run: gh release upload "${GITHUB_REF_NAME}" dist/** --repo "${{ github.repository }}"
-
