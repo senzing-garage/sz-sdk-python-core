@@ -26,14 +26,6 @@ jobs:
       - id: cfg
         uses: senzing-factory/build-resources/sdk-versions@v4
 
-      - name: Notify Slack on failure
-        if: (failure() || cancelled()) && (github.ref_name == github.event.repository.default_branch || github.event_name == 'schedule')
-        uses: senzing-factory/build-resources/slack-failure-notification@v4
-        with:
-          job-status: ${{ job.status }}
-          slack-channel: ${{ secrets.SLACK_CHANNEL }}
-          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-
   pytest-windows:
     name: "Pytest with Senzing: ${{ matrix.senzingsdk-version }}; OS: windows-latest; Python ${{ matrix.python-version }}"
     needs: sdk-versions
@@ -118,6 +110,14 @@ jobs:
         with:
           name: "coverage-${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
           path: "coverage.${{ matrix.python-version }}-${{ matrix.senzingsdk-version }}"
+
+      - name: Notify Slack on failure
+        if: (failure() || cancelled()) && (github.ref_name == github.event.repository.default_branch || github.event_name == 'schedule')
+        uses: senzing-factory/build-resources/slack-failure-notification@v4
+        with:
+          job-status: ${{ job.status }}
+          slack-channel: ${{ secrets.SLACK_CHANNEL }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
 
   coverage:
     if: github.event_name == 'pull_request'
