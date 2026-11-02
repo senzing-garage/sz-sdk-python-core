@@ -33,14 +33,15 @@ jobs:
     needs: sdk-versions
     permissions:
       contents: read
-    runs-on: ${{ matrix.os }}
+    # Pinned: on ubuntu-26.04 (sudo-rs) the install-senzing-sdk action's bare
+    # `sudo --preserve-env` is ignored, SENZING_ACCEPT_EULA is dropped and apt hangs.
+    # matrix.os stays ubuntu-latest so the required status check names are unchanged.
+    # TODO: revert to runs-on matrix.os once senzing-factory/github-action-install-senzing-sdk#68 is released.
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        # Pinned: on ubuntu-26.04 (sudo-rs) the install-senzing-sdk action's bare
-        # `sudo --preserve-env` is ignored, SENZING_ACCEPT_EULA is dropped and apt hangs.
-        # TODO: revert to ubuntu-latest once senzing-factory/github-action-install-senzing-sdk#68 is released.
-        os: [ubuntu-24.04]
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
         senzingsdk-version: ${{ fromJSON(needs.sdk-versions.outputs.senzingsdk-versions) }}
     timeout-minutes: 30
