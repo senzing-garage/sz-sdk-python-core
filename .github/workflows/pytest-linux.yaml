@@ -37,7 +37,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        # Pinned: on ubuntu-26.04 (sudo-rs) the install-senzing-sdk action's bare
+        # `sudo --preserve-env` is ignored, SENZING_ACCEPT_EULA is dropped and apt hangs.
+        os: [ubuntu-24.04]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
         senzingsdk-version: ${{ fromJSON(needs.sdk-versions.outputs.senzingsdk-versions) }}
     timeout-minutes: 30
