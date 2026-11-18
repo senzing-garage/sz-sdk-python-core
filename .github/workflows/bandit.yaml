@@ -13,18 +13,8 @@ permissions: {}
 jobs:
   bandit:
     permissions:
-      security-events: write
-    # Pinned: PyCQA/bandit-action@v1 always sets up Python 3.8, which is not available on ubuntu-26.04.
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.13"]
-    timeout-minutes: 10
-
-    steps:
-      - name: Run Bandit Scan
-        uses: PyCQA/bandit-action@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-          targets: examples src
+      contents: read
+    uses: senzing-factory/build-resources/.github/workflows/bandit.yaml@v4
+    with:
+      config-file: pyproject.toml
+      targets: examples src
